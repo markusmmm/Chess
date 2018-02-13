@@ -68,7 +68,7 @@ Andre roller fyller vi inn iløpet av denne og neste uke etter det vi føler blir 
 - Hvit spiller begynner
 - Mulig å velge farge hvis man spiller på AI, hvis det er 2 ekte spillere, så er player 1 hvit og player 2 svart
 - AI - hvor mange trekk kan den se frem?
-- Winner/looser popup
+- Winner/loser popup
 
 ------------------------------------------------------PLAN TIL NESTE GANG------------------------------------------------------
 - Forslag til kodestruktur, klassediagram
