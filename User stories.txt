@@ -1,16 +1,17 @@
-- Ha en meny med valg mellom single player, multi player, highscores, quit, help, tips & tricks. Hvis man velger single player, skal det være mulig å velge vanskelighetsgrad.
-- Velge skins?
-- Bonde: Kan ikke gå bakover, 2 steg første gang man beveger på den, 1 steg ellers, special move: en passant (drive-by, diagonalt angrep)
-- Tårn: horisontalt og vertikalt, special move: rokade (kongen og tårn bytte plass, må være på startpos og ingen andre brikker imellom, finnes flere varianter)
+- Ha en meny med valg mellom singleplayer, multiplayer, highscores, quit, help, tips & tricks
+- Velge vanskelighetsgrad på singleplayer
+- Bonde: Kan ikke gå bakover, 2 steg første gang man beveger på den, 1 steg ellers, kan bare slå ut brikker diagonalt, special move: en passant
+- Tårn: Horisontalt og vertikalt så lenge ikke hindret, special move: rokade 
 - Konge: Et steg i alle retninger, kan ikke flytte kongen til en rute som sette han i sjakk matt, hvis kongen ikke kan gå noen retninger så er spillet slutt
-- Dronning: kan gå i alle retnigner som kongen, men så langt som hun vil
-- Hest: 2 steg fram, 1 til siden,
-- Løper: diagonalt
+- Dronning: Kan gå i alle retnigner som kongen, så lenge ikke hindret
+- Hest: 2 steg horisontalt og 1 vertikalt, eller 2 steg vertikalt og 1 steg horisontalt
+- Løper: Diagonalt alle retnigner så lenge ikke hindret, kan ikke endre retning samme trekk.
 - Brikken går tilbake hvis spilleren prøver å gjøre et ugyldig trekk
-- Beginnermode: viser mulige trekk, angre(bare mot maskiner)
-- Game mode: Hurtigsjakk?
+- Easy: Vise mulige trekk for valgt brikke, angre trekk
 - Score vises bak spillerens navn
 - Hvit spiller begynner
-- Mulig å velge farge hvis man spiller på AI, hvis det er 2 ekte spillere, så er player 1 hvit og player 2 svart
-- AI - hvor mange trekk kan den se frem?
+- Mulig å velge farge hvis man spiller på AI. Hvis det er 2 ekte spillere, så er player 1 hvit og player 2 svart
 - Winner/loser popup
+- Velge skins?
+
+Flere user stories legges til på trello etterhvert som vi kommer på flere funksjoner.
