@@ -1,4 +1,6 @@
 .class
+*.vpp.bak*
+*.vpp.lck
 
 ## OS Specific
 .DS_Store
