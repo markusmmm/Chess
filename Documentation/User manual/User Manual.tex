@@ -4,6 +4,8 @@
 \date{\vspace{-5ex}}
 \documentclass{article}
 \usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\graphicspath{ {images/} }
 
 \begin{document}
 \maketitle
@@ -29,16 +31,37 @@ Check is a condition where the opponent can knock out your king within their nex
 
 \subsection*{Pawn} The pawn is the smallest soldier in the chess game. The pawn is not allowed to move far, and is only allowed to move forward. The first time you move a pawn you are allowed to move it two squares forward. When a pawn has been moved once, he’s only allowed to move one square forward each turn. In terms of knocking out the opponents chess pieces, the pawn is the only piece that doesn’t knock out in the direction it’s moving. If the pawn wants to knock out another piece it can only do so on square diagonally forwards to the right or to the left.
 If you by some miracle manage to get the pawn all the way over to the opponents first row, you get a reward. The reward is that you can transform the pawn into any other chess piece.  
+\begin{figure}[h]
+\includegraphics[width=3.5cm, height=4cm]{pawn1} \includegraphics[width=3.5cm, height=4cm]{pawn2} \includegraphics[width=3.5cm, height=4cm]{pawn3}
+\end{figure}
 
-\subsection*{Rook} If you need more firepower than the pawn, the rook is something else. As long as there’s no other piece in the way it’s moving, it can move as far as it pleases. The rook can only move in a straight line forwards, backwards and sideways, but not diagonally. The rook can’t change direction while moving, you have to choose a direction to move it in before moving. If there’s a piece from the opponent in the rooks way, the rook can knock the piece out, but it can’t move further than the piece it knocks out. 
+\subsection*{Rook} If you need more firepower than the pawn, the rook is something else. As long as there’s no other piece in the way it’s moving, it can move as far as it pleases. The rook can only move in a straight line forwards, backwards and sideways, but not diagonally. The rook can’t change direction while moving, you have to choose a direction to move it in before moving. If there’s a piece from the opponent in the rooks way, the rook can knock the piece out, but it can’t move further than the piece it knocks out.
+\begin{figure}[h]
+\includegraphics[width=5cm, height=5cm]{rook1}\includegraphics[width=5cm, height=5cm]{rook2} \includegraphics[width=5cm, height=5cm]{rook3} \includegraphics[width=5cm, height=5cm]{rook4}
+\end{figure}
 
 \subsection*{Bishop} The bishop is more limited in its movement than the rook, but it’s more useful than the pawn. The bishop can only move diagonally forwards or backwards. The bishop has the same principles as the rook in terms of how far it can move, and that it can’t change direction while moving. 
+\begin{figure}[h]
+\includegraphics[width=6cm, height=3cm]{bishop1} \includegraphics[width=6cm, height=3cm]{bishop2} 
+\end{figure}
 
 \subsection*{Knight} In terms of complexity, the knight is the worst. It doesn’t move in a straight line or in just one direction. The knight moves in a L-shape on the board. The knight always go two squares in one direction, and one square another direction, but that can still be confusing. There’s normally two different ways for the knight to get to a square, so sometimes you can move one square in one direction followed by two squares in another direction. Another unique quality about the knight is that it can jump over other pieces. Because of the knight’s special way of moving it doesn’t matter if there’s pieces in the way. If the knight wants to knock out a piece from the opponent, it has to land on the piece it wants to knock out.
+\begin{figure}[h]
+\includegraphics[width=3.9cm, height=4cm]{knight1} \includegraphics[width=3.9cm, height=4cm]{knight2} \includegraphics[width=3.9cm, height=4cm]{knight3}
+\end{figure}
 
 \subsection*{Queen} In terms of power, the queen is the most powerful chess piece on the board. If you combine the movement of the rook and the bishop, you get the movement of the queen. The queen can move as far as she wants, as long as there’s no other piece in the way, forwards, backwards, sideways and diagonally.
+\begin{figure}[!]
+\includegraphics[width=5cm, height=5cm]{queen1}\includegraphics[width=5cm, height=5cm]{queen2}
+\end{figure}
 
+\begin{figure}[!]
+\includegraphics[width=5cm, height=5cm]{queen3}\includegraphics[width=5cm, height=5cm]{queen4}
+\end{figure}
 \subsection*{King} The most important piece on the board, is the king. That’s the piece you have to protect using the other pieces. If the king gets knocked out by your opponent, you loose. The kings movement is restricted to one square in each direction. You are not allowed to put the king in danger by moving it into check. If your opponent puts you into check, you are obliged to get the king out of danger. The opposing kings are not allowed to stand right next to each other, there has to be at least one square between them. 
+\begin{figure}[h]
+\includegraphics[width=4cm, height=4cm]{king1}\includegraphics[width=4cm, height=4cm]{king2} \includegraphics[width=4cm, height=4cm]{king3} \includegraphics[width=4cm, height=4cm]{king4}
+\end{figure}
 
 \subsection*{Castling} To ensure safety of the king there are measures one can take. The most effective measure one can do is called castling. Castling involves two pieces, the king and the rook. In rough terms the king and the rook switches positions. The terms of castling are:
 \begin{itemize}
@@ -50,6 +73,9 @@ If you by some miracle manage to get the pawn all the way over to the opponents 
 \end{itemize}
 When castling occurs, the king moves two squares towards the rook it wants to do the castling with. When the king has moved two squares, the rook then jumps over the king and lands on the square next to the king, opposite of the side where it started.
 There are two kinds of castling, short castling and long castling. Short castling is when the castling happens on the kings side of the board, long castling is when the castling happens on the queens side of the board.
+\begin{figure}[h]
+\includegraphics[width=6cm, height=6cm]{castling1} \includegraphics[width=6cm, height=6cm]{castling2} 
+\end{figure}
 
 \subsection*{En passant} A pawn has a secret ability in a special case. If a pawn gets to the fifth row, it gets an extra ability as an award for getting halfway over the board. This ability gives the pawn an opportunity to knock out an opponent pawn. The terms for en passant:
 \begin{itemize}
@@ -58,5 +84,8 @@ There are two kinds of castling, short castling and long castling. Short castlin
 	\item If you wish to knock out this pawn, you just have to pretend the pawn only had moved one square forward from its starting position, instead of two. So you move the pawn diagonally, but you don’t land on the same square as the pawn you knock out. 
 	\item This has to be done immediately after the opponent moved its pawn two squares forward, otherwise you lose the opportunity to use en passant.
 \end{itemize}
+\begin{figure}[h]
+\includegraphics[width=6cm, height=6cm]{enpa1} \includegraphics[width=6cm, height=6cm]{enpa2} 
+\end{figure}
 
 \end{document}
