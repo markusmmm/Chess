@@ -1,0 +1,21 @@
+Use Case 1: Moving chess piece
+Scope: Chess application
+Level: User goal
+Primary Actor: Player
+Stakeholders and Interests:
+- Player: Player wants to move pieces until opponent's king is in check
+Success Guarantee: Player does legal move.
+Basic flow:
+1. Player choose piece to move.
+2. Player tries to move piece from pieces current standing position to player's chosen end position.
+3. Move is being validated.
+4. Attempted move is approved
+4. Piece is moved to chosen end position.
+Alternative flow:
+1. Procedure preceeds as in basic flow until step 3
+2. Move is declined
+3. Piece stays on current position
+Technology and Data Variations List:
+Frequency of Occurrence:
+Open Issues:
+
