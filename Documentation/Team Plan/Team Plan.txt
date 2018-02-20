@@ -1,0 +1,32 @@
+----------------------Team Plan----------------------------
+Roller:
+Så langt i prosjektet, har vi fordelt disse rollene som vi tenkte var viktigst å få på plass med det samme. Etterhvert som prosjektet går, så fordeler
+vi hovedansvaret for enkelte ting i prosjektet etter nødvendighet.
+Teamlord og latexlord: Viet
+Støttespiller: Tom
+Git-repeleder: Jan
+Pogrammeringsansvarlig: Mikael
+Grafikk: Magnus
+
+Oppmøte: tirsdager og torsdager
+
+Kommunikasjonsmetode: Discord (Eventuelt facebook)
+
+Hva kan gå gale og hvordan har vi tenkt å reagere på dette?
+Preventiv: lagre lokalt arbeid mer enn et sted, separat. Push ofte.
+Hvis noen dropper ut: Flere møter, fordele rollen er vacant på de gjenværende. Hvis det er for mye arbeid, droppe funksjon.
+
+- Oppmøte tirsdager (gruppetime på vilvite 1015-1200) og torsdager (grupperom på høytek 1015-1200)
+
+Commit-konvensjon:
+- Kort og presist. Skal kunne se med en gang hva slags arbeid som er gjort.
+
+Kommentarer i kode:
+- Et språk
+- I første omgang kommentere selvom det er selvfølge hva det er
+
+Hvis det er problemer med spesifikke kodesnutter, ta det på gruppetimer og diskutere på fellesen.
+
+Git-repostruktur: dokumenteringsmappe og programmeringsmappe, alltid pull før start med arbeid. Pull og push ofte.
+
+På trello: alle lager kort om hva de tenker å jobbe med før de jobber
