@@ -1,0 +1,19 @@
+--------------------Retrospektiv møte-----------------------
+
+Hva gikk bra?
+Bra oppmøte.
+Ingen arbeid mistet.
+
+
+Hva gikk ikke som forventet?
+Vi er bare i planleggingsfasen, og det har hovedsakelig gått ut på å bli kjent med hverandre, få oversikt over oppgaven som går ut på å planlegge
+prosjektet, og planlagt prosjektet. Siden vi stort sett bare har planlagt, er det ikke så mye som kunne ha gått galt.
+
+Hva gikk dårlig?
+Vanskelig med arbeidsfordeling første oppmøte. Ingen kjente hverandre så det ble mest snakking til å begynne med.
+Ikke altfor godt kjent med git, merge conflict oppstod som vi ikke helt visste hvordan vi skulle løse
+
+Noe vi kan endre på hvordan vi jobber?
+Hvorfor gikk det bra?
+Var det dødtid på møtene?
+Problem med skrummøtene (Briefingdelen) om folk kom sent?
