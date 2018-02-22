@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.10.17)  22 FEB 2018 10:36
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.10.17)  22 FEB 2018 10:48
 entering extended mode
 **"./Team plan.tex"
 ("Team plan.tex"
@@ -363,18 +363,18 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 LaTeX Warning: No \author given.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 10--12
+Underfull \hbox (badness 10000) in paragraph at lines 10--13
 
  []
 
 [1
 
-{C:/Users/vieth/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}]
-Underfull \hbox (badness 10000) in paragraph at lines 29--31
+{C:/Users/vieth/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}] [2]
+Underfull \hbox (badness 10000) in paragraph at lines 30--32
 
  []
 
-[2] ("Team plan.aux") ) 
+[3] ("Team plan.aux") ) 
 Here is how much of TeX's memory you used:
  534 strings out of 493323
  5141 string characters out of 3130014
@@ -387,9 +387,9 @@ Here is how much of TeX's memory you used:
 type1/public/amsfonts/cm/cmbx12.pfb><C:/Users/vieth/AppData/Local/Programs/MiKT
 eX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/vieth/AppData/Local/P
 rograms/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr17.pfb>
-Output written on "Team plan.pdf" (2 pages, 44294 bytes).
+Output written on "Team plan.pdf" (3 pages, 45627 bytes).
 PDF statistics:
- 21 PDF objects out of 1000 (max. 8388607)
+ 24 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 
