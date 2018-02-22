@@ -20,14 +20,3 @@ Problem med skrummøtene (Briefingdelen) om folk kom sent?
 
 
 
-Starten av prosjektet var preget av at vi ikke kjente hverandre så godt, så det ble brukt litt tid på 
-å få litt bedre kjennskap til hvem de forskjellige personene er og hvilke ferdigheter de har.
-Dette gjenspeilet seg også i rollefordelingen. På det første møtet fordelte vi diverse roller litt tilfeldig,
-men erfarte at vi i løpet av senere møter fikk en mer naturlig fordeling etter hva folk har jobbet med 
-tidligere. Så gruppedynamikken dikterte etter hvert hvor det var mest hensiktsmessig å plassere de forskjellige rollene.
-
-Oppmøtet har jevnt over vert bra på møtene, så det viste seg å gå veldig fint da vi til slutt kom frem til et tidspunkt som passet alle.
-
-Oblig.2 har jo gått hovedsakelig i å planlegge prosjektet, så selv om alt ser bra ut på papiret 
-mangler vi jo erfaringen med å jobbe med slike prosjekter.
-Vi kommer nok til å oppleve at en del ting fungerer bedre enn vi har tenkt, og en del dårligere. Så ang. oblig.3 kommer vi til å fortsette med å benytte oss av Trello, Discord, og ser for oss at vi under programmeringsdelen vil benytte Eclipse/IntelliJ.
