@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.10.17)  22 FEB 2018 10:48
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.10.17)  22 FEB 2018 11:10
 entering extended mode
 **"./Team plan.tex"
 ("Team plan.tex"
@@ -369,27 +369,33 @@ Underfull \hbox (badness 10000) in paragraph at lines 10--13
 
 [1
 
-{C:/Users/vieth/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}] [2]
-Underfull \hbox (badness 10000) in paragraph at lines 30--32
+{C:/Users/vieth/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}]
+Underfull \hbox (badness 10000) in paragraph at lines 33--35
 
  []
 
-[3] ("Team plan.aux") ) 
+
+Overfull \hbox (1.39413pt too wide) in paragraph at lines 45--46
+[]\OT1/cmr/m/n/10 En an-nen rel-e-vant risiko er datatap. Git skal vre et noks
+a trygt la-gringssted,
+ []
+
+[2] ("Team plan.aux") ) 
 Here is how much of TeX's memory you used:
  534 strings out of 493323
  5141 string characters out of 3130014
- 58874 words of memory out of 3000000
+ 59874 words of memory out of 3000000
  4133 multiletter control sequences out of 15000+200000
  7587 words of font info for 27 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 23i,6n,17p,565b,193s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 23i,6n,17p,617b,193s stack positions out of 5000i,500n,10000p,200000b,50000s
 <C:/Users/vieth/AppData/Local/Programs/MiKTeX 2.9/fonts/
 type1/public/amsfonts/cm/cmbx12.pfb><C:/Users/vieth/AppData/Local/Programs/MiKT
 eX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/vieth/AppData/Local/P
 rograms/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr17.pfb>
-Output written on "Team plan.pdf" (3 pages, 45627 bytes).
+Output written on "Team plan.pdf" (2 pages, 46556 bytes).
 PDF statistics:
- 24 PDF objects out of 1000 (max. 8388607)
+ 21 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 
