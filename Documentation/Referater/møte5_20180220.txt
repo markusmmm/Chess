@@ -5,7 +5,7 @@ Tom
 Jan
 Magnus
 Markus
-
+Aleksander
 
 -------------------------------------------------------------------------------------------
 1 slide per punkt/deloppgave
@@ -24,3 +24,6 @@ dødtid på møtene?
 Skrummøtene, folk kommer sent?
 
 Lager powerpoint på gruppetime
+
+--------------------------------Neste gang------------------------------------------------
+Bli ferdig med all dokumentasjon
