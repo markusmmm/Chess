@@ -16,7 +16,8 @@ prosjekt og prosess plan markus
 git - jan
 trello - tom
 retrospektiv - aleksander
-utfordringer og løsninger - viet produktspesifikasjon
+utfordringer og løsninger magnus
+viet produktspesifikasjon
 
 retrospektiven
 Noe endringer på hvordan vi jobber?
