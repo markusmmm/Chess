@@ -1,0 +1,104 @@
+\documentclass[letterpaper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\title{Møte 1}
+\date{6.~Februar 2018}
+
+
+\begin{document}
+\maketitle
+\section*{Oppmøte}
+\subsection*{Tilstede}
+\begin{list}{}{}
+	\item Viet
+	\item Anne Lise
+	\item Magnus
+	\item Markus
+	\item Tom
+	\item Aleksander
+	\item Mikael
+\end{list}
+\subsection*{Gyldig fravær}
+\begin{list}{}{}
+	\item Jan
+\end{list}
+
+\newpage
+\section*{Høydepunkter}
+\begin{itemize}
+	\item Bli kjent med hverandre
+	\item Diskusjon av roller
+	\item Oppretting av teamchat på Discord og Facebook
+	\item Oppretting av ekstra oppmøtetidspunkt
+	\item Diskusjon av git og ulike verktøy vi kan ta i bruk
+	\item Diskusjon av arbeidsmetode
+	\item Diskusjon av kravspesifikasjoner og opprettelse av brukerhistorier
+\end{itemize}
+
+\section*{Gjøremål til neste gang}
+\begin{itemize}
+	\item Forslag til kodestruktur (klassediagram)
+	\item Få oversikt over oppgaven
+	\item Lære basic sjakk
+\end{itemize}
+
+\section*{Notater tatt under møte}
+Gruppe ble enig om å bruke java som programmeringsspråk.\\
+Gruppe diskuterte hvilke roller det kan være innenfor et programmeringsteam og hva rollens oppgaver kan være.\\
+Teamleder: Har oversikt over gruppen og prosjekten.\\
+Gitansvarlig: Holder styr på prosjektrepositoriet, tar hånd om branches og merging requests.\\
+Programmeringsansvarlig: Dirigerer struktur av koden.\\
+Gruppe vil ikke ha hierarkisk gruppe, m.a.o. gruppen ikke stopper opp fordi teamleder ikke gir ut ordre. Gruppe deler oppgaver i mellom seg på møter, men medlemmer skal også kunnne ta hånd om problemer som oppstår i mellom møter.\\\\
+Gruppe har opprettet facebookgruppe og discordgruppe for å holde kontakt.\\
+Discordlink: https://discord.gg/PTWD3t\\\\
+Gruppe snakket litt om forventninger til faget. Dele prosjektet opp i deloppgaver.\\
+Enighet om å bruke smidige metoden skrum.\\
+2 møter i uken; gruppetime tirsdag 10-12 og torsdag 10-12.\\\\
+Commitmeldinger bør være entydige og være klar på hvilke endringer som er blitt gjort.\\
+Ikke spam med commits heller.\\
+Bruk av git:
+\begin{list}{}{}
+	\item Delt opp i branches (Kinda kopier)
+	\item \begin{list}{}{}
+			\item Main er hoved-branch og inneholder til enhver tid fungerende versjon av koden
+			\item Sub-branches er kopier av main hvor teamet kan jobbe på med å utvikle ny funksjonalitet uten å ødelegge main
+		\end{list}
+\end{list}
+
+
+Planlegging av gjøremål:
+\begin{list}{}{}
+	\item Muligens sette inn TODO i hovedkoden?
+	\item User stories ved å ramse opp alle regler
+\end{list}
+
+Utdelte roller
+\begin{list}{}{}
+	\item Programmeringsansvarlig: Mikael
+	\item Gitansvarlig: Aleksander
+	\item Sekretær: Viet (meg)
+	\item Støttespiller: Tom
+	\item User stories (trello): Mikael
+\end{list}
+
+Andre roller fyller vi inn iløpet av denne og neste uke etter det vi føler blir naturlig når vi kommer igang og blir bedre kjent med hverandre som gruppe.\\
+
+User stories (Deloppgave 2)
+\begin{list}{}{}
+	\item Ha en meny med valg mellom single player, multi player, highscores, quit, help, tips \& tricks. Hvis man velger single player, skal det være mulig å velge vanskelighetsgrad.
+	\item Velge skins?
+	\item Bonde: Kan ikke gå bakover, 2 steg første gang man beveger på den, 1 steg ellers, special move: en passant (drive-by, diagonalt angrep)
+	\item Tårn: horisontalt og vertikalt, special move: rokade (kongen og tårn bytte plass, må være på startpos og ingen andre brikker imellom, finnes flere varianter)
+	\item Konge: Et steg i alle retninger, kan ikke flytte kongen til en rute som sette han i sjakk matt, hvis kongen ikke kan gå noen retninger så er spillet slutt
+	\item Dronning: kan gå i alle retnigner som kongen, men så langt som hun vil
+	\item Hest: 2 steg fram, 1 til siden,
+	\item Løper: diagonalt
+	\item Brikken går tilbake hvis spilleren prøver å gjøre et ugyldig trekk
+	\item Beginnermode: viser mulige trekk, angre(bare mot maskiner)
+	\item Game mode: Hurtigsjakk?
+	\item Score vises bak spillerens navn
+	\item Hvit spiller begynner
+	\item Mulig å velge farge hvis man spiller på AI, hvis det er 2 ekte spillere, så er player 1 hvit og player 2 svart
+	\item AI - hvor mange trekk kan den se frem?
+	\item Winner/loser popup
+\end{list}
+\end{document}
