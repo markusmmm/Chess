@@ -7,8 +7,6 @@ Aleksander Fløtberget (afl018)
 
 Anne-Lise Ackenhausen (aac003)
 
-Bernadette Blokzijl (bbl005)
-
 Jan Olav Berg (jbe091)
 
 Magnus Furnes Vadø (xew006)
