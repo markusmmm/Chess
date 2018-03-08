@@ -4,5 +4,5 @@ public enum Piece {
     KING,
     QUEEN,
     BISHOP,
-    ROCK
+    ROOK
 }

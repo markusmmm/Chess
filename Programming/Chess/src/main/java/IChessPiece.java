@@ -1,5 +1,5 @@
 public interface IChessPiece {
-    Piece Piece();
+    Piece piece();
     boolean legalMove(Vector2 move);
     boolean canJump();
     boolean move(Vector2 move);
