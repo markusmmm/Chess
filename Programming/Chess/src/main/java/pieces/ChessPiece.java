@@ -13,7 +13,7 @@ public abstract class ChessPiece implements IChessPiece {
 	private boolean moved = false;
 
 	public Vector2 getPosition() {
-		return this.position;
+		return position;
 	}
 
 	public abstract Piece piece();
@@ -41,6 +41,7 @@ public abstract class ChessPiece implements IChessPiece {
 	 */
 	public boolean move(Vector2 move, Board board) {
 		if (legalMove(move, board)) {
+		    moveLog.add(move);
 			position = new Vector2(move.getX(), move.getY());
 			moved = true;
 			return true;
@@ -49,22 +50,20 @@ public abstract class ChessPiece implements IChessPiece {
 	}
 
 	public void remove() {
-		// TODO - implement ChessPiece.remove
-		throw new UnsupportedOperationException();
+		moveLog.clear();
+		moved = false;
 	}
 
 	protected ChessPiece() {
-		// TODO - implement ChessPiece.ChessPiece
-		throw new UnsupportedOperationException();
+		position = new Vector2(0, 0);
 	}
 
 	/**
 	 * 
-	 * @param position
+	 * @param position The piece's initial position on the board
 	 */
 	protected ChessPiece(Vector2 position) {
-		// TODO - implement ChessPiece.ChessPiece
-		throw new UnsupportedOperationException();
+		this.position = position;
 	}
 
 }

@@ -3,11 +3,24 @@ package management;
 import pieces.*;
 import resources.*;
 
+import java.awt.*;
+
 public class Player {
 
 	private String name;
 	private Color color;
 	private IChessPiece[] pieces;
+
+    /**
+     * An IChessPiece array is generated, based on 'pieces' and the given board size
+     * @param color
+     * @param pieces
+     * @param boardSize
+     */
+    public Player(String name, Color color, Piece[] pieces, int boardSize) {
+        // TODO - implement Player.Player
+        throw new UnsupportedOperationException();
+    }
 
 	public String getName() {
 		return this.name;
@@ -16,6 +29,16 @@ public class Player {
 	public Color getColor() {
 		return this.color;
 	}
+
+    /**
+     *
+     * @param pos
+     * @return
+     */
+	public Piece getPiece(Vector2 pos) {
+        // TODO - implement Player.getPiece
+        throw new UnsupportedOperationException();
+    }
 
 	/**
 	 * 
@@ -27,15 +50,4 @@ public class Player {
 		// TODO - implement Player.movePiece
 		throw new UnsupportedOperationException();
 	}
-
-	/**
-	 * 
-	 * @param color
-	 * @param pieces
-	 */
-	public Player(Color color, Piece[] pieces) {
-		// TODO - implement Player.Player
-		throw new UnsupportedOperationException();
-	}
-
 }
