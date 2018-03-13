@@ -48,6 +48,8 @@ public class Queen extends ChessPiece {
     /**
      * @return if piece is placed in the lines:
      * up, down, left, right
+     *
+     * logic is: if only x or y change, the piece move in a straight path
      */
     private boolean inStraights(Vector2 move) {
         return (
