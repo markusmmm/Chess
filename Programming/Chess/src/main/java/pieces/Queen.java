@@ -4,6 +4,7 @@ import resources.*;
 import management.*;
 
 public class Queen extends ChessPiece {
+	private boolean canJump = false;
 
 	public Piece piece() {
 		// TODO - implement Queen.piece
@@ -21,8 +22,7 @@ public class Queen extends ChessPiece {
 	}
 
 	public boolean canJump() {
-		// TODO - implement Queen.canJump
-		throw new UnsupportedOperationException();
+		return canJump;
 	}
 
 	/**
