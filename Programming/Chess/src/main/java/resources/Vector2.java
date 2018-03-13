@@ -16,4 +16,7 @@ public class Vector2 {
 		return y;
 	}
 
+    public Vector2 stepToward(Vector2 destination) {
+		
+    }
 }
