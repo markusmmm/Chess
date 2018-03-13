@@ -23,9 +23,18 @@ public class Queen extends ChessPiece {
 		return (
 		        positiveCoordinates(move) &&
                         inDiagonals(move) &&
+                        inStraights(move) &&
                         freePath(move, board)
         );
 	}
+
+    /**
+     * @return if a position are in the straight paths:
+     * up down left right
+     */
+    private boolean inStraights(Vector2 move) {
+
+    }
 
     /**
      * checks if path to destination is clear
