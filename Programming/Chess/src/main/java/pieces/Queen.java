@@ -5,16 +5,18 @@ import management.*;
 
 public class Queen extends ChessPiece {
 	private boolean canJump = false;
+	private Piece piece = Piece.QUEEN;
 
 	public Queen(Vector2 position) {
 		super();
+
 	}
 	public Piece piece() {
-		// TODO - implement Queen.piece
-		throw new UnsupportedOperationException();
+		return piece;
 	}
     /**
-     * checks one by one position toward destination, returns false if runs into piece
+     * checks one by one position from this position
+     * toward destination, returns false if runs into another piece
      */
     private boolean freePath(Vector2 destination, Board board) {
         Vector2 path = null;
@@ -49,9 +51,9 @@ public class Queen extends ChessPiece {
      */
     private boolean inStraights(Vector2 move) {
         return (
-                ( this.position.getX() == (move.getX()) && this.position.getY() != (move.getY()) )
+                ( this.position.getX() == move.getX() && this.position.getY() != move.getY() )
                 ||
-                ( this.position.getX() != (move.getX()) && this.position.getY() == (move.getY()) )
+                ( this.position.getX() != move.getX() && this.position.getY() == move.getY() )
         );
     }
 
