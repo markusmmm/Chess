@@ -13,3 +13,6 @@ compiler.xml
 misc.xml
 modules.xml
 workspace.xml
+
+# ignore maven build files
+target/
