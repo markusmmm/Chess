@@ -27,11 +27,20 @@ public class Queen extends ChessPiece {
         );
 	}
 
+    /**
+     * checks if path to destination is clear
+     */
     private boolean freePath(Vector2 destination, Board board) {
-	    Vector2 path = null;
+        Vector2 path = null;
+        int between = this.position.distance(destination) - 1;
 
-	    path = path.stepToward(destination);
-	    destination.getX();
+        for (int step = 0; step < between; step++) {
+        path = path.stepToward(destination);
+            if (board.getPiece(path) != null) {
+                return false;
+            }
+        }
+        return true;
     }
 
 

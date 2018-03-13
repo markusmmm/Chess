@@ -16,6 +16,10 @@ public class Vector2 {
 		return y;
 	}
 
+    /**
+     *
+     * @return returns the position one step closer to given destination
+     */
     public Vector2 stepToward(Vector2 destination) {
 		int stepX = this.x;
 		int stepY = this.y;
@@ -31,6 +35,15 @@ public class Vector2 {
         } else {
             stepY--;
         }
+
         return new Vector2(stepX,stepY);
+    }
+
+    /**
+     *
+     * @return gives distance between two positions
+     */
+    public int distance(Vector2 destination) {
+	    return Math.max(   Math.abs( this.x - destination.x ),   Math.abs( this.y - destination.y )   );
     }
 }
