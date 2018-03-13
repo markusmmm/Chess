@@ -13,6 +13,21 @@ public class Queen extends ChessPiece {
 		// TODO - implement Queen.piece
 		throw new UnsupportedOperationException();
 	}
+    /**
+     * checks one by one position toward destination, returns false if runs into piece
+     */
+    private boolean freePath(Vector2 destination, Board board) {
+        Vector2 path = null;
+        int between = this.position.distance(destination) - 1;
+
+        for (int step = 0; step < between; step++) {
+            path = path.stepToward(destination);
+            if (board.getPiece(path) != null) {
+                return false;
+            }
+        }
+        return true;
+    }
 
 	/**
 	 * 
@@ -29,38 +44,20 @@ public class Queen extends ChessPiece {
 	}
 
     /**
-     * @return if a position are in the straight paths:
-     * up down left right
+     * @return if piece is placed in the lines:
+     * up, down, left, right
      */
     private boolean inStraights(Vector2 move) {
-
+        return (
+                ( this.position.getX() == (move.getX()) && this.position.getY() != (move.getY()) )
+                ||
+                ( this.position.getX() != (move.getX()) && this.position.getY() == (move.getY()) )
+        );
     }
-
-    /**
-     * checks if path to destination is clear
-     */
-    private boolean freePath(Vector2 destination, Board board) {
-        Vector2 path = null;
-        int between = this.position.distance(destination) - 1;
-
-        for (int step = 0; step < between; step++) {
-        path = path.stepToward(destination);
-            if (board.getPiece(path) != null) {
-                return false;
-            }
-        }
-        return true;
-    }
-
 
     public boolean canJump() {
 		return canJump;
 	}
-
-	/**
-	 * 
-	 * @param position
-	 */
 
 	private boolean inDiagonals(Vector2 newPos) {
 		return Math.abs(this.position.getX() - newPos.getX()) == Math.abs(this.position.getY() - newPos.getY());
