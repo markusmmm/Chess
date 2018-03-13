@@ -4,3 +4,7 @@
 
 ## OS Specific
 .DS_Store
+
+## ignores recommended by github for intellij
+.idea
+*.iml
