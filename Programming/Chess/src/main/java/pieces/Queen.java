@@ -6,10 +6,6 @@ import management.*;
 public class Queen extends ChessPiece {
 	private boolean canJump = false;
 
-	public Queen() {
-		super();
-	}
-
 	public Piece piece() {
 		// TODO - implement Queen.piece
 		throw new UnsupportedOperationException();
@@ -21,8 +17,13 @@ public class Queen extends ChessPiece {
 	 * @param board
 	 */
 	public boolean legalMove(Vector2 move, Board board) {
-		return checkDiagonals(move);
+		return (
+		    checkDiagonals(move) &&
+            positiveCoordinates(move)
+        );
 	}
+
+
 
 	public boolean canJump() {
 		return canJump;
@@ -39,5 +40,8 @@ public class Queen extends ChessPiece {
 	private boolean checkDiagonals(Vector2 newPos) {
 		return Math.abs(this.position.getX() - newPos.getX()) == Math.abs(this.position.getY() - newPos.getY());
 	}
+	private boolean positiveCoordinates(Vector2 pos) {
+	    return 0 <= pos.getX() && 0 <= pos.getY();
+    }
 
 }
