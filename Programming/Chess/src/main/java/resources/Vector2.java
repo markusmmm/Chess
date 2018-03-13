@@ -26,13 +26,13 @@ public class Vector2 {
 
 		if (this.x < destination.x) {
 		    stepX++;
-        } else {
+        } else if (this.x > destination.x){
 		    stepX--;
         }
 
         if (this.y < destination.y) {
             stepY++;
-        } else {
+        } else if (this.y > destination.y) {
             stepY--;
         }
 
