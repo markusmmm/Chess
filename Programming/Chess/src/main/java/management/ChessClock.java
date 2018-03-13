@@ -15,7 +15,7 @@ public class ChessClock {
 		throw new UnsupportedOperationException();
 	}
 
-	public bool endTurn() {
+	public boolean endTurn() {
 		// TODO - implement ChessClock.endTurn
 		throw new UnsupportedOperationException();
 	}
