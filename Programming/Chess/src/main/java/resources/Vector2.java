@@ -17,6 +17,20 @@ public class Vector2 {
 	}
 
     public Vector2 stepToward(Vector2 destination) {
-		
+		int stepX = this.x;
+		int stepY = this.y;
+
+		if (this.x < destination.x) {
+		    stepX++;
+        } else {
+		    stepX--;
+        }
+
+        if (this.y < destination.y) {
+            stepY++;
+        } else {
+            stepY--;
+        }
+        return new Vector2(stepX,stepY);
     }
 }
