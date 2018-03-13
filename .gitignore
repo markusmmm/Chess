@@ -8,3 +8,8 @@
 ## ignores recommended by github for intellij
 .idea
 *.iml
+## just in case
+compiler.xml
+misc.xml
+modules.xml
+workspace.xml
