@@ -52,7 +52,7 @@ public class Bishop extends ChessPiece {
 
 
 
-		for(int j = collumn - 1, i = row + 1; j < -1 && i < 8; j--, i++){
+		for(int j = collumn - 1, i = row + 1; j > -1 && i < 8; j--, i++){
 			Vector2 move = new Vector2(i,j);
 			if(legalMove(move,board))
 				possibleMoves.add(new Vector2(i, j));
@@ -61,7 +61,7 @@ public class Bishop extends ChessPiece {
 
 		}
 
-		for(int j = collumn - 1, i = row - 1; j < -1 && i < -1; j--, i--){
+		for(int j = collumn - 1, i = row - 1; j > -1 && i > -1; j--, i--){
 			Vector2 move = new Vector2(i,j);
 			if(legalMove(move,board))
 				possibleMoves.add(new Vector2(i, j));
@@ -70,7 +70,7 @@ public class Bishop extends ChessPiece {
 
 		}
 
-		for(int j = collumn + 1, i = row - 1; j < 8 && i < -1; j++, i--){
+		for(int j = collumn + 1, i = row - 1; j < 8 && i > -1; j++, i--){
 			Vector2 move = new Vector2(i,j);
 			if(legalMove(move,board))
 				possibleMoves.add(new Vector2(i, j));
