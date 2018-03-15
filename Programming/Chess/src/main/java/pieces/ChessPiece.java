@@ -65,5 +65,36 @@ public abstract class ChessPiece implements IChessPiece {
 	protected ChessPiece(Vector2 position) {
 		this.position = position;
 	}
+	/**
+	 * checks one by one position from this position
+	 * toward destination, returns false if runs into another piece
+	 */
+	protected boolean freePath(Vector2 destination, Board board) {
+		Vector2 path = null;
+		int between = this.position.distance(destination) - 1;
 
+		for (int step = 0; step < between; step++) {
+			path = path.stepToward(destination);
+			if (board.getPiece(path) != null) {
+				return false;
+			}
+		}
+		return true;
+	}
+	/**
+	 * @return if piece is placed in the lines:
+	 * up, down, left, right
+	 *
+	 * logic is: if only x or y change, the piece move in a straight path
+	 */
+	protected boolean inStraights(Vector2 move) {
+		return (
+				( this.position.getX() == move.getX() && this.position.getY() != move.getY() )
+						||
+						( this.position.getX() != move.getX() && this.position.getY() == move.getY() )
+		);
+	}
+	protected boolean inDiagonals(Vector2 newPos) {
+		return Math.abs(this.position.getX() - newPos.getX()) == Math.abs(this.position.getY() - newPos.getY());
+	}
 }
