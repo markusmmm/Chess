@@ -88,22 +88,6 @@ public class Bishop extends ChessPiece {
 		return piece;
 	}
 
-	/**
-	 * checks one by one position from this position
-	 * toward destination, returns false if runs into another piece
-	 */
-	private boolean freePath(Vector2 destination, Board board) {
-		Vector2 path = null;
-		int between = this.position.distance(destination) - 1;
-
-		for (int step = 0; step < between; step++) {
-			path = path.stepToward(destination);
-			if (board.getPiece(path) != null) {
-				return false;
-			}
-		}
-		return true;
-	}
 
 	/**
 	 * 
@@ -118,9 +102,6 @@ public class Bishop extends ChessPiece {
 		);
 	}
 
-	private boolean inDiagonals(Vector2 newPos) {
-		return Math.abs(this.position.getX() - newPos.getX()) == Math.abs(this.position.getY() - newPos.getY());
-	}
 
 	public boolean canJump() {
 		return canJump;
