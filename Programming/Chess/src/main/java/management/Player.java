@@ -17,7 +17,6 @@ public class Player {
      * @param alliance
      * @param pieces
      * @param board
-	 * @throws IllegalArgumentException if ({@code alliance == Alliance.EMPTY})   //Pre-conditions
      */
     public Player(String name, Alliance alliance, Piece[] pieces, Board board) {
         // TODO - implement Player.Player

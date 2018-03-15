@@ -44,7 +44,7 @@ public class ChessClock {
 	 * @param bonus
 	 * @param bonusLimit
 	 */
-	public ChessClock(int nPlayers, double bonus, double bonusLimit) {
+	public ChessClock(int nPlayers, double duration, double bonus, double bonusLimit) {
 		// TODO - implement ChessClock.ChessClock
 		throw new UnsupportedOperationException();
 	}

@@ -17,8 +17,8 @@ public class Knight  extends ChessPiece {
 	 * 
 	 * @param position
 	 */
-	public Knight (Vector2 position, Alliance alliance){
-		super(position, alliance);
+	public Knight (Vector2 position, Alliance alliance, Board board){
+		super(position, alliance, board);
 		canJump = false;
 		piece = Piece.KNIGHT;
 		this.position = position;
@@ -33,15 +33,19 @@ public class Knight  extends ChessPiece {
 	/**
 	 * 
 	 * @param move
-	 * @param board
 	 */
-	public boolean legalMove(Vector2 move, Board board) {
+	public boolean legalMove(Vector2 move) {
 		return (
 				positiveCoordinates(move) &&
-						freePath(move, board)
+						freePath(move)
 		);
 	}
-	
+
+	public List<Vector2> getPossibleMoves() {
+		//TODO Knight.getPossibleMoves
+		throw new UnsupportedOperationException();
+	}
+
 	private boolean positiveCoordinates(Vector2 pos) {
 		return 0 <= pos.getX() && 0 <= pos.getY();
 	}
@@ -50,7 +54,9 @@ public class Knight  extends ChessPiece {
 		return canJump;
 	}
 
-	
-	
+
+	public Knight clone() {
+		return new Knight(position, alliance, board);
+	}
 
 }

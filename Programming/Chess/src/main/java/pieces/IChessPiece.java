@@ -13,21 +13,27 @@ public interface IChessPiece {
 
 	Piece piece();
 
+	Vector2 position();
+
+	Alliance alliance();
+
 	/**
 	 *
 	 * @param end
-	 * @param board
 	 */
-	boolean legalMove(Vector2 end, Board board);
+	boolean legalMove(Vector2 end);
+
+	List<Vector2> getPossibleMoves();
 
 	boolean canJump();
 
+	boolean hasMoved();
+
 	/**
 	 *
 	 * @param end
-	 * @param board
 	 */
-	boolean move(Vector2 end, Board board);
+	boolean move(Vector2 end);
 
 	void remove();
 

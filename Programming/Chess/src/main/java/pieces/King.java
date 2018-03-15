@@ -3,10 +3,21 @@ package pieces;
 import resources.*;
 import management.*;
 
+import java.util.List;
+
 public class King extends ChessPiece {
 
 	public Piece piece() {
 		return Piece.KING;
+	}
+
+	public boolean legalMove(Vector2 move) {
+		return false;
+	}
+
+	public List<Vector2> getPossibleMoves() {
+		//TODO King.getPossibleMoves
+		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -47,8 +58,12 @@ public class King extends ChessPiece {
 	 * 
 	 * @param position
 	 */
-	public King(Vector2 position, Alliance alliance) {
-		super(position, alliance);
+	public King(Vector2 position, Alliance alliance, Board board) {
+		super(position, alliance, board);
 }
+
+	public King clone() {
+		return new King(position, alliance, board);
+	}
 
 }

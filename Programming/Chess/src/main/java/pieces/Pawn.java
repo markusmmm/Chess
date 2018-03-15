@@ -3,6 +3,8 @@ package pieces;
 import resources.*;
 import management.*;
 
+import java.util.List;
+
 public class Pawn extends ChessPiece {
 
     private Vector2[] attacks = new Vector2[] {};
@@ -14,10 +16,14 @@ public class Pawn extends ChessPiece {
 	/**
 	 * 
 	 * @param move
-	 * @param board
 	 */
-	public boolean legalMove(Vector2 move, Board board) {
+	public boolean legalMove(Vector2 move) {
 		// TODO - implement Pawn.legalMove
+		throw new UnsupportedOperationException();
+	}
+
+	public List<Vector2> getPossibleMoves() {
+		//TODO Pawn.getPossibleMoves
 		throw new UnsupportedOperationException();
 	}
 
@@ -31,8 +37,11 @@ public class Pawn extends ChessPiece {
 	 * @param position
 	 * @param alliance
 	 */
-	public Pawn(Vector2 position, Alliance alliance) {
-		super(position, alliance);
+	public Pawn(Vector2 position, Alliance alliance, Board board){
+		super(position, alliance, board);
 	}
 
+	public Pawn clone() {
+		return new Pawn(position, alliance, board);
+	}
 }

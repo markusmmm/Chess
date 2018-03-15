@@ -16,25 +16,23 @@ public class Board {
 	private ChessClock clock = null;
 	private IChessPiece lastPiece = null;
 
-	public HashMap<Vector2, IChessPiece> pieces = new HashMap<Vector2, IChessPiece>();
-
-	public static void main(String[] args) {
-		Board board = new Board(8, false);
-
-		for(Vector2 pos : board.pieces.keySet()) {
-			System.out.println(pos + ":\t" + board.pieces.get(pos).toString());
-		}
-	}
+	private HashMap<Vector2, IChessPiece> pieces = new HashMap<Vector2, IChessPiece>();
 
     /**
      *
      * @param size Using just one size parameter ensures a square board
      * @param useClock Whether or not a chess clock should be used
-     * @throws IllegalArgumentException if ({@code nPlayers < 2 || size < 2})   //Pre-conditions
+     * @throws IllegalArgumentException if ({@code size < 2})   //Pre-conditions
      */
     public Board(int size, boolean useClock) {
+    	if(size < 2) throw new IllegalArgumentException("The board size must be at least 2");
+
     	int p = 0;
 		this.size = size;
+
+		if(useClock) {
+			clock = new ChessClock(2, 900, 12, -1);
+		}
 
     	for(Piece type : defaultBoard) {
     		int x = p % size;
@@ -49,8 +47,7 @@ public class Board {
     		p++;
     	}
 
-    	//TODO Create players
-		//TODO Create pieces based on defaultBoard
+
     }
 
     private IChessPiece createPiece(Vector2 pos, Piece type, Alliance alliance) {
@@ -89,16 +86,6 @@ public class Board {
 		return pieces.get(pos); // TODO Use cloned piece, once implemented
 	}
 
-	/**
-	 *
-	 * @param pos
-	 * @return
-	 */
-	public Alliance getTile(Vector2 pos) {
-		// TODO - implement Board.getTile
-		throw new UnsupportedOperationException();
-	}
-
 	public boolean vacant(Vector2 pos) {
 		return !pieces.containsKey(pos);
     }
@@ -108,8 +95,7 @@ public class Board {
      * @return the piece that was last successfully moved
      */
 	public IChessPiece getLastPiece() {
-		// TODO - implement Board.getLastPiece
-		throw new UnsupportedOperationException();
+		return lastPiece;
 	}
 
 	/**
@@ -120,7 +106,10 @@ public class Board {
 	 */
 	public boolean movePiece(int playerI, Vector2 start, Vector2 end) {
 		IChessPiece piece = pieces.get(start);
+		if(piece == null) return false;
 		if(!piece.legalMove(end,this)) return false;
+
+		lastPiece = piece;
 
 		pieces.remove(start);
 		// TODO - add piece back to 'pieces' with updated position

@@ -3,12 +3,14 @@ package pieces;
 import resources.*;
 import management.*;
 
+import java.util.List;
+
 public class Queen extends ChessPiece {
 	private final boolean canJump = false;
 	private final Piece piece = Piece.QUEEN;
 
-	public Queen(Vector2 position, Alliance alliance) {
-		super(position, alliance);
+	public Queen(Vector2 position, Alliance alliance, Board board){
+		super(position, alliance, board);
 	}
 	public Piece piece() {
 		return piece;
@@ -17,18 +19,22 @@ public class Queen extends ChessPiece {
 	/**
 	 * 
 	 * @param move
-	 * @param board
 	 */
-	public boolean legalMove(Vector2 move, Board board) {
+	public boolean legalMove(Vector2 move) {
 		return (
 		        positiveCoordinates(move) &&
                         inDiagonals(move) &&
                         inStraights(move) &&
-                        freePath(move, board)
+                        freePath(move)
         );
 	}
 
-    public boolean canJump() {
+	public List<Vector2> getPossibleMoves() {
+		//TODO Queen.getPossibleMoves
+		throw new UnsupportedOperationException();
+	}
+
+	public boolean canJump() {
 		return canJump;
 	}
 
@@ -36,4 +42,7 @@ public class Queen extends ChessPiece {
 	    return 0 <= pos.getX() && 0 <= pos.getY();
     }
 
+	public Queen clone() {
+		return new Queen(position, alliance, board);
+	}
 }
