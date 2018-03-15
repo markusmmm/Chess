@@ -1,0 +1,51 @@
+\documentclass[letterpaper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\title{Meeting 8}
+\date{8~March 2018}
+
+\begin{document}
+\maketitle
+\section*{Attendance}
+\subsection*{Present}
+\begin{list}{}{}
+	\item Viet
+	\item Jan
+	\item Mikael
+	\item Markus
+	\item Tom
+	\item Anne Lise
+\end{list}
+\subsection*{Valid absence}
+\begin{list}{}{}
+	\item Magnus
+	\item Aleksander
+\end{list}
+
+\newpage
+\section*{Highlights of the meeting}
+\begin{itemize}
+	\item Discussion of implementation order
+	\item Creation and discussion of IChessPiece, ChessPiece, Piece and Vector2
+\end{itemize}
+
+\section*{To do}
+\begin{itemize}
+	\item Mikael is to finish implementation of ChessPiece
+	\item Markus is to finish implementation of Bishop
+	\item Tom is to finish implementation of King
+	\item Anne Lise is to finish implementation of Knight
+	\item Jan is to finish implementation of Queen
+	\item Viet is to finish implementation of Pawn
+\end{itemize}
+
+\section*{Notes taken under meeting}
+Created directory for all programming and code implementation in the git repository.\\
+One of the assignment's requirement is to have the application follow the regular rules of chess. Starting with this since it's easy to break down.\\
+We will eventually see what's better to be taken care of board or chess piece when we start implementing.\\
+Starting with the interface IChessPiece.\\
+Created Vector2 class.\\
+Created Piece enumeration.\\
+Created ChessPiece class.\\
+Board handles everything regarding movement of pieces.\\
+We figured out that everything that handles movements of the chess pieces needs to have access to the board. Board tells where something is, and also if a move is legal.
+\end{document}
