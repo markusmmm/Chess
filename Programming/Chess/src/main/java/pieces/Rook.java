@@ -80,9 +80,8 @@ public class Rook extends ChessPiece {
          *
          * @param position
          */
-	public Rook(Vector2 position) {
-		super();
-		this.position = position;
+	public Rook(Vector2 position, Alliance alliance) {
+		super(position, alliance);
 		piece = Piece.ROOK;
 		canJump = false;
 	}

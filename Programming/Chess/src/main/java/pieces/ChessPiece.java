@@ -9,6 +9,8 @@ import java.util.List;
 public abstract class ChessPiece implements IChessPiece {
 
 	protected Vector2 position;
+	protected Alliance alliance;
+
 	protected List<Vector2> moveLog = new ArrayList<Vector2>();
 	private boolean moved = false;
 
@@ -58,8 +60,9 @@ public abstract class ChessPiece implements IChessPiece {
 	 * 
 	 * @param position The piece's initial position on the board
 	 */
-	protected ChessPiece(Vector2 position) {
-		this.position = position;
+	protected ChessPiece(Vector2 position, Alliance alliance) {
+	    this.position = position;
+	    this.alliance = alliance;
 	}
 	/**
 	 * checks one by one position from this position
@@ -67,7 +70,7 @@ public abstract class ChessPiece implements IChessPiece {
 	 */
 	protected boolean freePath(Vector2 destination, Board board) {
 		Vector2 path = null;
-		int between = this.position.distance(destination) - 1;
+		int between = position.distance(destination) - 1;
 
 		for (int step = 0; step < between; step++) {
 			path = path.stepToward(destination);
@@ -93,4 +96,9 @@ public abstract class ChessPiece implements IChessPiece {
 	protected boolean inDiagonals(Vector2 newPos) {
 		return Math.abs(this.position.getX() - newPos.getX()) == Math.abs(this.position.getY() - newPos.getY());
 	}
+
+	@Override
+    public String toString() {
+	    return piece() + "\t|\t" + alliance;
+    }
 }

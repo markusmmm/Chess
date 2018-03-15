@@ -5,9 +5,10 @@ import management.*;
 
 public class Pawn extends ChessPiece {
 
+    private Vector2[] attacks = new Vector2[] {};
+
 	public Piece piece() {
-		// TODO - implement Pawn.piece
-		throw new UnsupportedOperationException();
+		return Piece.PAWN;
 	}
 
 	/**
@@ -28,10 +29,10 @@ public class Pawn extends ChessPiece {
 	/**
 	 * 
 	 * @param position
+	 * @param alliance
 	 */
-	public Pawn(Vector2 position) {
-		// TODO - implement Pawn.Pawn
-		throw new UnsupportedOperationException();
+	public Pawn(Vector2 position, Alliance alliance) {
+		super(position, alliance);
 	}
 
 }

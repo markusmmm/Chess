@@ -14,23 +14,20 @@ public interface IChessPiece {
 	Piece piece();
 
 	/**
-	 * 
-	 * @param start
+	 *
 	 * @param end
 	 * @param board
 	 */
-	boolean legalMove(Vector2 start, Vector2 end, Board board);
-
-	List<Vector2> possibleMoves(Board board);
+	boolean legalMove(Vector2 end, Board board);
 
 	boolean canJump();
 
 	/**
-	 * 
-	 * @param start
+	 *
 	 * @param end
+	 * @param board
 	 */
-	boolean move(Vector2 start, Vector2 end);
+	boolean move(Vector2 end, Board board);
 
 	void remove();
 

@@ -4,11 +4,11 @@ import resources.*;
 import management.*;
 
 public class Queen extends ChessPiece {
-	private boolean canJump = false;
-	private Piece piece = Piece.QUEEN;
+	private final boolean canJump = false;
+	private final Piece piece = Piece.QUEEN;
 
-	public Queen(Vector2 position) {
-		super();
+	public Queen(Vector2 position, Alliance alliance) {
+		super(position, alliance);
 	}
 	public Piece piece() {
 		return piece;

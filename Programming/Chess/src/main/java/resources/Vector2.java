@@ -50,4 +50,9 @@ public class Vector2 {
     public int distance(Vector2 destination) {
 	    return Math.max(   Math.abs( this.x - destination.x ),   Math.abs( this.y - destination.y )   );
     }
+
+    @Override
+    public String toString() {
+    	return "(" + x + "," + y + ")";
+	}
 }

@@ -6,8 +6,7 @@ import management.*;
 public class King extends ChessPiece {
 
 	public Piece piece() {
-		// TODO - implement King.piece
-		throw new UnsupportedOperationException();
+		return Piece.KING;
 	}
 
 	/**
@@ -48,9 +47,8 @@ public class King extends ChessPiece {
 	 * 
 	 * @param position
 	 */
-	public King(Vector2 position) {
-		// TODO - implement King.King
-		throw new UnsupportedOperationException();
-	}
+	public King(Vector2 position, Alliance alliance) {
+		super(position, alliance);
+}
 
 }

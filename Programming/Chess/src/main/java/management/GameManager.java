@@ -8,15 +8,15 @@ public class GameManager {
 
 	private static Board board = null;
 
-	public static void main(String[] args) {
-	    board = new Board(2,8, false);
-        int playerI = 0;
+	//public static void main(String[] args) {
+	//    board = new Board(2,8, false);
+    //    int playerI = 0;
 
-        while(true) {
-            if(step(playerI))
-                playerI++;
-        }
-	}
+    //    while(true) {
+    //        if(step(playerI))
+    //            playerI++;
+    //    }
+	//}
 
 	/**
 	 * Takes in input from the active player, and attempts to perform the given move

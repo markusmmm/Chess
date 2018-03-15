@@ -2,6 +2,7 @@ package pieces;
 
 
 import management.*;
+import resources.Alliance;
 import resources.Piece;
 import resources.Vector2;
 
@@ -16,12 +17,10 @@ public class Bishop extends ChessPiece {
 	private Vector2 position;
 
 
-	public Bishop(Vector2 position){
-		super();
+	public Bishop(Vector2 position, Alliance alliance){
+		super(position, alliance);
 		canJump = false;
 		piece = Piece.BISHOP;
-		this.position = position;
-
 	}
 
 	/**
@@ -90,7 +89,7 @@ public class Bishop extends ChessPiece {
 
 
 	/**
-	 * 
+	 *
 	 * @param move
 	 * @param board
 	 */
