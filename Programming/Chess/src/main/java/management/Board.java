@@ -3,25 +3,29 @@ package management;
 import pieces.*;
 import resources.*;
 
+import java.util.HashMap;
+
 public class Board {
+	private static final Piece[] defaultBoard = new Piece[] {
+			Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK
+	};
 
     private int size;
-	private Player[] players = null;
+	private Player player1, player2;
 	private ChessClock clock = null;
 	private IChessPiece lastPiece = null;
 
+	HashMap<Vector2, IChessPiece> pieces = new HashMap<Vector2, IChessPiece>();
+
     /**
      *
-     * @param nPlayers
      * @param size Using just one size parameter ensures a square board
      * @param useClock Whether or not a chess clock should be used
      * @throws IllegalArgumentException if ({@code nPlayers < 2 || size < 2})   //Pre-conditions
      */
-    public Board(int nPlayers, int size, boolean useClock) {
-        // TODO - implement Board.Board
-        // TODO - Add pre-condition nPlayers >= 2
-        // TODO - Add pre-condition size >= 2
-        throw new UnsupportedOperationException();
+    public Board(int size, boolean useClock) {
+    	//TODO Create players
+		//TODO Create pieces based on defaultBoard
     }
 
     /**
@@ -42,9 +46,18 @@ public class Board {
         throw new UnsupportedOperationException();
 	}
 
+	/**
+	 *
+	 * @param pos
+	 * @return
+	 */
+	public Alliance getTile(Vector2 pos) {
+		// TODO - implement Board.getTile
+		throw new UnsupportedOperationException();
+	}
+
 	public boolean vacant(Vector2 pos) {
-        // TODO - implement Board.getPiece
-        throw new UnsupportedOperationException();
+		return pieces.containsKey(pos);
     }
 
     /**

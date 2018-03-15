@@ -3,27 +3,34 @@ package pieces;
 import resources.*;
 import management.*;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+
 public interface IChessPiece {
 
-	static Vector2[] moves = null;
+	HashSet<Move> moves = new HashSet<Move>();
 
 	Piece piece();
 
 	/**
 	 * 
-	 * @param move
+	 * @param start
+	 * @param end
 	 * @param board
 	 */
-	boolean legalMove(Vector2 move, Board board);
+	boolean legalMove(Vector2 start, Vector2 end, Board board);
+
+	List<Vector2> possibleMoves(Board board);
 
 	boolean canJump();
 
 	/**
 	 * 
-	 * @param move
-	 * @param board
+	 * @param start
+	 * @param end
 	 */
-	boolean move(Vector2 move, Board board);
+	boolean move(Vector2 start, Vector2 end);
 
 	void remove();
 

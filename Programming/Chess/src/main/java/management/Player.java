@@ -8,16 +8,18 @@ import java.awt.*;
 public class Player {
 
 	private String name;
-	private Color color;
-	private IChessPiece[] pieces;
+	private Alliance alliance;
+
+	private Board board;
 
     /**
      * An IChessPiece array is generated, based on 'pieces' and the given board size
-     * @param color
+     * @param alliance
      * @param pieces
-     * @param boardSize
+     * @param board
+	 * @throws IllegalArgumentException if ({@code alliance == Alliance.EMPTY})   //Pre-conditions
      */
-    public Player(String name, Color color, Piece[] pieces, int boardSize) {
+    public Player(String name, Alliance alliance, Piece[] pieces, Board board) {
         // TODO - implement Player.Player
         throw new UnsupportedOperationException();
     }
@@ -26,9 +28,7 @@ public class Player {
 		return this.name;
 	}
 
-	public Color getColor() {
-		return this.color;
-	}
+	public Alliance getAlliance() { return alliance; }
 
     /**
      *
@@ -44,9 +44,8 @@ public class Player {
 	 * 
 	 * @param start
 	 * @param end
-	 * @param board
 	 */
-	public boolean movePiece(Vector2 start, Vector2 end, Board board) {
+	public boolean movePiece(Vector2 start, Vector2 end) {
 		// TODO - implement Player.movePiece
 		throw new UnsupportedOperationException();
 	}

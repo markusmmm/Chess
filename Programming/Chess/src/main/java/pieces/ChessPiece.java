@@ -12,10 +12,6 @@ public abstract class ChessPiece implements IChessPiece {
 	protected List<Vector2> moveLog = new ArrayList<Vector2>();
 	private boolean moved = false;
 
-	public Vector2 getPosition() {
-		return position;
-	}
-
 	public abstract Piece piece();
 
 	/**
