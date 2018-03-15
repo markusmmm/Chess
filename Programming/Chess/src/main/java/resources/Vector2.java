@@ -16,6 +16,10 @@ public class Vector2 {
 		return y;
 	}
 
+	public Vector2 add(Vector2 v) {
+		return new Vector2(x + v.x, y + v.y);
+	}
+
     /**
      *
      * @return returns the position one step closer to given destination
