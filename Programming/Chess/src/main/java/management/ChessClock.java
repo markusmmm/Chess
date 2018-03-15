@@ -35,8 +35,8 @@ public class ChessClock {
 	}
 
 	public boolean endTurn() {
+		if(timeLeft() <= 0) return false;
 		long delta = System.nanoTime() - moveStartTime;
-		if(delta <= 0) return false;
 
 		if(bonusTimeLimit < 0 || delta <= bonusTimeLimit) {
 			durations[playerI] += bonusTime;
@@ -56,6 +56,9 @@ public class ChessClock {
 	public double timeLeft(int playerIndex) {
 		long nanoTimeLeft = startTime + durations[playerIndex] - System.nanoTime();
 		return fromNanoTime(nanoTimeLeft);
+	}
+	public double timeLeft() {
+		return timeLeft(playerI);
 	}
 
 	private long toNanoTime(double time) {
