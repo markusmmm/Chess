@@ -9,7 +9,6 @@ public class Queen extends ChessPiece {
 
 	public Queen(Vector2 position) {
 		super();
-
 	}
 	public Piece piece() {
 		return piece;
@@ -32,7 +31,6 @@ public class Queen extends ChessPiece {
     public boolean canJump() {
 		return canJump;
 	}
-
 
 	private boolean positiveCoordinates(Vector2 pos) {
 	    return 0 <= pos.getX() && 0 <= pos.getY();
