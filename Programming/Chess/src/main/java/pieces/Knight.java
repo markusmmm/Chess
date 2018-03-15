@@ -38,7 +38,6 @@ public class Knight  extends ChessPiece {
 	public boolean legalMove(Vector2 move, Board board) {
 		return (
 				positiveCoordinates(move) &&
-						inDiagonals(move) &&
 						freePath(move, board)
 		);
 	}
@@ -56,10 +55,6 @@ public class Knight  extends ChessPiece {
 	                ( this.position.getX() != move.getX() && this.position.getY() == move.getY() )
 	        );   
 	 }
-	 
-	private boolean inDiagonals(Vector2 newPos) {
-		return Math.abs(this.position.getX() - newPos.getX()) == Math.abs(this.position.getY() - newPos.getY());
-	}
 	
 	private boolean positiveCoordinates(Vector2 pos) {
 		return 0 <= pos.getX() && 0 <= pos.getY();
