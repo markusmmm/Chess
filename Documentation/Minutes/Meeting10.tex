@@ -1,0 +1,42 @@
+\documentclass[letterpaper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\title{Meeting 10}
+\date{15~March 2018}
+
+\begin{document}
+\maketitle
+\section*{Attendance}
+\subsection*{Present}
+\begin{list}{}{}
+	\item Viet
+	\item Jan
+	\item Tom
+	\item Anne Lise
+	\item Markus
+	\item Magnus
+	\item Aleksander
+	\item Mikael
+\end{list}
+
+\newpage
+\section*{Highlights of the meeting}
+\begin{itemize}
+	\item Briefing of progress and discussion of occuring problems
+	\item Implementation of board constructor and change relevant classes accordingly
+\end{itemize}
+
+\section*{To do}
+\begin{itemize}
+	\item Be completely done with board and pieces so we can start on implementation of AI
+	\item Aleksander is to do some planning for the demo
+\end{itemize}
+
+\section*{Notes taken under meeting}
+Briefing: \\
+Jan - Implemented some nice help functions for determining legal moves, checks open squares and if moves are within board. \\
+King and pawn has a restriction on 1 square per move. \\
+The piece's color needs to be stored in each individual piece for practical reasons (check enemy and ally). \\
+Implementing constructor of board together using hashmap. \\
+Including color in piece constructor. \\
+Pieces must be able to return complete list of possible moves and possible attacks seperately. \\
+\end{document}
