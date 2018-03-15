@@ -53,17 +53,17 @@ public class Board {
     private IChessPiece createPiece(Vector2 pos, Piece type, Alliance alliance) {
     	switch (type) {
 			case BISHOP:
-				return new Bishop(pos, alliance);
+				return new Bishop(pos, alliance, this);
 			case KNIGHT:
-				return new Knight(pos, alliance);
+				return new Knight(pos, alliance, this);
 			case QUEEN:
-				return new Queen(pos, alliance);
+				return new Queen(pos, alliance, this);
 			case KING:
-				return new King(pos, alliance);
+				return new King(pos, alliance, this);
 			case PAWN:
-				return new Pawn(pos, alliance);
+				return new Pawn(pos, alliance, this);
 			case ROOK:
-				return new Rook(pos, alliance);
+				return new Rook(pos, alliance, this);
 		}
 		return null;
 	}
@@ -107,7 +107,7 @@ public class Board {
 	public boolean movePiece(int playerI, Vector2 start, Vector2 end) {
 		IChessPiece piece = pieces.get(start);
 		if(piece == null) return false;
-		if(!piece.legalMove(end,this)) return false;
+		if(!piece.legalMove(end)) return false;
 
 		lastPiece = piece;
 
