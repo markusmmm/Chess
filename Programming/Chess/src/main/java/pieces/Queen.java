@@ -15,8 +15,6 @@ public class Queen extends ChessPiece {
 		return piece;
 	}
 
-
-
 	/**
 	 * 
 	 * @param move
@@ -30,9 +28,6 @@ public class Queen extends ChessPiece {
                         freePath(move, board)
         );
 	}
-
-    
-
 
     public boolean canJump() {
 		return canJump;
