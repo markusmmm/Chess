@@ -7,10 +7,26 @@ import java.util.List;
 
 public class Pawn extends ChessPiece {
 
+	private final boolean canJump;
+	private final Piece piece;
+	private Vector2 position;
+	public boolean hasDoubleStepped = false;
     private Vector2[] attacks = new Vector2[] {};
 
+	/**
+	 *
+	 * @param position
+	 * @param alliance
+	 */
+	public Pawn(Vector2 position, Alliance alliance, Board board){
+		super(position, alliance, board);
+		canJump = false;
+		piece = Piece.PAWN;
+		this.position = position;
+	}
+
 	public Piece piece() {
-		return Piece.PAWN;
+		return piece;
 	}
 
 	/**
@@ -32,14 +48,38 @@ public class Pawn extends ChessPiece {
 		throw new UnsupportedOperationException();
 	}
 
-	/**
-	 * 
-	 * @param position
-	 * @param alliance
-	 */
-	public Pawn(Vector2 position, Alliance alliance, Board board){
-		super(position, alliance, board);
+	public boolean canDoubleStep()
+	{
+		if(hasMoved() == false)
+		{
+			return true;
+		}
+		return false;
 	}
+
+	public boolean clearPathOneStep() {
+		if(board.vacant(move))
+		{
+			return true;
+		}
+		return false;
+	}
+
+	public boolean clearPathTwoStep(){return false;}
+
+	public boolean (Vector2 move, Board board)
+	{
+		if(canDoubleStep())
+		{
+			Vector2 firstStep = new Vector2(move.getX(), move.getY());
+			if(board.vacant(move))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
 
 	public Pawn clone() {
 		return new Pawn(position, alliance, board);
