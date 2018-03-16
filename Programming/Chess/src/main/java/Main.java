@@ -1,6 +1,4 @@
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -9,10 +7,14 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import management.Board;
+import pieces.IChessPiece;
+import resources.Vector2;
+
+import java.util.Map;
 
 public class Main extends Application {
 
@@ -39,14 +41,12 @@ public class Main extends Application {
         Label labelUsername = new Label("Username:");
         labelUsername.setPrefWidth(120);
         labelUsername.setAlignment(Pos.CENTER);
-        //labelUsername.setFont(Font.font("Arial", 16));
 
         TextField textUsername = new TextField();
         textUsername.setPrefWidth(240);
 
         Button loginButton = new Button();
         loginButton.setText("LOGIN");
-        //loginButton.setFont(Font.font("Arial", 16));
         loginButton.setPrefWidth(120);
 
         GridPane gridPane = new GridPane();
@@ -79,8 +79,9 @@ public class Main extends Application {
      * @return mainMenu
      */
     private Parent mainMenu(String username) {
-        final int WIDTH = 650;
-        final int HEIGHT = 400;
+        final int WIDTH = 630;
+        final int HEIGHT = 600;
+        BorderPane root = new BorderPane();
 
         Label labelWelcome = new Label("Welcome, " + username + "!");
         labelWelcome.setPrefWidth(WIDTH);
@@ -88,16 +89,10 @@ public class Main extends Application {
         labelWelcome.setAlignment(Pos.CENTER);
         labelWelcome.setId("title");
 
-        Label labelPlayAGame = new Label("Play a game");
-        labelPlayAGame.setPrefWidth(WIDTH / 2);
-        labelPlayAGame.setMinHeight(HEIGHT / 8);
-        labelPlayAGame.setAlignment(Pos.CENTER);
-
-        /*Label labelHighscore = new Label("Highscore");
-        labelHighscore.setFont(Font.font("Arial", 22));
-        labelHighscore.setPrefWidth(WIDTH / 2);
-        labelHighscore.setMinHeight(HEIGHT / 8);
-        labelHighscore.setAlignment(Pos.CENTER);*/
+//        Label labelPlayAGame = new Label("Play a game");
+//        labelPlayAGame.setPrefWidth(WIDTH / 2);
+//        labelPlayAGame.setMinHeight(HEIGHT / 8);
+//        labelPlayAGame.setAlignment(Pos.CENTER);
 
         Button buttonPlayEasy = new Button();
         buttonPlayEasy.setText("PLAY: EASY");
@@ -109,35 +104,75 @@ public class Main extends Application {
         buttonHighScore.setText("HIGHSCORE");
         Button buttonQuit = new Button();
         buttonQuit.setText("QUIT");
+
+        buttonPlayEasy.setOnAction(e -> root.setCenter(createChessGame()));
+        buttonPlayMedium.setOnAction(e -> root.setCenter(createChessGame()));
+        buttonPlayHard.setOnAction(e -> root.setCenter(createChessGame()));
         buttonQuit.setOnAction(e -> onQuit());
 
         VBox buttonContainer = new VBox(10);
         buttonContainer.setAlignment(Pos.BASELINE_CENTER);
         buttonContainer.getChildren().addAll(buttonPlayEasy, buttonPlayMedium, buttonPlayHard, buttonHighScore, buttonQuit);
 
-        ListView<String> list = new ListView<>();
-        ObservableList<String> items = FXCollections.observableArrayList(
-                "1. Magnus: 2304", "2. Player2: 1826", "3. Player3: 1337");
-        list.setItems(items);
-
-        /*GridPane gridPane = new GridPane();
-        gridPane.add(labelPlayAGame, 1, 0);
-        gridPane.add(labelHighscore, 2, 0);
-        gridPane.add(buttonContainer, 1, 1);
-        gridPane.add(list, 2, 1);
-        gridPane.setPrefHeight((HEIGHT/8)*6);*/
-
         VBox mainContent = new VBox(0);
         mainContent.setAlignment(Pos.TOP_CENTER);
         mainContent.setPrefSize(WIDTH, HEIGHT);
         mainContent.getChildren().addAll(labelWelcome, buttonContainer);
 
-        BorderPane root = new BorderPane();
-        MenuBar menuBar = generateMenuBar();
-        root.setTop(menuBar);
+        root.setTop(generateMenuBar());
         root.setCenter(mainContent);
 
         return root;
+    }
+
+    /**
+     *
+     * @return chessGame
+     */
+    private GridPane createChessGame() {
+        final int SIZE = 8;
+        Board board = new Board(SIZE, false);
+        GridPane grid = new GridPane();
+        Tile[][] tiles = new Tile[SIZE][SIZE];
+
+        for (int row = 0; row < SIZE; row++) {
+            for (int col = 0; col < SIZE; col++) {
+                Rectangle rect = new Rectangle();
+                Vector2 pos = new Vector2(row, col);
+                Tile tile;
+
+                if ((row + col) % 2 == 0) {
+                    tile = new Tile(pos);
+                    rect.setFill(Color.CORNSILK);
+                } else {
+                    tile = new Tile(pos);
+                    rect.setFill(Color.DARKSALMON);
+                }
+
+                tile.setOnMouseClicked(e -> {
+                    System.out.println("row: " + tile.getPos().getX() +
+                            ", col: " + tile.getPos().getY() + ", piece: " + tile.getPiece());
+                });
+
+                tiles[row][col] = tile;
+                grid.add(rect, col, row);
+                grid.add(tile, col, row);
+                rect.widthProperty().bind(grid.widthProperty().divide(SIZE));
+                rect.heightProperty().bind(grid.heightProperty().divide(SIZE));
+                tile.widthProperty().bind(grid.widthProperty().divide(SIZE));
+                tile.heightProperty().bind(grid.heightProperty().divide(SIZE));
+            }
+        }
+
+        for(Map.Entry<Vector2, IChessPiece> entry : board.pieces.entrySet()) {
+            int row = entry.getKey().getX();
+            int col = entry.getKey().getY();
+            IChessPiece piece = entry.getValue();
+            tiles[col][row].setPiece(piece);
+        }
+
+
+        return grid;
     }
 
     /**
@@ -151,7 +186,6 @@ public class Main extends Application {
 
         MenuItem menuItemQuit = new MenuItem("Quit");
         menuItemQuit.setOnAction(e -> onQuit());
-        //menuItemQuit.setAccelerator( new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN) );
         menuFile.getItems().add(menuItemQuit);
 
         MenuItem menuItemAbout = new MenuItem("About");
@@ -171,31 +205,5 @@ public class Main extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-
-
-/*
-    GridPane root = new GridPane();
-    final int size = 8;
-
-    public void start(Stage primaryStage) {
-        for (int row = 0; row < size; row++) {
-            for (int col = 0; col < size; col++) {
-                Rectangle square = new Rectangle();
-                Color color;
-                if ((row + col) % 2 == 0) color = Color.BISQUE;
-                else color = Color.DARKSALMON;
-                square.setFill(color);
-                root.add(square, col, row);
-                square.widthProperty().bind(root.widthProperty().divide(size));
-                square.heightProperty().bind(root.heightProperty().divide(size));
-            }
-        }
-        primaryStage.setScene(new Scene(root, 600, 600));
-        primaryStage.show();
-    }
-
-    public static void main(String[] args) {
-        launch(args);
-    }*/
 
 }
