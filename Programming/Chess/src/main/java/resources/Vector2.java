@@ -52,6 +52,23 @@ public class Vector2 {
     }
 
     @Override
+	public int hashCode() {
+        //This process ensures that two Vector2-objects with the same x and y-values are assigned to the same hash-code.
+        //This should also create different hash-codes for symmetric vector pairs (e.g. (2,1) and (1,2))
+        int hash = 1;
+        hash = hash * 17 + x;
+        hash = hash * 31 + y;
+    	return hash;
+	}
+
+	@Override
+    public boolean equals(Object o) {
+        Vector2 v = (Vector2)o;
+
+        return x == v.x && y == v.y;
+    }
+
+    @Override
     public String toString() {
     	return "(" + x + "," + y + ")";
 	}
