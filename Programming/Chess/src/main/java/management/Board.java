@@ -3,7 +3,9 @@ package management;
 import pieces.*;
 import resources.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class Board {
 	private static final Piece[] defaultBoard = new Piece[] {
@@ -16,7 +18,7 @@ public class Board {
 	private ChessClock clock = null;
 	private IChessPiece lastPiece = null;
 
-	private HashMap<Vector2, IChessPiece> pieces = new HashMap<Vector2, IChessPiece>();
+	public HashMap<Vector2, IChessPiece> pieces = new HashMap<Vector2, IChessPiece>();
 
     /**
      *

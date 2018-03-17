@@ -45,17 +45,17 @@ public class Pawn extends ChessPiece<Pawn> {
 		return false;
 	}
 
-	public boolean clearPathOneStep() {
+	/*public boolean clearPathOneStep() {
 		if(board.vacant(move))
 		{
 			return true;
 		}
 		return false;
-	}
+	}*/
 
 	public boolean clearPathTwoStep(){return false;}
 
-	public boolean (Vector2 move, Board board)
+	/*public boolean(Vector2 move, Board board)
 	{
 		if(canDoubleStep())
 		{
@@ -67,4 +67,5 @@ public class Pawn extends ChessPiece<Pawn> {
 		}
 		return false;
 	}
+	*/
 }
