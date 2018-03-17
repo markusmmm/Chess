@@ -5,11 +5,18 @@ import management.*;
 
 import java.util.List;
 
-public class King extends ChessPiece {
+public class King extends ChessPiece<King> {
 
-	public Piece piece() {
-		return Piece.KING;
-	}
+    /**
+     *
+     * @param position
+     */
+    public King(Vector2 position, Alliance alliance, Board board) {
+        super(position, alliance, board, false, Piece.KING);
+    }
+    public King clone() {
+        return new King(position, alliance, board);
+    }
 
 	public boolean legalMove(Vector2 move) {
 		return false;
@@ -27,11 +34,6 @@ public class King extends ChessPiece {
 	 */
 	public boolean legalMove(Vector2 move, Board board) {
 		// TODO - implement King.legalMove
-		throw new UnsupportedOperationException();
-	}
-
-	public boolean canJump() {
-		// TODO - implement King.canJump
 		throw new UnsupportedOperationException();
 	}
 
@@ -53,17 +55,4 @@ public class King extends ChessPiece {
 		// TODO - implement King.castling
 		throw new UnsupportedOperationException();
 	}
-
-	/**
-	 * 
-	 * @param position
-	 */
-	public King(Vector2 position, Alliance alliance, Board board) {
-		super(position, alliance, board);
-}
-
-	public King clone() {
-		return new King(position, alliance, board);
-	}
-
 }

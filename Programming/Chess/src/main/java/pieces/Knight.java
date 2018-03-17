@@ -7,28 +7,18 @@ import java.util.List;
 
 import management.*;
 
-public class Knight  extends ChessPiece {
-
-	private final Piece piece;
-	private final boolean canJump;
-	private Vector2 position;
+public class Knight  extends ChessPiece<Knight> {
 	
 	/**
 	 * 
 	 * @param position
 	 */
 	public Knight (Vector2 position, Alliance alliance, Board board){
-		super(position, alliance, board);
-		canJump = false;
-		piece = Piece.KNIGHT;
-		this.position = position;
-
+		super(position, alliance, board, true, Piece.KNIGHT);
 	}
-	
-	public Piece piece() {
-		return piece;
-	}
-	
+    public Knight clone() {
+        return new Knight(position, alliance, board);
+    }
 	
 	/**
 	 * 
@@ -49,14 +39,4 @@ public class Knight  extends ChessPiece {
 	private boolean positiveCoordinates(Vector2 pos) {
 		return 0 <= pos.getX() && 0 <= pos.getY();
 	}
-	
-	public boolean canJump() {
-		return canJump;
-	}
-
-
-	public Knight clone() {
-		return new Knight(position, alliance, board);
-	}
-
 }

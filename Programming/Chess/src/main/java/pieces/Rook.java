@@ -6,15 +6,18 @@ import management.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Rook extends ChessPiece {
-	private final Piece piece;
-	private final boolean canJump;
-	private Vector2 position;
+public class Rook extends ChessPiece<Rook> {
 
-
-	public Piece piece() {
-		return piece;
-	}
+    /**
+     *
+     * @param position
+     */
+    public Rook(Vector2 position, Alliance alliance, Board board) {
+        super(position, alliance, board, false, Piece.ROOK);
+    }
+    public Rook clone() {
+        return new Rook(position, alliance, board);
+    }
 
 	/**
 	 * 
@@ -27,11 +30,6 @@ public class Rook extends ChessPiece {
 						freePath(move)
 		);
 	}
-
-	public boolean canJump() {
-		return canJump;
-	}
-
 
 	/**
 	 *
@@ -73,26 +71,7 @@ public class Rook extends ChessPiece {
 		return possibleMoves;
 	}
 
-
-		/**
-         *
-         * @param position
-         */
-	public Rook(Vector2 position, Alliance alliance, Board board) {
-		super(position, alliance, board);
-		piece = Piece.ROOK;
-		canJump = false;
-	}
-
-
-
-
 	private boolean positiveCoordinates(Vector2 pos) {
 		return 0 <= pos.getX() && 0 <= pos.getY();
 	}
-
-	public Rook clone() {
-		return new Rook(position, alliance, board);
-	}
-
 }

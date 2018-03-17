@@ -6,23 +6,33 @@ import management.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class ChessPiece implements IChessPiece {
+public abstract class ChessPiece<T extends ChessPiece<T>> implements IChessPiece<T> {
 
 	protected Vector2 position;
-	protected Alliance alliance;
-	protected Board board;
+
+	protected final Alliance alliance;
+	protected final boolean canJump;
+	protected final Piece piece;
+	protected final Board board;
 
 	protected List<Vector2> moveLog = new ArrayList<Vector2>();
-	private boolean moved = false;
 
-	public abstract Piece piece();
+    /**
+     *
+     * @param position The piece's initial position on the board
+     */
+    protected ChessPiece(Vector2 position, Alliance alliance, Board board, boolean canJump, Piece piece) {
+        this.position = position;
+        this.alliance = alliance;
+        this.board = board;
+        this.canJump = canJump;
+        this.piece = piece;
+    }
 
-	public Vector2 position() {
-		return position;
-	}
-	public Alliance alliance() {
-		return alliance;
-	}
+	public Vector2 position() { return position; }
+	public Alliance alliance() { return alliance; }
+	public boolean canJump() { return canJump; }
+	public Piece piece() { return piece; }
 
 	/**
 	 * 
@@ -30,13 +40,11 @@ public abstract class ChessPiece implements IChessPiece {
 	 */
 	public abstract boolean legalMove(Vector2 move);
 
-	public abstract boolean canJump();
-
 	/**
-	 * If the piece has been moved (moveLog.size() == 0)
+	 * If the piece has been moved
 	 */
 	public boolean hasMoved() {
-		return moved;
+		return moveLog.size() != 0;
 	}
 
 	/**
@@ -47,7 +55,6 @@ public abstract class ChessPiece implements IChessPiece {
 		if (legalMove(move)) {
 		    moveLog.add(move);
 			position = new Vector2(move.getX(), move.getY());
-			moved = true;
 			return true;
 		}
 		return false;
@@ -55,18 +62,8 @@ public abstract class ChessPiece implements IChessPiece {
 
 	public void remove() {
 		moveLog.clear();
-		moved = false;
 	}
 
-	/**
-	 * 
-	 * @param position The piece's initial position on the board
-	 */
-	protected ChessPiece(Vector2 position, Alliance alliance, Board board) {
-	    this.position = position;
-	    this.alliance = alliance;
-	    this.board = board;
-	}
 	/**
 	 * checks one by one position from this position
 	 * toward destination, returns false if runs into another piece

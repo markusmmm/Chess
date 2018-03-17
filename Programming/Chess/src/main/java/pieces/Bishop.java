@@ -10,18 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class Bishop extends ChessPiece {
-
-	private final boolean canJump;
-	private final Piece piece;
-	private Vector2 position;
-
+public class Bishop extends ChessPiece<Bishop> {
 
 	public Bishop(Vector2 position, Alliance alliance, Board board){
-		super(position, alliance, board);
-		canJump = false;
-		piece = Piece.BISHOP;
+		super(position, alliance, board, false, Piece.BISHOP);
 	}
+    public Bishop clone() {
+        return new Bishop(position, alliance, board);
+    }
 
 	/**
 	 *
@@ -79,13 +75,6 @@ public class Bishop extends ChessPiece {
 		return possibleMoves;
 	}
 
-
-
-	public Piece piece() {
-		return piece;
-	}
-
-
 	/**
 	 *
 	 * @param move
@@ -98,17 +87,7 @@ public class Bishop extends ChessPiece {
 		);
 	}
 
-
-	public boolean canJump() {
-		return canJump;
-
-	}
-
 	private boolean positiveCoordinates(Vector2 pos) {
 		return 0 <= pos.getX() && 0 <= pos.getY();
-	}
-
-	public Bishop clone() {
-		return new Bishop(position, alliance, board);
 	}
 }

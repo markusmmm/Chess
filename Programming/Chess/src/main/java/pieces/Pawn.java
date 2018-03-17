@@ -5,11 +5,8 @@ import management.*;
 
 import java.util.List;
 
-public class Pawn extends ChessPiece {
+public class Pawn extends ChessPiece<Pawn> {
 
-	private final boolean canJump;
-	private final Piece piece;
-	private Vector2 position;
 	public boolean hasDoubleStepped = false;
     private Vector2[] attacks = new Vector2[] {};
 
@@ -19,15 +16,11 @@ public class Pawn extends ChessPiece {
 	 * @param alliance
 	 */
 	public Pawn(Vector2 position, Alliance alliance, Board board){
-		super(position, alliance, board);
-		canJump = false;
-		piece = Piece.PAWN;
-		this.position = position;
+		super(position, alliance, board, false, Piece.PAWN);
 	}
-
-	public Piece piece() {
-		return piece;
-	}
+    public Pawn clone() {
+        return new Pawn(position, alliance, board);
+    }
 
 	/**
 	 * 
@@ -40,11 +33,6 @@ public class Pawn extends ChessPiece {
 
 	public List<Vector2> getPossibleMoves() {
 		//TODO Pawn.getPossibleMoves
-		throw new UnsupportedOperationException();
-	}
-
-	public boolean canJump() {
-		// TODO - implement Pawn.canJump
 		throw new UnsupportedOperationException();
 	}
 
@@ -78,10 +66,5 @@ public class Pawn extends ChessPiece {
 			}
 		}
 		return false;
-	}
-
-
-	public Pawn clone() {
-		return new Pawn(position, alliance, board);
 	}
 }

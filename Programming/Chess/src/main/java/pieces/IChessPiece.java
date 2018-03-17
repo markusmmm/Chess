@@ -7,15 +7,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-public interface IChessPiece {
-
-	HashSet<Move> moves = new HashSet<Move>();
-
-	Piece piece();
+public interface IChessPiece<T extends ChessPiece<T>> {
 
 	Vector2 position();
-
 	Alliance alliance();
+    boolean canJump();
+	Piece piece();
 
 	/**
 	 *
@@ -24,8 +21,6 @@ public interface IChessPiece {
 	boolean legalMove(Vector2 end);
 
 	List<Vector2> getPossibleMoves();
-
-	boolean canJump();
 
 	boolean hasMoved();
 
@@ -37,4 +32,5 @@ public interface IChessPiece {
 
 	void remove();
 
+	T clone();
 }
