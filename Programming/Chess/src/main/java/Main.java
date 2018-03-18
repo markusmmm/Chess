@@ -7,18 +7,14 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import management.Board;
-import pieces.IChessPiece;
-import resources.Vector2;
-
-import java.util.Map;
 
 public class Main extends Application {
 
     Stage stage;
+    static final int WIDTH = 550;
+    static final int HEIGHT = 540;
 
     public void start(Stage primaryStage) throws Exception {
         stage = primaryStage;
@@ -31,6 +27,7 @@ public class Main extends Application {
 
     /**
      * Generates the login window
+     *
      * @return login window
      */
     private Parent loginWindow() {
@@ -75,24 +72,19 @@ public class Main extends Application {
 
     /**
      * Generates the main menu
+     *
      * @param username
      * @return mainMenu
      */
     private Parent mainMenu(String username) {
-        final int WIDTH = 630;
-        final int HEIGHT = 600;
+
         BorderPane root = new BorderPane();
 
         Label labelWelcome = new Label("Welcome, " + username + "!");
         labelWelcome.setPrefWidth(WIDTH);
-        labelWelcome.setMinHeight((HEIGHT / 8)*2);
+        labelWelcome.setMinHeight((HEIGHT / 8) * 2);
         labelWelcome.setAlignment(Pos.CENTER);
         labelWelcome.setId("title");
-
-//        Label labelPlayAGame = new Label("Play a game");
-//        labelPlayAGame.setPrefWidth(WIDTH / 2);
-//        labelPlayAGame.setMinHeight(HEIGHT / 8);
-//        labelPlayAGame.setAlignment(Pos.CENTER);
 
         Button buttonPlayEasy = new Button();
         buttonPlayEasy.setText("PLAY: EASY");
@@ -100,14 +92,15 @@ public class Main extends Application {
         buttonPlayMedium.setText("PLAY: MEDIUM");
         Button buttonPlayHard = new Button();
         buttonPlayHard.setText("PLAY: HARD");
+        buttonPlayHard.setVisible(false);
         Button buttonHighScore = new Button();
         buttonHighScore.setText("HIGHSCORE");
         Button buttonQuit = new Button();
         buttonQuit.setText("QUIT");
 
-        buttonPlayEasy.setOnAction(e -> root.setCenter(createChessGame()));
-        buttonPlayMedium.setOnAction(e -> root.setCenter(createChessGame()));
-        buttonPlayHard.setOnAction(e -> root.setCenter(createChessGame()));
+        buttonPlayEasy.setOnAction(e -> root.setCenter(createChessGame(username, 1)));
+        buttonPlayMedium.setOnAction(e -> root.setCenter(createChessGame(username, 2)));
+        buttonPlayHard.setOnAction(e -> root.setCenter(createChessGame(username, 3)));
         buttonQuit.setOnAction(e -> onQuit());
 
         VBox buttonContainer = new VBox(10);
@@ -126,57 +119,19 @@ public class Main extends Application {
     }
 
     /**
+     * creates a board with the choosen AI-difficulty
      *
      * @return chessGame
      */
-    private GridPane createChessGame() {
-        final int SIZE = 8;
-        Board board = new Board(SIZE, false);
-        GridPane grid = new GridPane();
-        Tile[][] tiles = new Tile[SIZE][SIZE];
-
-        for (int row = 0; row < SIZE; row++) {
-            for (int col = 0; col < SIZE; col++) {
-                Rectangle rect = new Rectangle();
-                Vector2 pos = new Vector2(row, col);
-                Tile tile;
-
-                if ((row + col) % 2 == 0) {
-                    tile = new Tile(pos);
-                    rect.setFill(Color.CORNSILK);
-                } else {
-                    tile = new Tile(pos);
-                    rect.setFill(Color.DARKSALMON);
-                }
-
-                tile.setOnMouseClicked(e -> {
-                    System.out.println("row: " + tile.getPos().getX() +
-                            ", col: " + tile.getPos().getY() + ", piece: " + tile.getPiece());
-                });
-
-                tiles[row][col] = tile;
-                grid.add(rect, col, row);
-                grid.add(tile, col, row);
-                rect.widthProperty().bind(grid.widthProperty().divide(SIZE));
-                rect.heightProperty().bind(grid.heightProperty().divide(SIZE));
-                tile.widthProperty().bind(grid.widthProperty().divide(SIZE));
-                tile.heightProperty().bind(grid.heightProperty().divide(SIZE));
-            }
-        }
-
-        for(Map.Entry<Vector2, IChessPiece> entry : board.pieces.entrySet()) {
-            int row = entry.getKey().getX();
-            int col = entry.getKey().getY();
-            IChessPiece piece = entry.getValue();
-            tiles[col][row].setPiece(piece);
-        }
-
-
-        return grid;
+    private GridPane createChessGame(String username, int difficulty) {
+        GameBoard gameBoard = new GameBoard(username, difficulty);
+        gameBoard.createBoard();
+        return gameBoard.getGrid();
     }
 
     /**
      * generates and return menubar
+     *
      * @return menubar
      */
     private MenuBar generateMenuBar() {

@@ -1,9 +1,11 @@
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
-import pieces.*;
-import resources.*;
+import pieces.IChessPiece;
+import resources.Alliance;
+import resources.Vector2;
 
 public class Tile extends Rectangle {
     private Vector2 pos;
@@ -21,7 +23,7 @@ public class Tile extends Rectangle {
         this.piece = piece2;
 
         String s = "";
-        if(piece.alliance() == Alliance.WHITE)
+        if (piece.alliance() == Alliance.WHITE)
             s += "w_";
         else
             s += "b_";
@@ -40,10 +42,23 @@ public class Tile extends Rectangle {
     }
 
     public Alliance getPieceColor() {
-        if(getPiece() != null)
+        if (getPiece() != null)
             return getPiece().alliance();
         else
             return null;
     }
 
+    public void tileClicked(MouseEvent e, Alliance alliance) {
+        if (this.piece == null) {
+            System.out.println("No piece");
+            return;
+        }
+        if (this.piece.alliance() != alliance) {
+            System.out.println("Not your alliance");
+            return;
+        }
+
+        System.out.println("legal piece");
+
+    }
 }
