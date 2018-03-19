@@ -45,6 +45,7 @@ public class Board {
 
     		pieces.put(pos, createPiece(pos, type, Alliance.BLACK));
     		pieces.put(invPos, createPiece(invPos, type, Alliance.WHITE));
+    		System.out.println(pos + ": " + pieces.get(pos));
 
     		p++;
     	}

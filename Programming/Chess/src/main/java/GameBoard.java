@@ -3,6 +3,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import management.Board;
 import pieces.IChessPiece;
+import resources.Alliance;
 import resources.Vector2;
 
 import java.util.Map;
@@ -32,7 +33,7 @@ public class GameBoard {
         for (int row = 0; row < SIZE; row++) {
             for (int col = 0; col < SIZE; col++) {
                 Rectangle rect = new Rectangle();
-                Vector2 pos = new Vector2(row, col);
+                Vector2 pos = new Vector2(col, row);
                 Tile tile;
 
                 if ((row + col) % 2 == 0) {
@@ -44,8 +45,7 @@ public class GameBoard {
                 }
 
                 tile.setOnMouseClicked(e -> {
-                    System.out.println("row: " + tile.getPos().getX() +
-                            ", col: " + tile.getPos().getY() + ", piece: " + tile.getPiece());
+                    tile.tileClicked(e, Alliance.WHITE);
                 });
 
                 tiles[row][col] = tile;
@@ -64,9 +64,9 @@ public class GameBoard {
 
     public void drawBoard() {
         for (Vector2 pos : board.pieces.keySet()) {
-            int row = pos.getX();
-            int col = pos.getY();
-            tiles[col][row].drawPiece();
+            int col = pos.getX();
+            int row = pos.getY();
+            tiles[row][col].drawPiece();
         }
     }
 

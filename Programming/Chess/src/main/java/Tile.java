@@ -21,12 +21,23 @@ public class Tile extends Rectangle {
 
 
     public void drawPiece() {
+        System.out.print("Printing " + pos + ": ");
+
+        if(getPiece() == null) {
+            setFill(Color.TRANSPARENT);
+            System.out.println(" EMPTY");
+            return;
+        }
+
+        String pieceName = getPiece().piece().toString();
+        System.out.println(pieceName);
+
         String s = "";
         if (getPieceColor() == Alliance.WHITE)
             s += "w_";
         else
             s += "b_";
-        s += getPiece().piece().toString().toLowerCase();
+        s += pieceName.toLowerCase();
 
         Image image = new Image("images/pieces/" + s + ".png");
         this.setFill(new ImagePattern(image));
@@ -49,6 +60,8 @@ public class Tile extends Rectangle {
 
     public boolean tileClicked(MouseEvent e, Alliance alliance) {
         IChessPiece piece = getPiece();
+
+        System.out.println(pos + ": ");
 
         if (piece == null) {
             System.out.println("No piece");
