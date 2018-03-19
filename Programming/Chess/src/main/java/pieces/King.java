@@ -27,16 +27,6 @@ public class King extends ChessPiece<King> {
 		throw new UnsupportedOperationException();
 	}
 
-	/**
-	 * 
-	 * @param move
-	 * @param board
-	 */
-	public boolean legalMove(Vector2 move, Board board) {
-		// TODO - implement King.legalMove
-		throw new UnsupportedOperationException();
-	}
-
 	public boolean inCheck() {
 		// TODO - implement King.inCheck
 		throw new UnsupportedOperationException();
