@@ -18,7 +18,7 @@ public class Pawn extends ChessPiece<Pawn> {
 	public Pawn(Vector2 position, Alliance alliance, Board board){
 		super(position, alliance, board, false, Piece.PAWN);
 	}
-    public Pawn clone() {
+	public Pawn clonePiece() {
         return new Pawn(position, alliance, board);
     }
 

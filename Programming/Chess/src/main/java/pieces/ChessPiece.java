@@ -21,7 +21,7 @@ public abstract class ChessPiece<T extends ChessPiece<T>> implements IChessPiece
      *
      * @param position The piece's initial position on the board
      */
-    protected ChessPiece(Vector2 position, Alliance alliance, Board board, boolean canJump, Piece piece) {
+    public ChessPiece(Vector2 position, Alliance alliance, Board board, boolean canJump, Piece piece) {
         this.position = position;
         this.alliance = alliance;
         this.board = board;

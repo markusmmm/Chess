@@ -10,7 +10,7 @@ public class Queen extends ChessPiece<Queen> {
 	public Queen(Vector2 position, Alliance alliance, Board board){
 		super(position, alliance, board, false, Piece.QUEEN);
 	}
-    public Queen clone() {
+    public Queen clonePiece() {
         return new Queen(position, alliance, board);
     }
 

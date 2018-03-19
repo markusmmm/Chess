@@ -14,7 +14,7 @@ public class King extends ChessPiece<King> {
     public King(Vector2 position, Alliance alliance, Board board) {
         super(position, alliance, board, false, Piece.KING);
     }
-    public King clone() {
+    public King clonePiece() {
         return new King(position, alliance, board);
     }
 

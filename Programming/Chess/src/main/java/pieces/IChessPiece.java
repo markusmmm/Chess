@@ -32,5 +32,5 @@ public interface IChessPiece<T extends ChessPiece<T>> {
 
 	void remove();
 
-	T clone();
+	T clonePiece();
 }

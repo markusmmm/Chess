@@ -15,7 +15,7 @@ public class Rook extends ChessPiece<Rook> {
     public Rook(Vector2 position, Alliance alliance, Board board) {
         super(position, alliance, board, false, Piece.ROOK);
     }
-    public Rook clone() {
+    public Rook clonePiece() {
         return new Rook(position, alliance, board);
     }
 

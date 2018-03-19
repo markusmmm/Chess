@@ -15,7 +15,7 @@ public class Bishop extends ChessPiece<Bishop> {
 	public Bishop(Vector2 position, Alliance alliance, Board board){
 		super(position, alliance, board, false, Piece.BISHOP);
 	}
-    public Bishop clone() {
+    public Bishop clonePiece() {
         return new Bishop(position, alliance, board);
     }
 
