@@ -26,8 +26,7 @@ public class GameBoard {
     }
 
     /**
-     * Setups the necessary tiles and structures to be able to create a board, and
-     * goes through the hashset containing the pieces and assign them to their appropriate tiles.
+     * Setups the necessary tiles and structures to be able to create a board
      */
     public void createBoard() {
         for (int row = 0; row < SIZE; row++) {
@@ -37,10 +36,10 @@ public class GameBoard {
                 Tile tile;
 
                 if ((row + col) % 2 == 0) {
-                    tile = new Tile(pos);
+                    tile = new Tile(pos, board);
                     rect.setFill(Color.LIGHTGRAY);
                 } else {
-                    tile = new Tile(pos);
+                    tile = new Tile(pos, board);
                     rect.setFill(Color.DARKGRAY);
                 }
 
@@ -60,11 +59,14 @@ public class GameBoard {
             }
         }
 
-        for (Map.Entry<Vector2, IChessPiece> entry : board.pieces.entrySet()) {
-            int row = entry.getKey().getX();
-            int col = entry.getKey().getY();
-            IChessPiece piece = entry.getValue();
-            tiles[col][row].setPiece(piece);
+        drawBoard();
+    }
+
+    public void drawBoard() {
+        for (Vector2 pos : board.pieces.keySet()) {
+            int row = pos.getX();
+            int col = pos.getY();
+            tiles[col][row].drawPiece();
         }
     }
 
@@ -77,11 +79,9 @@ public class GameBoard {
         }
     }
 
-    /**
-     * TODO: imple
-     */
     public void gameOver() {
-
+        //TODO GameBoard.gameOver
+        throw new UnsupportedOperationException();
     }
 
     public GridPane getGrid() {
