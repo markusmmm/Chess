@@ -34,7 +34,7 @@ public class GameManager {
         Vector2 start = new Vector2(x0, y0),
                 end = new Vector2(x1, y1);
 
-        if(board.movePiece(playerI, start, end))
+        if(board.movePiece(start, end))
             return true;
 
         System.out.println("Invalid move!");
