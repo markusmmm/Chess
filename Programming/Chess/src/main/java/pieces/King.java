@@ -30,7 +30,7 @@ public class King extends ChessPiece {
         );
     }
 
-    public List<Vector2> getPossibleMoves() {
+    public List<Vector2> getPossibleDestinations() {
 
         List<Vector2> possibleMoves = new ArrayList<>();
 
@@ -122,11 +122,6 @@ public class King extends ChessPiece {
         }
 
 
-    }
-
-
-    private boolean positiveCoordinates(Vector2 pos) {
-        return 0 <= pos.getX() && 0 <= pos.getY();
     }
 
 }

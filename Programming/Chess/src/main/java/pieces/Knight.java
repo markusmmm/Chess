@@ -3,7 +3,6 @@ package pieces;
 import resources.*;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import management.*;
@@ -30,21 +29,17 @@ public class Knight  extends ChessPiece {
 	
 	/**
 	 * 
-	 * @param move
+	 * @param destination
 	 */
-	public boolean legalMove(Vector2 move) {
-		return positiveCoordinates(move) && getPossibleMoves().contains(position.add(move));
+	public boolean legalMove(Vector2 destination) {
+		return positiveCoordinates(destination) && getPossibleDestinations().contains(destination);
 	}
 
-	public List<Vector2> getPossibleMoves() {
+	public List<Vector2> getPossibleDestinations() {
 		List<Vector2> possibleMoves = new ArrayList<Vector2>();
 		for (Vector2 move : moves)
 			possibleMoves.add(position.add(move));
 
 		return possibleMoves;
-	}
-
-	private boolean positiveCoordinates(Vector2 pos) {
-		return 0 <= pos.getX() && 0 <= pos.getY();
 	}
 }

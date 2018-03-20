@@ -34,48 +34,44 @@ public class Rook extends ChessPiece {
 	 * @return a list of all possible moves from this position
 	 */
 
-	public List<Vector2> getPossibleMoves() {
-		List<Vector2> possibleMoves = new ArrayList<Vector2>();
+	public List<Vector2> getPossibleDestinations() {
+		List<Vector2> possibleDestinations = new ArrayList<Vector2>();
 
 		int row = position.getX();
 		int column = position.getY();
 
 		for (int i = row + 1; i < board.getSize(); i++) {
-			Vector2 move = new Vector2(i, column);
-			if (legalMove(move)) possibleMoves.add(move);
-			if(board.getPiece(move) != null){
-				if(board.getPiece(move).alliance() != this.alliance) possibleMoves.add(move);
+			Vector2 destination = new Vector2(i, column);
+			if (legalMove(destination)) possibleDestinations.add(destination);
+			if(board.getPiece(destination) != null){
+				if(board.getPiece(destination).alliance() != this.alliance) possibleDestinations.add(destination);
 			}
 		}
 
 		for (int i = row - 1; i > -1; i--) {
-			Vector2 move = new Vector2(i, column);
-			if (legalMove(move)) possibleMoves.add(move);
-			if(board.getPiece(move) != null){
-				if(board.getPiece(move).alliance() != this.alliance) possibleMoves.add(move);
+			Vector2 destination = new Vector2(i, column);
+			if (legalMove(destination)) possibleDestinations.add(destination);
+			if(board.getPiece(destination) != null){
+				if(board.getPiece(destination).alliance() != this.alliance) possibleDestinations.add(destination);
 			}
 		}
 
 		for (int i = column + 1; i < board.getSize(); i++) {
-			Vector2 move = new Vector2(i, column);
-			if (legalMove(move)) possibleMoves.add(move);
-			if(board.getPiece(move) != null){
-				if(board.getPiece(move).alliance() != this.alliance) possibleMoves.add(move);
+			Vector2 destination = new Vector2(i, column);
+			if (legalMove(destination)) possibleDestinations.add(destination);
+			if(board.getPiece(destination) != null){
+				if(board.getPiece(destination).alliance() != this.alliance) possibleDestinations.add(destination);
 			}
 		}
 		for (int i = column - 1; i > -1; i--) {
-			Vector2 move = new Vector2(i, column);
-			if (legalMove(move)) possibleMoves.add(move);
-			if(board.getPiece(move) != null){
-				if(board.getPiece(move).alliance() != this.alliance) possibleMoves.add(move);
+			Vector2 destination = new Vector2(i, column);
+			if (legalMove(destination)) possibleDestinations.add(destination);
+			if(board.getPiece(destination) != null){
+				if(board.getPiece(destination).alliance() != this.alliance) possibleDestinations.add(destination);
 			}
 		}
 
 
-		return possibleMoves;
-	}
-
-	private boolean positiveCoordinates(Vector2 pos) {
-		return 0 <= pos.getX() && 0 <= pos.getY();
+		return possibleDestinations;
 	}
 }

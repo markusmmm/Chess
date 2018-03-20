@@ -25,7 +25,7 @@ public class Bishop extends ChessPiece {
 	 */
 
 
-	public List<Vector2> getPossibleMoves(){
+	public List<Vector2> getPossibleDestinations(){
 
 		List<Vector2> possibleMoves = new ArrayList<Vector2>();
 
@@ -95,9 +95,5 @@ public class Bishop extends ChessPiece {
 						inDiagonals(move) &&
 						freePath(move)
 		);
-	}
-
-	private boolean positiveCoordinates(Vector2 pos) {
-		return 0 <= pos.getX() && 0 <= pos.getY();
 	}
 }

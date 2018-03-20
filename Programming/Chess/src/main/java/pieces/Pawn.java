@@ -154,7 +154,7 @@ public class Pawn extends ChessPiece {
 		return true;
 	}
 
-	public List<Vector2> getPossibleMoves() {
+	public List<Vector2> getPossibleDestinations() {
 		List<Vector2> possibleMoves = new ArrayList<>();
 		int row = this.position.getX();
 		int column = this.position.getY();
@@ -240,9 +240,5 @@ public class Pawn extends ChessPiece {
 				}
 			}
 		}
-	}
-
-	private boolean positiveCoordinates(Vector2 pos) {
-		return 0 <= pos.getX() && 0 <= pos.getY();
 	}
 }

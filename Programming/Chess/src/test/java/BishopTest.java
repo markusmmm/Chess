@@ -31,7 +31,7 @@ public class BishopTest {
     public void testPosibleMoves(){
         Board board = new Board(8, false );
         IChessPiece bishop = board.getPiece(new Vector2(2,0));
-        List<Vector2> possibleMoves = bishop.getPossibleMoves();
+        List<Vector2> possibleMoves = bishop.getPossibleDestinations();
         assertEquals(0,possibleMoves.size());
     }
     */
