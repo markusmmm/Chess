@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class BoardTest {
+public class PawnTest {
     @Test
     public void PawnMoveForwardTest() {
         Board board = new Board(8, false);
