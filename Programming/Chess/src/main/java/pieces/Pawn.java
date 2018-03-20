@@ -5,6 +5,7 @@ import static resources.Alliance.BLACK;
 import static resources.Alliance.WHITE;
 import management.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Pawn extends ChessPiece {
@@ -29,97 +30,162 @@ public class Pawn extends ChessPiece {
 	 * 
 	 * @param move
 	 */
-	public boolean legalMove(Vector2 move) {
-		return (
-				positiveCoordinates(move) &&
-				position.distance(move) == 1 && freePath(move) &&
-				(whiteNegative(move) || blackPositive(move))
-		);
+	public boolean legalMove(Vector2 move)
+	{
+		return positiveCoordinates(move);
 	}
 
 	public boolean whiteNegative(Vector2 move)
 	{
-		Vector2 white = new Vector2(this.position().getX(), this.position().getY() - 1);
-		if(move.equals(white))
-		{
-			return true;
+		if(legalMove(move)) {
+			Vector2 white = new Vector2(this.position().getX(), this.position().getY() - 1);
+			if (move.equals(white) && board.vacant(move)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean whiteNegative2(Vector2 move)
+	{
+		if(legalMove(move)) {
+			Vector2 white1 = new Vector2(this.position().getX(), this.position().getY() - 1);
+			Vector2 white2 = new Vector2(this.position().getX(), this.position().getY() - 2);
+			if (move.equals(white2) && board.vacant(white1) && board.vacant(white2) && (moveLog.size() == 0)) {
+				return true;
+			}
 		}
 		return false;
 	}
 
 	public boolean blackPositive(Vector2 move)
 	{
-		Vector2 black = new Vector2(this.position().getX(), this.position().getY() + 1);
-		if(move.equals(black))
-		{
-			return true;
+		if(legalMove(move)) {
+			Vector2 black = new Vector2(this.position().getX(), this.position().getY() + 1);
+			if (move.equals(black) && board.vacant(move)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean blackPositive2(Vector2 move)
+	{
+		if(legalMove(move)) {
+			Vector2 black1 = new Vector2(this.position().getX(), this.position().getY() + 1);
+			Vector2 black2 = new Vector2(this.position().getX(), this.position().getY() + 2);
+			if (move.equals(black2) && board.vacant(black1) && board.vacant(black2) && (moveLog.size() == 0)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean whiteLDiag(Vector2 move)
+	{
+		if(legalMove(move)) {
+			Vector2 whiteLD = new Vector2(this.position().getX() - 1, this.position().getY() - 1);
+			if (!board.vacant(move)) {
+				ChessPiece enemy = (ChessPiece) board.getPiece(move);
+				if (move.equals(whiteLD) && (!enemy.alliance.equals(this.alliance))) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public boolean whiteRDiag(Vector2 move)
+	{
+		if(legalMove(move)) {
+			Vector2 whiteRD = new Vector2(this.position().getX() + 1, this.position().getY() - 1);
+			if (!board.vacant(move)) {
+				ChessPiece enemy = (ChessPiece) board.getPiece(move);
+				if (move.equals(whiteRD) && (!enemy.alliance.equals(this.alliance))) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public boolean blackLDiag(Vector2 move)
+	{
+		if(legalMove(move)) {
+			Vector2 blackLD = new Vector2(this.position().getX() - 1, this.position().getY() + 1);
+			if (!board.vacant(move)) {
+				ChessPiece enemy = (ChessPiece) board.getPiece(move);
+				if (move.equals(blackLD) && (!enemy.alliance.equals(this.alliance))) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public boolean blackRDiag(Vector2 move)
+	{
+		if(legalMove(move)) {
+			Vector2 blackRD = new Vector2(this.position().getX() + 1, this.position().getY() + 1);
+			if (!board.vacant(move)) {
+				ChessPiece enemy = (ChessPiece) board.getPiece(move);
+				if (move.equals(blackRD) && (!enemy.alliance.equals(this.alliance))) {
+					return true;
+				}
+			}
 		}
 		return false;
 	}
 
 	public List<Vector2> getPossibleMoves() {
-		//TODO Pawn.getPossibleMoves
-		throw new UnsupportedOperationException();
-	}
+		Pawn pawn = this;
 
-	public boolean canDoubleStep(Vector2 move)
-	{
-		if((hasMoved() == false) && (position.distance(move) == 2))
-		{
-			return true;
-		}
-		return false;
-	}
+		List<Vector2> possibleMoves = new ArrayList<>();
+		int row = this.position.getX();
+		int column = this.position.getY();
 
-	public void doubleStep(Vector2 move)
-	{
-		if(canDoubleStep(move))
+		if(this.alliance.equals(WHITE))
 		{
-			if(this.alliance().equals(WHITE))
+			if(whiteNegative(new Vector2(row, column - 1)))
 			{
-				Vector2 wPawnMove = new Vector2(this.position().getX(), this.position().getY() - 2);
-				if(wPawnMove.equals(move))
-				{
-					hasDoubleStepped = true;
-					enPassantable = true;
-					board.movePiece(this.position(), move);
-				}
-
+				possibleMoves.add(new Vector2(row, column - 1));
 			}
-			else if(this.alliance().equals(BLACK))
+			if(whiteNegative2(new Vector2(row, column - 2)))
 			{
-				Vector2 bPawnMove = new Vector2(this.position().getX(), this.position().getY() + 2);
-				if(bPawnMove.equals(move))
-				{
-					hasDoubleStepped = true;
-					enPassantable = true;
-					board.movePiece(this.position(), move);
-				}
+				possibleMoves.add(new Vector2(row, column - 2));
+			}
+			if(whiteLDiag(new Vector2(row - 1, column - 1)))
+			{
+				possibleMoves.add(new Vector2(row - 1, column - 1));
+			}
+			if(whiteRDiag(new Vector2(row + 1, column - 1)))
+			{
+				possibleMoves.add(new Vector2(row + 1, column - 1));
 			}
 		}
+		else if(this.alliance.equals(BLACK))
+		{
+			if(blackPositive(new Vector2(row, column + 1)))
+			{
+				possibleMoves.add(new Vector2(row, column + 1));
+			}
+			if(blackPositive2(new Vector2(row, column + 2)))
+			{
+				possibleMoves.add(new Vector2(row, column + 2));
+			}
+			if(blackLDiag(new Vector2(row - 1, column + 1)))
+			{
+				possibleMoves.add(new Vector2(row - 1, column + 1));
+			}
+			if(blackRDiag(new Vector2(row + 1, column + 1)))
+			{
+				possibleMoves.add(new Vector2(row + 1, column + 1));
+			}
+		}
+		return possibleMoves;
 	}
 
-	public void oneStep(Vector2 move)
-	{
-		if(this.alliance().equals(WHITE))
-		{
-			Vector2 wPawnMove = new Vector2(this.position().getX(), this.position().getY() - 1);
-			if(wPawnMove.equals(move))
-			{
-				enPassantable = false;
-				board.movePiece(this.position(), move);
-			}
-		}
-		else if(this.alliance().equals(BLACK))
-		{
-			Vector2 bPawnMove = new Vector2(this.position().getX(), this.position().getY() + 1);
-			if(bPawnMove.equals(move))
-			{
-				enPassantable = false;
-				board.movePiece(this.position(), move);
-			}
-		}
-	}
+	//TODO transformation when pawn gets to enemy line, en passant
 
 	public void enPassant()
 	{
@@ -132,15 +198,13 @@ public class Pawn extends ChessPiece {
 			{
 				if (this.alliance().equals(BLACK))
 				{
-					Vector2 blackEnPassantToLeft = new Vector2(this.position().getX() - 1, this.position().getY() + 1);
-					board.movePiece(this.position(), blackEnPassantToLeft);
-					//DELETE PIECE?!?!
+					//Vector2 blackEnPassantToLeft = new Vector2(this.position().getX() - 1, this.position().getY() + 1);
+					//board.movePiece(this.position(), blackEnPassantToLeft);
 				}
 				else if (this.alliance().equals(WHITE))
 				{
-					Vector2 whiteEnPassantToLeft = new Vector2(this.position().getX() - 1, this.position().getY() - 1);
-					board.movePiece(this.position(), whiteEnPassantToLeft);
-					//DELETE PIECE?!?!
+					//Vector2 whiteEnPassantToLeft = new Vector2(this.position().getX() - 1, this.position().getY() - 1);
+					//board.movePiece(this.position(), whiteEnPassantToLeft);
 				}
 			}
 		}
@@ -151,15 +215,13 @@ public class Pawn extends ChessPiece {
 			{
 				if (this.alliance().equals(BLACK))
 				{
-					Vector2 blackEnPassantToRight = new Vector2(this.position().getX() + 1, this.position().getY() + 1);
-					board.movePiece(this.position(), blackEnPassantToRight);
-					//DELETE PIECE?!?!
+					//Vector2 blackEnPassantToRight = new Vector2(this.position().getX() + 1, this.position().getY() + 1);
+					//board.movePiece(this.position(), blackEnPassantToRight);
 				}
 				else if (this.alliance().equals(WHITE))
 				{
-					Vector2 whiteEnPassantToRight = new Vector2(this.position().getX() + 1, this.position().getY() - 1);
-					board.movePiece(this.position(), whiteEnPassantToRight);
-					//DELETE PIECE?!?!
+					//Vector2 whiteEnPassantToRight = new Vector2(this.position().getX() + 1, this.position().getY() - 1);
+					//board.movePiece(this.position(), whiteEnPassantToRight);
 				}
 			}
 		}
