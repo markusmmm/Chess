@@ -8,19 +8,18 @@ import java.util.List;
 
 public class Rook extends ChessPiece {
 
-    /**
-     *
-     * @param position
-     */
-    public Rook(Vector2 position, Alliance alliance, Board board) {
-        super(position, alliance, board, false, Piece.ROOK);
-    }
-    public Rook clonePiece() {
-        return new Rook(position, alliance, board);
-    }
+	/**
+	 * @param position
+	 */
+	public Rook(Vector2 position, Alliance alliance, Board board) {
+		super(position, alliance, board, false, Piece.ROOK);
+	}
+
+	public Rook clonePiece() {
+		return new Rook(position, alliance, board);
+	}
 
 	/**
-	 * 
 	 * @param move
 	 */
 	public boolean legalMove(Vector2 move) {
@@ -32,11 +31,8 @@ public class Rook extends ChessPiece {
 	}
 
 	/**
-	 *
 	 * @return a list of all possible moves from this position
 	 */
-
-	// TODO: board should return its size. board.getSize/getDimentions
 
 	public List<Vector2> getPossibleMoves() {
 		List<Vector2> possibleMoves = new ArrayList<Vector2>();
@@ -44,27 +40,35 @@ public class Rook extends ChessPiece {
 		int row = position.getX();
 		int column = position.getY();
 
-		for(int i = row + 1; i < 8; i++){
-			Vector2 move = new Vector2(i,column);
-			if(legalMove(move)) possibleMoves.add(move);
-			else break; // TODO: Should also check if it hits an enemy.
+		for (int i = row + 1; i < board.getSize(); i++) {
+			Vector2 move = new Vector2(i, column);
+			if (legalMove(move)) possibleMoves.add(move);
+			if(board.getPiece(move) != null){
+				if(board.getPiece(move).alliance() != this.alliance) possibleMoves.add(move);
+			}
 		}
 
-		for(int i = row - 1; i > -1; i--){
-			Vector2 move = new Vector2(i,column);
-			if(legalMove(move)) possibleMoves.add(move);
-			else break; // TODO: Should also check if it hits an enemy.
+		for (int i = row - 1; i > -1; i--) {
+			Vector2 move = new Vector2(i, column);
+			if (legalMove(move)) possibleMoves.add(move);
+			if(board.getPiece(move) != null){
+				if(board.getPiece(move).alliance() != this.alliance) possibleMoves.add(move);
+			}
 		}
 
-		for(int i = column + 1; i < 8; i++){
-			Vector2 move = new Vector2(i,column);
-			if(legalMove(move)) possibleMoves.add(move);
-			else break; // TODO: Should also check if it hits an enemy.
+		for (int i = column + 1; i < board.getSize(); i++) {
+			Vector2 move = new Vector2(i, column);
+			if (legalMove(move)) possibleMoves.add(move);
+			if(board.getPiece(move) != null){
+				if(board.getPiece(move).alliance() != this.alliance) possibleMoves.add(move);
+			}
 		}
-		for(int i = column - 1; i > -1; i--){
-			Vector2 move = new Vector2(i,column);
-			if(legalMove(move)) possibleMoves.add(move);
-			else break; // TODO: Should also check if it hits an enemy.
+		for (int i = column - 1; i > -1; i--) {
+			Vector2 move = new Vector2(i, column);
+			if (legalMove(move)) possibleMoves.add(move);
+			if(board.getPiece(move) != null){
+				if(board.getPiece(move).alliance() != this.alliance) possibleMoves.add(move);
+			}
 		}
 
 

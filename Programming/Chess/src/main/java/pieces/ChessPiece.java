@@ -68,7 +68,7 @@ public abstract class ChessPiece implements IChessPiece {
 	 * toward destination, returns false if runs into another piece
 	 */
 	protected boolean freePath(Vector2 destination) {
-		Vector2 path = null;
+		Vector2 path = position;
 		int between = position.distance(destination) - 1;
 
 		for (int step = 0; step < between; step++) {

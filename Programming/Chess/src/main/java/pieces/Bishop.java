@@ -24,7 +24,6 @@ public class Bishop extends ChessPiece {
 	 * @return a list of all possible moves from this position
 	 */
 
-	// TODO: board should return its size. board.getSize/getDimensions
 
 	public List<Vector2> getPossibleMoves(){
 
@@ -34,12 +33,14 @@ public class Bishop extends ChessPiece {
 		int column = position.getY();
 
 
-		for(int j = column + 1, i = row + 1; j < 8 && i < 8; j++, i++){
+		for(int j = column + 1, i = row + 1; j < board.getSize() && i < 8; j++, i++){
 			Vector2 move = new Vector2(i,j);
 			if(legalMove(move))
 					possibleMoves.add(new Vector2(i, j));
-			else
-				break; // TODO: Should also check if it hits an enemy.
+			if(board.getPiece(move) != null){
+				if(board.getPiece(move).alliance() != this.alliance) possibleMoves.add(move);
+			}
+			else break;
 
 			}
 
@@ -49,8 +50,11 @@ public class Bishop extends ChessPiece {
 			Vector2 move = new Vector2(i,j);
 			if(legalMove(move))
 				possibleMoves.add(new Vector2(i, j));
+			if(board.getPiece(move) != null){
+				if(board.getPiece(move).alliance() != this.alliance) possibleMoves.add(move);
+			}
 			else
-				break; // TODO: Should also check if it hits an enemy.
+				break;
 
 		}
 
@@ -58,17 +62,23 @@ public class Bishop extends ChessPiece {
 			Vector2 move = new Vector2(i,j);
 			if(legalMove(move))
 				possibleMoves.add(new Vector2(i, j));
+			if(board.getPiece(move) != null){
+				if(board.getPiece(move).alliance() != this.alliance) possibleMoves.add(move);
+			}
 			else
-				break; // TODO: Should also check if it hits an enemy.
+				break;
 
 		}
 
-		for(int j = column + 1, i = row - 1; j < 8 && i > -1; j++, i--){
+		for(int j = column + 1, i = row - 1; j < board.getSize() && i > -1; j++, i--){
 			Vector2 move = new Vector2(i,j);
 			if(legalMove(move))
 				possibleMoves.add(new Vector2(i, j));
+			if(board.getPiece(move) != null){
+				if(board.getPiece(move).alliance() != this.alliance) possibleMoves.add(move);
+			}
 			else
-				break; // TODO: Should also check if it hits an enemy.
+				break;
 
 		}
 
