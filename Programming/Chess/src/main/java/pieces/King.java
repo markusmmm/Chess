@@ -21,13 +21,19 @@ public class King extends ChessPiece {
 
 
     public boolean legalMove(Vector2 move) {
-        return (
-                positiveCoordinates(move) &&
-                        inDiagonals(move) &&
-                        inStraights(move) &&
-                        position.distance(move) == 1 &&
-                        freePath(move)
-        );
+        Vector2 moving = new Vector2(move.getX() + 1, move.getY() + 1);
+        if (
+                inDiagonals(move) && position.distance(move) == 1 &&
+                freePath(move)) {
+            return true;
+        } else if (inStraights(move) &&
+                position.distance(move) == 1 &&
+                freePath(move)) {
+            return true;
+        }
+        return false;
+
+
     }
 
     public List<Vector2> getPossibleMoves() {
