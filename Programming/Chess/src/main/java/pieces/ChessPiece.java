@@ -38,7 +38,7 @@ public abstract class ChessPiece implements IChessPiece {
 	 * 
 	 * @param move
 	 */
-	public abstract boolean legalMove(Vector2 move);
+	protected abstract boolean legalMove(Vector2 move);
 
 	/**
 	 * If the piece has been moved
@@ -52,12 +52,11 @@ public abstract class ChessPiece implements IChessPiece {
 	 * @param move
 	 */
 	public boolean move(Vector2 move) {
-		if (legalMove(move)) {
-		    moveLog.add(move);
-			position = new Vector2(move.getX(), move.getY());
-			return true;
-		}
-		return false;
+		if (!legalMove(move)) return false;
+
+		moveLog.add(move);
+		position = new Vector2(move.getX(), move.getY());
+		return true;
 	}
 
 	public void remove() {

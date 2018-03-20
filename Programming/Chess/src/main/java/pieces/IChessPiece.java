@@ -14,12 +14,6 @@ public interface IChessPiece {
     boolean canJump();
 	Piece piece();
 
-	/**
-	 *
-	 * @param end
-	 */
-	boolean legalMove(Vector2 end);
-
 	List<Vector2> getPossibleMoves();
 
 	boolean hasMoved();

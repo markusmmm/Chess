@@ -122,7 +122,7 @@ public class Board {
 	public boolean movePiece( Vector2 start, Vector2 end) {
 		IChessPiece piece = pieces.get(start);
 		if(piece == null) return false;
-		if(!piece.legalMove(end)) return false;
+		if(!piece.move(end)) return false;
 
 		lastPiece = piece;
 
