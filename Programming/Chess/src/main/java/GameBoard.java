@@ -1,3 +1,4 @@
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -17,6 +18,9 @@ public class GameBoard {
     private String username;
     private int difficulty;
 
+    private boolean firstClick;
+    private Tile firstTile;
+
     public GameBoard(String username, int difficulty) {
         this.board = new Board(SIZE, false);
         this.grid = new GridPane();
@@ -24,6 +28,8 @@ public class GameBoard {
         this.squares = new Rectangle[SIZE][SIZE];
         this.username = username;
         this.difficulty = difficulty;
+        this.firstClick = false;
+        this.firstTile = null;
     }
 
     /**
@@ -45,7 +51,8 @@ public class GameBoard {
                 }
 
                 tile.setOnMouseClicked(e -> {
-                    tile.tileClicked(e, Alliance.WHITE);
+                    //tile.tileClicked(e, Alliance.WHITE);
+                    tileClick(e, tile, Alliance.WHITE);
                 });
 
                 tiles[row][col] = tile;
@@ -60,6 +67,37 @@ public class GameBoard {
         }
 
         drawBoard();
+    }
+
+    private boolean tileClick(MouseEvent e, Tile tile, Alliance alliance) {
+        Vector2 pos = tile.getPos();
+        IChessPiece piece = board.getPiece(pos);
+
+        if (firstClick && firstTile.getPos() != pos) {
+            System.out.println(firstClick + " " + piece);
+            if(board.movePiece(firstTile.getPos(), pos)) {
+                drawBoard();
+                firstTile.setFill(Color.TRANSPARENT);
+                System.out.println("Moving " + piece + "from " + firstTile.getPos() + "to " + pos);
+            }
+            firstClick = false;
+            firstTile = null;
+        } else {
+            System.out.print(pos + ": ");
+            if (piece == null) {
+                System.out.println("No piece");
+                return false;
+            } else if (piece.alliance() != alliance) {
+                System.out.println("Not your alliance");
+                return false;
+            }
+            System.out.print(piece);
+
+            firstClick = true;
+            firstTile = tile;
+            return true;
+        }
+        return false;
     }
 
     public void drawBoard() {
