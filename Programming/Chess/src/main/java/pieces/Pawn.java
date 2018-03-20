@@ -34,9 +34,9 @@ public class Pawn extends ChessPiece {
 	{
 		return (
 				positiveCoordinates(move) &&
-				((whiteNegative2(move) || whiteNegative(move) || whiteLDiag(move) || whiteRDiag(move)) ||
-				(blackPositive2(move) || blackPositive(move) || blackLDiag(move) || blackRDiag(move))) &&
-				noTurnBack(move)
+				(((whiteNegative2(move) || whiteNegative(move) || whiteLDiag(move) || whiteRDiag(move)) && this.alliance.equals(WHITE)) ||
+				((blackPositive2(move) || blackPositive(move) || blackLDiag(move) || blackRDiag(move)) && this.alliance.equals(BLACK))) &&
+				((noTurnBackBlack(move) && this.alliance.equals(BLACK)) || (noTurnBackWhite(move) && this.alliance.equals(WHITE)))
 		);
 	}
 
@@ -44,6 +44,7 @@ public class Pawn extends ChessPiece {
 	{
 		Vector2 white = new Vector2(this.position().getX(), this.position().getY() - 1);
 		if (move.equals(white) && board.vacant(move)) {
+			this.hasDoubleStepped = true;
 			return true;
 		}
 		return false;
@@ -64,6 +65,7 @@ public class Pawn extends ChessPiece {
 	{
 		Vector2 black = new Vector2(this.position().getX(), this.position().getY() + 1);
 		if (move.equals(black) && board.vacant(move)) {
+			this.hasDoubleStepped = true;
 			return true;
 		}
 		return false;
@@ -128,16 +130,24 @@ public class Pawn extends ChessPiece {
 		return false;
 	}
 
-	public boolean noTurnBack(Vector2 move)
+	public boolean noTurnBackWhite(Vector2 move)
 	{
 		Vector2 turnBackWhite1 = new Vector2(this.position.getX(), this.position.getY() + 1);
 		Vector2 turnBackWhite2 = new Vector2(this.position.getX() + 1, this.position.getY() + 1);
 		Vector2 turnBackWhite3 = new Vector2(this.position.getX() - 1, this.position.getY() + 1);
+		if(move.equals(turnBackWhite1) || move.equals(turnBackWhite2) || move.equals(turnBackWhite3))
+		{
+			return false;
+		}
+		return true;
+	}
+
+	public boolean noTurnBackBlack(Vector2 move)
+	{
 		Vector2 turnBackBlack1 = new Vector2(this.position.getX(), this.position.getY() - 1);
 		Vector2 turnBackBlack2 = new Vector2(this.position.getX() + 1, this.position.getY() - 1);
 		Vector2 turnBackBlack3 = new Vector2(this.position.getX() - 1, this.position.getY() - 1);
-		if(move.equals(turnBackWhite1) || move.equals(turnBackWhite2) || move.equals(turnBackWhite3) ||
-			move.equals(turnBackBlack1) || move.equals(turnBackBlack2) || move.equals(turnBackBlack3))
+		if(move.equals(turnBackBlack1) || move.equals(turnBackBlack2) || move.equals(turnBackBlack3))
 		{
 			return false;
 		}
