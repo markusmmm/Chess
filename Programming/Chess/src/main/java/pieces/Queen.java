@@ -3,14 +3,13 @@ package pieces;
 import resources.*;
 import management.*;
 
-import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Queen extends ChessPiece {
 
-    private ArrayList<Vector2> possibleMoves = new ArrayList(Vector2);
-    private ArrayList<Vector2> legalMoves = new ArrayList(Vector2);
+    private ArrayList<Vector2> possibleMoves = new ArrayList<>();
+    private ArrayList<Vector2> legalMoves = new ArrayList<>();
 
     public Queen(Vector2 position, Alliance alliance, Board board){
 		super(position, alliance, board, false, Piece.QUEEN);
