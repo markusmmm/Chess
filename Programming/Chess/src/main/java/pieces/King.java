@@ -23,8 +23,7 @@ public class King extends ChessPiece {
     public boolean legalMove(Vector2 move) {
         return (
                 positiveCoordinates(move) &&
-                        inDiagonals(move) &&
-                        inStraights(move) &&
+                        (inDiagonals(move) || inStraights(move)) &&
                         position.distance(move) == 1 &&
                         freePath(move)
         );

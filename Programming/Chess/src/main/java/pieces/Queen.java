@@ -24,8 +24,7 @@ public class Queen extends ChessPiece {
 	public boolean legalMove(Vector2 move) {
 		return (
 		        insideBoard(move) &&
-                        inDiagonals(move) &&
-                        inStraights(move) &&
+                        (inDiagonals(move) || inStraights(move)) &&
                         freePath(move)
         );
 	}

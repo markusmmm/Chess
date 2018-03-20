@@ -52,10 +52,12 @@ public abstract class ChessPiece implements IChessPiece {
 	 * @param move
 	 */
 	public boolean move(Vector2 move) {
+		System.out.println("Attempting to move " + alliance + " " + piece + " from " + position + " to " + move);
+
 		if (!legalMove(move)) return false;
 		IChessPiece other = board.getPiece(position.add(move));
 		if(other != null)
-			if(other.alliance().equals(alliance)) return false;
+			if(other.alliance().equals(alliance)) return false; // Prevents a piece from taking another piece of the same color
 
 		moveLog.add(move);
 		position = new Vector2(move.getX(), move.getY());
