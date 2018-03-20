@@ -122,8 +122,13 @@ public class Board {
 
 		for(Vector2 pos : pieces.keySet()) {
 			IChessPiece piece = pieces.get(pos);
-			if(insideBoard(pos) && !piece.alliance().equals(alliance))
+			if(piece == null) continue;
+
+			if(insideBoard(pos) && !piece.alliance().equals(alliance)) {
+				if(piece.getPossibleDestinations().size() == 0) continue;
+
 				temp.put(pos, piece);
+			}
 		}
 
 		return temp;
@@ -169,6 +174,10 @@ public class Board {
 		activePlayer = activePlayer.equals(Alliance.WHITE) ? Alliance.BLACK : Alliance.WHITE;
 
 		return true;
+	}
+
+	public boolean movePiece(Move move) {
+		return movePiece(move.start, move.end);
 	}
 
 	private boolean removePiece(Vector2 pos) {
