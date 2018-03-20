@@ -21,16 +21,16 @@ public class Tile extends Rectangle {
 
 
     public void drawPiece() {
-        System.out.print("Printing " + pos + ": ");
+        //System.out.print("Printing " + pos + ": ");
 
         if(getPiece() == null) {
             setFill(Color.TRANSPARENT);
-            System.out.println(" EMPTY");
+            //System.out.println(" EMPTY");
             return;
         }
 
         String pieceName = getPiece().piece().toString();
-        System.out.println(pieceName);
+        //System.out.println(pieceName);
 
         String s = "";
         if (getPieceColor() == Alliance.WHITE)
