@@ -132,7 +132,7 @@ public class Board {
      * @return the piece that was last successfully moved
      */
 	public IChessPiece getLastPiece() {
-		return lastPiece;
+		return lastPiece.clonePiece();
 	}
 
 	/**
