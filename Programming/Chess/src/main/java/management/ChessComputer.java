@@ -2,6 +2,10 @@ package management;
 
 import pieces.IChessPiece;
 import resources.Alliance;
+<<<<<<< Updated upstream
+=======
+//import resources.Move;
+>>>>>>> Stashed changes
 import resources.Move;
 import resources.Vector2;
 
