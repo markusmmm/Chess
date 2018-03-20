@@ -27,5 +27,6 @@ public interface IChessPiece {
 	void remove();
 
 	IChessPiece clonePiece();
+	void syncContent(ChessPiece piece);
 
 }

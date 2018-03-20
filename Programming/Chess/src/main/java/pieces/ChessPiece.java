@@ -96,6 +96,10 @@ public abstract class ChessPiece implements IChessPiece {
 		return Math.abs(this.position.getX() - newPos.getX()) == Math.abs(this.position.getY() - newPos.getY());
 	}
 
+	public void syncContent(ChessPiece other) {
+		moveLog = other.moveLog;
+	}
+
 	@Override
     public String toString() {
 	    return piece() + "\t|\t" + alliance;

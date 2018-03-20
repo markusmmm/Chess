@@ -17,10 +17,10 @@ public class Board {
     private final int size;
 	private Player player1, player2;
 	private ChessClock clock = null;
-	private IChessPiece lastPiece = null;
+	private ChessPiece lastPiece = null;
 
-	public HashMap<Vector2, IChessPiece> pieces = new HashMap<Vector2, IChessPiece>();
-	public HashSet<IChessPiece> inactivePieces = new HashSet<IChessPiece>();
+	public HashMap<Vector2, ChessPiece> pieces = new HashMap<Vector2, ChessPiece>();
+	public HashSet<ChessPiece> inactivePieces = new HashSet<ChessPiece>();
 
     /**
      *
@@ -48,7 +48,7 @@ public class Board {
     		pieces.put(pos, createPiece(pos, type, Alliance.BLACK));
     		pieces.put(invPos, createPiece(invPos, type, Alliance.WHITE));
     		System.out.println(pos + ": " + pieces.get(pos));
-			System.out.println(invPos + ": " + pieces.get(pos));
+			System.out.println(invPos + ": " + pieces.get(invPos));
 
     		p++;
     	}
@@ -56,7 +56,7 @@ public class Board {
 
     }
 
-    private IChessPiece createPiece(Vector2 pos, Piece type, Alliance alliance) {
+    private ChessPiece createPiece(Vector2 pos, Piece type, Alliance alliance) {
     	switch (type) {
 			case BISHOP:
 				return new Bishop(pos, alliance, this);
@@ -72,6 +72,20 @@ public class Board {
 				return new Rook(pos, alliance, this);
 		}
 		return null;
+	}
+
+	public boolean transformPiece(Vector2 pos, Piece newType) {
+    	ChessPiece piece = pieces.get(pos);
+    	if(piece == null) return false;
+
+    	pieces.remove(pos);
+
+    	ChessPiece newPiece = createPiece(pos, newType, piece.alliance());
+    	newPiece.syncContent(piece);
+
+    	pieces.put(pos, newPiece);
+
+    	return true;
 	}
 
     /**
@@ -121,11 +135,20 @@ public class Board {
 	 * @param end
 	 */
 	public boolean movePiece( Vector2 start, Vector2 end) {
-		IChessPiece piece = pieces.get(start);
+		ChessPiece piece = pieces.get(start);
+
 		if(piece == null) return false;
 		if(!piece.move(end)) return false;
 
 		lastPiece = piece;
+		IChessPiece endPiece = pieces.get(end);
+
+		if(endPiece != null) {
+			if(piece.alliance().equals(endPiece.alliance()))
+				throw new IllegalStateException("An illegal move has been approved by " + piece.alliance() + ".legalMove()");
+
+			removePiece(end);
+		}
 
 		pieces.remove(start);
 		pieces.put(end, piece);
@@ -133,10 +156,10 @@ public class Board {
 		return true;
 	}
 
-	public boolean removePiece(Vector2 pos) {
+	private boolean removePiece(Vector2 pos) {
 		if(pieces.containsKey(pos)) return false;
 
-		IChessPiece piece = pieces.get(pos);
+		ChessPiece piece = pieces.get(pos);
 		pieces.remove(pos);
 		inactivePieces.add(piece);
 
