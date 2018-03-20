@@ -127,10 +127,9 @@ public class Board {
 		lastPiece = piece;
 
 		pieces.remove(start);
-		// TODO - add piece back to 'pieces' with updated position
+		pieces.put(end, piece);
 
-		// TODO - implement Board.movePiece
-		throw new UnsupportedOperationException();
+		return true;
 	}
 
 	public boolean removePiece(Vector2 pos) {
