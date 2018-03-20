@@ -145,7 +145,7 @@ public class Board {
 
 		if(endPiece != null) {
 			if(piece.alliance().equals(endPiece.alliance()))
-				throw new IllegalStateException("An illegal move has been approved by " + piece.alliance() + ".legalMove()");
+				throw new IllegalStateException("An illegal move has been approved by " + piece.piece() + ".legalMove()");
 
 			removePiece(end);
 		}
