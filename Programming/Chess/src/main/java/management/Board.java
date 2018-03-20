@@ -86,7 +86,18 @@ public class Board {
      */
 	public IChessPiece getPiece(Vector2 pos) {
         if(vacant(pos)) return null;
-		return pieces.get(pos); // TODO Use cloned piece, once implemented
+		return pieces.get(pos).clonePiece();
+	}
+	public HashMap<Vector2, IChessPiece> getPieces(Alliance alliance) {
+		HashMap<Vector2, IChessPiece> temp = new HashMap<>();
+
+		for(Vector2 pos : pieces.keySet()) {
+			IChessPiece piece = pieces.get(pos);
+			if(piece.alliance().equals(alliance))
+				temp.put(pos, piece);
+		}
+
+		return temp;
 	}
 
 	public boolean vacant(Vector2 pos) {
