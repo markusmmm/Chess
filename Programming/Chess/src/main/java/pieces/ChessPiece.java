@@ -53,6 +53,9 @@ public abstract class ChessPiece implements IChessPiece {
 	 */
 	public boolean move(Vector2 move) {
 		if (!legalMove(move)) return false;
+		IChessPiece other = board.getPiece(position.add(move));
+		if(other != null)
+			if(other.alliance().equals(alliance)) return false;
 
 		moveLog.add(move);
 		position = new Vector2(move.getX(), move.getY());
