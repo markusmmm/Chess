@@ -32,64 +32,60 @@ public class Pawn extends ChessPiece {
 	 */
 	public boolean legalMove(Vector2 move)
 	{
-		return positiveCoordinates(move);
+		return (
+				positiveCoordinates(move) &&
+				((whiteNegative2(move) || whiteNegative(move) || whiteLDiag(move) || whiteRDiag(move)) ||
+				(blackPositive2(move) || blackPositive(move) || blackLDiag(move) || blackRDiag(move)))
+		);
 	}
 
 	public boolean whiteNegative(Vector2 move)
 	{
-		if(legalMove(move)) {
-			Vector2 white = new Vector2(this.position().getX(), this.position().getY() - 1);
-			if (move.equals(white) && board.vacant(move)) {
-				return true;
-			}
+		Vector2 white = new Vector2(this.position().getX(), this.position().getY() - 1);
+		if (move.equals(white) && board.vacant(move)) {
+			return true;
 		}
 		return false;
 	}
 
 	public boolean whiteNegative2(Vector2 move)
 	{
-		if(legalMove(move)) {
-			Vector2 white1 = new Vector2(this.position().getX(), this.position().getY() - 1);
-			Vector2 white2 = new Vector2(this.position().getX(), this.position().getY() - 2);
-			if (move.equals(white2) && board.vacant(white1) && board.vacant(white2) && (moveLog.size() == 0)) {
-				return true;
-			}
+		Vector2 white1 = new Vector2(this.position().getX(), this.position().getY() - 1);
+		Vector2 white2 = new Vector2(this.position().getX(), this.position().getY() - 2);
+		if (move.equals(white2) && board.vacant(white1) && board.vacant(white2) && !this.hasDoubleStepped) {
+			this.hasDoubleStepped = true;
+			return true;
 		}
 		return false;
 	}
 
 	public boolean blackPositive(Vector2 move)
 	{
-		if(legalMove(move)) {
-			Vector2 black = new Vector2(this.position().getX(), this.position().getY() + 1);
-			if (move.equals(black) && board.vacant(move)) {
-				return true;
-			}
+		Vector2 black = new Vector2(this.position().getX(), this.position().getY() + 1);
+		if (move.equals(black) && board.vacant(move)) {
+			return true;
 		}
 		return false;
 	}
 
 	public boolean blackPositive2(Vector2 move)
 	{
-		if(legalMove(move)) {
-			Vector2 black1 = new Vector2(this.position().getX(), this.position().getY() + 1);
-			Vector2 black2 = new Vector2(this.position().getX(), this.position().getY() + 2);
-			if (move.equals(black2) && board.vacant(black1) && board.vacant(black2) && (moveLog.size() == 0)) {
-				return true;
-			}
+		Vector2 black1 = new Vector2(this.position().getX(), this.position().getY() + 1);
+		Vector2 black2 = new Vector2(this.position().getX(), this.position().getY() + 2);
+		if (move.equals(black2) && board.vacant(black1) && board.vacant(black2) && !this.hasDoubleStepped) {
+			this.hasDoubleStepped = true;
+			return true;
 		}
 		return false;
 	}
 
 	public boolean whiteLDiag(Vector2 move)
 	{
-		if(legalMove(move)) {
-			Vector2 whiteLD = new Vector2(this.position().getX() - 1, this.position().getY() - 1);
-			if (!board.vacant(move)) {
-				ChessPiece enemy = (ChessPiece) board.getPiece(move);
-				if (move.equals(whiteLD) && (!enemy.alliance.equals(this.alliance))) {
-					return true;
-				}
+		Vector2 whiteLD = new Vector2(this.position().getX() - 1, this.position().getY() - 1);
+		if (!board.vacant(move)) {
+			ChessPiece enemy = (ChessPiece) board.getPiece(move);
+			if (move.equals(whiteLD) && (!enemy.alliance.equals(this.alliance))) {
+				return true;
 			}
 		}
 		return false;
@@ -97,13 +93,11 @@ public class Pawn extends ChessPiece {
 
 	public boolean whiteRDiag(Vector2 move)
 	{
-		if(legalMove(move)) {
-			Vector2 whiteRD = new Vector2(this.position().getX() + 1, this.position().getY() - 1);
-			if (!board.vacant(move)) {
-				ChessPiece enemy = (ChessPiece) board.getPiece(move);
-				if (move.equals(whiteRD) && (!enemy.alliance.equals(this.alliance))) {
-					return true;
-				}
+		Vector2 whiteRD = new Vector2(this.position().getX() + 1, this.position().getY() - 1);
+		if (!board.vacant(move)) {
+			ChessPiece enemy = (ChessPiece) board.getPiece(move);
+			if (move.equals(whiteRD) && (!enemy.alliance.equals(this.alliance))) {
+				return true;
 			}
 		}
 		return false;
@@ -111,13 +105,11 @@ public class Pawn extends ChessPiece {
 
 	public boolean blackLDiag(Vector2 move)
 	{
-		if(legalMove(move)) {
-			Vector2 blackLD = new Vector2(this.position().getX() - 1, this.position().getY() + 1);
-			if (!board.vacant(move)) {
-				ChessPiece enemy = (ChessPiece) board.getPiece(move);
-				if (move.equals(blackLD) && (!enemy.alliance.equals(this.alliance))) {
-					return true;
-				}
+		Vector2 blackLD = new Vector2(this.position().getX() - 1, this.position().getY() + 1);
+		if (!board.vacant(move)) {
+			ChessPiece enemy = (ChessPiece) board.getPiece(move);
+			if (move.equals(blackLD) && (!enemy.alliance.equals(this.alliance))) {
+				return true;
 			}
 		}
 		return false;
@@ -125,59 +117,55 @@ public class Pawn extends ChessPiece {
 
 	public boolean blackRDiag(Vector2 move)
 	{
-		if(legalMove(move)) {
-			Vector2 blackRD = new Vector2(this.position().getX() + 1, this.position().getY() + 1);
-			if (!board.vacant(move)) {
-				ChessPiece enemy = (ChessPiece) board.getPiece(move);
-				if (move.equals(blackRD) && (!enemy.alliance.equals(this.alliance))) {
-					return true;
-				}
+		Vector2 blackRD = new Vector2(this.position().getX() + 1, this.position().getY() + 1);
+		if (!board.vacant(move)) {
+			ChessPiece enemy = (ChessPiece) board.getPiece(move);
+			if (move.equals(blackRD) && (!enemy.alliance.equals(this.alliance))) {
+				return true;
 			}
 		}
 		return false;
 	}
 
 	public List<Vector2> getPossibleMoves() {
-		Pawn pawn = this;
-
 		List<Vector2> possibleMoves = new ArrayList<>();
 		int row = this.position.getX();
 		int column = this.position.getY();
 
 		if(this.alliance.equals(WHITE))
 		{
-			if(whiteNegative(new Vector2(row, column - 1)))
+			if(legalMove(new Vector2(row, column - 1)))
 			{
 				possibleMoves.add(new Vector2(row, column - 1));
 			}
-			if(whiteNegative2(new Vector2(row, column - 2)))
+			if(legalMove(new Vector2(row, column - 2)))
 			{
 				possibleMoves.add(new Vector2(row, column - 2));
 			}
-			if(whiteLDiag(new Vector2(row - 1, column - 1)))
+			if(legalMove(new Vector2(row - 1, column - 1)))
 			{
 				possibleMoves.add(new Vector2(row - 1, column - 1));
 			}
-			if(whiteRDiag(new Vector2(row + 1, column - 1)))
+			if(legalMove(new Vector2(row + 1, column - 1)))
 			{
 				possibleMoves.add(new Vector2(row + 1, column - 1));
 			}
 		}
 		else if(this.alliance.equals(BLACK))
 		{
-			if(blackPositive(new Vector2(row, column + 1)))
+			if(legalMove(new Vector2(row, column + 1)))
 			{
 				possibleMoves.add(new Vector2(row, column + 1));
 			}
-			if(blackPositive2(new Vector2(row, column + 2)))
+			if(legalMove(new Vector2(row, column + 2)))
 			{
 				possibleMoves.add(new Vector2(row, column + 2));
 			}
-			if(blackLDiag(new Vector2(row - 1, column + 1)))
+			if(legalMove(new Vector2(row - 1, column + 1)))
 			{
 				possibleMoves.add(new Vector2(row - 1, column + 1));
 			}
-			if(blackRDiag(new Vector2(row + 1, column + 1)))
+			if(legalMove(new Vector2(row + 1, column + 1)))
 			{
 				possibleMoves.add(new Vector2(row + 1, column + 1));
 			}
