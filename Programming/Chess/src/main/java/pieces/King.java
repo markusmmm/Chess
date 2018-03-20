@@ -3,6 +3,7 @@ package pieces;
 import resources.*;
 import management.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class King extends ChessPiece {
@@ -30,19 +31,39 @@ public class King extends ChessPiece {
     }
 
     public List<Vector2> getPossibleMoves() {
-        //TODO King.getPossibleMoves
-        throw new UnsupportedOperationException();
-    }
+
+        List<Vector2> possibleMoves = new ArrayList<>();
+
+        int row = position.getX();
+        int col = position.getY();
 
 
-    public boolean inCheck() {
-        /* return board.InCheck();*/
-        throw new UnsupportedOperationException();
-    }
+        if (legalMove(new Vector2(row - 1, col - 1))) {
+            possibleMoves.add(new Vector2(row - 1, col - 1));
+        }
+        if (legalMove(new Vector2(row, col - 1))) {
+            possibleMoves.add(new Vector2(row, col - 1));
+        }
+        if (legalMove(new Vector2(row + 1, col - 1))) {
+            possibleMoves.add(new Vector2(row + 1, col - 1));
+        }
+        if (legalMove(new Vector2(row - 1, col))) {
+            possibleMoves.add(new Vector2(row - 1, col));
+        }
+        if (legalMove(new Vector2(row + 1, col))) {
+            possibleMoves.add(new Vector2(row + 1, col));
+        }
+        if (legalMove(new Vector2(row - 1, col + 1))) {
+            possibleMoves.add(new Vector2(row - 1, col + 1));
+        }
+        if (legalMove(new Vector2(row + 1, col - 1))) {
+            possibleMoves.add(new Vector2(row, col + 1));
+        }
+        if (legalMove(new Vector2(row + 1, col - 1))) {
+            possibleMoves.add(new Vector2(row + 1, col + 1));
+        }
+        return possibleMoves;
 
-    public boolean checkMate() {
-        /* return board.InCheckMate();*/
-        throw new UnsupportedOperationException();
     }
 
     /**
