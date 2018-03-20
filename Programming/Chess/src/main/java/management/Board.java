@@ -5,6 +5,7 @@ import resources.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 public class Board {
@@ -19,6 +20,7 @@ public class Board {
 	private IChessPiece lastPiece = null;
 
 	public HashMap<Vector2, IChessPiece> pieces = new HashMap<Vector2, IChessPiece>();
+	public HashSet<IChessPiece> inactivePieces = new HashSet<IChessPiece>();
 
     /**
      *
@@ -129,5 +131,15 @@ public class Board {
 
 		// TODO - implement Board.movePiece
 		throw new UnsupportedOperationException();
+	}
+
+	public boolean removePiece(Vector2 pos) {
+		if(pieces.containsKey(pos)) return false;
+
+		IChessPiece piece = pieces.get(pos);
+		pieces.remove(pos);
+		inactivePieces.add(piece);
+
+		return true;
 	}
 }
