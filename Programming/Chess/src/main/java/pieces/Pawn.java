@@ -35,7 +35,8 @@ public class Pawn extends ChessPiece {
 		return (
 				positiveCoordinates(move) &&
 				((whiteNegative2(move) || whiteNegative(move) || whiteLDiag(move) || whiteRDiag(move)) ||
-				(blackPositive2(move) || blackPositive(move) || blackLDiag(move) || blackRDiag(move)))
+				(blackPositive2(move) || blackPositive(move) || blackLDiag(move) || blackRDiag(move))) &&
+				noTurnBack(move)
 		);
 	}
 
@@ -125,6 +126,22 @@ public class Pawn extends ChessPiece {
 			}
 		}
 		return false;
+	}
+
+	public boolean noTurnBack(Vector2 move)
+	{
+		Vector2 turnBackWhite1 = new Vector2(this.position.getX(), this.position.getY() + 1);
+		Vector2 turnBackWhite2 = new Vector2(this.position.getX() + 1, this.position.getY() + 1);
+		Vector2 turnBackWhite3 = new Vector2(this.position.getX() - 1, this.position.getY() + 1);
+		Vector2 turnBackBlack1 = new Vector2(this.position.getX(), this.position.getY() - 1);
+		Vector2 turnBackBlack2 = new Vector2(this.position.getX() + 1, this.position.getY() - 1);
+		Vector2 turnBackBlack3 = new Vector2(this.position.getX() - 1, this.position.getY() - 1);
+		if(move.equals(turnBackWhite1) || move.equals(turnBackWhite2) || move.equals(turnBackWhite3) ||
+			move.equals(turnBackBlack1) || move.equals(turnBackBlack2) || move.equals(turnBackBlack3))
+		{
+			return false;
+		}
+		return true;
 	}
 
 	public List<Vector2> getPossibleMoves() {
