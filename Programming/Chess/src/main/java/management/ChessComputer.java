@@ -25,7 +25,7 @@ public class ChessComputer {
         Vector2[] keys = (Vector2[]) pieces.keySet().toArray();
         IChessPiece piece = pieces.get(keys[rand.nextInt(pieces.size())]);
 
-        List<Vector2> moves = piece.getPossibleMoves();
+        List<Vector2> moves = piece.getPossibleDestinations();
         Vector2 destination = moves.get(rand.nextInt(moves.size()));
 
         return new Move(piece.position(), destination);
