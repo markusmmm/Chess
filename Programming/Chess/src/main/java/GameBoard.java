@@ -52,7 +52,7 @@ public class GameBoard {
 
                 tile.setOnMouseClicked(e -> {
                     //tile.tileClicked(e, Alliance.WHITE);
-                    tileClick(e, tile, Alliance.WHITE);
+                    tileClick(e, tile);
                 });
 
                 tiles[row][col] = tile;
@@ -69,7 +69,9 @@ public class GameBoard {
         drawBoard();
     }
 
-    private boolean tileClick(MouseEvent e, Tile tile, Alliance alliance) {
+    private boolean tileClick(MouseEvent e, Tile tile) {
+        Alliance alliance = board.getActivePlayer();
+
         Vector2 pos = tile.getPos();
         IChessPiece piece = board.getPiece(pos);
 
