@@ -9,7 +9,6 @@ import java.util.List;
 public class Queen extends ChessPiece {
 
     private ArrayList<Vector2> possibleMoves = new ArrayList<>();
-    private ArrayList<Vector2> legalMoves = new ArrayList<>();
 
     public Queen(Vector2 position, Alliance alliance, Board board){
 		super(position, alliance, board, false, Piece.QUEEN);
@@ -33,24 +32,22 @@ public class Queen extends ChessPiece {
 
 	public List<Vector2> getPossibleMoves() {
 	    possibleMoves.clear();
-	    legalMoves.clear();
         for (int variable = 0; variable < board.getSize(); variable++) {
             //Straights
-            possibleMoves.add(new Vector2(position.getX(), position.getY() + variable));
-            possibleMoves.add(new Vector2(position.getX(), position.getY() - variable));
-            possibleMoves.add(new Vector2(position.getX() + variable, position.getY()));
-            possibleMoves.add(new Vector2(position.getX() - variable, position.getY()));
-
+            evalMove(new Vector2(position.getX(), position.getY() + variable));
+            evalMove(new Vector2(position.getX(), position.getY() - variable));
+            evalMove(new Vector2(position.getX() + variable, position.getY()));
+            evalMove(new Vector2(position.getX() - variable, position.getY()));
             //diagonals
-            possibleMoves.add(new Vector2(position.getX() + variable, position.getY() + variable));
-            possibleMoves.add(new Vector2(position.getX() + variable, position.getY() - variable));
-            possibleMoves.add(new Vector2(position.getX() - variable, position.getY() + variable));
-            possibleMoves.add(new Vector2(position.getX() - variable, position.getY() - variable));
+            evalMove(new Vector2(position.getX() + variable, position.getY() + variable));
+            evalMove(new Vector2(position.getX() + variable, position.getY() - variable));
+            evalMove(new Vector2(position.getX() - variable, position.getY() + variable));
+            evalMove(new Vector2(position.getX() - variable, position.getY() - variable));
         }
-        for(Vector2 vector: possibleMoves) {
-            if(insideBoard(vector) && freePath(vector)) legalMoves.add(vector);
-        }
-        return legalMoves;
+        return possibleMoves;
+    }
+    private void evalMove(Vector2 vector) {
+        if(insideBoard(vector) && freePath(vector)) possibleMoves.add(vector);
     }
 
     private boolean insideBoard(Vector2 vector) {
