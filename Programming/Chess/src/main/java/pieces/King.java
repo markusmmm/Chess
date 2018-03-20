@@ -5,7 +5,7 @@ import management.*;
 
 import java.util.List;
 
-public class King extends ChessPiece<King> {
+public class King extends ChessPiece {
 
     /**
      * @param position

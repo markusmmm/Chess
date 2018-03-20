@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class Bishop extends ChessPiece<Bishop> {
+public class Bishop extends ChessPiece {
 
 	public Bishop(Vector2 position, Alliance alliance, Board board){
 		super(position, alliance, board, false, Piece.BISHOP);
@@ -24,17 +24,17 @@ public class Bishop extends ChessPiece<Bishop> {
 	 * @return a list of all possible moves from this position
 	 */
 
-	// TODO: board should return its size. board.getSize/getDimentions
+	// TODO: board should return its size. board.getSize/getDimensions
 
 	public List<Vector2> getPossibleMoves(){
 
 		List<Vector2> possibleMoves = new ArrayList<Vector2>();
 
 		int row = position.getX();
-		int collumn = position.getY();
+		int column = position.getY();
 
 
-		for(int j = collumn + 1, i = row + 1; j < 8 && i < 8; j++, i++){
+		for(int j = column + 1, i = row + 1; j < 8 && i < 8; j++, i++){
 			Vector2 move = new Vector2(i,j);
 			if(legalMove(move))
 					possibleMoves.add(new Vector2(i, j));
@@ -45,7 +45,7 @@ public class Bishop extends ChessPiece<Bishop> {
 
 
 
-		for(int j = collumn - 1, i = row + 1; j > -1 && i < 8; j--, i++){
+		for(int j = column - 1, i = row + 1; j > -1 && i < 8; j--, i++){
 			Vector2 move = new Vector2(i,j);
 			if(legalMove(move))
 				possibleMoves.add(new Vector2(i, j));
@@ -54,7 +54,7 @@ public class Bishop extends ChessPiece<Bishop> {
 
 		}
 
-		for(int j = collumn - 1, i = row - 1; j > -1 && i > -1; j--, i--){
+		for(int j = column - 1, i = row - 1; j > -1 && i > -1; j--, i--){
 			Vector2 move = new Vector2(i,j);
 			if(legalMove(move))
 				possibleMoves.add(new Vector2(i, j));
@@ -63,7 +63,7 @@ public class Bishop extends ChessPiece<Bishop> {
 
 		}
 
-		for(int j = collumn + 1, i = row - 1; j < 8 && i > -1; j++, i--){
+		for(int j = column + 1, i = row - 1; j < 8 && i > -1; j++, i--){
 			Vector2 move = new Vector2(i,j);
 			if(legalMove(move))
 				possibleMoves.add(new Vector2(i, j));

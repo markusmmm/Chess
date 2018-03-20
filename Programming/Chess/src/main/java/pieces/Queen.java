@@ -5,7 +5,7 @@ import management.*;
 
 import java.util.List;
 
-public class Queen extends ChessPiece<Queen> {
+public class Queen extends ChessPiece {
 
 	public Queen(Vector2 position, Alliance alliance, Board board){
 		super(position, alliance, board, false, Piece.QUEEN);

@@ -7,7 +7,7 @@ import java.util.List;
 
 import management.*;
 
-public class Knight  extends ChessPiece<Knight> {
+public class Knight  extends ChessPiece {
 	
 	/**
 	 * 

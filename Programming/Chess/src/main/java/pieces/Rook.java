@@ -6,7 +6,7 @@ import management.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Rook extends ChessPiece<Rook> {
+public class Rook extends ChessPiece {
 
     /**
      *

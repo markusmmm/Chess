@@ -6,7 +6,7 @@ import management.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class ChessPiece<T extends ChessPiece<T>> implements IChessPiece<T> {
+public abstract class ChessPiece implements IChessPiece {
 
 	protected Vector2 position;
 

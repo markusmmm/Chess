@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-public interface IChessPiece<T extends ChessPiece<T>> {
+public interface IChessPiece {
 
 	Vector2 position();
 	Alliance alliance();
@@ -32,7 +32,6 @@ public interface IChessPiece<T extends ChessPiece<T>> {
 
 	void remove();
 
-
-	T clonePiece();
+	IChessPiece clonePiece();
 
 }

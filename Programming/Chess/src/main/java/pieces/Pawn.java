@@ -5,7 +5,7 @@ import management.*;
 
 import java.util.List;
 
-public class Pawn extends ChessPiece<Pawn> {
+public class Pawn extends ChessPiece {
 
 	public boolean hasDoubleStepped = false;
     private Vector2[] attacks = new Vector2[] {};
