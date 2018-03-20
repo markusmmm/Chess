@@ -28,7 +28,7 @@ public class Knight  extends ChessPiece {
     }
 	
 	/**
-	 * 
+	 *
 	 * @param destination
 	 */
 	public boolean legalMove(Vector2 destination) {
@@ -37,8 +37,10 @@ public class Knight  extends ChessPiece {
 
 	public List<Vector2> getPossibleDestinations() {
 		List<Vector2> possibleMoves = new ArrayList<Vector2>();
-		for (Vector2 move : moves)
+		for (Vector2 move : moves) {
+			if (!insideBoard(move)) continue;
 			possibleMoves.add(position.add(move));
+		}
 
 		return possibleMoves;
 	}

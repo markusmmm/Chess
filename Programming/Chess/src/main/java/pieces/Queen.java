@@ -48,10 +48,4 @@ public class Queen extends ChessPiece {
     private void evalMove(Vector2 vector) {
         if(insideBoard(vector) && freePath(vector)) possibleMoves.add(vector);
     }
-
-    private boolean insideBoard(Vector2 vector) {
-        return (
-                0 <= vector.getX() && vector.getX() < board.getSize() &&
-                0 <= vector.getY() && vector.getY() < board.getSize());
-    }
 }
