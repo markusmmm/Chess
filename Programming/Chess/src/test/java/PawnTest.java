@@ -25,6 +25,5 @@ public class PawnTest {
         if (board.getPiece(move) instanceof Pawn){
             fail("");
         }
-
     }
 }
