@@ -24,7 +24,8 @@ public class Rook extends ChessPiece {
 	 */
 	public boolean legalMove(Vector2 move) {
 		return (
-				positiveCoordinates(move) &&
+				insideBoard(move) &&
+						positiveCoordinates(move) &&
 						inStraights(move) &&
 						freePath(move)
 		);
@@ -72,6 +73,6 @@ public class Rook extends ChessPiece {
 		}
 
 
-		return possibleDestinations;
+		return filterPossibleDestinations(possibleDestinations);
 	}
 }

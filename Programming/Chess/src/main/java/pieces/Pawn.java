@@ -33,7 +33,7 @@ public class Pawn extends ChessPiece {
 	public boolean legalMove(Vector2 move)
 	{
 		return (
-				positiveCoordinates(move) &&
+				insideBoard(move) && positiveCoordinates(move) &&
 				(((whiteNegative2(move) || whiteNegative(move) || whiteLDiag(move) || whiteRDiag(move)) && this.alliance.equals(WHITE)) ||
 				((blackPositive2(move) || blackPositive(move) || blackLDiag(move) || blackRDiag(move)) && this.alliance.equals(BLACK))) &&
 				((noTurnBackBlack(move) && this.alliance.equals(BLACK)) || (noTurnBackWhite(move) && this.alliance.equals(WHITE)))

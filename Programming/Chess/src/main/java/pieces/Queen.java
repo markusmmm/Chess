@@ -43,7 +43,7 @@ public class Queen extends ChessPiece {
             evalMove(new Vector2(position.getX() - variable, position.getY() + variable));
             evalMove(new Vector2(position.getX() - variable, position.getY() - variable));
         }
-        return possibleMoves;
+        return filterPossibleDestinations(possibleMoves);
     }
     private void evalMove(Vector2 vector) {
         if(insideBoard(vector) && freePath(vector)) possibleMoves.add(vector);
