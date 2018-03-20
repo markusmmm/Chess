@@ -73,14 +73,17 @@ public class GameBoard {
         Alliance alliance = board.getActivePlayer();
 
         Vector2 pos = tile.getPos();
+
         IChessPiece piece = board.getPiece(pos);
 
         if (firstClick && firstTile.getPos() != pos) {
-            System.out.println(firstClick + " " + piece);
+            IChessPiece firstPiece = board.getPiece(firstTile.getPos());
+
+            System.out.println(firstClick + " " + firstPiece);
             if(board.movePiece(firstTile.getPos(), pos)) {
                 drawBoard();
                 firstTile.setFill(Color.TRANSPARENT);
-                System.out.println("Moving " + piece + "from " + firstTile.getPos() + "to " + pos);
+                System.out.println("Moving " + firstPiece + " from " + firstTile.getPos() + " to " + pos);
             }
             firstClick = false;
             firstTile = null;
@@ -93,7 +96,7 @@ public class GameBoard {
                 System.out.println("Not your alliance");
                 return false;
             }
-            System.out.print(piece);
+            System.out.println(piece);
 
             firstClick = true;
             firstTile = tile;

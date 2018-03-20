@@ -5,6 +5,7 @@ import static resources.Alliance.BLACK;
 import static resources.Alliance.WHITE;
 import management.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Pawn extends ChessPiece {
@@ -29,19 +30,32 @@ public class Pawn extends ChessPiece {
 	 * 
 	 * @param move
 	 */
-	public boolean legalMove(Vector2 move) {
+	public boolean legalMove(Vector2 move)
+	{
 		return (
 				positiveCoordinates(move) &&
-				position.distance(move) == 1 && freePath(move) &&
-				(whiteNegative(move) || blackPositive(move))
+				(((whiteNegative2(move) || whiteNegative(move) || whiteLDiag(move) || whiteRDiag(move)) && this.alliance.equals(WHITE)) ||
+				((blackPositive2(move) || blackPositive(move) || blackLDiag(move) || blackRDiag(move)) && this.alliance.equals(BLACK))) &&
+				((noTurnBackBlack(move) && this.alliance.equals(BLACK)) || (noTurnBackWhite(move) && this.alliance.equals(WHITE)))
 		);
 	}
 
 	public boolean whiteNegative(Vector2 move)
 	{
 		Vector2 white = new Vector2(this.position().getX(), this.position().getY() - 1);
-		if(move.equals(white))
-		{
+		if (move.equals(white) && board.vacant(move)) {
+			this.hasDoubleStepped = true;
+			return true;
+		}
+		return false;
+	}
+
+	public boolean whiteNegative2(Vector2 move)
+	{
+		Vector2 white1 = new Vector2(this.position().getX(), this.position().getY() - 1);
+		Vector2 white2 = new Vector2(this.position().getX(), this.position().getY() - 2);
+		if (move.equals(white2) && board.vacant(white1) && board.vacant(white2) && !this.hasDoubleStepped) {
+			this.hasDoubleStepped = true;
 			return true;
 		}
 		return false;
@@ -50,76 +64,143 @@ public class Pawn extends ChessPiece {
 	public boolean blackPositive(Vector2 move)
 	{
 		Vector2 black = new Vector2(this.position().getX(), this.position().getY() + 1);
-		if(move.equals(black))
-		{
+		if (move.equals(black) && board.vacant(move)) {
+			this.hasDoubleStepped = true;
 			return true;
 		}
 		return false;
 	}
 
-	public List<Vector2> getPossibleMoves() {
-		//TODO Pawn.getPossibleMoves
-		throw new UnsupportedOperationException();
-	}
-
-	public boolean canDoubleStep(Vector2 move)
+	public boolean blackPositive2(Vector2 move)
 	{
-		if((hasMoved() == false) && (position.distance(move) == 2))
-		{
+		Vector2 black1 = new Vector2(this.position().getX(), this.position().getY() + 1);
+		Vector2 black2 = new Vector2(this.position().getX(), this.position().getY() + 2);
+		if (move.equals(black2) && board.vacant(black1) && board.vacant(black2) && !this.hasDoubleStepped) {
+			this.hasDoubleStepped = true;
 			return true;
 		}
 		return false;
 	}
 
-	public void doubleStep(Vector2 move)
+	public boolean whiteLDiag(Vector2 move)
 	{
-		if(canDoubleStep(move))
-		{
-			if(this.alliance().equals(WHITE))
-			{
-				Vector2 wPawnMove = new Vector2(this.position().getX(), this.position().getY() - 2);
-				if(wPawnMove.equals(move))
-				{
-					hasDoubleStepped = true;
-					enPassantable = true;
-					board.movePiece(this.position(), move);
-				}
-
-			}
-			else if(this.alliance().equals(BLACK))
-			{
-				Vector2 bPawnMove = new Vector2(this.position().getX(), this.position().getY() + 2);
-				if(bPawnMove.equals(move))
-				{
-					hasDoubleStepped = true;
-					enPassantable = true;
-					board.movePiece(this.position(), move);
-				}
+		Vector2 whiteLD = new Vector2(this.position().getX() - 1, this.position().getY() - 1);
+		if (!board.vacant(move)) {
+			ChessPiece enemy = (ChessPiece) board.getPiece(move);
+			if (move.equals(whiteLD) && (!enemy.alliance.equals(this.alliance))) {
+				return true;
 			}
 		}
+		return false;
 	}
 
-	public void oneStep(Vector2 move)
+	public boolean whiteRDiag(Vector2 move)
 	{
-		if(this.alliance().equals(WHITE))
-		{
-			Vector2 wPawnMove = new Vector2(this.position().getX(), this.position().getY() - 1);
-			if(wPawnMove.equals(move))
-			{
-				enPassantable = false;
-				board.movePiece(this.position(), move);
+		Vector2 whiteRD = new Vector2(this.position().getX() + 1, this.position().getY() - 1);
+		if (!board.vacant(move)) {
+			ChessPiece enemy = (ChessPiece) board.getPiece(move);
+			if (move.equals(whiteRD) && (!enemy.alliance.equals(this.alliance))) {
+				return true;
 			}
 		}
-		else if(this.alliance().equals(BLACK))
-		{
-			Vector2 bPawnMove = new Vector2(this.position().getX(), this.position().getY() + 1);
-			if(bPawnMove.equals(move))
-			{
-				enPassantable = false;
-				board.movePiece(this.position(), move);
-			}
-		}
+		return false;
 	}
+
+	public boolean blackLDiag(Vector2 move)
+	{
+		Vector2 blackLD = new Vector2(this.position().getX() - 1, this.position().getY() + 1);
+		if (!board.vacant(move)) {
+			ChessPiece enemy = (ChessPiece) board.getPiece(move);
+			if (move.equals(blackLD) && (!enemy.alliance.equals(this.alliance))) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean blackRDiag(Vector2 move)
+	{
+		Vector2 blackRD = new Vector2(this.position().getX() + 1, this.position().getY() + 1);
+		if (!board.vacant(move)) {
+			ChessPiece enemy = (ChessPiece) board.getPiece(move);
+			if (move.equals(blackRD) && (!enemy.alliance.equals(this.alliance))) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean noTurnBackWhite(Vector2 move)
+	{
+		Vector2 turnBackWhite1 = new Vector2(this.position.getX(), this.position.getY() + 1);
+		Vector2 turnBackWhite2 = new Vector2(this.position.getX() + 1, this.position.getY() + 1);
+		Vector2 turnBackWhite3 = new Vector2(this.position.getX() - 1, this.position.getY() + 1);
+		if(move.equals(turnBackWhite1) || move.equals(turnBackWhite2) || move.equals(turnBackWhite3))
+		{
+			return false;
+		}
+		return true;
+	}
+
+	public boolean noTurnBackBlack(Vector2 move)
+	{
+		Vector2 turnBackBlack1 = new Vector2(this.position.getX(), this.position.getY() - 1);
+		Vector2 turnBackBlack2 = new Vector2(this.position.getX() + 1, this.position.getY() - 1);
+		Vector2 turnBackBlack3 = new Vector2(this.position.getX() - 1, this.position.getY() - 1);
+		if(move.equals(turnBackBlack1) || move.equals(turnBackBlack2) || move.equals(turnBackBlack3))
+		{
+			return false;
+		}
+		return true;
+	}
+
+	public List<Vector2> getPossibleDestinations() {
+		List<Vector2> possibleMoves = new ArrayList<>();
+		int row = this.position.getX();
+		int column = this.position.getY();
+
+		if(this.alliance.equals(WHITE))
+		{
+			if(legalMove(new Vector2(row, column - 1)))
+			{
+				possibleMoves.add(new Vector2(row, column - 1));
+			}
+			if(legalMove(new Vector2(row, column - 2)))
+			{
+				possibleMoves.add(new Vector2(row, column - 2));
+			}
+			if(legalMove(new Vector2(row - 1, column - 1)))
+			{
+				possibleMoves.add(new Vector2(row - 1, column - 1));
+			}
+			if(legalMove(new Vector2(row + 1, column - 1)))
+			{
+				possibleMoves.add(new Vector2(row + 1, column - 1));
+			}
+		}
+		else if(this.alliance.equals(BLACK))
+		{
+			if(legalMove(new Vector2(row, column + 1)))
+			{
+				possibleMoves.add(new Vector2(row, column + 1));
+			}
+			if(legalMove(new Vector2(row, column + 2)))
+			{
+				possibleMoves.add(new Vector2(row, column + 2));
+			}
+			if(legalMove(new Vector2(row - 1, column + 1)))
+			{
+				possibleMoves.add(new Vector2(row - 1, column + 1));
+			}
+			if(legalMove(new Vector2(row + 1, column + 1)))
+			{
+				possibleMoves.add(new Vector2(row + 1, column + 1));
+			}
+		}
+		return possibleMoves;
+	}
+
+	//TODO transformation when pawn gets to enemy line, en passant
 
 	public void enPassant()
 	{
@@ -132,15 +213,13 @@ public class Pawn extends ChessPiece {
 			{
 				if (this.alliance().equals(BLACK))
 				{
-					Vector2 blackEnPassantToLeft = new Vector2(this.position().getX() - 1, this.position().getY() + 1);
-					board.movePiece(this.position(), blackEnPassantToLeft);
-					//DELETE PIECE?!?!
+					//Vector2 blackEnPassantToLeft = new Vector2(this.position().getX() - 1, this.position().getY() + 1);
+					//board.movePiece(this.position(), blackEnPassantToLeft);
 				}
 				else if (this.alliance().equals(WHITE))
 				{
-					Vector2 whiteEnPassantToLeft = new Vector2(this.position().getX() - 1, this.position().getY() - 1);
-					board.movePiece(this.position(), whiteEnPassantToLeft);
-					//DELETE PIECE?!?!
+					//Vector2 whiteEnPassantToLeft = new Vector2(this.position().getX() - 1, this.position().getY() - 1);
+					//board.movePiece(this.position(), whiteEnPassantToLeft);
 				}
 			}
 		}
@@ -151,21 +230,15 @@ public class Pawn extends ChessPiece {
 			{
 				if (this.alliance().equals(BLACK))
 				{
-					Vector2 blackEnPassantToRight = new Vector2(this.position().getX() + 1, this.position().getY() + 1);
-					board.movePiece(this.position(), blackEnPassantToRight);
-					//DELETE PIECE?!?!
+					//Vector2 blackEnPassantToRight = new Vector2(this.position().getX() + 1, this.position().getY() + 1);
+					//board.movePiece(this.position(), blackEnPassantToRight);
 				}
 				else if (this.alliance().equals(WHITE))
 				{
-					Vector2 whiteEnPassantToRight = new Vector2(this.position().getX() + 1, this.position().getY() - 1);
-					board.movePiece(this.position(), whiteEnPassantToRight);
-					//DELETE PIECE?!?!
+					//Vector2 whiteEnPassantToRight = new Vector2(this.position().getX() + 1, this.position().getY() - 1);
+					//board.movePiece(this.position(), whiteEnPassantToRight);
 				}
 			}
 		}
-	}
-
-	private boolean positiveCoordinates(Vector2 pos) {
-		return 0 <= pos.getX() && 0 <= pos.getY();
 	}
 }
