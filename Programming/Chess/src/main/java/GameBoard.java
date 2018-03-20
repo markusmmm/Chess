@@ -2,16 +2,19 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import management.Board;
+import management.*;
 import pieces.IChessPiece;
 import resources.Alliance;
+import resources.Move;
 import resources.Vector2;
 
 import java.util.Map;
 
 public class GameBoard {
     private final int SIZE = 8;
-    private Board board;
+    private final Board board;
+    private final ChessComputer computer;
+
     private GridPane grid;
     private Tile[][] tiles;
     private Rectangle[][] squares;
@@ -30,6 +33,11 @@ public class GameBoard {
         this.difficulty = difficulty;
         this.firstClick = false;
         this.firstTile = null;
+
+        if(difficulty == 1) computer = new ChessComputerEasy(Alliance.BLACK, board);
+        else if(difficulty == 2) computer = new ChessComputerMedium(Alliance.BLACK, board);
+        else if(difficulty == 3) computer = new ChessComputerHard(Alliance.BLACK, board);
+        else computer = null;
     }
 
     /**
@@ -69,6 +77,23 @@ public class GameBoard {
         drawBoard();
     }
 
+    private void attemptMove(Tile firstTile, Vector2 pos) {
+        if(board.movePiece(firstTile.getPos(), pos)) {
+            if(computer != null) {
+                Move move = computer.getMove();
+                board.movePiece(move);
+                int row = move.start.getY();
+                int col = move.start.getX();
+
+                tiles[row][col].setFill(Color.TRANSPARENT);
+            }
+
+            firstTile.setFill(Color.TRANSPARENT);
+            drawBoard();
+            System.out.println("Moving " + board.getPiece(firstTile.getPos()) + " from " + firstTile.getPos() + " to " + pos);
+        }
+    }
+
     private boolean tileClick(MouseEvent e, Tile tile) {
         Alliance alliance = board.getActivePlayer();
 
@@ -80,11 +105,9 @@ public class GameBoard {
             IChessPiece firstPiece = board.getPiece(firstTile.getPos());
 
             System.out.println(firstClick + " " + firstPiece);
-            if(board.movePiece(firstTile.getPos(), pos)) {
-                drawBoard();
-                firstTile.setFill(Color.TRANSPARENT);
-                System.out.println("Moving " + firstPiece + " from " + firstTile.getPos() + " to " + pos);
-            }
+
+            attemptMove(firstTile, pos);
+
             firstClick = false;
             firstTile = null;
         } else {

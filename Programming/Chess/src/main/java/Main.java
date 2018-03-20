@@ -86,18 +86,26 @@ public class Main extends Application {
         labelWelcome.setAlignment(Pos.CENTER);
         labelWelcome.setId("title");
 
+        Button buttonPlayVersus = new Button();
+        buttonPlayVersus.setText("PLAY: VERSUS");
+
         Button buttonPlayEasy = new Button();
         buttonPlayEasy.setText("PLAY: EASY");
+
         Button buttonPlayMedium = new Button();
         buttonPlayMedium.setText("PLAY: MEDIUM");
+
         Button buttonPlayHard = new Button();
         buttonPlayHard.setText("PLAY: HARD");
         buttonPlayHard.setVisible(false);
+
         Button buttonHighScore = new Button();
         buttonHighScore.setText("HIGHSCORE");
+
         Button buttonQuit = new Button();
         buttonQuit.setText("QUIT");
 
+        buttonPlayVersus.setOnAction(e -> root.setCenter(createChessGame(username, 0)));
         buttonPlayEasy.setOnAction(e -> root.setCenter(createChessGame(username, 1)));
         buttonPlayMedium.setOnAction(e -> root.setCenter(createChessGame(username, 2)));
         buttonPlayHard.setOnAction(e -> root.setCenter(createChessGame(username, 3)));
@@ -105,7 +113,7 @@ public class Main extends Application {
 
         VBox buttonContainer = new VBox(10);
         buttonContainer.setAlignment(Pos.BASELINE_CENTER);
-        buttonContainer.getChildren().addAll(buttonPlayEasy, buttonPlayMedium, buttonPlayHard, buttonHighScore, buttonQuit);
+        buttonContainer.getChildren().addAll(buttonPlayVersus/*, buttonPlayEasy, buttonPlayMedium, buttonPlayHard*/, buttonHighScore, buttonQuit);
 
         VBox mainContent = new VBox(0);
         mainContent.setAlignment(Pos.TOP_CENTER);
