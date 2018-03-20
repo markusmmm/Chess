@@ -82,7 +82,7 @@ public class Bishop extends ChessPiece {
 
 		}
 
-		return possibleMoves;
+		return filterPossibleDestinations(possibleMoves);
 	}
 
 	/**
@@ -91,7 +91,8 @@ public class Bishop extends ChessPiece {
 	 */
 	public boolean legalMove(Vector2 move) {
 		return (
-				positiveCoordinates(move) &&
+				insideBoard(move) &&
+						positiveCoordinates(move) &&
 						inDiagonals(move) &&
 						freePath(move)
 		);

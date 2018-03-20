@@ -101,10 +101,8 @@ public abstract class ChessPiece implements IChessPiece {
 		return Math.abs(this.position.getX() - newPos.getX()) == Math.abs(this.position.getY() - newPos.getY());
 	}
 
-	protected boolean insideBoard(Vector2 vector) {
-		return (
-				0 <= vector.getX() && vector.getX() < board.getSize() &&
-						0 <= vector.getY() && vector.getY() < board.getSize());
+	protected boolean insideBoard(Vector2 pos) {
+		return board.insideBoard(pos);
 	}
 
 	protected boolean positiveCoordinates(Vector2 pos) {
@@ -114,8 +112,10 @@ public abstract class ChessPiece implements IChessPiece {
 	protected List<Vector2> filterPossibleDestinations(List<Vector2> list) {
 		for(int i = list.size() - 1; i >= 0; i--) {
 			Vector2 pos = list.get(i);
-			if(!insideBoard(pos))
+			if(!insideBoard(pos)) {
 				list.remove(i);
+				continue;
+			}
 
 			IChessPiece piece = board.getPiece(pos);
 

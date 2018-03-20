@@ -22,7 +22,8 @@ public class King extends ChessPiece {
 
     public boolean legalMove(Vector2 move) {
         return (
-                positiveCoordinates(move) &&
+                insideBoard(move) &&
+                        positiveCoordinates(move) &&
                         (inDiagonals(move) || inStraights(move)) &&
                         position.distance(move) == 1 &&
                         freePath(move)
@@ -61,7 +62,7 @@ public class King extends ChessPiece {
         if (legalMove(new Vector2(row + 1, col - 1))) {
             possibleMoves.add(new Vector2(row + 1, col + 1));
         }
-        return possibleMoves;
+        return filterPossibleDestinations(possibleMoves);
 
     }
 

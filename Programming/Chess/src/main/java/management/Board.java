@@ -102,6 +102,11 @@ public class Board {
         return size;
     }
 
+    public boolean insideBoard(Vector2 pos) {
+    	return pos.getX() >= 0 && pos.getX() < size &&
+				pos.getY() >= 0 && pos.getY() < size;
+	}
+
     /**
      * Calls 'getPiece' on all players, until a match is found (if it exists)
      * @param pos
@@ -111,12 +116,13 @@ public class Board {
         if(vacant(pos)) return null;
 		return pieces.get(pos).clonePiece();
 	}
-	public HashMap<Vector2, IChessPiece> getPieces(Alliance alliance) {
+
+	public HashMap<Vector2, IChessPiece> getUsablePieces(Alliance alliance) {
 		HashMap<Vector2, IChessPiece> temp = new HashMap<>();
 
 		for(Vector2 pos : pieces.keySet()) {
 			IChessPiece piece = pieces.get(pos);
-			if(piece.alliance().equals(alliance))
+			if(insideBoard(pos) && !piece.alliance().equals(alliance))
 				temp.put(pos, piece);
 		}
 
