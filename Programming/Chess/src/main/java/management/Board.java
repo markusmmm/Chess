@@ -19,6 +19,8 @@ public class Board {
 	private ChessClock clock = null;
 	private ChessPiece lastPiece = null;
 
+	private Alliance activePlayer = Alliance.WHITE;
+
 	public HashMap<Vector2, ChessPiece> pieces = new HashMap<Vector2, ChessPiece>();
 	public HashSet<ChessPiece> inactivePieces = new HashSet<ChessPiece>();
 
@@ -55,6 +57,10 @@ public class Board {
 
 
     }
+
+    public Alliance getActivePlayer() {
+    	return activePlayer;
+	}
 
     private ChessPiece createPiece(Vector2 pos, Piece type, Alliance alliance) {
     	switch (type) {
@@ -152,6 +158,9 @@ public class Board {
 
 		pieces.remove(start);
 		pieces.put(end, piece);
+
+		//After a successful move, advance to the next player
+		activePlayer = activePlayer.equals(Alliance.WHITE) ? Alliance.BLACK : Alliance.WHITE;
 
 		return true;
 	}
