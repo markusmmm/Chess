@@ -31,7 +31,7 @@ public class ChessComputerMedium extends ChessComputer {
     @Override
     public Move getMove() {
         calcEnemyMoves();
-
+        throw new UnsupportedOperationException();
     }
 
     private void calcEnemyMoves() {
