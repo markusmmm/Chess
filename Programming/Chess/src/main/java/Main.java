@@ -9,6 +9,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import management.HighscoreController;
+import resources.Highscore;
+
+import java.util.List;
 
 public class Main extends Application {
 
@@ -54,10 +58,19 @@ public class Main extends Application {
         errorField.setFill(Color.RED);
 
         loginButton.setOnAction(e -> {
-            if (textUsername.getText() == null || textUsername.getText().trim().isEmpty())
+            String username = textUsername.getText();
+            if (username == null || username.trim().isEmpty())
                 errorField.setText("Please enter a non-empty username.");
             else {
-                Scene scene = new Scene(mainMenu(textUsername.getText()));
+                HighscoreController highscoreController = new HighscoreController();
+                if (highscoreController.addUser(username)) {
+                   System.out.println("added");
+                } else System.out.println("not added");
+                // System.out.println(highscoreController.getScore(username));
+                // System.out.println("Eksisterer: " + highscoreController.userExists(username));
+                // System.out.println(highscoreController.getScore("Magnus"));
+                // new HighscoreController().addUser(username);
+                Scene scene = new Scene(mainMenu(username));
                 scene.getStylesheets().add("stylesheet.css");
                 stage.setScene(scene);
             }
@@ -109,6 +122,7 @@ public class Main extends Application {
         buttonPlayEasy.setOnAction(e -> root.setCenter(createChessGame(username, 1)));
         buttonPlayMedium.setOnAction(e -> root.setCenter(createChessGame(username, 2)));
         buttonPlayHard.setOnAction(e -> root.setCenter(createChessGame(username, 3)));
+        buttonHighScore.setOnAction(e -> highScorePopup());
         buttonQuit.setOnAction(e -> onQuit());
 
         VBox buttonContainer = new VBox(10);
@@ -124,6 +138,16 @@ public class Main extends Application {
         root.setCenter(mainContent);
 
         return root;
+    }
+
+    /**
+     * TODO: implement a popup with a scoreboard containing scores from a HighscoreController
+     */
+    private void highScorePopup() {
+        HighscoreController highscoreController = new HighscoreController();
+        for (Highscore score : highscoreController.getHighscores()) {
+            System.out.println(score);
+        }
     }
 
     /**

@@ -59,7 +59,6 @@ public class GameBoard {
                 }
 
                 tile.setOnMouseClicked(e -> {
-                    //tile.tileClicked(e, Alliance.WHITE);
                     tileClick(e, tile);
                 });
 
