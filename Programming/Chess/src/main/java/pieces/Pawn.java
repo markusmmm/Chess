@@ -159,104 +159,91 @@ public class Pawn extends ChessPiece {
 
 	public Set<Vector2> getPossibleDestinations() {
 		Set<Vector2> possibleMoves = new HashSet<>();
-		int row = this.position.getX();
-		int column = this.position.getY();
+		int x = this.position.getX();
+		int y = this.position.getY();
 
 		if(this.alliance.equals(WHITE))
 		{
-			//One step
-			if(legalMove(new Vector2(row, column - 1)))
-			{
-				possibleMoves.add(new Vector2(row, column - 1));
-			}
 			//First move 2 step
-			if(legalMove(new Vector2(row, column - 2)))
+			if(legalMove(new Vector2(x, y - 2)))
 			{
-				possibleMoves.add(new Vector2(row, column - 1));
-				possibleMoves.add(new Vector2(row, column - 2));
+				possibleMoves.add(new Vector2(x, y - 1));
+				possibleMoves.add(new Vector2(x, y - 2));
+			}
+			//One step
+			if(legalMove(new Vector2(x, y - 1)))
+			{
+				possibleMoves.add(new Vector2(x, y - 1));
 			}
 			//Take out enemy diagonal to left
-			if(legalMove(new Vector2(row - 1, column - 1)))
+			if(legalMove(new Vector2(x - 1, y - 1)))
 			{
-				possibleMoves.add(new Vector2(row - 1, column - 1));
+				possibleMoves.add(new Vector2(x - 1, y - 1));
 			}
 			//Take out enemy diagonal to right
-			if(legalMove(new Vector2(row + 1, column - 1)))
+			if(legalMove(new Vector2(x + 1, y - 1)))
 			{
-				possibleMoves.add(new Vector2(row + 1, column - 1));
+				possibleMoves.add(new Vector2(x + 1, y - 1));
+			}
+			if(enPassant(new Vector2(x - 1, y)))
+			{
+				possibleMoves.add(new Vector2(x - 1, y - 1));
+			}
+			if(enPassant(new Vector2(x + 1, y)))
+			{
+				possibleMoves.add(new Vector2(x + 1, y - 1));
 			}
 		}
 		else if(this.alliance.equals(BLACK))
 		{
-			//One step
-			if(legalMove(new Vector2(row, column + 1)))
-			{
-				possibleMoves.add(new Vector2(row, column + 1));
-			}
 			//First move 2 step
-			if(legalMove(new Vector2(row, column + 2)))
+			if(legalMove(new Vector2(x, y + 2)))
 			{
-				possibleMoves.add(new Vector2(row, column + 1));
-				possibleMoves.add(new Vector2(row, column + 2));
+				possibleMoves.add(new Vector2(x, y + 1));
+				possibleMoves.add(new Vector2(x, y + 2));
+			}
+			//One step
+			if(legalMove(new Vector2(x, y + 1)))
+			{
+				possibleMoves.add(new Vector2(x, y + 1));
 			}
 			//Take out enemy diagonal to left
-			if(legalMove(new Vector2(row - 1, column + 1)))
+			if(legalMove(new Vector2(x - 1, y + 1)))
 			{
-				possibleMoves.add(new Vector2(row - 1, column + 1));
+				possibleMoves.add(new Vector2(x - 1, y + 1));
 			}
 			//take out enemy diagonal to right
-			if(legalMove(new Vector2(row + 1, column + 1)))
+			if(legalMove(new Vector2(x + 1, y + 1)))
 			{
-				possibleMoves.add(new Vector2(row + 1, column + 1));
+				possibleMoves.add(new Vector2(x + 1, y + 1));
+			}
+			if(enPassant(new Vector2(x - 1, y)))
+			{
+				possibleMoves.add(new Vector2(x - 1, y + 1));
+			}
+			if(enPassant(new Vector2(x + 1, y)))
+			{
+				possibleMoves.add(new Vector2(x + 1, y + 1));
 			}
 		}
-
-		System.out.println("Possible moves for " + toString() + ": ");
-		for(Vector2 dest : possibleMoves)
-			System.out.println(dest);
-
 		return possibleMoves;
 	}
 
 	//TODO transformation when pawn gets to enemy line, en passant
 
-	public void enPassant()
+	public boolean enPassant(Vector2 side)
 	{
-		Vector2 toLeft = new Vector2(this.position().getX() - 1, this.position().getY());
-		Vector2 toRight = new Vector2(this.position().getX() + 1, this.position().getY());
-		if(!board.vacant(toLeft))
+		if (!board.vacant(side))
 		{
-			Pawn enemyPawn = (Pawn) board.getPiece(toLeft);
-			if (enemyPawn.hasDoubleStepped && enemyPawn.enPassantable)
+			if((this.alliance.equals(WHITE) && this.position.getY() == 3) || (this.alliance.equals(BLACK) && this.position.getY() == 4))
 			{
-				if (this.alliance().equals(BLACK))
+				Pawn possibleEnemyPawn = (Pawn) board.getPiece(side);
+				if (possibleEnemyPawn.hasDoubleStepped && (!possibleEnemyPawn.alliance.equals(this.alliance)) && board.getLastPiece().position().equals(possibleEnemyPawn))
 				{
-					//Vector2 blackEnPassantToLeft = new Vector2(this.position().getX() - 1, this.position().getY() + 1);
-					//board.movePiece(this.position(), blackEnPassantToLeft);
-				}
-				else if (this.alliance().equals(WHITE))
-				{
-					//Vector2 whiteEnPassantToLeft = new Vector2(this.position().getX() - 1, this.position().getY() - 1);
-					//board.movePiece(this.position(), whiteEnPassantToLeft);
+					return true;
 				}
 			}
 		}
-		else if(!board.vacant(toRight))
-		{
-			Pawn enemyPawn = (Pawn) board.getPiece(toRight);
-			if (enemyPawn.hasDoubleStepped && enemyPawn.enPassantable)
-			{
-				if (this.alliance().equals(BLACK))
-				{
-					//Vector2 blackEnPassantToRight = new Vector2(this.position().getX() + 1, this.position().getY() + 1);
-					//board.movePiece(this.position(), blackEnPassantToRight);
-				}
-				else if (this.alliance().equals(WHITE))
-				{
-					//Vector2 whiteEnPassantToRight = new Vector2(this.position().getX() + 1, this.position().getY() - 1);
-					//board.movePiece(this.position(), whiteEnPassantToRight);
-				}
-			}
-		}
+		return false;
 	}
 }
