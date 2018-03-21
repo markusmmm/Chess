@@ -13,8 +13,6 @@ import java.util.Set;
 public class Pawn extends ChessPiece {
 
 	public boolean hasDoubleStepped = false;
-	public boolean enPassantable = false;
-    private Vector2[] attacks = new Vector2[] {};
 
 	/**
 	 *
@@ -43,6 +41,17 @@ public class Pawn extends ChessPiece {
 		);
 	}
 
+	@Override
+	public boolean move(Vector2 destination) {
+		boolean whiteNegative2 = whiteNegative2(destination) && alliance == alliance.WHITE;
+		boolean blackPositive2 = blackPositive2(destination) && alliance == alliance.BLACK;
+
+		if(!super.move(destination)) return false;
+
+		if(!hasDoubleStepped && (whiteNegative2 || blackPositive2))
+			hasDoubleStepped = true;
+	}
+
 	public boolean whiteNegative(Vector2 move)
 	{
 		Vector2 white = new Vector2(this.position().getX(), this.position().getY() - 1);
@@ -55,34 +64,26 @@ public class Pawn extends ChessPiece {
 
 	public boolean whiteNegative2(Vector2 move)
 	{
+		if(hasMoved()) return false;
+
 		Vector2 white1 = new Vector2(this.position().getX(), this.position().getY() - 1);
 		Vector2 white2 = new Vector2(this.position().getX(), this.position().getY() - 2);
-		if (move.equals(white2) && board.vacant(white1) && board.vacant(white2) && !this.hasDoubleStepped) {
-			this.hasDoubleStepped = true;
-			return true;
-		}
-		return false;
+		return move.equals(white2) && board.vacant(white1) && board.vacant(white2);
 	}
 
 	public boolean blackPositive(Vector2 move)
 	{
 		Vector2 black = new Vector2(this.position().getX(), this.position().getY() + 1);
-		if (move.equals(black) && board.vacant(move)) {
-			this.hasDoubleStepped = true;
-			return true;
-		}
-		return false;
+		return move.equals(black) && board.vacant(move);
 	}
 
 	public boolean blackPositive2(Vector2 move)
 	{
+		if(hasMoved()) return false;
+
 		Vector2 black1 = new Vector2(this.position().getX(), this.position().getY() + 1);
 		Vector2 black2 = new Vector2(this.position().getX(), this.position().getY() + 2);
-		if (move.equals(black2) && board.vacant(black1) && board.vacant(black2) && !this.hasDoubleStepped) {
-			this.hasDoubleStepped = true;
-			return true;
-		}
-		return false;
+		return move.equals(black2) && board.vacant(black1) && board.vacant(black2);
 	}
 
 	public boolean whiteLDiag(Vector2 move)

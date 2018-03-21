@@ -24,8 +24,9 @@ public class ChessComputerMedium extends ChessComputer {
 
     @Override
     public Move getMove() {
-        for (ChessPiece p : (ChessPiece) (board.getUsablePieces(enemy).values()) {
-            enemyMoves.addAll(p.getPossibleDestinations());
-        }
+        //for (ChessPiece p : (ChessPiece) (board.getUsablePieces(enemy).values()) {
+        //    enemyMoves.addAll(p.getPossibleDestinations());
+        //}
+        throw new
     }
 }
