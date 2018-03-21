@@ -4,11 +4,13 @@ import resources.*;
 import management.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Queen extends ChessPiece {
 
-    private ArrayList<Vector2> possibleMoves = new ArrayList<>();
+    private Set<Vector2> possibleMoves = new HashSet<>();
 
     public Queen(Vector2 position, Alliance alliance, Board board){
 		super(position, alliance, board, false, Piece.QUEEN);
@@ -19,17 +21,18 @@ public class Queen extends ChessPiece {
 
 	/**
 	 * 
-	 * @param move
+	 * @param destination
 	 */
-	public boolean legalMove(Vector2 move) {
+	public boolean legalMove(Vector2 destination) {
+        if(!super.legalMove(destination)) return false;
+
 		return (
-		        insideBoard(move) &&
-                        (inDiagonals(move) || inStraights(move)) &&
-                        freePath(move)
+            (inDiagonals(destination) || inStraights(destination)) &&
+            freePath(destination)
         );
 	}
 
-	public List<Vector2> getPossibleDestinations() {
+	public Set<Vector2> getPossibleDestinations() {
 	    possibleMoves.clear();
         for (int variable = 0; variable < board.getSize(); variable++) {
             //Straights
@@ -43,9 +46,9 @@ public class Queen extends ChessPiece {
             evalMove(new Vector2(position.getX() - variable, position.getY() + variable));
             evalMove(new Vector2(position.getX() - variable, position.getY() - variable));
         }
-        return filterPossibleDestinations(possibleMoves);
+        return possibleMoves;
     }
     private void evalMove(Vector2 vector) {
-        if(insideBoard(vector) && freePath(vector)) possibleMoves.add(vector);
+        if(legalMove(vector)) possibleMoves.add(vector);
     }
 }

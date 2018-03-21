@@ -7,7 +7,9 @@ import resources.Piece;
 import resources.Vector2;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 public class Bishop extends ChessPiece {
@@ -25,9 +27,9 @@ public class Bishop extends ChessPiece {
 	 */
 
 
-	public List<Vector2> getPossibleDestinations(){
+	public Set<Vector2> getPossibleDestinations(){
 
-		List<Vector2> possibleMoves = new ArrayList<Vector2>();
+		Set<Vector2> possibleMoves = new HashSet<Vector2>();
 
 		int row = position.getX();
 		int column = position.getY();
@@ -82,19 +84,19 @@ public class Bishop extends ChessPiece {
 
 		}
 
-		return filterPossibleDestinations(possibleMoves);
+		return possibleMoves;
 	}
 
 	/**
 	 *
-	 * @param move
+	 * @param destination
 	 */
-	public boolean legalMove(Vector2 move) {
+	public boolean legalMove(Vector2 destination) {
+		if(!super.legalMove(destination)) return false;
+
 		return (
-				insideBoard(move) &&
-						positiveCoordinates(move) &&
-						inDiagonals(move) &&
-						freePath(move)
+			inDiagonals(destination) &&
+			freePath(destination)
 		);
 	}
 }

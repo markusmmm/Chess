@@ -6,11 +6,17 @@ import management.*;
 import pieces.IChessPiece;
 import resources.Alliance;
 import resources.Move;
+import resources.Piece;
 import resources.Vector2;
 
 import java.util.Map;
 
 public class GameBoard {
+    private static final Piece[] defaultBoard = new Piece[] {
+            Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK,
+            Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN
+    };
+
     private final int SIZE = 8;
     private final Board board;
     private final ChessComputer computer;
@@ -25,7 +31,7 @@ public class GameBoard {
     private Tile firstTile;
 
     public GameBoard(String username, int difficulty) {
-        this.board = new Board(SIZE, false);
+        this.board = new Board(SIZE, false, defaultBoard);
         this.grid = new GridPane();
         this.tiles = new Tile[SIZE][SIZE];
         this.squares = new Rectangle[SIZE][SIZE];
@@ -78,6 +84,9 @@ public class GameBoard {
     }
 
     private void attemptMove(Tile firstTile, Vector2 pos) {
+        IChessPiece temp = board.getPiece(firstTile.getPos());
+        System.out.println("Before: " + temp.position());
+
         if(board.movePiece(firstTile.getPos(), pos)) {
             if(computer != null) {
                 Move move = computer.getMove();
@@ -92,6 +101,8 @@ public class GameBoard {
             drawBoard();
             System.out.println("Moving " + board.getPiece(firstTile.getPos()) + " from " + firstTile.getPos() + " to " + pos);
         }
+
+        System.out.println("After:" + temp.position());
     }
 
     private boolean tileClick(MouseEvent e, Tile tile) {

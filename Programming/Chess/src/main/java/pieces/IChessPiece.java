@@ -6,15 +6,15 @@ import management.*;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public interface IChessPiece {
 
 	Vector2 position();
 	Alliance alliance();
-    boolean canJump();
 	Piece piece();
 
-	List<Vector2> getPossibleDestinations();
+	Set<Vector2> getPossibleDestinations();
 
 	boolean hasMoved();
 
@@ -23,8 +23,6 @@ public interface IChessPiece {
 	 * @param end
 	 */
 	boolean move(Vector2 end);
-
-	void remove();
 
 	IChessPiece clonePiece();
 	void syncContent(ChessPiece piece);

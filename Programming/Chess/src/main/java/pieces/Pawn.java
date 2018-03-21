@@ -6,7 +6,9 @@ import static resources.Alliance.WHITE;
 import management.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Pawn extends ChessPiece {
 
@@ -28,15 +30,16 @@ public class Pawn extends ChessPiece {
 
 	/**
 	 * 
-	 * @param move
+	 * @param destination
 	 */
-	public boolean legalMove(Vector2 move)
+	public boolean legalMove(Vector2 destination)
 	{
+		if(!super.legalMove(destination)) return false;
+
 		return (
-				insideBoard(move) && positiveCoordinates(move) &&
-				(((whiteNegative2(move) || whiteNegative(move) || whiteLDiag(move) || whiteRDiag(move)) && this.alliance.equals(WHITE)) ||
-				((blackPositive2(move) || blackPositive(move) || blackLDiag(move) || blackRDiag(move)) && this.alliance.equals(BLACK))) &&
-				((noTurnBackBlack(move) && this.alliance.equals(BLACK)) || (noTurnBackWhite(move) && this.alliance.equals(WHITE)))
+			(((whiteNegative2(destination) || whiteNegative(destination) || whiteLDiag(destination) || whiteRDiag(destination)) && this.alliance.equals(WHITE)) ||
+			((blackPositive2(destination) || blackPositive(destination) || blackLDiag(destination) || blackRDiag(destination)) && this.alliance.equals(BLACK))) &&
+			((noTurnBackBlack(destination) && this.alliance.equals(BLACK)) || (noTurnBackWhite(destination) && this.alliance.equals(WHITE)))
 		);
 	}
 
@@ -154,8 +157,8 @@ public class Pawn extends ChessPiece {
 		return true;
 	}
 
-	public List<Vector2> getPossibleDestinations() {
-		List<Vector2> possibleMoves = new ArrayList<>();
+	public Set<Vector2> getPossibleDestinations() {
+		Set<Vector2> possibleMoves = new HashSet<>();
 		int row = this.position.getX();
 		int column = this.position.getY();
 

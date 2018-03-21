@@ -4,7 +4,9 @@ import resources.*;
 import management.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class King extends ChessPiece {
 
@@ -20,21 +22,20 @@ public class King extends ChessPiece {
     }
 
 
-    public boolean legalMove(Vector2 move) {
+    public boolean legalMove(Vector2 destination) {
+        if(!super.legalMove(destination)) return false;
 
         return (
-                insideBoard(move) &&
-                        positiveCoordinates(move) &&
-                        (inDiagonals(move) || inStraights(move)) &&
-                        position.distance(move) == 1 &&
-                        freePath(move)
+            (inDiagonals(destination) || inStraights(destination)) &&
+            position.distance(destination) == 1 &&
+            freePath(destination)
         );
 
     }
 
-    public List<Vector2> getPossibleDestinations() {
+    public Set<Vector2> getPossibleDestinations() {
 
-        List<Vector2> possibleMoves = new ArrayList<>();
+        Set<Vector2> possibleMoves = new HashSet<>();
 
         int row = position.getX();
         int col = position.getY();
@@ -64,7 +65,7 @@ public class King extends ChessPiece {
         if (legalMove(new Vector2(row + 1, col - 1))) {
             possibleMoves.add(new Vector2(row + 1, col + 1));
         }
-        return filterPossibleDestinations(possibleMoves);
+        return possibleMoves;
 
     }
 

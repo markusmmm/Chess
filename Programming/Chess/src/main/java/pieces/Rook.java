@@ -4,7 +4,9 @@ import resources.*;
 import management.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Rook extends ChessPiece {
 
@@ -20,14 +22,14 @@ public class Rook extends ChessPiece {
 	}
 
 	/**
-	 * @param move
+	 * @param destination
 	 */
-	public boolean legalMove(Vector2 move) {
+	public boolean legalMove(Vector2 destination) {
+		if(!super.legalMove(destination)) return false;
+
 		return (
-				insideBoard(move) &&
-						positiveCoordinates(move) &&
-						inStraights(move) &&
-						freePath(move)
+			inStraights(destination) &&
+			freePath(destination)
 		);
 	}
 
@@ -35,8 +37,8 @@ public class Rook extends ChessPiece {
 	 * @return a list of all possible moves from this position
 	 */
 
-	public List<Vector2> getPossibleDestinations() {
-		List<Vector2> possibleDestinations = new ArrayList<Vector2>();
+	public Set<Vector2> getPossibleDestinations() {
+		Set<Vector2> possibleDestinations = new HashSet<>();
 
 		int row = position.getX();
 		int column = position.getY();
@@ -72,7 +74,6 @@ public class Rook extends ChessPiece {
 			}
 		}
 
-
-		return filterPossibleDestinations(possibleDestinations);
+		return possibleDestinations;
 	}
 }

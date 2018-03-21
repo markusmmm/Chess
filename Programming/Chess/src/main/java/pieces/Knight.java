@@ -2,19 +2,17 @@ package pieces;
 
 import resources.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import management.*;
 
 public class Knight  extends ChessPiece {
 
-	Vector2[] moves = new Vector2[] {
+	Set<Vector2> moves = new HashSet<>(Arrays.asList(
 			new Vector2( 2, 1), new Vector2( 1, 2),
 			new Vector2(-2, 1), new Vector2(-1, 2),
 			new Vector2( 2,-1), new Vector2( 1,-2),
-			new Vector2(-2,-1), new Vector2(-1,-2),
-	};
+			new Vector2(-2,-1), new Vector2(-1,-2)));
 
 	/**
 	 * 
@@ -32,17 +30,20 @@ public class Knight  extends ChessPiece {
 	 * @param destination
 	 */
 	public boolean legalMove(Vector2 destination) {
-		return positiveCoordinates(destination) &&
-				getPossibleDestinations().contains(destination);
+		if(!super.legalMove(destination)) return false;
+
+		return moves.contains(destination);
 	}
 
-	public List<Vector2> getPossibleDestinations() {
-		List<Vector2> possibleMoves = new ArrayList<Vector2>();
+	public Set<Vector2> getPossibleDestinations() {
+		Set<Vector2> possibleDestinations = new HashSet<>();
+
 		for (Vector2 move : moves) {
-			if (!insideBoard(position.add(move))) continue;
-			possibleMoves.add(position.add(move));
+			Vector2 endPos = position.add(move);
+			if(legalMove(endPos))
+				possibleDestinations.add(endPos);
 		}
 
-		return possibleMoves;
+		return possibleDestinations;
 	}
 }

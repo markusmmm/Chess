@@ -1,7 +1,7 @@
 package resources;
 
 public class Vector2 {
-	private int x, y;
+	private final int x, y;
 
 	public Vector2 (int x, int y) {
 		this.x = x;

@@ -9,11 +9,6 @@ import java.util.HashSet;
 import java.util.List;
 
 public class Board {
-	private static final Piece[] defaultBoard = new Piece[] {
-			Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK,
-			Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN
-	};
-
     private final int size;
 	private Player player1, player2;
 	private ChessClock clock = null;
@@ -30,7 +25,7 @@ public class Board {
      * @param useClock Whether or not a chess clock should be used
      * @throws IllegalArgumentException if ({@code size < 2})   //Pre-conditions
      */
-    public Board(int size, boolean useClock) {
+    public Board(int size, boolean useClock, Piece[] initialSetup) {
     	if(size < 2) throw new IllegalArgumentException("The board size must be at least 2");
 
     	int p = 0;
@@ -40,7 +35,7 @@ public class Board {
 			clock = new ChessClock(2, 900, 12, -1);
 		}
 
-    	for(Piece type : defaultBoard) {
+    	for(Piece type : initialSetup) {
     		int x = p % size;
     		int y = p / size;
 
@@ -151,27 +146,38 @@ public class Board {
 	 * @param start
 	 * @param end
 	 */
-	public boolean movePiece( Vector2 start, Vector2 end) {
+	public boolean movePiece(Vector2 start, Vector2 end) {
+		if(!insideBoard(start)) return false;
+
 		ChessPiece piece = pieces.get(start);
 
-		if(piece == null) return false;
-		if(!piece.move(end)) return false;
+		System.out.println("Currently " + activePlayer + "'s turn");
+
+		if(piece == null) return false; // Check if a piece exists at the given position
+		if(!piece.alliance().equals(activePlayer)) return false; // Checks if the active player owns the piece that is being moved
+
+		System.out.println("Local before: " + piece.position());
+		if(!piece.move(end)) return false; // Attempt to move the piece
 
 		lastPiece = piece;
 		IChessPiece endPiece = pieces.get(end);
 
 		if(endPiece != null) {
-			if(piece.alliance().equals(endPiece.alliance()))
-				throw new IllegalStateException("An illegal move has been approved by " + piece.piece() + ".legalMove()");
-
-			removePiece(end);
+			//Remove hostile attacked piece
+			if(!endPiece.alliance().equals(piece.alliance()))
+				removePiece(end);
 		}
+
+		assert(piece.position().equals(end));
 
 		pieces.remove(start);
 		pieces.put(end, piece);
 
 		//After a successful move, advance to the next player
 		activePlayer = activePlayer.equals(Alliance.WHITE) ? Alliance.BLACK : Alliance.WHITE;
+
+		System.out.println("Local after: " + piece.position());
+		System.out.println("Move successful!");
 
 		return true;
 	}

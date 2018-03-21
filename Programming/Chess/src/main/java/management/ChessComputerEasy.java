@@ -28,9 +28,9 @@ public class ChessComputerEasy extends ChessComputer {
         for(Vector2 key : keys) {
             if(r == i++) {
                 IChessPiece piece = pieces.get(key);
-                List<Vector2> moves = piece.getPossibleDestinations();
+                Object[] destinations = piece.getPossibleDestinations().toArray();
 
-                Vector2 destination = moves.get(rand.nextInt(moves.size()));
+                Vector2 destination = (Vector2)destinations[rand.nextInt(destinations.length)];
 
                 return new Move(piece.position(), destination);
             }
