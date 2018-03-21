@@ -5,6 +5,7 @@ import resources.Highscore;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 public class HighscoreController {
@@ -42,6 +43,8 @@ public class HighscoreController {
     public boolean addUser(String username) {
         if (userExists(username))
             return false;
+        highscores.add(new Highscore(username, 0));
+        syncWithTextFile();
         return true;
     }
 
@@ -57,6 +60,13 @@ public class HighscoreController {
     public void updateScore(String username, int updatedValue) {
         Highscore score = getScore(username);
         score.setScore(updatedValue);
+        syncWithTextFile();
+    }
+
+    public void updateUsername(String oldUsername, String newUsername) {
+        Highscore score = getScore(oldUsername);
+        score.setUsername(newUsername);
+        syncWithTextFile();
     }
 
     public void syncWithTextFile() {
@@ -66,7 +76,15 @@ public class HighscoreController {
             sb.append(score.getScore());
             sb.append("\n");
         }
-        System.out.println(sb);
+        try {
+            ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+            InputStream is = classloader.getResourceAsStream(HIGHSCORE_TXT);
+            PrintWriter writer = new PrintWriter(classloader.getResource(HIGHSCORE_TXT).getPath());
+            writer.write(sb.toString());
+            writer.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public ArrayList<Highscore> getHighscores() {

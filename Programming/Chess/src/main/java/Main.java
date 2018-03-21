@@ -63,13 +63,7 @@ public class Main extends Application {
                 errorField.setText("Please enter a non-empty username.");
             else {
                 HighscoreController highscoreController = new HighscoreController();
-                if (highscoreController.addUser(username)) {
-                   System.out.println("added");
-                } else System.out.println("not added");
-                // System.out.println(highscoreController.getScore(username));
-                // System.out.println("Eksisterer: " + highscoreController.userExists(username));
-                // System.out.println(highscoreController.getScore("Magnus"));
-                // new HighscoreController().addUser(username);
+                highscoreController.addUser(username);
                 Scene scene = new Scene(mainMenu(username));
                 scene.getStylesheets().add("stylesheet.css");
                 stage.setScene(scene);
