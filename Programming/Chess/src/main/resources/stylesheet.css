@@ -22,6 +22,8 @@
 }
 #moveLog {
     -fx-font-size: 11px;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent
 }
 #informationFieldContainer {
     -fx-background-color: darkgray;
