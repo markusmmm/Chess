@@ -53,21 +53,24 @@ public class Main extends Application {
         Text errorField = new Text();
         errorField.setFill(Color.RED);
 
-        loginButton.setOnAction(e -> {
-            if (textUsername.getText() == null || textUsername.getText().trim().isEmpty())
-                errorField.setText("Please enter a non-empty username.");
-            else {
-                Scene scene = new Scene(mainMenu(textUsername.getText()));
-                scene.getStylesheets().add("stylesheet.css");
-                stage.setScene(scene);
-            }
-        });
+        textUsername.setOnAction(e -> handleLogin(textUsername.getText(), errorField));
+        loginButton.setOnAction(e -> handleLogin(textUsername.getText(), errorField));
 
         VBox root = new VBox(20);
         root.setAlignment(Pos.CENTER);
         root.getChildren().addAll(labelTitle, gridPane, loginButton, errorField);
         root.setPrefSize(400, 250);
         return root;
+    }
+
+    private void handleLogin(String username, Text errorField) {
+        if (username == null || username.trim().isEmpty())
+            errorField.setText("Please enter a non-empty username.");
+        else {
+            Scene scene = new Scene(mainMenu(username));
+            scene.getStylesheets().add("stylesheet.css");
+            stage.setScene(scene);
+        }
     }
 
     /**
@@ -131,10 +134,10 @@ public class Main extends Application {
      *
      * @return chessGame
      */
-    private GridPane createChessGame(String username, int difficulty) {
+    private BorderPane createChessGame(String username, int difficulty) {
         GameBoard gameBoard = new GameBoard(username, difficulty);
         gameBoard.createBoard();
-        return gameBoard.getGrid();
+        return gameBoard.getContainer();
     }
 
     /**

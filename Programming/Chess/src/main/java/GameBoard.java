@@ -1,16 +1,15 @@
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import management.*;
 import pieces.IChessPiece;
 import resources.Alliance;
 import resources.Move;
-import resources.Piece;
 import resources.Vector2;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class GameBoard {
@@ -19,6 +18,8 @@ public class GameBoard {
     private final ChessComputer computer;
 
     private GridPane grid;
+    private BorderPane container;
+
     private Tile[][] tiles;
     private Rectangle[][] squares;
     private String username;
@@ -36,10 +37,11 @@ public class GameBoard {
         this.difficulty = difficulty;
         this.firstClick = false;
         this.firstTile = null;
+        this.container = new BorderPane();
 
-        if(difficulty == 1) computer = new ChessComputerEasy(board);
-        else if(difficulty == 2) computer = new ChessComputerMedium(board);
-        else if(difficulty == 3) computer = new ChessComputerHard(board);
+        if (difficulty == 1) computer = new ChessComputerEasy(board);
+        else if (difficulty == 2) computer = new ChessComputerMedium(board);
+        else if (difficulty == 3) computer = new ChessComputerHard(board);
         else computer = null;
     }
 
@@ -77,6 +79,12 @@ public class GameBoard {
             }
         }
 
+        VBox right = new VBox();
+        right.setSpacing(10);
+
+        container.setCenter(grid);
+        container.setRight(right);
+
         drawBoard();
     }
 
@@ -84,8 +92,8 @@ public class GameBoard {
         IChessPiece temp = board.getPiece(firstTile.getPos());
         System.out.println("Before: " + temp.position());
 
-        if(board.movePiece(firstTile.getPos(), pos)) {
-            if(computer != null) {
+        if (board.movePiece(firstTile.getPos(), pos)) {
+            if (computer != null) {
                 Move move = computer.getMove();
                 board.movePiece(move);
                 int row = move.start.getY();
@@ -97,6 +105,8 @@ public class GameBoard {
             firstTile.setFill(Color.TRANSPARENT);
             drawBoard();
             System.out.println("Moving " + board.getPiece(firstTile.getPos()) + " from " + firstTile.getPos() + " to " + pos);
+        } else {
+            drawBoard();
         }
 
         System.out.println("After:" + temp.position());
@@ -183,6 +193,10 @@ public class GameBoard {
 
     public GridPane getGrid() {
         return grid;
+    }
+
+    public BorderPane getContainer() {
+        return container;
     }
 
     public String getUsername() {
