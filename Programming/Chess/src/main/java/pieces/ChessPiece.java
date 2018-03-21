@@ -4,10 +4,11 @@ import resources.*;
 import management.*;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Stack;
 
-public abstract class ChessPiece implements IChessPiece {
+public abstract class ChessPiece implements IChessPiece, Collection<Vector2> {
 
 	protected Vector2 position;
 
