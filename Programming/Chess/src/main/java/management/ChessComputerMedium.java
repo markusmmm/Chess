@@ -4,8 +4,8 @@ import resources.Alliance;
 import resources.Move;
 
 public class ChessComputerMedium extends ChessComputer {
-    public ChessComputerMedium(Alliance alliance, Board board) {
-        super(alliance, board);
+    public ChessComputerMedium(Board board) {
+        super(board);
     }
 
     @Override

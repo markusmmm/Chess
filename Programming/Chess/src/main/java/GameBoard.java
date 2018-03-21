@@ -35,9 +35,9 @@ public class GameBoard {
         this.firstClick = false;
         this.firstTile = null;
 
-        if(difficulty == 1) computer = new ChessComputerEasy(Alliance.BLACK, board);
-        else if(difficulty == 2) computer = new ChessComputerMedium(Alliance.BLACK, board);
-        else if(difficulty == 3) computer = new ChessComputerHard(Alliance.BLACK, board);
+        if(difficulty == 1) computer = new ChessComputerEasy(board);
+        else if(difficulty == 2) computer = new ChessComputerMedium(board);
+        else if(difficulty == 3) computer = new ChessComputerHard(board);
         else computer = null;
     }
 
