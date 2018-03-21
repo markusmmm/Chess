@@ -85,7 +85,7 @@ public class Board {
     	return activePlayer;
 	}
 
-    private ChessPiece createPiece(Vector2 pos, Piece type, Alliance alliance) {
+    public ChessPiece createPiece(Vector2 pos, Piece type, Alliance alliance) {
     	switch (type) {
 			case BISHOP:
 				return new Bishop(pos, alliance, this);
