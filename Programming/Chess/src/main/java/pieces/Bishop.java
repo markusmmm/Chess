@@ -32,6 +32,7 @@ public class Bishop extends ChessPiece {
 		for (int variable = 0; variable < board.getSize(); variable++) {
 			//diagonals
 			evalMove(new Vector2(position.getX() + variable, position.getY() + variable));
+
 			evalMove(new Vector2(position.getX() + variable, position.getY() - variable));
 			evalMove(new Vector2(position.getX() - variable, position.getY() + variable));
 			evalMove(new Vector2(position.getX() - variable, position.getY() - variable));
