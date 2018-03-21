@@ -167,7 +167,6 @@ public class Pawn extends ChessPiece {
 			//First move 2 step
 			if(legalMove(new Vector2(x, y - 2)))
 			{
-				possibleMoves.add(new Vector2(x, y - 1));
 				possibleMoves.add(new Vector2(x, y - 2));
 			}
 			//One step
@@ -199,7 +198,6 @@ public class Pawn extends ChessPiece {
 			//First move 2 step
 			if(legalMove(new Vector2(x, y + 2)))
 			{
-				possibleMoves.add(new Vector2(x, y + 1));
 				possibleMoves.add(new Vector2(x, y + 2));
 			}
 			//One step
