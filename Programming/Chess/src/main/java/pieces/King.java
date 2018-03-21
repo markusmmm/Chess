@@ -23,7 +23,7 @@ public class King extends ChessPiece {
 
     @Override
     public boolean legalMove(Vector2 destination) {
-        if(board.insideBoard(position) && board.insideBoard(destination)) return false;
+        if(!(board.insideBoard(position) && board.insideBoard(destination))) return false;
 
         IChessPiece endPiece = board.getPiece(destination);
         if(endPiece != null && endPiece.alliance().equals(alliance)) return false;
