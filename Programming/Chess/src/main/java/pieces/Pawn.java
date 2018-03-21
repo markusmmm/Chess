@@ -50,6 +50,8 @@ public class Pawn extends ChessPiece {
 
 		if(!hasDoubleStepped && (whiteNegative2 || blackPositive2))
 			hasDoubleStepped = true;
+
+		return true;
 	}
 
 	public boolean whiteNegative(Vector2 move)
