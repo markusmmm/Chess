@@ -5,6 +5,7 @@ import management.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 public abstract class ChessPiece implements IChessPiece {
 
@@ -15,7 +16,7 @@ public abstract class ChessPiece implements IChessPiece {
 	protected final Piece piece;
 	protected final Board board;
 
-	protected List<Vector2> moveLog = new ArrayList<Vector2>();
+	protected Stack<Vector2> moveLog = new Stack<Vector2>();
 
     /**
      *
@@ -63,7 +64,7 @@ public abstract class ChessPiece implements IChessPiece {
 		if (!legalMove(move)) return false; // If the destination is unreachable, the move fails
 
 		position = new Vector2(move.getX(), move.getY());
-		moveLog.add(move);
+		moveLog.push(move);
 		return true;
 	}
 

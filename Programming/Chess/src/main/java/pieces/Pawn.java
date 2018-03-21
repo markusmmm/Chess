@@ -226,7 +226,6 @@ public class Pawn extends ChessPiece {
 				possibleMoves.add(new Vector2(x + 1, y + 1));
 			}
 		}
-
 		return possibleMoves;
 	}
 
