@@ -155,8 +155,8 @@ public class Board {
 			IChessPiece piece = pieces.get(pos);
 			if(piece == null) continue;
 
-			if(insideBoard(pos) && !piece.alliance().equals(alliance)) {
-				if(piece.getPossibleDestinations().size() == 0) continue;
+			if(insideBoard(pos) && piece.alliance().equals(alliance)) {
+				if(piece.getPossibleDestinations().size() == 0) continue; // If the piece has no valid moves, ignore it
 
 				temp.put(pos, piece);
 			}
