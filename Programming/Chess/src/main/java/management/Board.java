@@ -9,6 +9,13 @@ import java.util.HashSet;
 import java.util.List;
 
 public class Board {
+	private static final Piece[] defaultBoard = new Piece[] {
+			Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY,
+			Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY,
+			Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK,
+			Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN
+	};
+
     private final int size;
 	private Player player1, player2;
 	private ChessClock clock = null;
@@ -18,6 +25,13 @@ public class Board {
 
 	public HashMap<Vector2, ChessPiece> pieces = new HashMap<Vector2, ChessPiece>();
 	public HashSet<ChessPiece> inactivePieces = new HashSet<ChessPiece>();
+
+	public Board(int size, boolean useClock) {
+		if(size < 2) throw new IllegalArgumentException("The board size must be at least 2");
+
+		this.size = size;
+		setup(useClock, defaultBoard, true);
+	}
 
     /**
      *

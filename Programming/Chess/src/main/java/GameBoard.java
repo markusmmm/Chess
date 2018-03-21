@@ -12,13 +12,6 @@ import resources.Vector2;
 import java.util.Map;
 
 public class GameBoard {
-    private static final Piece[] defaultBoard = new Piece[] {
-            Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY,
-            Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY,
-            Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK,
-            Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN
-    };
-
     private final int SIZE = 8;
     private final Board board;
     private final ChessComputer computer;
@@ -33,7 +26,7 @@ public class GameBoard {
     private Tile firstTile;
 
     public GameBoard(String username, int difficulty) {
-        this.board = new Board(SIZE, false, defaultBoard);
+        this.board = new Board(SIZE, false);
         this.grid = new GridPane();
         this.tiles = new Tile[SIZE][SIZE];
         this.squares = new Rectangle[SIZE][SIZE];
