@@ -210,6 +210,11 @@ public class Pawn extends ChessPiece {
 				possibleMoves.add(new Vector2(row + 1, column + 1));
 			}
 		}
+
+		System.out.println("Possible moves for " + toString() + ": ");
+		for(Vector2 dest : possibleMoves)
+			System.out.println(dest);
+
 		return possibleMoves;
 	}
 

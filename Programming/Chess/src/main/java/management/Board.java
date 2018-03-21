@@ -3,10 +3,7 @@ package management;
 import pieces.*;
 import resources.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 public class Board {
 	private static final Piece[] defaultBoard = new Piece[] {
@@ -25,6 +22,8 @@ public class Board {
 
 	public HashMap<Vector2, ChessPiece> pieces = new HashMap<Vector2, ChessPiece>();
 	public HashSet<ChessPiece> inactivePieces = new HashSet<ChessPiece>();
+
+	private Stack<MoveNode> gameLog = new Stack<>();
 
 	public Board(int size, boolean useClock) {
 		if(size < 2) throw new IllegalArgumentException("The board size must be at least 2");
@@ -198,13 +197,18 @@ public class Board {
 		lastPiece = piece;
 		IChessPiece endPiece = pieces.get(end);
 
+		Piece victim = Piece.EMPTY;
 		if(endPiece != null) {
 			//Remove hostile attacked piece
-			if(!endPiece.alliance().equals(piece.alliance()))
+			if(!endPiece.alliance().equals(piece.alliance())) {
 				removePiece(end);
+				victim = endPiece.piece();
+			}
 		}
 
-		assert(piece.position().equals(end));
+		//assert(piece.position().equals(end));
+
+		gameLog.push(new MoveNode(piece.piece(), piece.alliance(), start, end, victim));
 
 		pieces.remove(start);
 		pieces.put(end, piece);
@@ -230,5 +234,9 @@ public class Board {
 		inactivePieces.add(piece);
 
 		return true;
+	}
+
+	public Stack<MoveNode> getGameLog() {
+		return (Stack<MoveNode>) gameLog.clone();
 	}
 }
