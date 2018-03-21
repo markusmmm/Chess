@@ -164,18 +164,23 @@ public class Pawn extends ChessPiece {
 
 		if(this.alliance.equals(WHITE))
 		{
+			//One step
 			if(legalMove(new Vector2(row, column - 1)))
 			{
 				possibleMoves.add(new Vector2(row, column - 1));
 			}
+			//First move 2 step
 			if(legalMove(new Vector2(row, column - 2)))
 			{
+				possibleMoves.add(new Vector2(row, column - 1));
 				possibleMoves.add(new Vector2(row, column - 2));
 			}
+			//Take out enemy diagonal to left
 			if(legalMove(new Vector2(row - 1, column - 1)))
 			{
 				possibleMoves.add(new Vector2(row - 1, column - 1));
 			}
+			//Take out enemy diagonal to right
 			if(legalMove(new Vector2(row + 1, column - 1)))
 			{
 				possibleMoves.add(new Vector2(row + 1, column - 1));
@@ -183,18 +188,23 @@ public class Pawn extends ChessPiece {
 		}
 		else if(this.alliance.equals(BLACK))
 		{
+			//One step
 			if(legalMove(new Vector2(row, column + 1)))
 			{
 				possibleMoves.add(new Vector2(row, column + 1));
 			}
+			//First move 2 step
 			if(legalMove(new Vector2(row, column + 2)))
 			{
+				possibleMoves.add(new Vector2(row, column + 1));
 				possibleMoves.add(new Vector2(row, column + 2));
 			}
+			//Take out enemy diagonal to left
 			if(legalMove(new Vector2(row - 1, column + 1)))
 			{
 				possibleMoves.add(new Vector2(row - 1, column + 1));
 			}
+			//take out enemy diagonal to right
 			if(legalMove(new Vector2(row + 1, column + 1)))
 			{
 				possibleMoves.add(new Vector2(row + 1, column + 1));
