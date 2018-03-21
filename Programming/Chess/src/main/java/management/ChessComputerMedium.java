@@ -27,6 +27,7 @@ public class ChessComputerMedium extends ChessComputer {
         //for (ChessPiece p : (ChessPiece) (board.getUsablePieces(enemy).values()) {
         //    enemyMoves.addAll(p.getPossibleDestinations());
         //}
-        throw new
+        //TODO ChessComputerMedium.getMove
+        throw new UnsupportedOperationException();
     }
 }
