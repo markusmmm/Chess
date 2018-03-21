@@ -69,11 +69,11 @@ public class Board {
 
 			if(type.equals(Piece.EMPTY)) continue;
 
-			pieces.put(pos, createPiece(pos, type, Alliance.BLACK));
+			addPiece(pos, type, Alliance.BLACK);
 			System.out.println(pos + ": " + pieces.get(pos));
 
 			if (symmetric) {
-				pieces.put(invPos, createPiece(invPos, type, Alliance.WHITE));
+				addPiece(invPos, type, Alliance.WHITE);
 				System.out.println(invPos + ": " + pieces.get(invPos));
 			}
 
@@ -85,7 +85,15 @@ public class Board {
     	return activePlayer;
 	}
 
-    public ChessPiece createPiece(Vector2 pos, Piece type, Alliance alliance) {
+	public boolean addPiece(Vector2 pos, Piece type, Alliance alliance) {
+		ChessPiece piece = createPiece(pos, type, alliance);
+		if(piece == null) return false;
+
+		pieces.put(pos, piece);
+		return true;
+	}
+
+    private ChessPiece createPiece(Vector2 pos, Piece type, Alliance alliance) {
     	switch (type) {
 			case BISHOP:
 				return new Bishop(pos, alliance, this);
