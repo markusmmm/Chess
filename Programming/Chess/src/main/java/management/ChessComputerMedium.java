@@ -30,7 +30,6 @@ public class ChessComputerMedium extends ChessComputer {
 
     @Override
     public Move getMove() {
-<<<<<<< HEAD
         calcEnemyMoves();
 
     }
@@ -40,12 +39,5 @@ public class ChessComputerMedium extends ChessComputer {
         for (IChessPiece p: board.getUsablePieces(enemy).values()) {
             enemyMoves.addAll(p.getPossibleDestinations());
         }
-=======
-        //for (ChessPiece p : (ChessPiece) (board.getUsablePieces(enemy).values()) {
-        //    enemyMoves.addAll(p.getPossibleDestinations());
-        //}
-        //TODO ChessComputerMedium.getMove
-        throw new UnsupportedOperationException();
->>>>>>> 648461a4a6694c92e11336022f84a8304d757f50
     }
 }
