@@ -11,9 +11,8 @@ import java.util.List;
 import java.util.Random;
 
 public class ChessComputerEasy extends ChessComputer {
-
-    public ChessComputerEasy(Alliance alliance, Board board) {
-        super(alliance, board);
+    public ChessComputerEasy(Board board) {
+        super(board);
     }
 
     public Move getMove() {
