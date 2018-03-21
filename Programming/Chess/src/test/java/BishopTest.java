@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BishopTest {
 
-    public static void main(String[] args){
+    /**public static void main(String[] args){
         Board board = new Board(8,false);
         IChessPiece bishop = board.getPiece(new Vector2(2,0));
 
