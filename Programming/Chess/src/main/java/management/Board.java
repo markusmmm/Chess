@@ -26,32 +26,44 @@ public class Board {
      * @throws IllegalArgumentException if ({@code size < 2})   //Pre-conditions
      */
     public Board(int size, boolean useClock, Piece[] initialSetup) {
-    	if(size < 2) throw new IllegalArgumentException("The board size must be at least 2");
+		if(size < 2) throw new IllegalArgumentException("The board size must be at least 2");
 
-    	int p = 0;
+    	this.size = size;
+    	setup(useClock, initialSetup, false);
+    }
+
+    public Board(int size, boolean useClock, Piece[] initialSetup, boolean symmetric) {
+		if(size < 2) throw new IllegalArgumentException("The board size must be at least 2");
 		this.size = size;
+
+		setup(useClock, initialSetup, symmetric);
+	}
+
+	private void setup(boolean useClock, Piece[] initialSetup, boolean symmetric) {
+		int p = 0;
 
 		if(useClock) {
 			clock = new ChessClock(2, 900, 12, -1);
 		}
 
-    	for(Piece type : initialSetup) {
-    		int x = p % size;
-    		int y = p / size;
+		for(Piece type : initialSetup) {
+			int x = p % size;
+			int y = p / size;
 
-    		Vector2 pos = new Vector2(x, y);
-    		Vector2 invPos = new Vector2(x, size - y - 1);
+			Vector2 pos = new Vector2(x, y);
+			Vector2 invPos = new Vector2(x, size - y - 1);
 
-    		pieces.put(pos, createPiece(pos, type, Alliance.BLACK));
-    		pieces.put(invPos, createPiece(invPos, type, Alliance.WHITE));
-    		System.out.println(pos + ": " + pieces.get(pos));
-			System.out.println(invPos + ": " + pieces.get(invPos));
+			pieces.put(pos, createPiece(pos, type, Alliance.BLACK));
+			System.out.println(pos + ": " + pieces.get(pos));
 
-    		p++;
-    	}
+			if (symmetric) {
+				pieces.put(invPos, createPiece(invPos, type, Alliance.WHITE));
+				System.out.println(invPos + ": " + pieces.get(invPos));
+			}
 
-
-    }
+			p++;
+		}
+	}
 
     public Alliance getActivePlayer() {
     	return activePlayer;
