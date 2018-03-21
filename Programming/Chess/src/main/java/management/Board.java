@@ -20,8 +20,8 @@ public class Board {
 
 	private Alliance activePlayer = Alliance.WHITE;
 
-	public HashMap<Vector2, ChessPiece> pieces = new HashMap<Vector2, ChessPiece>();
-	public HashSet<ChessPiece> inactivePieces = new HashSet<ChessPiece>();
+	public HashMap<Vector2, ChessPiece> pieces = new HashMap<>();
+	public HashSet<ChessPiece> inactivePieces = new HashSet<>();
 
 	private Stack<MoveNode> gameLog = new Stack<>();
 
