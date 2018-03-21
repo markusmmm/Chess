@@ -9,7 +9,9 @@ import resources.Move;
 import resources.Piece;
 import resources.Vector2;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class GameBoard {
     private final int SIZE = 8;
@@ -129,9 +131,23 @@ public class GameBoard {
 
             firstClick = true;
             firstTile = tile;
+
+            Set<Vector2> list = board.getPiece(tile.getPos()).getPossibleDestinations();
+            for (Vector2 possibleDestination : list) {
+                highlightSquare(possibleDestination);
+            }
+
             return true;
         }
         return false;
+    }
+
+    private void highlightSquare(Vector2 pos) {
+        if (board.getPiece(pos) != null) {
+            squares[pos.getY()][pos.getX()].setFill(Color.RED);
+        } else {
+            squares[pos.getY()][pos.getX()].setFill(Color.YELLOW);
+        }
     }
 
     public void drawBoard() {
@@ -139,6 +155,15 @@ public class GameBoard {
             int col = pos.getX();
             int row = pos.getY();
             tiles[row][col].drawPiece();
+        }
+        for (int row = 0; row < SIZE; row++) {
+            for (int col = 0; col < SIZE; col++) {
+                if ((row + col) % 2 == 0) {
+                    squares[row][col].setFill(Color.LIGHTGRAY);
+                } else {
+                    squares[row][col].setFill(Color.DARKGRAY);
+                }
+            }
         }
     }
 
