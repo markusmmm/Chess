@@ -32,7 +32,8 @@ public class Knight  extends ChessPiece {
 	public boolean legalMove(Vector2 destination) {
 		if(!super.legalMove(destination)) return false;
 
-		return moves.contains(destination);
+		Vector2 delta = destination.subtract(position);
+		return moves.contains(delta);
 	}
 
 	public Set<Vector2> getPossibleDestinations() {
