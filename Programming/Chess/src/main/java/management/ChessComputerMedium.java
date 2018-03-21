@@ -4,7 +4,6 @@ import pieces.ChessPiece;
 import pieces.IChessPiece;
 import resources.Alliance;
 import resources.Move;
-import resources.Piece;
 import resources.Vector2;
 
 import java.util.ArrayList;

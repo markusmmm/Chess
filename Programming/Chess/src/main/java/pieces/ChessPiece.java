@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Stack;
 
-public abstract class ChessPiece implements IChessPiece, Collection<Vector2> {
+public abstract class ChessPiece implements IChessPiece {
 
 	protected Vector2 position;
 
