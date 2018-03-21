@@ -13,8 +13,8 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
     Stage stage;
-    static final int WIDTH = 550;
-    static final int HEIGHT = 540;
+    static final int WIDTH = 720;
+    static final int HEIGHT = 500;
 
     public void start(Stage primaryStage) throws Exception {
         stage = primaryStage;
@@ -22,6 +22,7 @@ public class Main extends Application {
         scene.getStylesheets().add("stylesheet.css");
         stage.setScene(scene);
         stage.setTitle("Chess");
+        stage.setResizable(false);
         stage.show();
     }
 

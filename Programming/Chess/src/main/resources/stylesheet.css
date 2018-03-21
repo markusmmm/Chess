@@ -13,5 +13,17 @@
     -fx-font-size: 40px;
     -fx-font-weight: bold;
 }
-.vbox {
+#rightColumn {
+}
+#rightColumnTitle {
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+    -fx-padding: 10px 0 10px 0;
+}
+#moveLog {
+    -fx-font-size: 11px;
+}
+#informationFieldContainer {
+    -fx-background-color: darkgray;
+    -fx-padding: 5px;
 }

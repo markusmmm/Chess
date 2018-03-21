@@ -18,4 +18,9 @@ public class MoveNode {
         if(victimPiece == Piece.EMPTY) throw new IllegalStateException("Move node has no victim");
         return alliance == Alliance.BLACK ? Alliance.WHITE : Alliance.BLACK;
     }
+
+    @Override
+    public String toString() {
+        return piece + "(" + alliance + ") from " + start + " to " + end;
+    }
 }

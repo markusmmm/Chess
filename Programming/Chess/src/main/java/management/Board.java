@@ -176,6 +176,10 @@ public class Board {
 		return lastPiece.clonePiece();
 	}
 
+	public HashSet<ChessPiece> getInactivePieces() {
+		return inactivePieces;
+	}
+
 	/**
 	 *
 	 * @param start

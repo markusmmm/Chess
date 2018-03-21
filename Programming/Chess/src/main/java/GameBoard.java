@@ -1,15 +1,23 @@
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 import management.*;
+import pieces.ChessPiece;
 import pieces.IChessPiece;
-import resources.Alliance;
-import resources.Move;
-import resources.Vector2;
+import resources.*;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Observable;
 import java.util.Set;
 
 public class GameBoard {
@@ -19,6 +27,9 @@ public class GameBoard {
 
     private GridPane grid;
     private BorderPane container;
+    private ListView<MoveNode> moveLog;
+    private ListView<ChessPiece> capturedPieces;
+    private Text informationField;
 
     private Tile[][] tiles;
     private Rectangle[][] squares;
@@ -38,6 +49,9 @@ public class GameBoard {
         this.firstClick = false;
         this.firstTile = null;
         this.container = new BorderPane();
+        this.moveLog = new ListView<>();
+        this.capturedPieces = new ListView<>();
+        this.informationField = new Text();
 
         if (difficulty == 1) computer = new ChessComputerEasy(board);
         else if (difficulty == 2) computer = new ChessComputerMedium(board);
@@ -64,7 +78,6 @@ public class GameBoard {
                 }
 
                 tile.setOnMouseClicked(e -> {
-                    //tile.tileClicked(e, Alliance.WHITE);
                     tileClick(e, tile);
                 });
 
@@ -72,18 +85,47 @@ public class GameBoard {
                 squares[row][col] = rect;
                 grid.add(rect, col, row);
                 grid.add(tile, col, row);
-                rect.widthProperty().bind(grid.widthProperty().divide(SIZE));
+                rect.widthProperty().bind((grid.widthProperty().divide(SIZE)));
                 rect.heightProperty().bind(grid.heightProperty().divide(SIZE));
                 tile.widthProperty().bind(grid.widthProperty().divide(SIZE));
                 tile.heightProperty().bind(grid.heightProperty().divide(SIZE));
             }
         }
 
+        int rightColumnSize = 200;
+
         VBox right = new VBox();
-        right.setSpacing(10);
+        right.setSpacing(0);
+        right.setId("rightColumn");
+
+        Label labelMoveLog = new Label();
+        labelMoveLog.setPrefWidth(rightColumnSize);
+        labelMoveLog.setText("Movelog:");
+        labelMoveLog.setId("rightColumnTitle");
+
+        moveLog.setPrefWidth(rightColumnSize);
+        moveLog.setPrefHeight(200);
+        moveLog.setId("moveLog");
+
+        Label labelCapturedPieces = new Label();
+        labelCapturedPieces.setPrefWidth(rightColumnSize);
+        labelCapturedPieces.setText("Captured pieces:");
+        labelCapturedPieces.setId("rightColumnTitle");
+
+        capturedPieces.setPrefWidth(rightColumnSize);
+        capturedPieces.setPrefHeight(200);
+        capturedPieces.setId("moveLog");
+
+        right.getChildren().addAll(labelMoveLog, moveLog, labelCapturedPieces, capturedPieces);
+
+        VBox informationFieldContainer = new VBox();
+        informationFieldContainer.setAlignment(Pos.CENTER);
+        informationFieldContainer.getChildren().add(informationField);
+        informationFieldContainer.setId("informationFieldContainer");
 
         container.setCenter(grid);
         container.setRight(right);
+        container.setBottom(informationFieldContainer);
 
         drawBoard();
     }
@@ -104,6 +146,7 @@ public class GameBoard {
 
             firstTile.setFill(Color.TRANSPARENT);
             drawBoard();
+            updateMoveLog();
             System.out.println("Moving " + board.getPiece(firstTile.getPos()) + " from " + firstTile.getPos() + " to " + pos);
         } else {
             drawBoard();
@@ -128,6 +171,7 @@ public class GameBoard {
 
             firstClick = false;
             firstTile = null;
+
         } else {
             System.out.print(pos + ": ");
             if (piece == null) {
@@ -150,6 +194,13 @@ public class GameBoard {
             return true;
         }
         return false;
+    }
+
+    private void updateMoveLog() {
+        ObservableList<MoveNode> data = FXCollections.observableArrayList(board.getGameLog());
+        moveLog.setItems(data);
+        ObservableList<ChessPiece> data2 = FXCollections.observableArrayList(board.getInactivePieces());
+        capturedPieces.setItems(data2);
     }
 
     private void highlightSquare(Vector2 pos) {
@@ -175,6 +226,7 @@ public class GameBoard {
                 }
             }
         }
+        informationField.setText("It's " + board.getActivePlayer().toString() + " player's turn.");
     }
 
     public void printTiles() {
@@ -189,10 +241,6 @@ public class GameBoard {
     public void gameOver() {
         //TODO GameBoard.gameOver
         throw new UnsupportedOperationException();
-    }
-
-    public GridPane getGrid() {
-        return grid;
     }
 
     public BorderPane getContainer() {
