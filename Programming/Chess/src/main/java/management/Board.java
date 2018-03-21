@@ -53,6 +53,8 @@ public class Board {
 			Vector2 pos = new Vector2(x, y);
 			Vector2 invPos = new Vector2(x, size - y - 1);
 
+			if(type.equals(Piece.EMPTY)) continue;
+
 			pieces.put(pos, createPiece(pos, type, Alliance.BLACK));
 			System.out.println(pos + ": " + pieces.get(pos));
 
