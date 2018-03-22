@@ -4,6 +4,7 @@ import pieces.ChessPiece;
 import pieces.IChessPiece;
 import resources.Alliance;
 import resources.Move;
+import resources.MoveScore;
 import resources.Vector2;
 
 import java.util.*;
@@ -11,6 +12,7 @@ import java.util.*;
 
 public class ChessComputerMedium extends ChessComputer {
     private Alliance enemy;
+    private ArrayList<MoveScore> moveChart = new ArrayList<>();
 
     public ChessComputerMedium(Board board) {
         super(board);
@@ -24,8 +26,16 @@ public class ChessComputerMedium extends ChessComputer {
 
     @Override
     public Move getMove() {
-        Board sim = board.clone();
-        int value = scoreBoard(sim);
+        Board sim;
+        for(IChessPiece piece: board.getUsablePieces(alliance()).values()) {
+            for(Vector2 move: piece.getPossibleDestinations()) {
+                sim = board.clone();
+                sim.movePiece(piece.position(),move);
+                moveChart.add(new MoveScore(scoreBoard(sim), new Move(piece.position(), move)));
+            }
+        }
+        return Collections.max(moveChart).getMove();
+
     }
 
     private int scoreBoard(Board sim) {
