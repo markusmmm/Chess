@@ -49,12 +49,14 @@ public abstract class ChessPiece implements IChessPiece {
 		King king = board.getKing(alliance);
 
 		System.out.println("(ChessPiece) Board is live: " + board.isLive());
-		if(!king.resolvesCheck(position, destination)) return false;
 
 		IChessPiece endPiece = board.getPiece(destination);
 		if(endPiece != null && endPiece.alliance().equals(alliance)) return false;
 
-		return board.insideBoard(position) && board.insideBoard(destination);
+		if(!board.insideBoard(position) && board.insideBoard(destination)) return false;
+
+		// Lastly, check if king is in check, and whether or not the move resolves it (SHOULD OCCUR LAST, FOR OPTIMIZATION)
+		return king.resolvesCheck(position, destination);
 	}
 
 	/**

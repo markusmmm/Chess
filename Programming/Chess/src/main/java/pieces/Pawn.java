@@ -53,11 +53,12 @@ public class Pawn extends ChessPiece {
 		Vector2 blackEnpasant = new Vector2(x , y - 1);
 		Vector2 whiteEnpasant = new Vector2(x, y + 1);
 
-
+		boolean blackResult = this.alliance.equals(BLACK) && enPassant(blackEnpasant);
+		boolean whiteResult = this.alliance.equals(WHITE) && enPassant(whiteEnpasant);
 
 		return (
-				((this.alliance.equals(BLACK) && enPassant(blackEnpasant) ||
-						(this.alliance.equals(WHITE) && enPassant(whiteEnpasant))))  ||
+				((blackResult ||
+						(whiteResult)))  ||
 						(((whiteNegative2(destination)  || whiteNegative(destination) ||  whiteLDiag(destination) || whiteRDiag(destination)) && this.alliance.equals(WHITE)) ||
 			((blackPositive2(destination) || blackPositive(destination) || blackLDiag(destination) || blackRDiag(destination)) && this.alliance.equals(BLACK))) &&
 			((noTurnBackBlack(destination) && this.alliance.equals(BLACK)) || (noTurnBackWhite(destination) && this.alliance.equals(WHITE)))
@@ -66,6 +67,10 @@ public class Pawn extends ChessPiece {
 
 	@Override
 	public boolean move(Vector2 destination) {
+		Vector2 start = position();
+		Vector2 blackEnpasant = new Vector2(position.getX() , position.getY() - 1);
+		Vector2 whiteEnpasant = new Vector2(position.getX(), position.getY() + 1);
+
 		boolean whiteNegative2 = whiteNegative2(destination) && alliance == alliance.WHITE;
 		boolean blackPositive2 = blackPositive2(destination) && alliance == alliance.BLACK;
 
@@ -73,6 +78,16 @@ public class Pawn extends ChessPiece {
 
 		if(!hasDoubleStepped && (whiteNegative2 || blackPositive2))
 			hasDoubleStepped = true;
+
+		boolean blackResult = this.alliance.equals(BLACK) && enPassant(blackEnpasant);
+		boolean whiteResult = this.alliance.equals(WHITE) && enPassant(whiteEnpasant);
+
+		if(blackResult) {
+			board.performAttack(start, destination, blackEnpasant);
+		}
+		else if(whiteResult) {
+			board.performAttack(start, destination, whiteEnpasant);
+		}
 
 		return true;
 	}
