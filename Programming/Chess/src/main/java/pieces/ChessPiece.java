@@ -57,7 +57,7 @@ public abstract class ChessPiece implements IChessPiece {
 		IChessPiece endPiece = board.getPiece(destination);
 		if(endPiece != null && endPiece.alliance().equals(alliance)) return false;
 
-		if(!board.insideBoard(position) && board.insideBoard(destination)) return false;
+		if(!board.insideBoard(position) || !board.insideBoard(destination)) return false;
 
 		// Lastly, check if king is in check, and whether or not the move resolves it (SHOULD OCCUR LAST, FOR OPTIMIZATION)
 		return king.resolvesCheck(position, destination);
