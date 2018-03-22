@@ -29,15 +29,7 @@ public class ChessComputerMedium extends ChessComputer {
     }
 
     private int scoreBoard(Board sim) {
-        return diffPossibleMoves(sim) + diffPieceValue(sim) + protectedDiff(sim);
-    }
-
-    private int protectedDiff(Board sim) {
-        return protectedPieces(alliance(), sim) + protectedPieces(enemy, sim);
-    }
-
-    private int protectedPieces(Alliance enemy, Board sim) {
-        sim.
+        return diffPossibleMoves(sim) + diffPieceValue(sim);
     }
 
     private int diffPieceValue(Board sim) {
