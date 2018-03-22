@@ -27,8 +27,8 @@ public class King extends ChessPiece {
 
         //if(!(board.insideBoard(position) && board.insideBoard(destination))) return false;
 
-        IChessPiece endPiece = board.getPiece(destination);
-        if(endPiece != null && endPiece.alliance().equals(alliance)) return false;
+        //IChessPiece endPiece = board.getPiece(destination);
+        //if(endPiece != null && endPiece.alliance().equals(alliance)) return false;
 
         return (
             (inDiagonals(destination) || inStraights(destination)) &&
@@ -42,33 +42,33 @@ public class King extends ChessPiece {
 
         Set<Vector2> possibleMoves = new HashSet<>();
 
-        int row = position.getX();
-        int col = position.getY();
+        int x = position.getX();
+        int y = position.getY();
 
 
-        if (legalMove(new Vector2(row - 1, col - 1))) {
-            possibleMoves.add(new Vector2(row - 1, col - 1));
+        if (legalMove(new Vector2(x - 1, y - 1))) {
+            possibleMoves.add(new Vector2(x - 1, y - 1));
         }
-        if (legalMove(new Vector2(row, col - 1))) {
-            possibleMoves.add(new Vector2(row, col - 1));
+        if (legalMove(new Vector2(x, y - 1))) {
+            possibleMoves.add(new Vector2(x, y - 1));
         }
-        if (legalMove(new Vector2(row + 1, col - 1))) {
-            possibleMoves.add(new Vector2(row + 1, col - 1));
+        if (legalMove(new Vector2(x + 1, y - 1))) {
+            possibleMoves.add(new Vector2(x + 1, y - 1));
         }
-        if (legalMove(new Vector2(row - 1, col))) {
-            possibleMoves.add(new Vector2(row - 1, col));
+        if (legalMove(new Vector2(x - 1, y))) {
+            possibleMoves.add(new Vector2(x - 1, y));
         }
-        if (legalMove(new Vector2(row + 1, col))) {
-            possibleMoves.add(new Vector2(row + 1, col));
+        if (legalMove(new Vector2(x + 1, y))) {
+            possibleMoves.add(new Vector2(x + 1, y));
         }
-        if (legalMove(new Vector2(row - 1, col + 1))) {
-            possibleMoves.add(new Vector2(row - 1, col + 1));
+        if (legalMove(new Vector2(x - 1, y + 1))) {
+            possibleMoves.add(new Vector2(x - 1, y + 1));
         }
-        if (legalMove(new Vector2(row + 1, col - 1))) {
-            possibleMoves.add(new Vector2(row, col + 1));
+        if (legalMove(new Vector2(x + 1, y - 1))) {
+            possibleMoves.add(new Vector2(x, y + 1));
         }
-        if (legalMove(new Vector2(row + 1, col - 1))) {
-            possibleMoves.add(new Vector2(row + 1, col + 1));
+        if (legalMove(new Vector2(x + 1, y - 1))) {
+            possibleMoves.add(new Vector2(x + 1, y + 1));
         }
         return possibleMoves;
 
