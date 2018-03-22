@@ -1,5 +1,6 @@
 package management;
 
+import pieces.ChessPiece;
 import pieces.IChessPiece;
 import resources.Alliance;
 import resources.Move;
@@ -46,13 +47,15 @@ public class ChessComputerMedium extends ChessComputer {
     private Move getBestMove(ArrayList<IChessPiece> inDanger, ArrayList<IChessPiece> enemyPieces) {
         Move bestKill = getBestKill(inDanger, enemyPieces);
         if(bestKill == null) {
-            Move flee = bestFlee();
-            if (flee = null) {
-
-            }
-            return bestFlee(inDanger);
+            return randomMove(ownPieces);
         }
         return bestKill;
+    }
+
+    private Move randomMove(ArrayList<IChessPiece> pieces) {
+        IChessPiece orgPos = getRandomPiece(pieces);
+        Vector2 newPos = orgPos.getPossibleDestinations().iterator().next();
+        return new Move(orgPos.position(),newPos);
     }
 
     private Move bestFlee(ArrayList<IChessPiece> inDanger) {
@@ -119,10 +122,10 @@ public class ChessComputerMedium extends ChessComputer {
     }
 
     private boolean piecesInDanger() {
-        return 0 < getPiecesInDanger().size();
+        return 0 < inDanger.size();
     }
 
-    private ArrayList<IChessPiece> getPiecesInDanger() {
+    private void getPiecesInDanger() {
         inDanger.clear();
         for (IChessPiece piece: ownPieces) {
             if (enemyMoves.contains(piece.position())) {
