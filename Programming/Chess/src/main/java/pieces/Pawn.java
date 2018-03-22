@@ -5,6 +5,7 @@ import resources.Alliance;
 import resources.Piece;
 import resources.Vector2;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,11 +21,16 @@ public class Pawn extends ChessPiece {
 	 * @param position
 	 * @param alliance
 	 */
+
+	private Pawn(Vector2 position, Alliance alliance, Board board, boolean hasDoubleStepped) {
+		super(position, alliance, board, false, Piece.PAWN);
+		this.hasDoubleStepped = hasDoubleStepped;
+	}
 	public Pawn(Vector2 position, Alliance alliance, Board board){
 		super(position, alliance, board, false, Piece.PAWN);
 	}
 	public Pawn clonePiece() {
-        return new Pawn(position, alliance, board);
+        return new Pawn(position, alliance, board, hasDoubleStepped);
     }
 
 	/**
@@ -255,6 +261,16 @@ public class Pawn extends ChessPiece {
 		}
 
 		return possibleMoves;
+	}
+
+	public Set<Vector2> getPossibleAttacks() {
+		int dir = alliance == Alliance.BLACK ? 1 : -1;
+		int x = position.getX(), y = position.getY();
+
+		return new HashSet<Vector2>(Arrays.asList(
+			new Vector2(x-1, y + dir),
+			new Vector2(x+1, y + dir)
+		));
 	}
 
 	//TODO transformation when pawn gets to enemy line, en passant
