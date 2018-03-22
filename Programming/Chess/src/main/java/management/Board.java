@@ -300,11 +300,13 @@ public class Board {
 	}
 
 	private boolean removePiece(Vector2 pos) {
-		if(pieces.containsKey(pos)) return false;
+
+		if(!pieces.containsKey(pos)) return false;
 
 		ChessPiece piece = pieces.get(pos);
 		pieces.remove(pos);
 		inactivePieces.add(piece);
+		
 
 		return true;
 	}
@@ -314,7 +316,7 @@ public class Board {
 		MoveNode node = new MoveNode(pieces.get(end), start, end, pieces.get(victim));
 		System.out.println("Performing attack: " + node);
 
-		removePiece(victim);
+
 
 		gameLog.add(node);
 		return true;

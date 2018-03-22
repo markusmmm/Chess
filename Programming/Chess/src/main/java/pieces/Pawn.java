@@ -56,6 +56,10 @@ public class Pawn extends ChessPiece {
 		boolean blackResult = this.alliance.equals(BLACK) && enPassant(blackEnpasant);
 		boolean whiteResult = this.alliance.equals(WHITE) && enPassant(whiteEnpasant);
 
+		System.out.println(blackResult + "HEHEHEHEHEHEHEHEHEHE");
+
+		System.out.println(whiteResult + "HEHEHEHEHEHEHEHEHEHEH");
+
 		return (
 				((blackResult ||
 						(whiteResult)))  ||
@@ -74,18 +78,23 @@ public class Pawn extends ChessPiece {
 		boolean whiteNegative2 = whiteNegative2(destination) && alliance == alliance.WHITE;
 		boolean blackPositive2 = blackPositive2(destination) && alliance == alliance.BLACK;
 
+		boolean blackResult = this.alliance.equals(BLACK) && enPassant(blackEnpasant);
+		boolean whiteResult = this.alliance.equals(WHITE) && enPassant(whiteEnpasant);
+
 		if(!super.move(destination)) return false;
 
 		if(!hasDoubleStepped && (whiteNegative2 || blackPositive2))
 			hasDoubleStepped = true;
 
-		boolean blackResult = this.alliance.equals(BLACK) && enPassant(blackEnpasant);
-		boolean whiteResult = this.alliance.equals(WHITE) && enPassant(whiteEnpasant);
+
+
 
 		if(blackResult) {
 			board.performAttack(start, destination, blackEnpasant);
 		}
 		else if(whiteResult) {
+			System.out.println("KKKKKKKKKKKKKK");
+			System.out.println(whiteEnpasant);
 			board.performAttack(start, destination, whiteEnpasant);
 		}
 
