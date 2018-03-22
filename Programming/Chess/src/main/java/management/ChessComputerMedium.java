@@ -57,46 +57,6 @@ public class ChessComputerMedium extends ChessComputer {
         return new Move(orgPos.position(),newPos);
     }
 
-    private Move bestFlee(ArrayList<IChessPiece> inDanger) {
-        ArrayList<Move> flees  = findFlees(inDanger);
-        if(flees == null) {
-            return null;
-        }
-    }
-
-    private ArrayList<Move> findFlees(ArrayList<IChessPiece> inDanger) {
-        ArrayList<Move> flees = new ArrayList<>();
-        for(IChessPiece targeted: inDanger) {
-            for(Vector2 dest: targeted.getPossibleDestinations()) {
-                if(enemyMoves.contains(dest)){
-
-                }
-            }
-        }
-        getOpenSpace();
-        inDanger.get(0).getPossibleDestinations();
-    }
-
-    private ArrayList<Vector2> getOpenSpace() {
-        ArrayList<Vector2> openSpace = makeSpace();
-        for (Vector2 point: openSpace) {
-            if(enemyMoves.contains(point) || ownPieces.(point)) {
-                openSpace.remove(point);
-            }
-        }
-        return openSpace;
-    }
-
-    private ArrayList<Vector2> makeSpace() {
-        ArrayList<Vector2> space = new ArrayList<>();
-        for (int y = 0; y < board.getSize(); y++) {
-            for (int x = 0; x < board.getSize(); x++) {
-                space.add(new Vector2(x,y));
-            }
-        }
-        return space;
-    }
-
     private void getEnemyPieces() {
         enemyPieces.addAll(board.getUsablePieces(enemy).values());
     }
