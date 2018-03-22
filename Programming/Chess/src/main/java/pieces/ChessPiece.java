@@ -5,6 +5,7 @@ import resources.Alliance;
 import resources.Piece;
 import resources.Vector2;
 
+import javax.naming.OperationNotSupportedException;
 import java.util.Set;
 
 public abstract class ChessPiece implements IChessPiece {
@@ -120,6 +121,10 @@ public abstract class ChessPiece implements IChessPiece {
 
 	protected void logActionPossibleDestinations(String caller) {
 		System.out.println(caller + " is checking possible destinations for " + toString());
+	}
+
+	public int getValue() {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
