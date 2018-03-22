@@ -1,10 +1,8 @@
 package management;
 
+import com.sun.org.apache.xpath.internal.SourceTree;
 import pieces.IChessPiece;
-import resources.Alliance;
-import resources.Move;
-import resources.MoveScore;
-import resources.Vector2;
+import resources.*;
 
 import java.util.*;
 
@@ -34,14 +32,40 @@ public class ChessComputerMedium extends ChessComputer {
                 sim = board.clone();
                 sim.movePiece(piece.position(),move);
                 moveChart.add(new MoveScore(scoreBoard(sim), new Move(piece.position(), move)));
-
-                if(startTime + THINKING_TIME < System.currentTimeMillis()){
+                System.out.println("mediumAI " + piece.toString() + piece.position().getY());
+               /* if(startTime + THINKING_TIME < System.currentTimeMillis()){
+                    printPossibleMoves();
                     return Collections.max(moveChart).getMove();
-                }
+
+                }*/
+               printBoard(sim);
             }
         }
-        return Collections.max(moveChart).getMove();
+        printPossibleMoves();
 
+        Collections.sort(moveChart);
+
+        Move m = moveChart.get(moveChart.size() - 1).getMove();
+        System.out.println("mediumAI" + m.start.toString() + m.end.toString());
+        return moveChart.get(moveChart.size() - 1).getMove();
+
+
+    }
+    private void printPossibleMoves() {
+        for(MoveScore s: moveChart) {
+            System.out.println(s.getMove().start.toString() + " " + s.getMove().end.toString());
+        }
+    }private void printBoard(Board board) {
+        for (int y = 0; y < board.getSize(); y++) {
+            for (int x = 0; x < board.getSize(); x++) {
+                if(board.getPiece(new Vector2(x,y)) != null) {
+                    System.out.print(board.getPiece(new Vector2(x, y)).getValue());
+                } else {
+                    System.out.print(" ");
+                }
+            }
+            System.out.println();
+        }
     }
 
     /**
