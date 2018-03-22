@@ -5,6 +5,8 @@ import resources.Alliance;
 import resources.Piece;
 import resources.Vector2;
 
+import java.util.Set;
+
 public abstract class ChessPiece implements IChessPiece {
 
 	protected Vector2 position;
@@ -101,6 +103,14 @@ public abstract class ChessPiece implements IChessPiece {
 	}
 	protected boolean inDiagonals(Vector2 newPos) {
 		return Math.abs(this.position.getX() - newPos.getX()) == Math.abs(this.position.getY() - newPos.getY());
+	}
+
+	public Set<Vector2> getPossibleDestinations() {
+		return getPossibleDestinations("Anonymous");
+	}
+
+	protected void logActionPossibleDestinations(String caller) {
+		System.out.println(caller + " is checking possible destinations for " + toString());
 	}
 
 	@Override

@@ -38,7 +38,8 @@ public class King extends ChessPiece {
         );
     }
 
-    public Set<Vector2> getPossibleDestinations() {
+    public Set<Vector2> getPossibleDestinations(String caller) {
+        logActionPossibleDestinations(caller);
 
         Set<Vector2> possibleMoves = new HashSet<>();
 
@@ -76,7 +77,7 @@ public class King extends ChessPiece {
 
     public boolean inCheck(Vector2 destination) {
         Alliance otherAlliance = alliance == Alliance.BLACK ? Alliance.WHITE : Alliance.BLACK;
-        HashMap<Vector2, IChessPiece> hostilePieces = board.getUsablePieces(otherAlliance);
+        HashMap<Vector2, IChessPiece> hostilePieces = board.getPieces(otherAlliance);
 
         for(Vector2 key : hostilePieces.keySet()) {
             IChessPiece piece = hostilePieces.get(key);
@@ -85,8 +86,11 @@ public class King extends ChessPiece {
                 King hostileKing = (King) piece;
                 if(destination.distance(hostileKing.position()) == 1)
                     return true;
+
+                continue;
             }
-            else if (hostilePieces.get(key).getPossibleDestinations().contains(destination))
+
+            if (piece.getPossibleDestinations(toString()).contains(destination))
                 return true;
         }
 

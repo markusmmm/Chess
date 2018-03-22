@@ -157,7 +157,9 @@ public class Pawn extends ChessPiece {
 		return true;
 	}
 
-	public Set<Vector2> getPossibleDestinations() {
+	public Set<Vector2> getPossibleDestinations(String caller) {
+		logActionPossibleDestinations(caller);
+
 		Set<Vector2> possibleMoves = new HashSet<>();
 		int x = this.position.getX();
 		int y = this.position.getY();
@@ -169,6 +171,7 @@ public class Pawn extends ChessPiece {
 			//First move 2 step
 			if(legalMove(end))
 			{
+				/*
 				System.out.println("Position: " + position);
 				System.out.println("hasMoved = " + hasMoved());
 				System.out.println("whiteNeg2 = " + whiteNegative2(end));
@@ -183,6 +186,7 @@ public class Pawn extends ChessPiece {
 				System.out.println("isBlack =" + this.alliance.equals(BLACK));
 				System.out.println("noTurnBlack =" + noTurnBackBlack(end));
 				System.out.println("noTurnWhite =" + noTurnBackWhite(end));
+				*/
 
 				possibleMoves.add(new Vector2(x, y - 2));
 			}

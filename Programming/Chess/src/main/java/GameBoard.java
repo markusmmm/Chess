@@ -19,7 +19,6 @@ import resources.MoveNode;
 import resources.Vector2;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
 
@@ -32,7 +31,7 @@ public class GameBoard {
     private BorderPane container;
     private ListView<MoveNode> moveLog;
     private ListView<ChessPiece> capturedPieces;
-    private Text informationField;
+    private Text gameStatus;
 
     private Tile[][] tiles;
     private Rectangle[][] squares;
@@ -54,7 +53,7 @@ public class GameBoard {
         this.container = new BorderPane();
         this.moveLog = new ListView<>();
         this.capturedPieces = new ListView<>();
-        this.informationField = new Text();
+        this.gameStatus = new Text();
 
         if (difficulty == 1) computer = new ChessComputerEasy(board);
         else if (difficulty == 2) computer = new ChessComputerMedium(board);
@@ -123,7 +122,7 @@ public class GameBoard {
 
         VBox informationFieldContainer = new VBox();
         informationFieldContainer.setAlignment(Pos.CENTER);
-        informationFieldContainer.getChildren().add(informationField);
+        informationFieldContainer.getChildren().add(gameStatus);
         informationFieldContainer.setId("informationFieldContainer");
 
         container.setCenter(grid);
@@ -149,7 +148,7 @@ public class GameBoard {
 
             firstTile.setFill(Color.TRANSPARENT);
             drawBoard();
-            updateMoveLog();
+            updateLogs();
             System.out.println("Moving " + board.getPiece(firstTile.getPos()) + " from " + firstTile.getPos() + " to " + pos);
         } else {
             drawBoard();
@@ -189,7 +188,7 @@ public class GameBoard {
             firstClick = true;
             firstTile = tile;
 
-            Set<Vector2> list = board.getPiece(tile.getPos()).getPossibleDestinations();
+            Set<Vector2> list = board.getPiece(tile.getPos()).getPossibleDestinations("GameBoard");
             for (Vector2 possibleDestination : list) {
                 highlightSquare(possibleDestination);
             }
@@ -199,16 +198,15 @@ public class GameBoard {
         return false;
     }
 
-    private void updateMoveLog() {
+    private void updateLogs() {
         Stack<MoveNode> gameLog = board.getGameLog();
         Collections.reverse(gameLog);
-
-        HashSet<ChessPiece> inactivePieces = board.getInactivePieces();
-
-        ObservableList<MoveNode> data = FXCollections.observableArrayList(gameLog);
-        moveLog.setItems(data);
-        ObservableList<ChessPiece> data2 = FXCollections.observableArrayList(board.getInactivePieces());
-        capturedPieces.setItems(data2);
+        ObservableList<MoveNode> observableGameLog =
+                FXCollections.observableArrayList(gameLog);
+        ObservableList<ChessPiece> observableInactivePieces =
+                FXCollections.observableArrayList(board.getInactivePieces());
+        moveLog.setItems(observableGameLog);
+        capturedPieces.setItems(observableInactivePieces);
     }
 
     private void highlightSquare(Vector2 pos) {
@@ -234,13 +232,13 @@ public class GameBoard {
                 }
             }
         }
-        informationField.setText("It's " + board.getActivePlayer().toString() + " player's turn.");
+        gameStatus.setText("It's " + board.getActivePlayer().toString() + " player's turn.");
     }
 
     public void printTiles() {
         for (int row = 0; row < SIZE; row++) {
             for (int col = 0; col < SIZE; col++) {
-                System.out.print(tiles[row][col].getPiece() + " ");
+                System.out.print(tiles[col][row].getPiece() + " ");
             }
             System.out.print("\n");
         }
