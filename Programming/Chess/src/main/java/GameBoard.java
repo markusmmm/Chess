@@ -169,7 +169,6 @@ public class GameBoard {
          * checks if another tile has already been selected
          */
         if (firstClick && firstTile.getPos() != pos) {
-            gameOver();
             /*
              * checks if the newly clicked tile is another friendly piece,
              * if it is, change the highlighted squares to the new piece
