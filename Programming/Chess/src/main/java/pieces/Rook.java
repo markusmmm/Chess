@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Rook extends ChessPiece {
+	private final int value = 5;
 	private Set<Vector2> possibleMoves = new HashSet<>();
 
 	/**
@@ -20,6 +21,11 @@ public class Rook extends ChessPiece {
 
 	public Rook clonePiece() {
 		return new Rook(position, alliance, board);
+	}
+
+	@Override
+	public int getValue() {
+		return value;
 	}
 
 	/**

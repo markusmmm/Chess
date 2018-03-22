@@ -16,6 +16,7 @@ public class Knight  extends ChessPiece {
 			new Vector2(-2, 1), new Vector2(-1, 2),
 			new Vector2( 2,-1), new Vector2( 1,-2),
 			new Vector2(-2,-1), new Vector2(-1,-2)));
+	private final int value = 3;
 
 	/**
 	 * 
@@ -27,7 +28,12 @@ public class Knight  extends ChessPiece {
     public Knight clonePiece() {
         return new Knight(position, alliance, board);
     }
-	
+
+	@Override
+	public int getValue() {
+		return value;
+	}
+
 	/**
 	 *
 	 * @param destination
