@@ -14,8 +14,7 @@ public class ChessComputerMedium extends ChessComputer {
 
     public ChessComputerMedium(Board board) {
         super(board);
-        //get enemy alliance
-        if(alliance() == Alliance.WHITE) {
+        if (alliance() == Alliance.WHITE) {
             enemy = Alliance.BLACK;
         } else {
             enemy = Alliance.WHITE;
@@ -25,7 +24,46 @@ public class ChessComputerMedium extends ChessComputer {
 
     @Override
     public Move getMove() {
+        Board sim = board.clone();
+        int value = scoreBoard(sim);
+    }
 
+    private int scoreBoard(Board sim) {
+        return diffPossibleMoves(sim) + diffPieceValue(sim) + protectedDiff(sim);
+    }
+
+    private int protectedDiff(Board sim) {
+        return protectedPieces(alliance(), sim) + protectedPieces(enemy, sim);
+    }
+
+    private int protectedPieces(Alliance enemy, Board sim) {
+        sim.
+    }
+
+    private int diffPieceValue(Board sim) {
+        return pieceValue(alliance(), sim) - pieceValue(enemy, sim);
+    }
+
+    private int pieceValue(Alliance alliance, Board sim) {
+        int sum = 0;
+        for(IChessPiece piece: sim.getUsablePieces(alliance).values()) {
+            sum += piece.getValue();
+        }
+        return sum;
+    }
+
+    private int diffPossibleMoves(Board sim) {
+        return possibleMoves(alliance(), sim) - possibleMoves(enemy, sim);
+    }
+
+    private int possibleMoves(Alliance alliance, Board sim) {
+        int sum = 0;
+        for(IChessPiece piece: sim.getPieces(alliance).values()) {
+            for (Vector2 move: piece.getPossibleDestinations()) {
+                sum++;
+            }
+        }
+        return sum;
     }
 
     private IChessPiece getRandomPiece(ArrayList<IChessPiece> pieces) {
