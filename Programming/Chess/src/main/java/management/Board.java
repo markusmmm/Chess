@@ -5,6 +5,7 @@ import resources.*;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.Stack;
 
 public class Board {
@@ -26,6 +27,7 @@ public class Board {
 
 	public HashMap<Vector2, ChessPiece> pieces = new HashMap<>();
 	private Stack<Vector2> drawPieces = new Stack<>();
+	private HashMap<Vector2, ChessPiece> suspendedPieces = new HashMap<>();
 	private HashSet<ChessPiece> inactivePieces = new HashSet<>();
 
 	private Stack<MoveNode> gameLog = new Stack<>();
@@ -181,6 +183,19 @@ public class Board {
     	return true;
 	}
 
+	public void suspendPiece(Vector2 pos) {
+		if(!pieces.containsKey(pos)) return;
+
+		suspendedPieces.put(pos, pieces.get(pos));
+		pieces.remove(pos);
+	}
+	public void releasePiece(Vector2 pos) {
+		if(!suspendedPieces.containsKey(pos)) return;
+
+		pieces.put(pos, suspendedPieces.get(pos));
+		suspendedPieces.remove(pos);
+	}
+
     /**
      *
      * @return size of the square board
@@ -208,7 +223,7 @@ public class Board {
 		HashMap<Vector2, IChessPiece> temp = new HashMap<>();
 
 		for(Vector2 pos : pieces.keySet()) {
-			IChessPiece piece = pieces.get(pos);
+			IChessPiece piece = getPiece(pos);
 			if(piece == null) continue;
 
 			if(insideBoard(pos) && piece.alliance().equals(alliance)) {

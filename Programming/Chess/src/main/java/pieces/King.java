@@ -43,7 +43,7 @@ public class King extends ChessPiece {
 
         // Ensures that the king can't be moved into check
         // Ignored if king is not on live board
-        if(board.isLive() && resolvesCheck(position, destination)) return false;
+        if(board.isLive() && !resolvesCheck(position, destination)) return false;
 
         return (
             (inDiagonals(destination) || inStraights(destination)) &&
@@ -67,7 +67,8 @@ public class King extends ChessPiece {
         return possibleMoves;
     }
 
-    public boolean inCheck() {
+    public boolean inCheck(Vector2 destination) {
+        // The inactive player's king can NOT be in check (Impossible state)
         if(!board.getActivePlayer().equals(alliance)) return false;
 
         // NEVER USE 'board.getUsablePieces' WITHIN THIS METHOD
@@ -79,36 +80,49 @@ public class King extends ChessPiece {
             // Custom handling for king, as the default implementation causes an infinite circular call
             if(piece instanceof King) {
                 King hostileKing = (King) piece;
-                if(position.distance(hostileKing.position()) == 1)
+                if(destination.distance(hostileKing.position()) == 1)
                     return true;
             }
             else if(piece instanceof Pawn) {
                 Pawn hostilePawn = (Pawn) piece;
-                if(hostilePawn.getPossibleAttacks().contains(position))
+                if(hostilePawn.getPossibleAttacks().contains(destination))
                     return true;
             }
             else {
-                if (piece.getPossibleDestinations(toString()).contains(position))
+                if (piece.getPossibleDestinations(toString()).contains(destination))
                     return true;
             }
         }
 
         return false;
     }
+    public boolean inCheck() {
+        return inCheck(position);
+    }
 
     public boolean resolvesCheck(Vector2 start, Vector2 end) {
-        System.out.println("(resolvesCheck): Board is live: " + board.isLive());
+        // TODO Add alliance check (A hostile piece cannot resolve check)
 
-        if(!board.isLive()) return true;    // IMPORTANT! DO NOT DELETE
+        Set<Vector2> endangered = new HashSet<>();
+        Set<Vector2> destinations = new HashSet<>();
 
-        if(!inCheck()) return true;
+        for (Vector2 move : moves)
+            destinations.add(position.add(move));
 
-        System.out.println("Initiating board-simulation");
+        board.suspendPiece(position);
 
-        Board newBoard = board.clone();
-        newBoard.movePiece(start, end);
+        for (Vector2 destination : destinations) {
+            if (inCheck(destination)) {
+                endangered.add(destination);
+            }
+        }
 
-        return newBoard.getKing(alliance).inCheck();
+        if(!start.equals(position))
+            endangered.remove(end);
+
+        board.releasePiece(position);
+
+        return endangered.size() == 0;
     }
 
     public boolean checkmate() {
