@@ -34,6 +34,10 @@ public abstract class ChessPiece implements IChessPiece {
 	public Alliance alliance() { return alliance; }
 	public Piece piece() { return piece; }
 
+	public Alliance otherAlliance() {
+    	return alliance.equals(Alliance.BLACK) ? Alliance.WHITE : Alliance.BLACK;
+	}
+
 	/**
 	 * Checks if the piece can go to the given destination
 	 * super.legalMove checks if the destination is within the board's boundaries, and if the piece at the given destination is hostile
@@ -41,6 +45,11 @@ public abstract class ChessPiece implements IChessPiece {
 	 * @return Whether or not the move can be performed
 	 */
 	protected boolean legalMove(Vector2 destination) {
+		King king = board.getKing(alliance);
+
+		System.out.println("(ChessPiece) Board is live: " + board.isLive());
+		if(!king.resolvesCheck(position, destination)) return false;
+
 		IChessPiece endPiece = board.getPiece(destination);
 		if(endPiece != null && endPiece.alliance().equals(alliance)) return false;
 

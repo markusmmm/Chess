@@ -10,6 +10,16 @@ public class ChessClock {
 	private long startTime;
 	private long moveStartTime;
 
+	private ChessClock(ChessClock template) {
+		playerI = template.playerI;
+		nPlayers = template.nPlayers;
+		if(durations != null) durations = template.durations.clone();
+		bonusTime = template.bonusTime;
+		bonusTimeLimit = template.bonusTimeLimit;
+		startTime = template.startTime;
+		moveStartTime = template.moveStartTime;
+	}
+
 	/**
 	 *
 	 * @param nPlayers
@@ -66,5 +76,10 @@ public class ChessClock {
 	}
 	private double fromNanoTime(long nanoTime) {
 		return nanoTime / (double)GIGA;
+	}
+
+	@Override
+	public ChessClock clone() {
+		return new ChessClock(this);
 	}
 }

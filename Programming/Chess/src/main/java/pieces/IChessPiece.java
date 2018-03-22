@@ -22,8 +22,9 @@ public interface IChessPiece {
 	 * @param end
 	 */
 	boolean move(Vector2 end);
-
+	
 	IChessPiece clonePiece();
 
     int getValue();
+
 }

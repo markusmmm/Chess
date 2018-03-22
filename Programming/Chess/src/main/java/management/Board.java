@@ -29,8 +29,8 @@ public class Board {
 
 	private Stack<MoveNode> gameLog = new Stack<>();
 
-	private Board(Board template) {
-		isLive = true;
+	private Board(Board template, boolean isLive) {
+		this.isLive = isLive;
 
 		size = template.size;
 		player1 = template.player1;
@@ -112,6 +112,21 @@ public class Board {
 
     public Alliance getActivePlayer() {
     	return activePlayer;
+	}
+
+	public boolean undoMove() {
+    	if(gameLog.size() == 0) return false;
+
+    	MoveNode lastMove = gameLog.pop();
+
+    	pieces.remove(lastMove.end);
+    	pieces.put(lastMove.start, lastMove.piece);
+
+		ChessPiece victim = lastMove.victimPiece;
+		if(victim != null)
+			pieces.put(victim.position(), victim);
+
+    	return true;
 	}
 
 	public boolean addPiece(Vector2 pos, Piece type, Alliance alliance) {
@@ -254,19 +269,19 @@ public class Board {
 		lastPiece = piece;
 		ChessPiece endPiece = pieces.get(end);
 
-		Piece victim = Piece.EMPTY;
+		ChessPiece victim = null;
 		if(endPiece != null) {
 			//Remove hostile attacked piece
 			if(!endPiece.alliance().equals(piece.alliance())) {
 				inactivePieces.add(endPiece);
 				removePiece(end);
-				victim = endPiece.piece();
+				victim = endPiece;
 			}
 		}
 
 		//assert(piece.position().equals(end));
 
-		gameLog.push(new MoveNode(piece.piece(), piece.alliance(), start, end, victim));
+		gameLog.push(new MoveNode(piece, start, end, victim));
 
 		pieces.remove(start);
 		pieces.put(end, piece);
@@ -300,6 +315,10 @@ public class Board {
 
 	@Override
 	public Board clone() {
-		return new Board(this);
+		return clone(true);
+	}
+
+	public Board clone(boolean isLive) {
+		return new Board(this, isLive);
 	}
 }
