@@ -39,8 +39,8 @@ public class Knight  extends ChessPiece {
 		return moves.contains(delta);
 	}
 
-	public Set<Vector2> getPossibleDestinations() {
-		logActionPossibleDestinations();
+	public Set<Vector2> getPossibleDestinations(String caller) {
+		logActionPossibleDestinations(caller);
 
 		Set<Vector2> possibleDestinations = new HashSet<>();
 

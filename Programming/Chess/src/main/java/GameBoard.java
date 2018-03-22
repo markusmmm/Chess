@@ -188,7 +188,7 @@ public class GameBoard {
             firstClick = true;
             firstTile = tile;
 
-            Set<Vector2> list = board.getPiece(tile.getPos()).getPossibleDestinations();
+            Set<Vector2> list = board.getPiece(tile.getPos()).getPossibleDestinations("GameBoard");
             for (Vector2 possibleDestination : list) {
                 highlightSquare(possibleDestination);
             }

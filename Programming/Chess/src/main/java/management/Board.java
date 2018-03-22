@@ -148,6 +148,21 @@ public class Board {
 		return pieces.get(pos).clonePiece();
 	}
 
+	public HashMap<Vector2, IChessPiece> getPieces(Alliance alliance) {
+		HashMap<Vector2, IChessPiece> temp = new HashMap<>();
+
+		for(Vector2 pos : pieces.keySet()) {
+			IChessPiece piece = pieces.get(pos);
+			if(piece == null) continue;
+
+			if(insideBoard(pos) && piece.alliance().equals(alliance)) {
+				temp.put(pos, piece);
+			}
+		}
+
+		return temp;
+	}
+
 	public HashMap<Vector2, IChessPiece> getUsablePieces(Alliance alliance) {
 		HashMap<Vector2, IChessPiece> temp = new HashMap<>();
 
@@ -156,7 +171,7 @@ public class Board {
 			if(piece == null) continue;
 
 			if(insideBoard(pos) && piece.alliance().equals(alliance)) {
-				if(piece.getPossibleDestinations().size() == 0) continue; // If the piece has no valid moves, ignore it
+				if(piece.getPossibleDestinations("Board").size() == 0) continue; // If the piece has no valid moves, ignore it
 
 				temp.put(pos, piece);
 			}

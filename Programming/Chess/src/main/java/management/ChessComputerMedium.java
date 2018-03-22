@@ -35,7 +35,7 @@ public class ChessComputerMedium extends ChessComputer {
     private void calcEnemyMoves() {
         enemyMoves.clear();
         for (IChessPiece p: board.getUsablePieces(enemy).values()) {
-            enemyMoves.addAll(p.getPossibleDestinations());
+            enemyMoves.addAll(p.getPossibleDestinations("ChessComputerMedium"));
         }
     }
 }

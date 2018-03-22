@@ -12,6 +12,7 @@ public interface IChessPiece {
 	Alliance alliance();
 	Piece piece();
 
+	Set<Vector2> getPossibleDestinations(String caller);
 	Set<Vector2> getPossibleDestinations();
 
 	boolean hasMoved();
