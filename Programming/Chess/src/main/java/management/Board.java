@@ -311,7 +311,10 @@ public class Board {
 	public boolean performAttack(Vector2 start, Vector2 end, Vector2 victim) {
 		if(!pieces.keySet().contains(end) || !pieces.keySet().contains(victim)) return false;
 
-		gameLog.add(new MoveNode(pieces.get(end), start, end, pieces.get(victim)));
+		MoveNode node = new MoveNode(pieces.get(end), start, end, pieces.get(victim));
+		System.out.println("Performing attack: " + node);
+
+		gameLog.add(node);
 		return false;
 	}
 
