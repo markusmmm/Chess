@@ -43,7 +43,7 @@ public class King extends ChessPiece {
 
         // Ensures that the king can't be moved into check
         // Ignored if king is not on live board
-        if(board.isLive() && !resolvesCheck(position, destination)) return false;
+        if(movesIntoCheck(destination)) return false;
 
         return (
             (inDiagonals(destination) || inStraights(destination)) &&
@@ -100,10 +100,23 @@ public class King extends ChessPiece {
         return inCheck(position);
     }
 
+    private boolean movesIntoCheck(Vector2 end) {
+        board.suspendPiece(position);
+
+        boolean setsCheck = inCheck(end);
+
+        board.releasePiece(position);
+
+        return setsCheck;
+    }
+
     public boolean resolvesCheck(Vector2 start, Vector2 end) {
         // TODO Add alliance check (A hostile piece cannot resolve check)
 
-        if(!start.equals(position) && !inCheck()) return true;
+        if(start.equals(position))
+            return !movesIntoCheck(end);
+        
+        if(!inCheck()) return true;
 
         Set<Vector2> endangered = new HashSet<>();
         Set<Vector2> destinations = new HashSet<>();
@@ -119,8 +132,7 @@ public class King extends ChessPiece {
             }
         }
 
-        if(!start.equals(position))
-            endangered.remove(end);
+        endangered.remove(end);
 
         board.releasePiece(position);
 
