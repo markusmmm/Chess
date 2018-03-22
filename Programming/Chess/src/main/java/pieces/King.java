@@ -9,6 +9,12 @@ import java.util.*;
 
 public class King extends ChessPiece {
 
+    private Set<Vector2> moves = new HashSet<>(Arrays.asList(
+        new Vector2(-1, -1), new Vector2( 0, -1), new Vector2( 1, -1),
+        new Vector2(-1,  0),                           new Vector2( 1,  0),
+        new Vector2(-1,  1), new Vector2( 0,  1), new Vector2( 1,  1)
+    ));
+
     /**
      * @param position
      */
@@ -24,10 +30,12 @@ public class King extends ChessPiece {
     public boolean legalMove(Vector2 destination) {
         if(!super.legalMove(destination)) return false;
 
+        /*
         if(!(board.insideBoard(position) && board.insideBoard(destination))) return false;
 
         IChessPiece endPiece = board.getPiece(destination);
         if(endPiece != null && endPiece.alliance().equals(alliance)) return false;
+        */
 
         if(inCheck(destination)) return false; // Ensures that the king can't be moved into check
 
@@ -43,33 +51,11 @@ public class King extends ChessPiece {
 
         Set<Vector2> possibleMoves = new HashSet<>();
 
-        int x = position.getX();
-        int y = position.getY();
+        for(Vector2 move : moves) {
+            Vector2 endPos = position.add(move);
 
-
-        if (legalMove(new Vector2(x - 1, y - 1))) {
-            possibleMoves.add(new Vector2(x - 1, y - 1));
-        }
-        if (legalMove(new Vector2(x, y - 1))) {
-            possibleMoves.add(new Vector2(x, y - 1));
-        }
-        if (legalMove(new Vector2(x + 1, y - 1))) {
-            possibleMoves.add(new Vector2(x + 1, y - 1));
-        }
-        if (legalMove(new Vector2(x - 1, y))) {
-            possibleMoves.add(new Vector2(x - 1, y));
-        }
-        if (legalMove(new Vector2(x + 1, y))) {
-            possibleMoves.add(new Vector2(x + 1, y));
-        }
-        if (legalMove(new Vector2(x - 1, y + 1))) {
-            possibleMoves.add(new Vector2(x - 1, y + 1));
-        }
-        if (legalMove(new Vector2(x + 1, y - 1))) {
-            possibleMoves.add(new Vector2(x, y + 1));
-        }
-        if (legalMove(new Vector2(x + 1, y - 1))) {
-            possibleMoves.add(new Vector2(x + 1, y + 1));
+            if(legalMove(endPos))
+                possibleMoves.add(endPos);
         }
 
         return possibleMoves;
