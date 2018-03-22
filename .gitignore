@@ -19,5 +19,5 @@ target/
 
 # ignore latex build files 
 .gz
-.aug 
+.aux 
 .log
