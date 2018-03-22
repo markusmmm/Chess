@@ -126,7 +126,10 @@ public class King extends ChessPiece {
     }
 
     public boolean checkmate() {
-        return /* inCheck() && */board.getUsablePieces(alliance).size() == 0;
+        return inCheck() && board.getUsablePieces(alliance).size() == 0;
+    }
+    public boolean stalemate() {
+        return !inCheck() && board.getUsablePieces(alliance).size() == 0;
     }
 
     /**
