@@ -117,7 +117,6 @@ public class Board {
     	pieces.remove(pos);
 
     	ChessPiece newPiece = createPiece(pos, newType, piece.alliance());
-    	newPiece.syncContent(piece);
 
     	pieces.put(pos, newPiece);
 
@@ -195,7 +194,7 @@ public class Board {
 		if(piece == null) return false; // Check if a piece exists at the given position
 		if(!piece.alliance().equals(activePlayer)) return false; // Checks if the active player owns the piece that is being moved
 
-		System.out.println("Local before: " + piece.position());
+		System.out.println("Local before: " + piece.position() + ", has moved: " + piece.hasMoved());
 		if(!piece.move(end)) return false; // Attempt to move the piece
 
 		lastPiece = piece;
@@ -221,7 +220,7 @@ public class Board {
 		//After a successful move, advance to the next player
 		activePlayer = activePlayer.equals(Alliance.WHITE) ? Alliance.BLACK : Alliance.WHITE;
 
-		System.out.println("Local after: " + piece.position());
+		System.out.println("Local after: " + piece.position() + ", has moved: " + piece.hasMoved());
 		System.out.println("Move successful!");
 
 		return true;

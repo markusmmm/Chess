@@ -57,11 +57,7 @@ public class Pawn extends ChessPiece {
 	public boolean whiteNegative(Vector2 move)
 	{
 		Vector2 white = new Vector2(this.position().getX(), this.position().getY() - 1);
-		if (move.equals(white) && board.vacant(move)) {
-			this.hasDoubleStepped = true;
-			return true;
-		}
-		return false;
+		return move.equals(white) && board.vacant(move);
 	}
 
 	public boolean whiteNegative2(Vector2 move)
@@ -167,9 +163,26 @@ public class Pawn extends ChessPiece {
 
 		if(this.alliance.equals(WHITE))
 		{
+			Vector2 end = new Vector2(x, y - 2);
+
 			//First move 2 step
-			if(legalMove(new Vector2(x, y - 2)))
+			if(legalMove(end))
 			{
+				System.out.println("Position: " + position);
+				System.out.println("hasMoved = " + hasMoved());
+				System.out.println("whiteNeg2 = " + whiteNegative2(end));
+				System.out.println("whiteNeg =" + whiteNegative(end));
+				System.out.println("whiteLDiag = " + whiteLDiag(end));
+				System.out.println("whiteRDiag =" + whiteRDiag(end));
+				System.out.println("isWhite =" + this.alliance.equals(WHITE));
+				System.out.println("blackPos2 =" + blackPositive2(end));
+				System.out.println("blackPos =" + blackPositive(end));
+				System.out.println("blackLDiag =" + blackLDiag(end));
+				System.out.println("blackRDiag =" + blackRDiag(end));
+				System.out.println("isBlack =" + this.alliance.equals(BLACK));
+				System.out.println("noTurnBlack =" + noTurnBackBlack(end));
+				System.out.println("noTurnWhite =" + noTurnBackWhite(end));
+
 				possibleMoves.add(new Vector2(x, y - 2));
 			}
 			//One step
@@ -227,6 +240,15 @@ public class Pawn extends ChessPiece {
 				possibleMoves.add(new Vector2(x + 1, y + 1));
 			}
 		}
+
+		int startY = 1;
+		int dir = alliance == Alliance.BLACK ? 1 : -1;
+		if(alliance == Alliance.WHITE) startY = board.getSize() - 1 - startY;
+
+		if(position.getY() != startY) {
+			possibleMoves.remove(new Vector2(position.getX(), position.getY() + dir * 2));
+		}
+
 		return possibleMoves;
 	}
 

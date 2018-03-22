@@ -25,6 +25,4 @@ public interface IChessPiece {
 	boolean move(Vector2 end);
 
 	IChessPiece clonePiece();
-	void syncContent(ChessPiece piece);
-
 }

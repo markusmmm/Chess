@@ -17,7 +17,7 @@ public abstract class ChessPiece implements IChessPiece {
 	protected final Piece piece;
 	protected final Board board;
 
-	protected Stack<Vector2> moveLog = new Stack<Vector2>();
+	private boolean hasMoved = false;
 
     /**
      *
@@ -52,7 +52,7 @@ public abstract class ChessPiece implements IChessPiece {
 	 * @return Whether or not the piece has been moved during the game
 	 */
 	public boolean hasMoved() {
-		return moveLog.size() != 0;
+		return hasMoved;
 	}
 
 	/**
@@ -65,7 +65,10 @@ public abstract class ChessPiece implements IChessPiece {
 		if (!legalMove(move)) return false; // If the destination is unreachable, the move fails
 
 		position = new Vector2(move.getX(), move.getY());
-		moveLog.push(move);
+		hasMoved = true;
+
+		System.out.println("Move performed. New pos: " + position);
+
 		return true;
 	}
 
@@ -101,10 +104,6 @@ public abstract class ChessPiece implements IChessPiece {
 	}
 	protected boolean inDiagonals(Vector2 newPos) {
 		return Math.abs(this.position.getX() - newPos.getX()) == Math.abs(this.position.getY() - newPos.getY());
-	}
-
-	public void syncContent(ChessPiece other) {
-		moveLog = other.moveLog;
 	}
 
 	@Override
