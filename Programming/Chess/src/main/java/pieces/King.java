@@ -3,10 +3,7 @@ package pieces;
 import resources.*;
 import management.*;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class King extends ChessPiece {
 
@@ -25,17 +22,18 @@ public class King extends ChessPiece {
     public boolean legalMove(Vector2 destination) {
         if(!super.legalMove(destination)) return false;
 
-        //if(!(board.insideBoard(position) && board.insideBoard(destination))) return false;
+        if(!(board.insideBoard(position) && board.insideBoard(destination))) return false;
 
-        //IChessPiece endPiece = board.getPiece(destination);
-        //if(endPiece != null && endPiece.alliance().equals(alliance)) return false;
+        IChessPiece endPiece = board.getPiece(destination);
+        if(endPiece != null && endPiece.alliance().equals(alliance)) return false;
+
+        if(inCheck(destination)) return false; // Ensures that the king can't be moved into check
 
         return (
             (inDiagonals(destination) || inStraights(destination)) &&
             position.distance(destination) == 1 &&
             freePath(destination)
         );
-
     }
 
     public Set<Vector2> getPossibleDestinations() {
@@ -72,6 +70,25 @@ public class King extends ChessPiece {
         }
         return possibleMoves;
 
+    }
+
+    public boolean inCheck(Vector2 destination) {
+        Alliance otherAlliance = alliance() == Alliance.BLACK ? Alliance.WHITE : Alliance.BLACK;
+        HashMap<Vector2, IChessPiece> hostilePieces = board.getUsablePieces(otherAlliance);
+
+        for(Vector2 key : hostilePieces.keySet())
+            if(hostilePieces.get(key).getPossibleDestinations().contains(destination))
+                return true;
+
+        return false;
+    }
+    public boolean inCheck() {
+        return inCheck(position);
+    }
+
+    public boolean checkmate() {
+        //TODO Check if any pieces can shield the king
+        return inCheck() && getPossibleDestinations().size() == 0;
     }
 
     /**

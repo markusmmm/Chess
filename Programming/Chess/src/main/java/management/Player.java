@@ -1,28 +1,28 @@
 package management;
 
-import pieces.*;
 import resources.*;
-
-import java.awt.*;
 
 public class Player {
 
-	private String name;
+	private String username;
 	private Alliance alliance;
+	private int score;
 
     /**
      *
-	 * @param name
+	 * @param username
      * @param alliance
      */
-    public Player(String name, Alliance alliance) {
+    public Player(String username, Alliance alliance) {
         // TODO - implement Player.Player
         throw new UnsupportedOperationException();
     }
 
-	public String getName() {
-		return this.name;
+	public String getUsername() {
+		return this.username;
 	}
 
 	public Alliance getAlliance() { return alliance; }
+
+	public int getScore() { return score; }
 }
