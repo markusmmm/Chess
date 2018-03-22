@@ -11,6 +11,7 @@ import java.util.*;
 
 
 public class ChessComputerMedium extends ChessComputer {
+    private final long THINKING_TIME = 3000;
     private Alliance enemy;
     private ArrayList<MoveScore> moveChart = new ArrayList<>();
 
@@ -27,12 +28,17 @@ public class ChessComputerMedium extends ChessComputer {
     @Override
     public Move getMove() {
         Board sim;
+        long startTime = System.currentTimeMillis();
+
         for(IChessPiece piece: board.getUsablePieces(alliance()).values()) {
             for(Vector2 move: piece.getPossibleDestinations()) {
-                sim = null;
                 sim = board.clone();
                 sim.movePiece(piece.position(),move);
                 moveChart.add(new MoveScore(scoreBoard(sim), new Move(piece.position(), move)));
+
+                if(startTime + THINKING_TIME < System.currentTimeMillis()){
+                    return Collections.max(moveChart).getMove();
+                }
             }
         }
         return Collections.max(moveChart).getMove();
