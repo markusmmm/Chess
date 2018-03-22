@@ -306,18 +306,18 @@ public class Board {
 		ChessPiece piece = pieces.get(pos);
 		pieces.remove(pos);
 		inactivePieces.add(piece);
-		
+
 
 		return true;
 	}
 	public boolean performAttack(Vector2 start, Vector2 end, Vector2 victim) {
-		if(!pieces.keySet().contains(end) || !pieces.keySet().contains(victim)) return false;
 
-		MoveNode node = new MoveNode(pieces.get(end), start, end, pieces.get(victim));
+
+		MoveNode node = new MoveNode(pieces.get(start), start, end, pieces.get(victim));
 		System.out.println("Performing attack: " + node);
 
 
-
+		removePiece(victim);
 		gameLog.add(node);
 		return true;
 	}

@@ -16,6 +16,7 @@ public abstract class ChessPiece implements IChessPiece {
 	protected final boolean canJump;
 	protected final Piece piece;
 	protected final Board board;
+	private int value = 0;
 
 	private boolean hasMoved = false;
 
@@ -123,10 +124,6 @@ public abstract class ChessPiece implements IChessPiece {
 
 	protected void logActionPossibleDestinations(String caller) {
 		System.out.println(caller + " is checking possible destinations for " + toString());
-	}
-
-	public int getValue() {
-		throw new UnsupportedOperationException();
 	}
 
 	@Override

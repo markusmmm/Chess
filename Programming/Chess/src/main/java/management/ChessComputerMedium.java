@@ -45,10 +45,20 @@ public class ChessComputerMedium extends ChessComputer {
 
     }
 
+    /**
+     *
+     * @param sim the board that gets scored
+     * @return gives score to current state of board
+     */
     private int scoreBoard(Board sim) {
         return diffPossibleMoves(sim); // + diffPieceValue(sim);
     }
 
+    /**
+     *
+     * @param sim
+     * @return gives the difference between the total value of black and white's pieces
+     */
     private int diffPieceValue(Board sim) {
         return pieceValue(alliance(), sim) - pieceValue(enemy, sim);
     }
@@ -61,6 +71,11 @@ public class ChessComputerMedium extends ChessComputer {
         return sum;
     }
 
+    /**
+     *
+     * @param sim
+     * @return gives the difference between the possible moves black and white have
+     */
     private int diffPossibleMoves(Board sim) {
         return possibleMoves(alliance(), sim) - possibleMoves(enemy, sim);
     }
