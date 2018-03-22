@@ -68,8 +68,8 @@ public class Pawn extends ChessPiece {
 	@Override
 	public boolean move(Vector2 destination) {
 		Vector2 start = position();
-		Vector2 blackEnpasant = new Vector2(position.getX() , position.getY() - 1);
-		Vector2 whiteEnpasant = new Vector2(position.getX(), position.getY() + 1);
+		Vector2 blackEnpasant = new Vector2(destination.getX() , destination.getY() - 1);
+		Vector2 whiteEnpasant = new Vector2(destination.getX(), destination.getY() + 1);
 
 		boolean whiteNegative2 = whiteNegative2(destination) && alliance == alliance.WHITE;
 		boolean blackPositive2 = blackPositive2(destination) && alliance == alliance.BLACK;
