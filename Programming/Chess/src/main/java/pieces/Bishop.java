@@ -13,7 +13,7 @@ import java.util.Set;
 public class Bishop extends ChessPiece {
 	private Set<Vector2> possibleMoves = new HashSet<>();
 	public Bishop(Vector2 position, Alliance alliance, Board board){
-		super(position, alliance, board, false, Piece.BISHOP);
+		super(position, alliance, board, false, Piece.BISHOP, 3);
 	}
     public Bishop clonePiece() {
         return new Bishop(position, alliance, board);

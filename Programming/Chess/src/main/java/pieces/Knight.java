@@ -23,7 +23,7 @@ public class Knight  extends ChessPiece {
 	 * @param position
 	 */
 	public Knight (Vector2 position, Alliance alliance, Board board){
-		super(position, alliance, board, true, Piece.KNIGHT);
+		super(position, alliance, board, true, Piece.KNIGHT, 3);
 	}
     public Knight clonePiece() {
         return new Knight(position, alliance, board);

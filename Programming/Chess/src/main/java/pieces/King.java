@@ -19,7 +19,7 @@ public class King extends ChessPiece {
      * @param position
      */
     public King(Vector2 position, Alliance alliance, Board board) {
-        super(position, alliance, board, false, Piece.KING);
+        super(position, alliance, board, false, Piece.KING, 2);
     }
 
     public King clonePiece() {

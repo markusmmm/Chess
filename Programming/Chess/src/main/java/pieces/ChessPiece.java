@@ -2,6 +2,7 @@ package pieces;
 
 import management.Board;
 import resources.Alliance;
+import resources.Move;
 import resources.Piece;
 import resources.Vector2;
 
@@ -16,7 +17,7 @@ public abstract class ChessPiece implements IChessPiece {
 	protected final boolean canJump;
 	protected final Piece piece;
 	protected final Board board;
-	private int value = 0;
+	protected final int value;
 
 	private boolean hasMoved = false;
 
@@ -24,17 +25,19 @@ public abstract class ChessPiece implements IChessPiece {
      *
      * @param position The piece's initial position on the board
      */
-    public ChessPiece(Vector2 position, Alliance alliance, Board board, boolean canJump, Piece piece) {
+    public ChessPiece(Vector2 position, Alliance alliance, Board board, boolean canJump, Piece piece, int value) {
         this.position = position;
         this.alliance = alliance;
         this.board = board;
         this.canJump = canJump;
         this.piece = piece;
+        this.value = value;
     }
 
 	public Vector2 position() { return position; }
 	public Alliance alliance() { return alliance; }
 	public Piece piece() { return piece; }
+	public int getValue() { return value; }
 
 	public Alliance otherAlliance() {
     	return alliance.equals(Alliance.BLACK) ? Alliance.WHITE : Alliance.BLACK;

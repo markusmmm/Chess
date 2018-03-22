@@ -11,6 +11,7 @@ public interface IChessPiece {
 	Vector2 position();
 	Alliance alliance();
 	Piece piece();
+	int getValue();
 
 	Set<Vector2> getPossibleDestinations(String caller);
 	Set<Vector2> getPossibleDestinations();
@@ -24,7 +25,4 @@ public interface IChessPiece {
 	boolean move(Vector2 end);
 
 	ChessPiece clonePiece();
-
-    int getValue();
-
 }

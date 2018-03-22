@@ -16,7 +16,7 @@ public class Rook extends ChessPiece {
 	 * @param position
 	 */
 	public Rook(Vector2 position, Alliance alliance, Board board) {
-		super(position, alliance, board, false, Piece.ROOK);
+		super(position, alliance, board, false, Piece.ROOK, 5);
 	}
 
 	public Rook clonePiece() {

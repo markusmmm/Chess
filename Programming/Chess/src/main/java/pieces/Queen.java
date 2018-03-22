@@ -13,7 +13,7 @@ public class Queen extends ChessPiece {
     private Set<Vector2> possibleMoves = new HashSet<>();
 
     public Queen(Vector2 position, Alliance alliance, Board board){
-		super(position, alliance, board, false, Piece.QUEEN);
+		super(position, alliance, board, false, Piece.QUEEN, 9);
 	}
     public Queen clonePiece() {
         return new Queen(position, alliance, board);
