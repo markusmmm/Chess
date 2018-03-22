@@ -238,7 +238,11 @@ public class Pawn extends ChessPiece {
 		{
 			if((this.alliance.equals(WHITE) && this.position.getY() == 3) || (this.alliance.equals(BLACK) && this.position.getY() == 4))
 			{
-				Pawn possibleEnemyPawn = (Pawn) board.getPiece(side);
+				IChessPiece otherPiece = board.getPiece(side);
+				if(!otherPiece.piece().equals(Piece.PAWN))
+					return false;
+
+				Pawn possibleEnemyPawn = (Pawn) otherPiece;
 				if (possibleEnemyPawn.hasDoubleStepped && (!possibleEnemyPawn.alliance.equals(this.alliance)) && board.getLastPiece().position().equals(possibleEnemyPawn))
 				{
 					return true;
