@@ -1,11 +1,9 @@
 package pieces;
 
-import resources.*;
-import management.*;
+import resources.Alliance;
+import resources.Piece;
+import resources.Vector2;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public interface IChessPiece {

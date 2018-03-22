@@ -1,14 +1,15 @@
 package pieces;
 
-import resources.*;
+import management.Board;
+import resources.Alliance;
+import resources.Piece;
+import resources.Vector2;
+
+import java.util.HashSet;
+import java.util.Set;
+
 import static resources.Alliance.BLACK;
 import static resources.Alliance.WHITE;
-import management.*;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 public class Pawn extends ChessPiece {
 

@@ -1,6 +1,5 @@
 package management;
 
-import resources.Alliance;
 import resources.Move;
 
 public class ChessComputerHard extends ChessComputer {

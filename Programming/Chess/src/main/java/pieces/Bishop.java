@@ -1,14 +1,12 @@
 package pieces;
 
 
-import management.*;
+import management.Board;
 import resources.Alliance;
 import resources.Piece;
 import resources.Vector2;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 

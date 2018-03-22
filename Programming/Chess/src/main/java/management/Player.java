@@ -1,6 +1,10 @@
 package management;
 
+<<<<<<< HEAD
 import resources.*;
+=======
+import resources.Alliance;
+>>>>>>> bf34dbba978b73ec3eb3cdd3e8598f868cbed946
 
 public class Player {
 

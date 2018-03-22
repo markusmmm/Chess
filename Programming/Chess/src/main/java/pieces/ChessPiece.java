@@ -1,12 +1,9 @@
 package pieces;
 
-import resources.*;
-import management.*;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Stack;
+import management.Board;
+import resources.Alliance;
+import resources.Piece;
+import resources.Vector2;
 
 public abstract class ChessPiece implements IChessPiece {
 

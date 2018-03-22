@@ -1,7 +1,9 @@
 package pieces;
 
-import resources.*;
-import management.*;
+import management.Board;
+import resources.Alliance;
+import resources.Piece;
+import resources.Vector2;
 
 import java.util.*;
 
@@ -88,7 +90,8 @@ public class King extends ChessPiece {
 
     public boolean checkmate() {
         //TODO Check if any pieces can shield the king
-        return inCheck() && getPossibleDestinations().size() == 0;
+        throw new UnsupportedOperationException("Check for shielding pieces not yet implemented");
+        //return inCheck() && getPossibleDestinations().size() == 0;
     }
 
     /**
