@@ -23,5 +23,8 @@ public interface IChessPiece {
 	 */
 	boolean move(Vector2 end);
 
-	ChessPiece clonePiece();
+	IChessPiece clonePiece();
+
+    int getValue();
+
 }
