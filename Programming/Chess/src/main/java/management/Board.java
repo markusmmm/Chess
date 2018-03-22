@@ -25,7 +25,8 @@ public class Board {
 	private Alliance activePlayer = Alliance.WHITE;
 
 	public HashMap<Vector2, ChessPiece> pieces = new HashMap<>();
-	public HashSet<ChessPiece> inactivePieces = new HashSet<>();
+	private Stack<Vector2> drawPieces = new Stack<>();
+	private HashSet<ChessPiece> inactivePieces = new HashSet<>();
 
 	private Stack<MoveNode> gameLog = new Stack<>();
 
@@ -108,12 +109,20 @@ public class Board {
 		}
 	}
 
+	public Stack<Vector2> clearDrawPieces() {
+    	Stack<Vector2> result = (Stack<Vector2>)drawPieces.clone();
+    	drawPieces.clear();
+
+    	return result;
+	}
+
 	public boolean isLive() { return isLive; }
 
     public Alliance getActivePlayer() {
     	return activePlayer;
 	}
 
+	/*
 	public boolean undoMove() {
     	if(gameLog.size() == 0) return false;
 
@@ -128,12 +137,15 @@ public class Board {
 
     	return true;
 	}
+	*/
 
 	public boolean addPiece(Vector2 pos, Piece type, Alliance alliance) {
 		ChessPiece piece = createPiece(pos, type, alliance);
 		if(piece == null) return false;
 
 		pieces.put(pos, piece);
+		drawPieces.push(pos);
+
 		return true;
 	}
 
@@ -164,6 +176,7 @@ public class Board {
     	ChessPiece newPiece = createPiece(pos, newType, piece.alliance());
 
     	pieces.put(pos, newPiece);
+    	drawPieces.push(pos);
 
     	return true;
 	}
@@ -285,6 +298,8 @@ public class Board {
 
 		pieces.remove(start);
 		pieces.put(end, piece);
+		drawPieces.push(start);
+		drawPieces.push(end);
 
 		//After a successful move, advance to the next player
 		activePlayer = activePlayer.equals(Alliance.WHITE) ? Alliance.BLACK : Alliance.WHITE;
@@ -306,7 +321,7 @@ public class Board {
 		ChessPiece piece = pieces.get(pos);
 		pieces.remove(pos);
 		inactivePieces.add(piece);
-
+		drawPieces.push(pos);
 
 		return true;
 	}

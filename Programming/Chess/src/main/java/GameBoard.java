@@ -141,10 +141,10 @@ public class GameBoard {
                 int row = move.start.getY();
                 int col = move.start.getX();
 
-                tiles[row][col].setFill(Color.TRANSPARENT);
+                //tiles[row][col].setFill(Color.TRANSPARENT);
             }
 
-            firstTile.setFill(Color.TRANSPARENT);
+            //firstTile.setFill(Color.TRANSPARENT);
             drawBoard();
             updateLogs();
             System.out.println("Moving " + board.getPiece(firstTile.getPos()) + " from " + firstTile.getPos() + " to " + pos);
@@ -237,7 +237,7 @@ public class GameBoard {
     }
 
     public void drawBoard() {
-        for (Vector2 pos : board.pieces.keySet()) {
+        for (Vector2 pos : board.clearDrawPieces()) {
             int col = pos.getX();
             int row = pos.getY();
             tiles[row][col].drawPiece();
