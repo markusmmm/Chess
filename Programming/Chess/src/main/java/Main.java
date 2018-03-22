@@ -5,6 +5,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -42,14 +43,11 @@ public class Main extends Application {
 
         TextField textUsername = new TextField();
         textUsername.setPrefWidth(240);
+        textUsername.setAlignment(Pos.CENTER);
 
         Button loginButton = new Button();
         loginButton.setText("LOGIN");
         loginButton.setPrefWidth(120);
-
-        GridPane gridPane = new GridPane();
-        gridPane.add(labelUsername, 1, 0);
-        gridPane.add(textUsername, 2, 0);
 
         Text errorField = new Text();
         errorField.setFill(Color.RED);
@@ -57,10 +55,16 @@ public class Main extends Application {
         textUsername.setOnAction(e -> handleLogin(textUsername.getText(), errorField));
         loginButton.setOnAction(e -> handleLogin(textUsername.getText(), errorField));
 
-        VBox root = new VBox(20);
+        VBox loginContainer = new VBox(10);
+        loginContainer.setAlignment(Pos.CENTER);
+        loginContainer.setPrefWidth(240);
+        loginContainer.setMaxWidth(240);
+        loginContainer.getChildren().addAll(labelUsername, textUsername);
+
+        VBox root = new VBox(10);
         root.setAlignment(Pos.CENTER);
-        root.getChildren().addAll(labelTitle, gridPane, loginButton, errorField);
-        root.setPrefSize(400, 250);
+        root.getChildren().addAll(labelTitle, loginContainer, loginButton, errorField);
+        root.setPrefSize(WIDTH, HEIGHT);
         return root;
     }
 
@@ -81,7 +85,6 @@ public class Main extends Application {
      * @return mainMenu
      */
     private Parent mainMenu(String username) {
-
         BorderPane root = new BorderPane();
 
         Label labelWelcome = new Label("Welcome, " + username + "!");
