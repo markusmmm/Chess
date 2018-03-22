@@ -21,7 +21,7 @@
     -fx-padding: 10px 0 10px 0;
 }
 #moveLog {
-    -fx-font-size: 11px;
+    -fx-font-size: 10px;
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent
 }

@@ -15,10 +15,7 @@ import pieces.ChessPiece;
 import pieces.IChessPiece;
 import resources.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Observable;
-import java.util.Set;
+import java.util.*;
 
 public class GameBoard {
     private final int SIZE = 8;
@@ -197,7 +194,12 @@ public class GameBoard {
     }
 
     private void updateMoveLog() {
-        ObservableList<MoveNode> data = FXCollections.observableArrayList(board.getGameLog());
+        Stack<MoveNode> gameLog = board.getGameLog();
+        Collections.reverse(gameLog);
+
+        HashSet<ChessPiece> inactivePieces = board.getInactivePieces();
+
+        ObservableList<MoveNode> data = FXCollections.observableArrayList(gameLog);
         moveLog.setItems(data);
         ObservableList<ChessPiece> data2 = FXCollections.observableArrayList(board.getInactivePieces());
         capturedPieces.setItems(data2);
