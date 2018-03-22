@@ -1,5 +1,6 @@
 package management;
 
+import pieces.ChessPiece;
 import pieces.IChessPiece;
 import resources.Alliance;
 import resources.Move;
@@ -7,6 +8,7 @@ import resources.Vector2;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Random;
 
 /**
  * gets a map over enemy's possible moves which is avoided.
@@ -53,8 +55,10 @@ public class ChessComputerMedium extends ChessComputer {
 
     private Move randomMove(ArrayList<IChessPiece> pieces) {
         IChessPiece orgPos = getRandomPiece(pieces);
-        Vector2 newPos = orgPos.getPossibleDestinations().iterator().next();
-        return new Move(orgPos.position(),newPos);
+        ArrayList<Vector2> moves = new ArrayList<>();
+        moves.addAll(orgPos.getPossibleDestinations());
+
+        return new Move(orgPos.position(),moves.get(fromZeroTo(moves.size() - 1)));
     }
 
     private void getEnemyPieces() {
@@ -66,7 +70,7 @@ public class ChessComputerMedium extends ChessComputer {
         if(0 <= killMoves.size()) {
             return null;
         }
-        return killMoves.get(0);
+        return killMoves.get(fromZeroTo(killMoves.size() - 1));
     }
 
     private ArrayList<Move> findKills(ArrayList<IChessPiece> killers, ArrayList<IChessPiece> victims) {
@@ -109,6 +113,6 @@ public class ChessComputerMedium extends ChessComputer {
         }
     }
     private int fromZeroTo(int num) {
-        return (int) Math.random() * num;
+        return (int) (Math.random() * num * 1.0);
     }
 }
