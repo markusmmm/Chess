@@ -29,8 +29,8 @@ public class Board {
 
 	private Stack<MoveNode> gameLog = new Stack<>();
 
-	private Board(Board template) {
-		isLive = true;
+	private Board(Board template, boolean isLive) {
+		this.isLive = isLive;
 
 		size = template.size;
 		player1 = template.player1;
@@ -300,6 +300,10 @@ public class Board {
 
 	@Override
 	public Board clone() {
-		return new Board(this);
+		return clone(true);
+	}
+
+	public Board clone(boolean isLive) {
+		return new Board(this, isLive);
 	}
 }
