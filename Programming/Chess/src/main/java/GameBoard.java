@@ -158,22 +158,43 @@ public class GameBoard {
     }
 
     private boolean tileClick(MouseEvent e, Tile tile) {
-        Alliance alliance = board.getActivePlayer();
-
         Vector2 pos = tile.getPos();
-
+        Alliance alliance = board.getActivePlayer();
         IChessPiece piece = board.getPiece(pos);
 
+        /*
+         * checks if another tile has already been selected
+         */
         if (firstClick && firstTile.getPos() != pos) {
-            IChessPiece firstPiece = board.getPiece(firstTile.getPos());
+            /*
+             * checks if the newly clicked tile is another friendly piece,
+             * if it is, change the highlighted sqaures to the new piece
+             */
+            if (board.getPiece(pos) != null) {
+                if (board.getPiece(pos).alliance() == alliance) {
+                    firstTile = tile;
+                    drawBoard();
+                    highlightSquares(pos);
+                    return true;
+                }
+            /*
+             * if not, attempt to move the pre-selected piece
+             * to the new location
+             */
+            } else {
+                IChessPiece firstPiece = board.getPiece(firstTile.getPos());
+                System.out.println(firstClick + " " + firstPiece);
+                attemptMove(firstTile, pos);
 
-            System.out.println(firstClick + " " + firstPiece);
-
-            attemptMove(firstTile, pos);
-
-            firstClick = false;
-            firstTile = null;
-
+                firstClick = false;
+                firstTile = null;
+            }
+        /*
+         * checks if the tile clicked has a piece, and that the
+         * piece has same alliance as the active player.
+         * if true for both, store the tile for the next call to
+         * tileClick.
+         */
         } else {
             System.out.print(pos + ": ");
             if (piece == null) {
@@ -187,12 +208,8 @@ public class GameBoard {
 
             firstClick = true;
             firstTile = tile;
-
-            Set<Vector2> list = board.getPiece(tile.getPos()).getPossibleDestinations("GameBoard");
-            for (Vector2 possibleDestination : list) {
-                highlightSquare(possibleDestination);
-            }
-
+            highlightSquares(pos);
+            
             return true;
         }
         return false;
@@ -209,11 +226,14 @@ public class GameBoard {
         capturedPieces.setItems(observableInactivePieces);
     }
 
-    private void highlightSquare(Vector2 pos) {
-        if (board.getPiece(pos) != null) {
-            squares[pos.getY()][pos.getX()].setFill(Color.RED);
-        } else {
-            squares[pos.getY()][pos.getX()].setFill(Color.YELLOW);
+    private void highlightSquares(Vector2 pos) {
+        Set<Vector2> list = board.getPiece(pos).getPossibleDestinations("GameBoard");
+        for (Vector2 possibleDestination : list) {
+            if (board.getPiece(possibleDestination) != null) {
+                squares[possibleDestination.getY()][possibleDestination.getX()].setFill(Color.RED);
+            } else {
+                squares[possibleDestination.getY()][possibleDestination.getX()].setFill(Color.YELLOW);
+            }
         }
     }
 
