@@ -1,10 +1,13 @@
 package pieces;
 
-import resources.*;
+import management.Board;
+import resources.Alliance;
+import resources.Piece;
+import resources.Vector2;
 
-import java.util.*;
-
-import management.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Knight  extends ChessPiece {
 

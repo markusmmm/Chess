@@ -1,6 +1,5 @@
 package management;
 
-import pieces.ChessPiece;
 import pieces.IChessPiece;
 import resources.Alliance;
 import resources.Move;

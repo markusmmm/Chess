@@ -3,7 +3,9 @@ package management;
 import pieces.*;
 import resources.*;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Stack;
 
 public class Board {
 	private static final Piece[] defaultBoard = new Piece[] {

@@ -1,7 +1,6 @@
 package management;
 
 import pieces.IChessPiece;
-import resources.Alliance;
 import resources.Move;
 import resources.Vector2;
 

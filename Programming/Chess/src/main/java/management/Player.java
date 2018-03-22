@@ -1,9 +1,6 @@
 package management;
 
-import pieces.*;
-import resources.*;
-
-import java.awt.*;
+import resources.Alliance;
 
 public class Player {
 
