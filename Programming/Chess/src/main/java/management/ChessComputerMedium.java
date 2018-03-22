@@ -5,8 +5,8 @@ import resources.Alliance;
 import resources.Move;
 import resources.Vector2;
 
-import java.nio.file.AtomicMoveNotSupportedException;
 import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * gets a map over enemy's possible moves which is avoided.
@@ -63,7 +63,7 @@ public class ChessComputerMedium extends ChessComputer {
 
     private Move getBestKill(ArrayList<IChessPiece> killers, ArrayList<IChessPiece> victims) {
         ArrayList<Move> killMoves = findKills(killers, victims);
-        if(0 < killMoves.size()) {
+        if(0 <= killMoves.size()) {
             return null;
         }
         return killMoves.get(0);
@@ -95,7 +95,7 @@ public class ChessComputerMedium extends ChessComputer {
 
     private void getOwnPieces() {
         ownPieces.clear();
-        ownPieces = (ArrayList<IChessPiece>) board.getUsablePieces(alliance()).values();
+        ownPieces.addAll(board.getUsablePieces(alliance()).values());
     }
 
     private IChessPiece getRandomPiece(ArrayList<IChessPiece> pieces) {
