@@ -199,12 +199,13 @@ public class Board {
 		if(!piece.move(end)) return false; // Attempt to move the piece
 
 		lastPiece = piece;
-		IChessPiece endPiece = pieces.get(end);
+		ChessPiece endPiece = pieces.get(end);
 
 		Piece victim = Piece.EMPTY;
 		if(endPiece != null) {
 			//Remove hostile attacked piece
 			if(!endPiece.alliance().equals(piece.alliance())) {
+				inactivePieces.add(endPiece);
 				removePiece(end);
 				victim = endPiece.piece();
 			}
