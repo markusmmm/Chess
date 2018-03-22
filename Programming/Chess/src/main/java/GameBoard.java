@@ -1,6 +1,7 @@
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
@@ -10,6 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import management.*;
 import pieces.ChessPiece;
 import pieces.IChessPiece;
@@ -27,6 +29,7 @@ public class GameBoard {
     private final Board board;
     private final ChessComputer computer;
 
+    private Stage stage;
     private GridPane grid;
     private BorderPane container;
     private ListView<MoveNode> moveLog;
@@ -41,8 +44,9 @@ public class GameBoard {
     private boolean firstClick;
     private Tile firstTile;
 
-    public GameBoard(String username, int difficulty) {
+    public GameBoard(String username, int difficulty, Stage stage) {
         this.board = new Board(SIZE, false);
+        this.stage = stage;
         this.grid = new GridPane();
         this.tiles = new Tile[SIZE][SIZE];
         this.squares = new Rectangle[SIZE][SIZE];
@@ -118,14 +122,14 @@ public class GameBoard {
 
         right.getChildren().addAll(labelMoveLog, moveLog, labelCapturedPieces, capturedPieces);
 
-        VBox informationFieldContainer = new VBox();
-        informationFieldContainer.setAlignment(Pos.CENTER);
-        informationFieldContainer.getChildren().add(gameStatus);
-        informationFieldContainer.setId("informationFieldContainer");
+        VBox statusFieldContainer = new VBox();
+        statusFieldContainer.setAlignment(Pos.CENTER);
+        statusFieldContainer.getChildren().add(gameStatus);
+        statusFieldContainer.setId("informationFieldContainer");
 
         container.setCenter(grid);
         container.setRight(right);
-        container.setBottom(informationFieldContainer);
+        container.setBottom(statusFieldContainer);
 
         drawBoard();
     }
@@ -147,7 +151,8 @@ public class GameBoard {
             //firstTile.setFill(Color.TRANSPARENT);
             drawBoard();
             updateLogs();
-            System.out.println("Moving " + board.getPiece(firstTile.getPos()) + " from " + firstTile.getPos() + " to " + pos);
+            System.out.println("Moving " + board.getPiece(firstTile.getPos()) +
+                    " from " + firstTile.getPos() + " to " + pos);
         } else {
             drawBoard();
         }
@@ -164,6 +169,7 @@ public class GameBoard {
          * checks if another tile has already been selected
          */
         if (firstClick && firstTile.getPos() != pos) {
+            gameOver();
             /*
              * checks if the newly clicked tile is another friendly piece,
              * if it is, change the highlighted squares to the new piece
@@ -176,7 +182,6 @@ public class GameBoard {
                     return true;
                 }
             }
-            
             /*
              * if not, attempt to move the pre-selected piece
              * to the new location
@@ -263,9 +268,14 @@ public class GameBoard {
         }
     }
 
+    /**
+     * TODO: tell the user which player won the game, and update highscore
+     */
     public void gameOver() {
-        //TODO GameBoard.gameOver
-        throw new UnsupportedOperationException();
+        /* Changes back from GameBoard to main menu */
+        Scene scene = new Scene(new Main().mainMenu(username));
+        scene.getStylesheets().add("stylesheet.css");
+        stage.setScene(scene);
     }
 
     public BorderPane getContainer() {
@@ -279,4 +289,5 @@ public class GameBoard {
     public int getDifficulty() {
         return difficulty;
     }
+
 }
