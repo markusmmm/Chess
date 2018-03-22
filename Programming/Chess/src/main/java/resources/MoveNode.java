@@ -17,6 +17,6 @@ public class MoveNode {
 
     @Override
     public String toString() {
-        return piece + "(" + piece.alliance() + ") from " + start + " to " + end;
+        return piece + " from " + start + " to " + end;
     }
 }
