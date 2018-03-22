@@ -314,8 +314,10 @@ public class Board {
 		MoveNode node = new MoveNode(pieces.get(end), start, end, pieces.get(victim));
 		System.out.println("Performing attack: " + node);
 
+		removePiece(victim);
+
 		gameLog.add(node);
-		return false;
+		return true;
 	}
 
 	public Stack<MoveNode> getGameLog() {
