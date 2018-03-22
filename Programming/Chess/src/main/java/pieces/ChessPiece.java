@@ -103,6 +103,10 @@ public abstract class ChessPiece implements IChessPiece {
 		return Math.abs(this.position.getX() - newPos.getX()) == Math.abs(this.position.getY() - newPos.getY());
 	}
 
+	protected void logActionPossibleDestinations() {
+		System.out.println("Checking possible destinations for " + toString());
+	}
+
 	@Override
     public String toString() {
 	    return alliance + " " + piece;

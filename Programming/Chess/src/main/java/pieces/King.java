@@ -39,6 +39,7 @@ public class King extends ChessPiece {
     }
 
     public Set<Vector2> getPossibleDestinations() {
+        logActionPossibleDestinations();
 
         Set<Vector2> possibleMoves = new HashSet<>();
 
@@ -85,8 +86,11 @@ public class King extends ChessPiece {
                 King hostileKing = (King) piece;
                 if(destination.distance(hostileKing.position()) == 1)
                     return true;
+
+                continue;
             }
-            else if (hostilePieces.get(key).getPossibleDestinations().contains(destination))
+
+            if (piece.getPossibleDestinations().contains(destination))
                 return true;
         }
 

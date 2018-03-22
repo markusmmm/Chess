@@ -40,6 +40,8 @@ public class Knight  extends ChessPiece {
 	}
 
 	public Set<Vector2> getPossibleDestinations() {
+		logActionPossibleDestinations();
+
 		Set<Vector2> possibleDestinations = new HashSet<>();
 
 		for (Vector2 move : moves) {
