@@ -1,48 +1,61 @@
 package pieces;
 
-import resources.*;
+import management.Board;
+import resources.Alliance;
+import resources.Piece;
+import resources.Vector2;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import management.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Knight  extends ChessPiece {
 
-	Vector2[] moves = new Vector2[] {
+	Set<Vector2> moves = new HashSet<>(Arrays.asList(
 			new Vector2( 2, 1), new Vector2( 1, 2),
 			new Vector2(-2, 1), new Vector2(-1, 2),
 			new Vector2( 2,-1), new Vector2( 1,-2),
-			new Vector2(-2,-1), new Vector2(-1,-2),
-	};
+			new Vector2(-2,-1), new Vector2(-1,-2)));
+	private final int value = 3;
 
 	/**
 	 * 
 	 * @param position
 	 */
 	public Knight (Vector2 position, Alliance alliance, Board board){
-		super(position, alliance, board, true, Piece.KNIGHT);
+		super(position, alliance, board, true, Piece.KNIGHT, 3);
 	}
     public Knight clonePiece() {
         return new Knight(position, alliance, board);
     }
-	
+
+	@Override
+	public int getValue() {
+		return value;
+	}
+
 	/**
 	 *
 	 * @param destination
 	 */
 	public boolean legalMove(Vector2 destination) {
-		return positiveCoordinates(destination) &&
-				getPossibleDestinations().contains(destination);
+		if(!super.legalMove(destination)) return false;
+
+		Vector2 delta = destination.subtract(position);
+		return moves.contains(delta);
 	}
 
-	public List<Vector2> getPossibleDestinations() {
-		List<Vector2> possibleMoves = new ArrayList<Vector2>();
+	public Set<Vector2> getPossibleDestinations(String caller) {
+		logActionPossibleDestinations(caller);
+
+		Set<Vector2> possibleDestinations = new HashSet<>();
+
 		for (Vector2 move : moves) {
-			if (!insideBoard(position.add(move))) continue;
-			possibleMoves.add(position.add(move));
+			Vector2 endPos = position.add(move);
+			if(legalMove(endPos))
+				possibleDestinations.add(endPos);
 		}
 
-		return possibleMoves;
+		return possibleDestinations;
 	}
 }

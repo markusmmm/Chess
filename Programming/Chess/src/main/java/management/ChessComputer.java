@@ -4,11 +4,10 @@ import resources.Alliance;
 import resources.Move;
 
 public abstract class ChessComputer {
-    private final Alliance alliance;
+    private final Alliance alliance = Alliance.BLACK;
     protected final Board board;
 
-    public ChessComputer(Alliance alliance, Board board) {
-        this.alliance = alliance;
+    public ChessComputer(Board board) {
         this.board = board;
     }
 

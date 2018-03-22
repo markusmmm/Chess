@@ -1,20 +1,20 @@
 package pieces;
 
-import resources.*;
-import management.*;
+import resources.Alliance;
+import resources.Piece;
+import resources.Vector2;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.Set;
 
 public interface IChessPiece {
 
 	Vector2 position();
 	Alliance alliance();
-    boolean canJump();
 	Piece piece();
+	int getValue();
 
-	List<Vector2> getPossibleDestinations();
+	Set<Vector2> getPossibleDestinations(String caller);
+	Set<Vector2> getPossibleDestinations();
 
 	boolean hasMoved();
 
@@ -24,9 +24,5 @@ public interface IChessPiece {
 	 */
 	boolean move(Vector2 end);
 
-	void remove();
-
-	IChessPiece clonePiece();
-	void syncContent(ChessPiece piece);
-
+	ChessPiece clonePiece();
 }

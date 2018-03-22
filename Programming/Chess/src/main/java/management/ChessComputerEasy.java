@@ -1,19 +1,14 @@
 package management;
 
 import pieces.IChessPiece;
-import resources.Alliance;
 import resources.Move;
 import resources.Vector2;
 
-import java.util.HashMap;
-import java.util.Set;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class ChessComputerEasy extends ChessComputer {
-
-    public ChessComputerEasy(Alliance alliance, Board board) {
-        super(alliance, board);
+    public ChessComputerEasy(Board board) {
+        super(board);
     }
 
     public Move getMove() {
@@ -21,20 +16,30 @@ public class ChessComputerEasy extends ChessComputer {
 
         HashMap<Vector2, IChessPiece> pieces = board.getUsablePieces(alliance());
 
-        Set<Vector2> keys = pieces.keySet();
-        int r = rand.nextInt(pieces.size());
-        int i = 0;
+        List<Move> attacks = new ArrayList<>();
+        List<Move> moves = new ArrayList<>();
 
-        for(Vector2 key : keys) {
-            if(r == i++) {
-                IChessPiece piece = pieces.get(key);
-                List<Vector2> moves = piece.getPossibleDestinations();
+        for(Vector2 key : pieces.keySet()) {
+            IChessPiece piece = pieces.get(key);
+            Set<Vector2> destinations = piece.getPossibleDestinations("ChessComputerEasy");
 
-                Vector2 destination = moves.get(rand.nextInt(moves.size()));
+            for(Vector2 destination : destinations) {
+                IChessPiece endPiece = board.getPiece(destination);
 
-                return new Move(piece.position(), destination);
+                Move move = new Move(piece.position(), destination);
+
+                if(endPiece != null && !piece.alliance().equals(endPiece))
+                    attacks.add(move);
+                else
+                    moves.add(move);
             }
         }
+
+        if(attacks.size() != 0)
+            return attacks.get(rand.nextInt(attacks.size()));
+        else if(moves.size() != 0)
+            return moves.get(rand.nextInt(moves.size()));
+
         return null;
     }
 }

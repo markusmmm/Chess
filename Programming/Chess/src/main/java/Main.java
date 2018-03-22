@@ -5,6 +5,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -16,9 +17,9 @@ import java.util.List;
 
 public class Main extends Application {
 
-    Stage stage;
-    static final int WIDTH = 550;
-    static final int HEIGHT = 540;
+    private Stage stage;
+    static final int WIDTH = 720;
+    static final int HEIGHT = 500;
 
     public void start(Stage primaryStage) throws Exception {
         stage = primaryStage;
@@ -26,6 +27,7 @@ public class Main extends Application {
         scene.getStylesheets().add("stylesheet.css");
         stage.setScene(scene);
         stage.setTitle("Chess");
+        stage.setResizable(false);
         stage.show();
     }
 
@@ -45,36 +47,40 @@ public class Main extends Application {
 
         TextField textUsername = new TextField();
         textUsername.setPrefWidth(240);
+        textUsername.setAlignment(Pos.CENTER);
 
         Button loginButton = new Button();
         loginButton.setText("LOGIN");
         loginButton.setPrefWidth(120);
 
-        GridPane gridPane = new GridPane();
-        gridPane.add(labelUsername, 1, 0);
-        gridPane.add(textUsername, 2, 0);
-
         Text errorField = new Text();
         errorField.setFill(Color.RED);
 
-        loginButton.setOnAction(e -> {
-            String username = textUsername.getText();
-            if (username == null || username.trim().isEmpty())
-                errorField.setText("Please enter a non-empty username.");
-            else {
-                HighscoreController highscoreController = new HighscoreController();
-                highscoreController.addUser(username);
-                Scene scene = new Scene(mainMenu(username));
-                scene.getStylesheets().add("stylesheet.css");
-                stage.setScene(scene);
-            }
-        });
+        textUsername.setOnAction(e -> handleLogin(textUsername.getText(), errorField));
+        loginButton.setOnAction(e -> handleLogin(textUsername.getText(), errorField));
 
-        VBox root = new VBox(20);
+        VBox loginContainer = new VBox(10);
+        loginContainer.setAlignment(Pos.CENTER);
+        loginContainer.setPrefWidth(240);
+        loginContainer.setMaxWidth(240);
+        loginContainer.getChildren().addAll(labelUsername, textUsername);
+
+        VBox root = new VBox(10);
+
         root.setAlignment(Pos.CENTER);
-        root.getChildren().addAll(labelTitle, gridPane, loginButton, errorField);
-        root.setPrefSize(400, 250);
+        root.getChildren().addAll(labelTitle, loginContainer, loginButton, errorField);
+        root.setPrefSize(WIDTH, HEIGHT);
         return root;
+    }
+
+    private void handleLogin(String username, Text errorField) {
+        if (username == null || username.trim().isEmpty())
+            errorField.setText("Please enter a non-empty username.");
+        else {
+            Scene scene = new Scene(mainMenu(username));
+            scene.getStylesheets().add("stylesheet.css");
+            stage.setScene(scene);
+        }
     }
 
     /**
@@ -83,8 +89,7 @@ public class Main extends Application {
      * @param username
      * @return mainMenu
      */
-    private Parent mainMenu(String username) {
-
+    public Parent mainMenu(String username) {
         BorderPane root = new BorderPane();
 
         Label labelWelcome = new Label("Welcome, " + username + "!");
@@ -112,16 +117,16 @@ public class Main extends Application {
         Button buttonQuit = new Button();
         buttonQuit.setText("QUIT");
 
-        buttonPlayVersus.setOnAction(e -> root.setCenter(createChessGame(username, 0)));
-        buttonPlayEasy.setOnAction(e -> root.setCenter(createChessGame(username, 1)));
-        buttonPlayMedium.setOnAction(e -> root.setCenter(createChessGame(username, 2)));
-        buttonPlayHard.setOnAction(e -> root.setCenter(createChessGame(username, 3)));
-        buttonHighScore.setOnAction(e -> highScorePopup());
+        buttonPlayVersus.setOnAction(e -> root.setCenter(createChessGame(username, 0, stage)));
+        buttonPlayEasy.setOnAction(e -> root.setCenter(createChessGame(username, 1, stage)));
+        buttonPlayMedium.setOnAction(e -> root.setCenter(createChessGame(username, 2, stage)));
+        buttonPlayHard.setOnAction(e -> root.setCenter(createChessGame(username, 3, stage)));
+
         buttonQuit.setOnAction(e -> onQuit());
 
         VBox buttonContainer = new VBox(10);
         buttonContainer.setAlignment(Pos.BASELINE_CENTER);
-        buttonContainer.getChildren().addAll(buttonPlayVersus/*, buttonPlayEasy, buttonPlayMedium, buttonPlayHard*/, buttonHighScore, buttonQuit);
+        buttonContainer.getChildren().addAll(buttonPlayVersus, buttonPlayEasy, buttonPlayMedium/*, buttonPlayHard*/, buttonHighScore, buttonQuit);
 
         VBox mainContent = new VBox(0);
         mainContent.setAlignment(Pos.TOP_CENTER);
@@ -149,10 +154,10 @@ public class Main extends Application {
      *
      * @return chessGame
      */
-    private GridPane createChessGame(String username, int difficulty) {
-        GameBoard gameBoard = new GameBoard(username, difficulty);
+    private BorderPane createChessGame(String username, int difficulty, Stage stage) {
+        GameBoard gameBoard = new GameBoard(username, difficulty, stage);
         gameBoard.createBoard();
-        return gameBoard.getGrid();
+        return gameBoard.getContainer();
     }
 
     /**

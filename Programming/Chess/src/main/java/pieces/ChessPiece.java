@@ -1,10 +1,13 @@
 package pieces;
 
-import resources.*;
-import management.*;
+import management.Board;
+import resources.Alliance;
+import resources.Move;
+import resources.Piece;
+import resources.Vector2;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.naming.OperationNotSupportedException;
+import java.util.Set;
 
 public abstract class ChessPiece implements IChessPiece {
 
@@ -14,37 +17,56 @@ public abstract class ChessPiece implements IChessPiece {
 	protected final boolean canJump;
 	protected final Piece piece;
 	protected final Board board;
+	protected final int value;
 
-	protected List<Vector2> moveLog = new ArrayList<Vector2>();
+	private boolean hasMoved = false;
 
     /**
      *
      * @param position The piece's initial position on the board
      */
-    public ChessPiece(Vector2 position, Alliance alliance, Board board, boolean canJump, Piece piece) {
+    public ChessPiece(Vector2 position, Alliance alliance, Board board, boolean canJump, Piece piece, int value) {
         this.position = position;
         this.alliance = alliance;
         this.board = board;
         this.canJump = canJump;
         this.piece = piece;
+        this.value = value;
     }
 
 	public Vector2 position() { return position; }
 	public Alliance alliance() { return alliance; }
-	public boolean canJump() { return canJump; }
 	public Piece piece() { return piece; }
+	public int getValue() { return value; }
+
+	public Alliance otherAlliance() {
+    	return alliance.equals(Alliance.BLACK) ? Alliance.WHITE : Alliance.BLACK;
+	}
 
 	/**
-	 * 
-	 * @param move
+	 * Checks if the piece can go to the given destination
+	 * super.legalMove checks if the destination is within the board's boundaries, and if the piece at the given destination is hostile
+	 * @param destination
+	 * @return Whether or not the move can be performed
 	 */
-	protected abstract boolean legalMove(Vector2 move);
+	protected boolean legalMove(Vector2 destination) {
+		System.out.println("(ChessPiece) Board is live: " + board.isLive());
+
+		IChessPiece endPiece = board.getPiece(destination);
+		// Check if victim is of opposite alliance
+		if(endPiece != null && endPiece.alliance().equals(alliance)) return false;
+
+		if(!board.insideBoard(position) || !board.insideBoard(destination)) return false;
+
+		// Lastly, check if king is in check, and whether or not the move resolves it (SHOULD OCCUR LAST, FOR OPTIMIZATION)
+		return board.getKing(alliance).resolvesCheck(position, destination);
+	}
 
 	/**
-	 * If the piece has been moved
+	 * @return Whether or not the piece has been moved during the game
 	 */
 	public boolean hasMoved() {
-		return moveLog.size() != 0;
+		return hasMoved;
 	}
 
 	/**
@@ -54,23 +76,20 @@ public abstract class ChessPiece implements IChessPiece {
 	public boolean move(Vector2 move) {
 		System.out.println("Attempting to move " + alliance + " " + piece + " from " + position + " to " + move);
 
-		if (!legalMove(move)) return false;
-		IChessPiece other = board.getPiece(position.add(move));
-		if(other != null)
-			if(other.alliance().equals(alliance)) return false; // Prevents a piece from taking another piece of the same color
+		if (!legalMove(move)) return false; // If the destination is unreachable, the move fails
 
-		moveLog.add(move);
 		position = new Vector2(move.getX(), move.getY());
-		return true;
-	}
+		hasMoved = true;
 
-	public void remove() {
-		moveLog.clear();
+		System.out.println("Move performed. New pos: " + position);
+
+		return true;
 	}
 
 	/**
 	 * checks one by one position from this position
-	 * toward destination, returns false if runs into another piece
+	 * toward destination
+	 * @return false if runs into another piece
 	 */
 	protected boolean freePath(Vector2 destination) {
 		Vector2 path = position;
@@ -101,33 +120,12 @@ public abstract class ChessPiece implements IChessPiece {
 		return Math.abs(this.position.getX() - newPos.getX()) == Math.abs(this.position.getY() - newPos.getY());
 	}
 
-	protected boolean insideBoard(Vector2 pos) {
-		return board.insideBoard(pos);
+	public Set<Vector2> getPossibleDestinations() {
+		return getPossibleDestinations("Anonymous");
 	}
 
-	protected boolean positiveCoordinates(Vector2 pos) {
-		return 0 <= pos.getX() && 0 <= pos.getY();
-	}
-
-	protected List<Vector2> filterPossibleDestinations(List<Vector2> list) {
-		for(int i = list.size() - 1; i >= 0; i--) {
-			Vector2 pos = list.get(i);
-			if(!insideBoard(pos)) {
-				list.remove(i);
-				continue;
-			}
-
-			IChessPiece piece = board.getPiece(pos);
-
-			if(piece != null)
-				if(piece.alliance().equals(alliance))
-					list.remove(i);
-		}
-		return list;
-	}
-
-	public void syncContent(ChessPiece other) {
-		moveLog = other.moveLog;
+	protected void logActionPossibleDestinations(String caller) {
+		System.out.println(caller + " is checking possible destinations for " + toString());
 	}
 
 	@Override
