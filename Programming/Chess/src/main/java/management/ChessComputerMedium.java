@@ -29,6 +29,7 @@ public class ChessComputerMedium extends ChessComputer {
         Board sim;
         for(IChessPiece piece: board.getUsablePieces(alliance()).values()) {
             for(Vector2 move: piece.getPossibleDestinations()) {
+                sim = null;
                 sim = board.clone();
                 sim.movePiece(piece.position(),move);
                 moveChart.add(new MoveScore(scoreBoard(sim), new Move(piece.position(), move)));
@@ -39,7 +40,7 @@ public class ChessComputerMedium extends ChessComputer {
     }
 
     private int scoreBoard(Board sim) {
-        return diffPossibleMoves(sim) + diffPieceValue(sim);
+        return diffPossibleMoves(sim); // + diffPieceValue(sim);
     }
 
     private int diffPieceValue(Board sim) {
