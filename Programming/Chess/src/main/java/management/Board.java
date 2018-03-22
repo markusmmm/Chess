@@ -8,6 +8,8 @@ import java.util.HashSet;
 import java.util.Stack;
 
 public class Board {
+	private final boolean isLive;
+
 	private static final Piece[] defaultBoard = new Piece[] {
 			Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY,
 			Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY,
@@ -27,8 +29,27 @@ public class Board {
 
 	private Stack<MoveNode> gameLog = new Stack<>();
 
+	private Board(Board template, boolean isLive) {
+		this.isLive = isLive;
+
+		size = template.size;
+		player1 = template.player1;
+		player2 = template.player2;
+
+		if(clock != null) clock = template.clock.clone();
+		if(lastPiece != null) lastPiece = template.lastPiece.clonePiece();
+
+		activePlayer = template.activePlayer;
+		pieces = (HashMap<Vector2, ChessPiece>)template.pieces.clone();
+		inactivePieces = (HashSet<ChessPiece>)template.inactivePieces.clone();
+
+		gameLog = (Stack<MoveNode>)template.gameLog.clone();
+	}
+
 	public Board(int size, boolean useClock) {
 		if(size < 2) throw new IllegalArgumentException("The board size must be at least 2");
+
+		isLive = true;
 
 		this.size = size;
 		setup(useClock, defaultBoard, true);
@@ -43,12 +64,17 @@ public class Board {
     public Board(int size, boolean useClock, Piece[] initialSetup) {
 		if(size < 2) throw new IllegalArgumentException("The board size must be at least 2");
 
+		isLive = true;
+
     	this.size = size;
     	setup(useClock, initialSetup, false);
     }
 
     public Board(int size, boolean useClock, Piece[] initialSetup, boolean symmetric) {
 		if(size < 2) throw new IllegalArgumentException("The board size must be at least 2");
+
+		isLive = true;
+
 		this.size = size;
 
 		setup(useClock, initialSetup, symmetric);
@@ -82,8 +108,25 @@ public class Board {
 		}
 	}
 
+	public boolean isLive() { return isLive; }
+
     public Alliance getActivePlayer() {
     	return activePlayer;
+	}
+
+	public boolean undoMove() {
+    	if(gameLog.size() == 0) return false;
+
+    	MoveNode lastMove = gameLog.pop();
+
+    	pieces.remove(lastMove.end);
+    	pieces.put(lastMove.start, lastMove.piece);
+
+		ChessPiece victim = lastMove.victimPiece;
+		if(victim != null)
+			pieces.put(victim.position(), victim);
+
+    	return true;
 	}
 
 	public boolean addPiece(Vector2 pos, Piece type, Alliance alliance) {
@@ -180,6 +223,15 @@ public class Board {
 		return temp;
 	}
 
+	public King getKing(Alliance alliance) {
+		HashMap<Vector2, IChessPiece> temp = getPieces(alliance);
+		for(Vector2 pos : temp.keySet())
+			if(temp.get(pos) instanceof King)
+				return (King)temp.get(pos);
+
+		return null;
+	}
+
 	public boolean vacant(Vector2 pos) {
 		return !pieces.containsKey(pos);
     }
@@ -217,19 +269,19 @@ public class Board {
 		lastPiece = piece;
 		ChessPiece endPiece = pieces.get(end);
 
-		Piece victim = Piece.EMPTY;
+		ChessPiece victim = null;
 		if(endPiece != null) {
 			//Remove hostile attacked piece
 			if(!endPiece.alliance().equals(piece.alliance())) {
 				inactivePieces.add(endPiece);
 				removePiece(end);
-				victim = endPiece.piece();
+				victim = endPiece;
 			}
 		}
 
 		//assert(piece.position().equals(end));
 
-		gameLog.push(new MoveNode(piece.piece(), piece.alliance(), start, end, victim));
+		gameLog.push(new MoveNode(piece, start, end, victim));
 
 		pieces.remove(start);
 		pieces.put(end, piece);
@@ -259,5 +311,14 @@ public class Board {
 
 	public Stack<MoveNode> getGameLog() {
 		return (Stack<MoveNode>) gameLog.clone();
+	}
+
+	@Override
+	public Board clone() {
+		return clone(true);
+	}
+
+	public Board clone(boolean isLive) {
+		return new Board(this, isLive);
 	}
 }

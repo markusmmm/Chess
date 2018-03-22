@@ -8,7 +8,6 @@ import resources.Vector2;
 import java.util.*;
 
 public class King extends ChessPiece {
-
     private Set<Vector2> moves = new HashSet<>(Arrays.asList(
         new Vector2(-1, -1), new Vector2( 0, -1), new Vector2( 1, -1),
         new Vector2(-1,  0),                           new Vector2( 1,  0),
@@ -28,16 +27,17 @@ public class King extends ChessPiece {
 
     @Override
     public boolean legalMove(Vector2 destination) {
-        if(!super.legalMove(destination)) return false;
+        //IMPORTANT! King can NOT call super.legalMove, as the king demands a custom alliance check (when performing castling),
+        //and does not need to perform the inCheck-call that occurs from within super
 
-        /*
         if(!(board.insideBoard(position) && board.insideBoard(destination))) return false;
 
         IChessPiece endPiece = board.getPiece(destination);
-        if(endPiece != null && endPiece.alliance().equals(alliance)) return false;
-        */
+        if(endPiece != null && endPiece.alliance().equals(alliance)) return false; // Temporary fix, until castling has been integrated
 
-        if(inCheck(destination)) return false; // Ensures that the king can't be moved into check
+        // Ensures that the king can't be moved into check
+        // Ignored if king is not on live board
+        if(board.isLive() && resolvesCheck(position, destination)) return false;
 
         return (
             (inDiagonals(destination) || inStraights(destination)) &&
@@ -61,35 +61,52 @@ public class King extends ChessPiece {
         return possibleMoves;
     }
 
-    public boolean inCheck(Vector2 destination) {
-        Alliance otherAlliance = alliance == Alliance.BLACK ? Alliance.WHITE : Alliance.BLACK;
-        HashMap<Vector2, IChessPiece> hostilePieces = board.getPieces(otherAlliance);
+    public boolean inCheck() {
+        if(!board.getActivePlayer().equals(alliance)) return false;
+
+        // NEVER USE 'board.getUsablePieces' WITHIN THIS METHOD
+        HashMap<Vector2, IChessPiece> hostilePieces = board.getPieces(otherAlliance());
 
         for(Vector2 key : hostilePieces.keySet()) {
             IChessPiece piece = hostilePieces.get(key);
 
+            // Custom handling for king, as the default implementation causes an infinite circular call
             if(piece instanceof King) {
                 King hostileKing = (King) piece;
-                if(destination.distance(hostileKing.position()) == 1)
+                if(position.distance(hostileKing.position()) == 1)
                     return true;
-
-                continue;
             }
-
-            if (piece.getPossibleDestinations(toString()).contains(destination))
-                return true;
+            else if(piece instanceof Pawn) {
+                Pawn hostilePawn = (Pawn) piece;
+                if(hostilePawn.getPossibleAttacks().contains(position))
+                    return true;
+            }
+            else {
+                if (piece.getPossibleDestinations(toString()).contains(position))
+                    return true;
+            }
         }
 
         return false;
     }
-    public boolean inCheck() {
-        return inCheck(position);
+
+    public boolean resolvesCheck(Vector2 start, Vector2 end) {
+        System.out.println("(resolvesCheck): Board is live: " + board.isLive());
+
+        if(!board.isLive()) return true;    // IMPORTANT! DO NOT DELETE
+
+        if(!inCheck()) return true;
+
+        System.out.println("Initiating board-simulation");
+
+        Board newBoard = board.clone();
+        newBoard.movePiece(start, end);
+
+        return newBoard.getKing(alliance).inCheck();
     }
 
     public boolean checkmate() {
-        //TODO Check if any pieces can shield the king
-        throw new UnsupportedOperationException("Check for shielding pieces not yet implemented");
-        //return inCheck() && getPossibleDestinations().size() == 0;
+        return /* inCheck() && */board.getUsablePieces(alliance).size() == 0;
     }
 
     /**
