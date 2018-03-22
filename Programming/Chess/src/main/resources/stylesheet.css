@@ -6,12 +6,13 @@
     -fx-text-align: center;
     -fx-color: black;
     -fx-padding: 10px 20px;
-    -fx-min-width: 200px;
+    -fx-min-width: 240px;
     -fx-font-weight: bold;
 }
 #title {
     -fx-font-size: 40px;
     -fx-font-weight: bold;
+    -fx-padding: 20px;
 }
 #rightColumn {
 }
