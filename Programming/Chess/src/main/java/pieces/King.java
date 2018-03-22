@@ -103,6 +103,8 @@ public class King extends ChessPiece {
     public boolean resolvesCheck(Vector2 start, Vector2 end) {
         // TODO Add alliance check (A hostile piece cannot resolve check)
 
+        if(!inCheck()) return true;
+
         Set<Vector2> endangered = new HashSet<>();
         Set<Vector2> destinations = new HashSet<>();
 
