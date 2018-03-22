@@ -166,27 +166,28 @@ public class GameBoard {
         if (firstClick && firstTile.getPos() != pos) {
             /*
              * checks if the newly clicked tile is another friendly piece,
-             * if it is, change the highlighted sqaures to the new piece
+             * if it is, change the highlighted squares to the new piece
              */
-            if (board.getPiece(pos) != null) {
-                if (board.getPiece(pos).alliance() == alliance) {
+            if (piece != null) {
+                if (piece.alliance() == alliance) {
                     firstTile = tile;
                     drawBoard();
                     highlightSquares(pos);
                     return true;
                 }
+            }
+            
             /*
              * if not, attempt to move the pre-selected piece
              * to the new location
              */
-            } else {
-                IChessPiece firstPiece = board.getPiece(firstTile.getPos());
-                System.out.println(firstClick + " " + firstPiece);
-                attemptMove(firstTile, pos);
+            IChessPiece firstPiece = board.getPiece(firstTile.getPos());
+            System.out.println(firstClick + " " + firstPiece);
+            attemptMove(firstTile, pos);
 
-                firstClick = false;
-                firstTile = null;
-            }
+            firstClick = false;
+            firstTile = null;
+
         /*
          * checks if the tile clicked has a piece, and that the
          * piece has same alliance as the active player.
