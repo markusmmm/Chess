@@ -79,9 +79,7 @@ public class GameBoard {
                     rect.setFill(Color.DARKGRAY);
                 }
 
-                tile.setOnMouseClicked(e -> {
-                    tileClick(e, tile);
-                });
+                tile.setOnMouseClicked(e -> tileClick(e, tile));
 
                 tiles[row][col] = tile;
                 squares[row][col] = rect;
@@ -209,7 +207,7 @@ public class GameBoard {
             firstClick = true;
             firstTile = tile;
             highlightSquares(pos);
-            
+
             return true;
         }
         return false;
