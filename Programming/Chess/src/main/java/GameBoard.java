@@ -13,9 +13,15 @@ import javafx.scene.text.Text;
 import management.*;
 import pieces.ChessPiece;
 import pieces.IChessPiece;
-import resources.*;
+import resources.Alliance;
+import resources.Move;
+import resources.MoveNode;
+import resources.Vector2;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Stack;
 
 public class GameBoard {
     private final int SIZE = 8;
