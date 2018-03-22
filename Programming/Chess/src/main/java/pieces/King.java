@@ -70,17 +70,25 @@ public class King extends ChessPiece {
         if (legalMove(new Vector2(x + 1, y - 1))) {
             possibleMoves.add(new Vector2(x + 1, y + 1));
         }
-        return possibleMoves;
 
+        return possibleMoves;
     }
 
     public boolean inCheck(Vector2 destination) {
-        Alliance otherAlliance = alliance() == Alliance.BLACK ? Alliance.WHITE : Alliance.BLACK;
+        Alliance otherAlliance = alliance == Alliance.BLACK ? Alliance.WHITE : Alliance.BLACK;
         HashMap<Vector2, IChessPiece> hostilePieces = board.getUsablePieces(otherAlliance);
 
-        for(Vector2 key : hostilePieces.keySet())
-            if(hostilePieces.get(key).getPossibleDestinations().contains(destination))
+        for(Vector2 key : hostilePieces.keySet()) {
+            IChessPiece piece = hostilePieces.get(key);
+
+            if(piece instanceof King) {
+                King hostileKing = (King) piece;
+                if(destination.distance(hostileKing.position()) == 1)
+                    return true;
+            }
+            else if (hostilePieces.get(key).getPossibleDestinations().contains(destination))
                 return true;
+        }
 
         return false;
     }
