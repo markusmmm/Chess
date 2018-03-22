@@ -11,7 +11,8 @@ public class MoveNode {
         this.piece = piece.clonePiece();
         this.start = start;
         this.end = end;
-        this.victimPiece = victimPiece.clonePiece();
+        if (victimPiece != null) this.victimPiece = victimPiece.clonePiece();
+        else this.victimPiece = null;
     }
 
     @Override
