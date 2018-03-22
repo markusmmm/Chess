@@ -1,6 +1,5 @@
 package management;
 
-import pieces.ChessPiece;
 import pieces.IChessPiece;
 import resources.Alliance;
 import resources.Move;
@@ -51,7 +50,7 @@ public class ChessComputerMedium extends ChessComputer {
      * @return gives score to current state of board
      */
     private int scoreBoard(Board sim) {
-        return diffPossibleMoves(sim); // + diffPieceValue(sim);
+        return  diffPieceValue(sim) + diffPossibleMoves(sim);
     }
 
     /**
