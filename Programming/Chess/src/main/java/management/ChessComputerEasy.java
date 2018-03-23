@@ -16,7 +16,7 @@ public class ChessComputerEasy extends ChessComputer {
 
         HashMap<Vector2, IChessPiece> pieces = board.getUsablePieces(alliance());
 
-        List<Move> attacks = new ArrayList<>();
+        //List<Move> attacks = new ArrayList<>();
         List<Move> moves = new ArrayList<>();
 
         for(Vector2 key : pieces.keySet()) {
@@ -28,17 +28,17 @@ public class ChessComputerEasy extends ChessComputer {
 
                 Move move = new Move(piece.position(), destination);
 
-                if(endPiece != null && !piece.alliance().equals(endPiece))
-                    attacks.add(move);
-                else
+                //if(endPiece != null && !piece.alliance().equals(endPiece))
+                //    attacks.add(move);
+                //else
                     moves.add(move);
             }
         }
 
-        if(attacks.size() != 0)
-            return attacks.get(rand.nextInt(attacks.size()));
-        else if(moves.size() != 0)
-            return moves.get(rand.nextInt(moves.size()));
+        //if(attacks.size() != 0)
+        //    return attacks.get(rand.nextInt(attacks.size()));
+        //else if(moves.size() != 0)
+        //    return moves.get(rand.nextInt(moves.size()));
 
         return null;
     }
