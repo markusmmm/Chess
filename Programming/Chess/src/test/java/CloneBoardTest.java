@@ -11,9 +11,12 @@ public class CloneBoardTest {
     public void CloneCantChangeOrgTest() {
         Board org = new Board(8,false);
         Board clone = org.clone();
+
         Vector2 start = new Vector2(0,1);
         Vector2 end = new Vector2(0,2);
+
         clone.movePiece(new Move(start, end));
+
         assertTrue(org.vacant(end));
         assertTrue(!org.vacant(start));
     }
@@ -21,10 +24,13 @@ public class CloneBoardTest {
     public void CloneOrgAgainResets() {
         Board org = new Board(8,false);
         Board clone = org.clone();
+
         Vector2 start = new Vector2(0,1);
         Vector2 end = new Vector2(0,2);
+
         clone.movePiece(new Move(start, end));
         clone = org.clone();
+
         assertTrue(clone.vacant(end));
         assertTrue(!clone.vacant(start));
     }
