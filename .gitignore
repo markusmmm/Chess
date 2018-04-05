@@ -16,3 +16,8 @@ workspace.xml
 
 # ignore maven build files
 target/
+
+# ignore latex build files 
+.gz
+.aux 
+.log

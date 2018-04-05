@@ -1,12 +1,11 @@
 package management;
 
-import resources.Alliance;
 import resources.Move;
 
 public class ChessComputerHard extends ChessComputer {
 
-    public ChessComputerHard(Alliance alliance, Board board) {
-        super(alliance, board);
+    public ChessComputerHard(Board board) {
+        super(board);
     }
 
     @Override

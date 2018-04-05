@@ -6,50 +6,60 @@
 \begin{document}
 \maketitle
 
-\section*{Roller}
-Så langt i prosjektet, har vi fordelt disse rollene som vi tenkte var viktigst å få på plass med det samme. Etterhvert som prosjektet går, fordeler
-vi hovedansvaret for enkelte ting i prosjektet etter nødvendighet.\\\\
-De fleste av oss hadde mer eller mindre samme erfaring programmeringsmessig, både i forhold til relevante fag vi har hatt og har, men også i forhold til det å programmere i team. Jan var den flittigste brukeren av git på gruppen vår, så han ble utnevnt til git-ansvarlig. Mikael hadde tidligere tatt et programmeringskurs på folkehøyskole hvor de jobbet i grupper på 4 mann, slik at han var mest erfaren på dette området og tok på seg ansvaret med å koordinere kodeoppbyggingen.
-\subsection*{Team leder}
+\section*{Recap}
+As mentioned in the previous assignment, the workflow and communication we had until now worked really well. We didn't get to use Trello as much due to the nature of the assignment, so this was something we really wanted to use actively for the next and all upcoming assigments.
+We kept the distributed roles as it was, and currently didn't see any need to assign other roles. This doesn't mean that the team members with no rules would do nothing, as they would still contribute as much through coding, planning, discussion and all other activities and tasks we would encounter.
+There was also a mention of planning poker, and this is something we also wanted to as it seemed like a good concept.
+
+\section*{Roles}
+We have kept the distributed roles as is, and currently don't see any need to assign other roles either. This doesn't mean that the team members with no roles will do nothing, but contribute as much through coding, planning, discussion and all other activities and tasks we would encounter.\\\\
+The majority of the theam had more or less experience in terms of programming, both in relation to relevant subjects we had taken, but also relation to programming in teams. Jan was the member using git the most, so it was only natural to give him the main responsibility of the reposity and everything related to git. Mikael has participated in a programming boot camp earlier, meaning he was the most experienced programmer, so he voluntarily took the role to coordinate the code structure. In terms of general documentation, we decided to have everything written into LaTeX, and since Viet has been using it for almost a year now, everyone on the team can ask him for help regarding LaTeX.
+
+\subsection*{Team leader}
+Name: Viet\\
+Team leader has general an overview of the group and project
+
+\subsection*{Support}
+Name: Tom\\
+More or less left-hand man for team leader. Steps in for team leader whenever necessary.
+
+\subsection*{Git-responsible}
+Name: Jan\\
+Git-responsible keeps track of the git-repository, ensures it works as intended and solves any problems that occurs.
+
+\subsection*{Programmering Manager}
+Name: Mikael\\
+Programming manager has complete overview of the source code and directs the code design.
+
+\subsection*{Graphical designer}
+Name: Magnus\\
+Graphical designer is responsible for everything related to the user interface. This includes the game window, chess board, chess piece sprites, icons etc.
+
+\subsection*{LaTeX-responsible}
 Navn: Viet\\
-Team leder skal ha generell oversikt over gruppen og prosjektet.
+Helps the team with everything related to LaTeX when needed.
 
-\subsection*{Støttespiller}
-Navn: Tom\\
-Mer eller mindre left-hand man for team leder. Stepper inn for team leder der hvor det er nødvendig.
+\section*{Git-repository}
+To avoid complications as much as possible, we decided for a conventions as following; always pull from the reposity before doing any work, and also do it often. This ensures that local reposity is always up to date with the main repository. To make the repository organized and clean, we divided the repository into two main folders; documentation and programming. The folders will contain what the names suggest; documentation of the project, plans, product specifications, manuals etc, source code and respectively.\\\\
+Branching the master branch into several branches has been a thought for the team, namely a work-in-progress branch and release branch. The structure currently as is works just fine for us. As of now, nobody on the team are working on the same files simultaneously, meaning as long nobody does changes to other files without notifying the team and follows the agreed git convensions, there would be minimal risk of merge conflicts and other problems related to that. If it becomes necessary, we will start branching our repository.
 
-\subsection*{Git-ansvarlig}
-Navn: Jan\\
-Git-ansvarlig holder styr på at git-repositoriet er i orden og løser eventuelle problemer som oppstår med det.
-
-\subsection*{Programmeringsansvarlig}
-Navn: Mikael\\
-Programmeringsasnvarlig skal ha oversikt over hele koden og dirigerer utformingen av kodestrukturen.
-
-\subsection*{Grafisk desgin}
-Navn: Magnus\\
-Denne rollen har hovedansvaret med å skape grafikken til applikasjonen. Dette gjelder sprites for brikker, spillbrett, diverse ikoner og mer.
-
-\subsection*{LaTeX-ansvarlig}
-Navn: Viet\\
-Hjelper hele teamet med alt som angår LaTex.
-
-\section*{Git-repositoriet}
-For å unngå mest mulig komplikasjoner har vi bestemt at man alltid skal pulle før man prøver å pushe noe til repositoriet. Dette sørger for at lokal kopi av repositoriet alltid er oppdatert i forhold til master branch. For å ha det mest oversiktlig og ryddig som mulig, har vi valgt å dele repositoriet i to deler; dokumentasjon og kode. Dokumentasjonsmappen vil inneholde som navnet tilsier; dokumentasjon av prosjektet, planer, applikasjonsspesifikasjoner, brukerveiledning med m.m. Kodemappen vil inneholde applikasjonskoden.
-
-\section*{Kommunikasjon og møter}
-For å oppnå et best mulig samarbeid har vi satt opp et ekstra samlingstidspunkt i uken for å kunne diskutere og jobbe sammen med prosjektet. Vi har også opprettet en Discordchat og Facebook gruppe for å kunne kommunisere med hverandre utenom møtene våre.\\\\
-Møtetidspunkt:x
+\section*{Communication \& Meetings}
+To ensure that the teamwork is as best as it can possible be, we decided to set up one extra meeting where we could discuss and work on the project together. We also created a Discord chat and Facebook group to communicate outside of the meetings. The Facebook group was however only necessary for initial online connection and we do not use it at all. Discord work wonders.
+Meet ups:
 			\begin{list}{-}{}
-				\item Tirsdager 1000-1200 v/ VilVite (Gruppetime) 
-				\item Torsdager 1000-1200 v/ Høyteknologisenteret
+				\item Tuesdays 1000-1200 at VilVite (Gruppetime) 
+				\item Thursdays 1000-1200 at Høyteknologisenteret
 			\end{list}
 
-Vi har også tatt i bruk en nettside som heter Trello. Trello er en nettbasert oppslagstavle for bruk i gruppearbeid. Her setter vi opp arbeidsmål og andre oppgaver som må gjøres. Ved å lage en bruke på siden, kan team medlemmer tagge seg på disse oppslagene for å vise at denne spesifikke delen av prosjektet blir gjort arbeid på. Dette gjør at det ikke blir gjort dobbelt arbeid og vi kan også unngå mergekonflikter.
+\section*{Task board}
+To keep track of and orgranize our work and tasks, we used an online website called Trello. Trello is an online notice board which let us create cards where we can specify what has to be done. It has a token feature which let's each member tag their name on it, and we can also set priority level and deadlines on the task cards. The Trello board is divided into several sections, "Programming in progress" and "Known Bugs" being the most important sections. The team members wil tag their name on the tasks they have been assigned and want to do which tells the other members that this feature or function of the application is being worked. This ensures no duplicate work and avoids unecessary merge conflicts. And as soon tasks are completed, they will be moved over to the section "Programming done". If there are any unccertainty around the board, the members are always available on discord.
 
-\section*{Risiko}
-Som med all type gruppearbeid er det alltid noen risikoer som kan påvirke sluttresultatet. Den mest fatale risikoen, men minst sannsynlige, er om noen på gruppen trekker seg fra faget. Dette gjør at vi må fordele arbeidsoppgavene til medlemmet som forlot på de gjenværende medlemmene. Hvis dette blir for mye arbeid for de gjenværende, er det mulig at vi må ta vekk funksjonalitet. Dette fører til en annen mindre fatal risiko, men kanskje mer sannsynlig, som er overplanlegging, og da må man droppe noe av de planlagte funksjonene når teamet innser at det blir for mye arbeid.
+\section*{Training}
+One of our biggest concern regarding git was merge conflicts. In order to reduce the amount of confusion around these, Jan made a presentation for the rest of the team regarding branching including most important commands and explanation about what actually happens when we do all these commands.
+We also had the members who attended the lecture about TDD to have a brief about that since not everybody attended that lecture, as we thought this might be a good practice in the long run.
 
-En annen relevant risiko er datatap. Git skal være et nokså trygt lagringssted, men om noe går galt i forhold til git, så tar hvert team medlem sikkerhetskopi av lokal repositorie av prosjektet jevnlig.
+\section*{Risks}
+As with all kind of group projects, there are always some risks that can influence the end result of the project. The most fatal, but perhaps the least likely to happens, is that one of the members drops out. The consequence of this is that we have to redistribute tasks and roles amongst the remaining members. This can in turn be too much for the remaining members, and the team may have to drop some functionality. This takes us to another risk which is less fatal, but more likely to happen, and that is overplanning. When the team realize that the planned functionality turns out to be too much, the team has to remove the features which is least critical for the project to work and still meet the deadline.
+Another relevant risk is loss of data. Git is a very safe storage for the project, but to be on the safe side, each member takes a separate backup of their local repository periodically, and keeps it on a separate drive.
 
 \end{document}

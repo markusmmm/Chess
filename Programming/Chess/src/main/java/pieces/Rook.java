@@ -1,33 +1,45 @@
 package pieces;
 
-import resources.*;
-import management.*;
+import management.Board;
+import resources.Alliance;
+import resources.Piece;
+import resources.Vector2;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Rook extends ChessPiece {
+	private final int value = 5;
+	private Set<Vector2> possibleMoves = new HashSet<>();
 
 	/**
 	 * @param position
 	 */
 	public Rook(Vector2 position, Alliance alliance, Board board) {
-		super(position, alliance, board, false, Piece.ROOK);
+		super(position, alliance, board, false, Piece.ROOK, 5);
 	}
 
 	public Rook clonePiece() {
 		return new Rook(position, alliance, board);
 	}
 
+	@Override
+	public int getValue() {
+		return value;
+	}
+
 	/**
-	 * @param move
+	 * @param destination
 	 */
-	public boolean legalMove(Vector2 move) {
+	public boolean legalMove(Vector2 destination) {
+		if(!super.legalMove(destination)) return false;
+
+		System.out.println("inStraights: " + inStraights(destination));
+		System.out.println("freePath: " + freePath(destination));
+
 		return (
-				insideBoard(move) &&
-						positiveCoordinates(move) &&
-						inStraights(move) &&
-						freePath(move)
+			inStraights(destination) &&
+			freePath(destination)
 		);
 	}
 
@@ -35,44 +47,20 @@ public class Rook extends ChessPiece {
 	 * @return a list of all possible moves from this position
 	 */
 
-	public List<Vector2> getPossibleDestinations() {
-		List<Vector2> possibleDestinations = new ArrayList<Vector2>();
+	public Set<Vector2> getPossibleDestinations(String caller) {
+		logActionPossibleDestinations(caller);
 
-		int row = position.getX();
-		int column = position.getY();
-
-		for (int i = row + 1; i < board.getSize(); i++) {
-			Vector2 destination = new Vector2(i, column);
-			if (legalMove(destination)) possibleDestinations.add(destination);
-			if(board.getPiece(destination) != null){
-				if(board.getPiece(destination).alliance() != this.alliance) possibleDestinations.add(destination);
-			}
+		possibleMoves.clear();
+		for (int variable = 0; variable < board.getSize(); variable++) {
+			//Straights
+			evalMove(new Vector2(position.getX(), position.getY() + variable));
+			evalMove(new Vector2(position.getX(), position.getY() - variable));
+			evalMove(new Vector2(position.getX() + variable, position.getY()));
+			evalMove(new Vector2(position.getX() - variable, position.getY()));
 		}
-
-		for (int i = row - 1; i > -1; i--) {
-			Vector2 destination = new Vector2(i, column);
-			if (legalMove(destination)) possibleDestinations.add(destination);
-			if(board.getPiece(destination) != null){
-				if(board.getPiece(destination).alliance() != this.alliance) possibleDestinations.add(destination);
-			}
-		}
-
-		for (int i = column + 1; i < board.getSize(); i++) {
-			Vector2 destination = new Vector2(i, column);
-			if (legalMove(destination)) possibleDestinations.add(destination);
-			if(board.getPiece(destination) != null){
-				if(board.getPiece(destination).alliance() != this.alliance) possibleDestinations.add(destination);
-			}
-		}
-		for (int i = column - 1; i > -1; i--) {
-			Vector2 destination = new Vector2(i, column);
-			if (legalMove(destination)) possibleDestinations.add(destination);
-			if(board.getPiece(destination) != null){
-				if(board.getPiece(destination).alliance() != this.alliance) possibleDestinations.add(destination);
-			}
-		}
-
-
-		return filterPossibleDestinations(possibleDestinations);
+		return possibleMoves;
+	}
+	private void evalMove(Vector2 vector) {
+		if(legalMove(vector)) possibleMoves.add(vector);
 	}
 }

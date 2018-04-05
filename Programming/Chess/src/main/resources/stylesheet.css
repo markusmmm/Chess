@@ -6,12 +6,27 @@
     -fx-text-align: center;
     -fx-color: black;
     -fx-padding: 10px 20px;
-    -fx-min-width: 200px;
+    -fx-min-width: 240px;
     -fx-font-weight: bold;
 }
 #title {
     -fx-font-size: 40px;
     -fx-font-weight: bold;
+    -fx-padding: 20px;
 }
-.vbox {
+#rightColumn {
+}
+#rightColumnTitle {
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+    -fx-padding: 10px 0 10px 0;
+}
+#moveLog {
+    -fx-font-size: 10px;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent
+}
+#informationFieldContainer {
+    -fx-background-color: darkgray;
+    -fx-padding: 5px;
 }
