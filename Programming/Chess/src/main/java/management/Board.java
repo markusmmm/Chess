@@ -7,8 +7,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
+import java.util.concurrent.Semaphore;
 
 public class Board {
+	private Semaphore mutex = new Semaphore(1);
+
 	private final boolean isLive;
 
 	private static final Piece[] defaultBoard = new Piece[] {
@@ -111,10 +114,23 @@ public class Board {
 		}
 	}
 
+	private boolean acquire() {
+    	try {
+			mutex.acquire();
+		} catch (InterruptedException e) {
+    		mutex.release();
+    		return false;
+		}
+		return true;
+	}
+
 	public Stack<Vector2> clearDrawPieces() {
+    	if(!acquire()) return null;
+
     	Stack<Vector2> result = (Stack<Vector2>)drawPieces.clone();
     	drawPieces.clear();
 
+    	mutex.release();
     	return result;
 	}
 
@@ -142,12 +158,18 @@ public class Board {
 	*/
 
 	public boolean addPiece(Vector2 pos, Piece type, Alliance alliance) {
+		if(!acquire()) return false;
+
 		ChessPiece piece = createPiece(pos, type, alliance);
-		if(piece == null) return false;
+		if(piece == null) {
+			mutex.release();
+			return false;
+		}
 
 		pieces.put(pos, piece);
 		drawPieces.push(pos);
 
+		mutex.release();
 		return true;
 	}
 
@@ -170,8 +192,13 @@ public class Board {
 	}
 
 	public boolean transformPiece(Vector2 pos, Piece newType) {
+		if(!acquire()) return false;
+
     	ChessPiece piece = pieces.get(pos);
-    	if(piece == null) return false;
+    	if(piece == null) {
+    		mutex.release();
+    		return false;
+    	}
 
     	pieces.remove(pos);
 
@@ -180,20 +207,27 @@ public class Board {
     	pieces.put(pos, newPiece);
     	drawPieces.push(pos);
 
+    	mutex.release();
     	return true;
 	}
 
 	public void suspendPiece(Vector2 pos) {
 		if(!pieces.containsKey(pos)) return;
+		if(!acquire()) return;
 
 		suspendedPieces.put(pos, pieces.get(pos));
 		pieces.remove(pos);
+
+		mutex.release();
 	}
 	public void releasePiece(Vector2 pos) {
 		if(!suspendedPieces.containsKey(pos)) return;
+		if(!acquire()) return;
 
 		pieces.put(pos, suspendedPieces.get(pos));
 		suspendedPieces.remove(pos);
+
+		mutex.release();
 	}
 
     /**
@@ -283,16 +317,26 @@ public class Board {
 	 */
 	public boolean movePiece(Vector2 start, Vector2 end) {
 		if(!insideBoard(start)) return false;
+		if(!acquire()) return false;
 
 		ChessPiece piece = pieces.get(start);
 
 		System.out.println("Currently " + activePlayer + "'s turn");
 
-		if(piece == null) return false; // Check if a piece exists at the given position
-		if(!piece.alliance().equals(activePlayer)) return false; // Checks if the active player owns the piece that is being moved
+		if(piece == null) {
+			mutex.release();
+			return false; // Check if a piece exists at the given position
+		}
+		if(!piece.alliance().equals(activePlayer)) {
+			mutex.release();
+			return false; // Checks if the active player owns the piece that is being moved
+		}
 
 		System.out.println("Local before: " + piece.position() + ", has moved: " + piece.hasMoved());
-		if(!piece.move(end)) return false; // Attempt to move the piece
+		if(!piece.move(end)) {
+			mutex.release();
+			return false; // Attempt to move the piece
+		}
 
 		lastPiece = piece;
 		ChessPiece endPiece = pieces.get(end);
@@ -322,6 +366,7 @@ public class Board {
 		System.out.println("Local after: " + piece.position() + ", has moved: " + piece.hasMoved());
 		System.out.println("Move successful!");
 
+		mutex.release();
 		return true;
 	}
 
@@ -330,19 +375,18 @@ public class Board {
 	}
 
 	private boolean removePiece(Vector2 pos) {
-
 		if(!pieces.containsKey(pos)) return false;
+		if(!acquire()) return false;
 
 		ChessPiece piece = pieces.get(pos);
 		pieces.remove(pos);
 		inactivePieces.add(piece);
 		drawPieces.push(pos);
 
+		mutex.release();
 		return true;
 	}
 	public boolean performAttack(Vector2 start, Vector2 end, Vector2 victim) {
-
-
 		MoveNode node = new MoveNode(pieces.get(start), start, end, pieces.get(victim));
 		System.out.println("Performing attack: " + node);
 
