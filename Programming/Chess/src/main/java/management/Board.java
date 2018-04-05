@@ -11,7 +11,6 @@ import java.util.concurrent.Semaphore;
 
 public class Board {
 	private Semaphore mutex = new Semaphore(1);
-
 	private final boolean isLive;
 
 	private static final Piece[] defaultBoard = new Piece[] {
