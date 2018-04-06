@@ -29,7 +29,7 @@ public class AbstractBoard {
 
     private HashMap<Vector2, ChessPiece> pieces = new HashMap<>();
     private Stack<Vector2> drawPositions = new Stack<>();
-    private HashMap<Vector2, ChessPiece> suspendedPieces = new HashMap<>();
+    private HashMap<Vector2, ChessPiece> suspendedPieces = new HashMap<>(); // Used to ignore pieces that are still on the board
     private HashSet<ChessPiece> capturedPieces = new HashSet<>();
 
     private Stack<MoveNode> gameLog = new Stack<>();
@@ -46,6 +46,8 @@ public class AbstractBoard {
 
         activePlayer = other.activePlayer;
         pieces = (HashMap<Vector2, ChessPiece>) other.pieces.clone();
+        drawPositions = (Stack<Vector2>) other.drawPositions.clone();
+        suspendedPieces = (HashMap<Vector2, ChessPiece>) other.suspendedPieces.clone();
         capturedPieces = (HashSet<ChessPiece>) other.capturedPieces.clone();
 
         gameLog = (Stack<MoveNode>) other.gameLog.clone();
@@ -192,6 +194,8 @@ public class AbstractBoard {
                 return new Pawn(pos, alliance, this);
             case ROOK:
                 return new Rook(pos, alliance, this);
+            case DUMMY:
+                return new Dummy(pos, alliance, this);
         }
         return null;
     }
@@ -226,14 +230,16 @@ public class AbstractBoard {
         }
     }
 
-    public void suspendPiece(Vector2 pos) {
-        if(!pieces.containsKey(pos)) return;
+    public void suspendPieces(Vector2... positions) {
         try {
             mutex.acquire();
-            System.out.println("Mutex acquired by suspendPiece");
+            System.out.println("Mutex acquired by suspendPieces");
 
-            suspendedPieces.put(pos, pieces.get(pos));
-            pieces.remove(pos);
+            for(Vector2 pos : positions) {
+                if(!pieces.containsKey(pos)) continue;
+                suspendedPieces.put(pos, pieces.get(pos));
+                pieces.remove(pos);
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
@@ -241,14 +247,17 @@ public class AbstractBoard {
             System.out.println("Mutex released");
         }
     }
-    public void releasePiece(Vector2 pos) {
-        if(!suspendedPieces.containsKey(pos)) return;
+    public void releasePieces(Vector2... positions) {
         try {
             mutex.acquire();
-            System.out.println("Mutex acquired by releasePiece");
+            System.out.println("Mutex acquired by releasePieces");
 
-            pieces.put(pos, suspendedPieces.get(pos));
-            suspendedPieces.remove(pos);
+            for(Vector2 pos : positions) {
+                if(!suspendedPieces.containsKey(pos)) continue;
+
+                pieces.put(pos, suspendedPieces.get(pos));
+                suspendedPieces.remove(pos);
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
@@ -322,12 +331,13 @@ public class AbstractBoard {
         }
     }
 
-    protected void addDrawPos(Vector2 pos) {
+    public void addDrawPos(Vector2... positions) {
         try {
             mutex.acquire();
             System.out.println("Mutex acquired by addDrawPos");
 
-            drawPositions.add(pos);
+            for(Vector2 pos : positions)
+                drawPositions.add(pos);
 
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -364,7 +374,7 @@ public class AbstractBoard {
         return (HashSet<ChessPiece>) capturedPieces.clone();
     }
 
-    protected boolean removePiece(Vector2 pos) {
+    public boolean removePiece(Vector2 pos) {
         if(!pieces.containsKey(pos)) return false;
         try {
             mutex.acquire();
@@ -384,6 +394,29 @@ public class AbstractBoard {
             return false;
         }
     }
+    public void removePieces(Vector2... positions) {
+        try {
+            mutex.acquire();
+            System.out.println("Mutex acquired by removePieces");
+
+            for(Vector2 pos : positions) {
+                if(!pieces.containsKey(pos)) continue;
+
+                ChessPiece piece = pieces.get(pos);
+                pieces.remove(pos);
+                capturedPieces.add(piece);
+                drawPositions.push(pos);
+            }
+
+            mutex.release();
+            System.out.println("Mutex released");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            mutex.release();
+        }
+    }
+
     public boolean performAttack(Vector2 start, Vector2 end, Vector2 victim) {
         try {
             mutex.acquire();

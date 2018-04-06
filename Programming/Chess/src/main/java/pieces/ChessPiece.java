@@ -136,4 +136,7 @@ public abstract class ChessPiece implements IChessPiece {
     public String toString() {
 	    return alliance + " " + piece;
     }
+
+    @Override
+	public ChessPiece clone() { return clonePiece(); }
 }

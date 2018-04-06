@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 import management.*;
 import pieces.ChessPiece;
 import pieces.IChessPiece;
+import pieces.King;
 import resources.Alliance;
 import resources.Move;
 import resources.MoveNode;
@@ -149,6 +150,8 @@ public class GameBoard {
         boolean moveResult = board.movePiece(firstTile.getPos(), pos);
         System.out.println("Outer move result: " + moveResult);
         if (moveResult) {
+            if(board.getKing(Alliance.WHITE).checkmate())
+
             System.out.println("Has computer: " + computer != null);
             if (computer != null) {
                 Move move = computer.getMove();
@@ -205,6 +208,9 @@ public class GameBoard {
 
             firstClick = false;
             firstTile = null;
+
+            if(gameOver())
+                return false;
 
         /*
          * checks if the tile clicked has a piece, and that the
@@ -287,11 +293,26 @@ public class GameBoard {
     /**
      * TODO: tell the user which player won the game, and update highscore
      */
-    public void gameOver() {
+    public boolean gameOver() {
+        King whiteKing = board.getKing(Alliance.WHITE),
+             blackKing = board.getKing(Alliance.BLACK);
+
+        if(whiteKing.checkmate())
+            System.out.println("Game over\nBlack player won!");
+        else if(blackKing.checkmate())
+            System.out.println("Game over\nWhite player won!");
+        else if(whiteKing.stalemate() || blackKing.stalemate())
+            System.out.println("Game Over\nRemiss");
+        else {
+            return false;
+        }
+
         /* Changes back from GameBoard to main menu */
         Scene scene = new Scene(new Main().mainMenu(username));
         scene.getStylesheets().add("stylesheet.css");
         stage.setScene(scene);
+
+        return true;
     }
 
     public BorderPane getContainer() {

@@ -104,11 +104,11 @@ public class King extends ChessPiece {
     }
 
     private boolean movesIntoCheck(Vector2 end) {
-        board.suspendPiece(position);
+        board.suspendPieces(position);
 
         boolean setsCheck = inCheck(end);
 
-        board.releasePiece(position);
+        board.releasePieces(position);
 
         return setsCheck;
     }
@@ -127,7 +127,7 @@ public class King extends ChessPiece {
         for (Vector2 move : moves)
             destinations.add(position.add(move));
 
-        board.suspendPiece(position);
+        board.suspendPieces(position);
 
         for (Vector2 destination : destinations) {
             if (inCheck(destination)) {
@@ -137,7 +137,7 @@ public class King extends ChessPiece {
 
         endangered.remove(end);
 
-        board.releasePiece(position);
+        board.releasePieces(position);
 
         return endangered.size() == 0;
     }
