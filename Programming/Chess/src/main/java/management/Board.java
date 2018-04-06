@@ -32,7 +32,10 @@ public class Board {
 
 	private Stack<MoveNode> gameLog = new Stack<>();
 
-
+	/**
+	 * creates empty board
+	 * @param size
+	 */
 	public Board(int size){
 		this.size = size;
 		isLive = true;
