@@ -35,7 +35,7 @@ public class BoardTest {
         assertEquals(queen, board.pieces.get(queenPos));
     }
     @Test
-    public void MovePieceUpdatesPiecePos() {
+    public void MovePieceUpdatesPosInPiece() {
         Vector2 queenPos = new Vector2(1,1);
         Board board = new Board(3);
         Vector2 newQueenPos = new Vector2(2,1);
