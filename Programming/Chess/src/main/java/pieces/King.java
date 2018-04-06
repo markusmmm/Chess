@@ -1,5 +1,6 @@
 package pieces;
 
+import management.AbstractBoard;
 import management.Board;
 import resources.Alliance;
 import resources.Piece;
@@ -18,7 +19,7 @@ public class King extends ChessPiece {
     /**
      * @param position
      */
-    public King(Vector2 position, Alliance alliance, Board board) {
+    public King(Vector2 position, Alliance alliance, AbstractBoard board) {
         super(position, alliance, board, false, Piece.KING, 2);
     }
 

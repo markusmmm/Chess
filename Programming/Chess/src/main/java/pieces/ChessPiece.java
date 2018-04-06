@@ -1,5 +1,6 @@
 package pieces;
 
+import management.AbstractBoard;
 import management.Board;
 import resources.Alliance;
 import resources.Move;
@@ -25,10 +26,10 @@ public abstract class ChessPiece implements IChessPiece {
      *
      * @param position The piece's initial position on the board
      */
-    public ChessPiece(Vector2 position, Alliance alliance, Board board, boolean canJump, Piece piece, int value) {
+    public ChessPiece(Vector2 position, Alliance alliance, AbstractBoard board, boolean canJump, Piece piece, int value) {
         this.position = position;
         this.alliance = alliance;
-        this.board = board;
+        this.board = (Board)board;
         this.canJump = canJump;
         this.piece = piece;
         this.value = value;

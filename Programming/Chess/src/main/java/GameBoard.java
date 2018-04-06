@@ -230,7 +230,7 @@ public class GameBoard {
         ObservableList<MoveNode> observableGameLog =
                 FXCollections.observableArrayList(gameLog);
         ObservableList<ChessPiece> observableInactivePieces =
-                FXCollections.observableArrayList(board.getInactivePieces());
+                FXCollections.observableArrayList(board.getCapturedPieces());
         moveLog.setItems(observableGameLog);
         capturedPieces.setItems(observableInactivePieces);
     }
