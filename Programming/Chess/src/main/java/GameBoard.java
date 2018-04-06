@@ -162,6 +162,8 @@ public class GameBoard {
 
     private boolean tileClick(MouseEvent e, Tile tile) {
         Vector2 pos = tile.getPos();
+        //if(!board.ready()) return false;
+
         Alliance alliance = board.getActivePlayer();
         IChessPiece piece = board.getPiece(pos);
 
@@ -230,7 +232,10 @@ public class GameBoard {
     }
 
     private void highlightSquares(Vector2 pos) {
-        Set<Vector2> list = board.getPiece(pos).getPossibleDestinations("GameBoard");
+        IChessPiece piece = board.getPiece(pos);
+        if(piece == null) return;
+
+        Set<Vector2> list = piece.getPossibleDestinations("GameBoard");
         for (Vector2 possibleDestination : list) {
             if (board.getPiece(possibleDestination) != null) {
                 squares[possibleDestination.getY()][possibleDestination.getX()].setFill(Color.RED);

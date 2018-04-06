@@ -39,7 +39,7 @@ public class RookTest {
         board.addPiece(oldPos, Piece.ROOK, Alliance.WHITE);
         board.addPiece(newPos, Piece.PAWN, Alliance.BLACK);
         board.movePiece(oldPos, newPos);
-        assert(board.pieces.size() == 1);
+        assert(board.nPieces() == 1);
         assert(board.getPiece(newPos).piece() == Piece.ROOK);
         assert(board.getPiece(newPos).alliance() == Alliance.WHITE);
     }
@@ -53,7 +53,7 @@ public class RookTest {
         board.addPiece(oldPos, Piece.ROOK, Alliance.WHITE);
         board.addPiece(newPos, Piece.PAWN, Alliance.BLACK);
         board.movePiece(oldPos, newPos);
-        assert(board.pieces.size() == 1);
+        assert(board.nPieces() == 1);
         assert(board.getPiece(newPos).piece() == Piece.ROOK);
         assert(board.getPiece(newPos).alliance() == Alliance.WHITE);
     }

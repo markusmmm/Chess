@@ -50,7 +50,7 @@ public abstract class ChessPiece implements IChessPiece {
 	 * @return Whether or not the move can be performed
 	 */
 	protected boolean legalMove(Vector2 destination) {
-		System.out.println("(ChessPiece) Board is live: " + board.isLive());
+		//System.out.println("(ChessPiece) Board is live: " + board.isLive());
 
 		IChessPiece endPiece = board.getPiece(destination);
 		// Check if victim is of opposite alliance
@@ -58,8 +58,11 @@ public abstract class ChessPiece implements IChessPiece {
 
 		if(!board.insideBoard(position) || !board.insideBoard(destination)) return false;
 
+		King king = board.getKing(alliance);
+		if(king == null) return false;
+
 		// Lastly, check if king is in check, and whether or not the move resolves it (SHOULD OCCUR LAST, FOR OPTIMIZATION)
-		return board.getKing(alliance).resolvesCheck(position, destination);
+		return king.resolvesCheck(position, destination);
 	}
 
 	/**
