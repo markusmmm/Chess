@@ -32,6 +32,10 @@ public class Board {
 
 	private Stack<MoveNode> gameLog = new Stack<>();
 
+
+	public Board(int size){
+		this.size = size;
+	}
 	private Board(Board template, boolean isLive) {
 		this.isLive = isLive;
 
