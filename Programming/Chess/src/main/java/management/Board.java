@@ -35,6 +35,7 @@ public class Board {
 
 	public Board(int size){
 		this.size = size;
+		isLive = true;
 	}
 	private Board(Board template, boolean isLive) {
 		this.isLive = isLive;
