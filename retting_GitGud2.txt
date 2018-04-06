@@ -1,0 +1,25 @@
+INF112 spring 2018 - Oblig.3
+
+Group: GitGud
+
+Overall feedback
+
+Thank you for correcting the mistakes from oblig 2 and translating it all to English. 
+Overall this is a nice delivery even though you miss some of the deliverables.
+
+The missing parts from this oblig we expect you to fix and deliver together with oblig 4.
+
+Missing deliverables: 
+  - Ai that works(both simple and medium)
+  - Corrected sequence diagram (ask Ta for help next group session)
+  - The missing sequence diagram (For statistics)
+  - High score and improved login
+  - license 
+  - End screen 
+  - Special moves (Promotion and castling)
+  - Small descriptive text explaining the design model. (Motivation behind choices you made, don't repeat the information in the model)
+
+Score: 78.5 (of 100)
+Evaluation: PASS
+
+Graded by Steffen and Øyvind, Bergen 06.04.18
