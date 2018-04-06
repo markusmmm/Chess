@@ -138,9 +138,13 @@ public class GameBoard {
         IChessPiece temp = board.getPiece(firstTile.getPos());
         System.out.println("Before: " + temp.position());
 
-        if (board.movePiece(firstTile.getPos(), pos)) {
+        boolean moveResult = board.movePiece(firstTile.getPos(), pos);
+        System.out.println("Outer move result: " + moveResult);
+        if (moveResult) {
+            System.out.println("Has computer: " + computer != null);
             if (computer != null) {
                 Move move = computer.getMove();
+                System.out.println("Computer attempting move " + move);
                 board.movePiece(move);
                 int row = move.start.getY();
                 int col = move.start.getX();

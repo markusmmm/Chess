@@ -291,11 +291,11 @@ public class Board {
 	public IChessPiece getPiece(Vector2 pos) {
         if(vacant(pos)) return null;
 		if(!mutex.tryAcquire()) return null;
-		System.out.println("Mutex tryAcquired by getPiece");
+		//System.out.println("Mutex tryAcquired by getPiece");
 
 		IChessPiece piece = pieces.get(pos).clonePiece();
 		mutex.release();
-		System.out.println("Mutex released");
+		//System.out.println("Mutex released");
 		return piece;
 	}
 
@@ -372,20 +372,24 @@ public class Board {
 
 			if(piece == null) {
 				mutex.release();
-				System.out.println("Mutex released");
+				System.out.println("No piece. Mutex released");
 				return false; // Check if a piece exists at the given position
 			}
 			if(!piece.alliance().equals(activePlayer)) {
 				mutex.release();
-				System.out.println("Mutex released");
+				System.out.println("Wrong alliance. Mutex released");
 				return false; // Checks if the active player owns the piece that is being moved
 			}
 
 			System.out.println("Local before: " + piece.position() + ", has moved: " + piece.hasMoved());
-			if(!piece.move(end)) {
-				mutex.release();
-				System.out.println("Mutex released");
-				return false; // Attempt to move the piece
+			mutex.release(); // Temporarily release mutex, so that it can be used by piece.move
+			boolean moveResult = piece.move(end);
+
+			if(!moveResult) { // Attempt to move the piece
+				System.out.println("piece.move failed. Mutex released");
+				return false;
+			} else {
+				mutex.acquire(); // Re-acquire mutex
 			}
 
 			lastPiece = piece;
@@ -417,13 +421,13 @@ public class Board {
 			System.out.println("Move successful!");
 
 			mutex.release();
-			System.out.println("Mutex released");
+			System.out.println("Move done. Mutex released");
 			return true;
 		} catch (InterruptedException e) {
 			e.printStackTrace();
-		} finally {
+
 			mutex.release();
-			System.out.println("Mutex released");
+			System.err.println("movePiece interrupted. Mutex released");
 			return false;
 		}
 	}
