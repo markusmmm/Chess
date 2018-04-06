@@ -84,6 +84,10 @@ public class AbstractBoard {
         }
     }
 
+    public boolean ready() {
+        return mutex.availablePermits() == 1;
+    }
+
     public boolean isLive() { return isLive; }
     public int nPieces() {
         return pieces.size();
@@ -104,7 +108,24 @@ public class AbstractBoard {
     public Alliance getActivePlayer() {
         return activePlayer;
     }
-    public Set<Vector2> getPositions() { return pieces.keySet(); }
+    public Set<Vector2> getPositions() {
+        try {
+            mutex.acquire();
+
+            Set<Vector2> temp = pieces.keySet();
+            Set<Vector2> positions = new HashSet<>();
+            for(Vector2 p : temp)
+                positions.add(p);
+
+            mutex.release();
+            return positions;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+
+            mutex.release();
+            return null;
+        }
+    }
 
     public Stack<Vector2> clearDrawPieces() {
         try {
@@ -247,13 +268,25 @@ public class AbstractBoard {
      */
     public IChessPiece getPiece(Vector2 pos) {
         if(vacant(pos)) return null;
-        if(!mutex.tryAcquire()) return null;
+        //if(!mutex.tryAcquire()) return null;
         //System.out.println("Mutex tryAcquired by getPiece");
 
-        IChessPiece piece = pieces.get(pos).clonePiece();
-        mutex.release();
-        //System.out.println("Mutex released");
-        return piece;
+        try {
+            mutex.acquire();
+            //System.out.println("Mutex acquired by getPiece");
+
+            IChessPiece piece = pieces.get(pos).clonePiece();
+            mutex.release();
+            //System.out.println("Mutex released");
+            return piece;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+
+            mutex.release();
+            return null;
+        }
+
+
     }
 
     protected void putPiece(Vector2 pos, ChessPiece piece) {

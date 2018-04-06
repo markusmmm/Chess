@@ -72,7 +72,7 @@ public class King extends ChessPiece {
         // The inactive player's king can NOT be in check (Impossible state)
         if(!board.getActivePlayer().equals(alliance)) return false;
 
-        // NEVER USE 'board.getUsablePieces' WITHIN THIS METHOD
+        // NEVER USE 'board.getUsablePieces' WITHIN THIS METHOD (WILL CREATE A CIRCULAR METHOD CALL)
         HashMap<Vector2, IChessPiece> hostilePieces = board.getPieces(otherAlliance());
 
         for(Vector2 key : hostilePieces.keySet()) {
@@ -86,11 +86,13 @@ public class King extends ChessPiece {
             }
             else if(piece instanceof Pawn) {
                 Pawn hostilePawn = (Pawn) piece;
-                if(hostilePawn.getPossibleAttacks().contains(destination))
+                Set<Vector2> attacks = hostilePawn.getPossibleAttacks();
+                if(attacks.contains(destination))
                     return true;
             }
             else {
-                if (piece.getPossibleDestinations(toString()).contains(destination))
+                Set<Vector2> destinations = piece.getPossibleDestinations(toString());
+                if (destinations.contains(destination))
                     return true;
             }
         }

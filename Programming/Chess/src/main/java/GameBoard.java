@@ -136,6 +136,14 @@ public class GameBoard {
 
     private void attemptMove(Tile firstTile, Vector2 pos) {
         IChessPiece temp = board.getPiece(firstTile.getPos());
+        if(!board.ready()) {
+            System.out.println("Board not ready. Move failed");
+            return;
+        } else if(temp == null) {
+            System.out.println("No piece at " + pos + ". Move failed");
+            return;
+        }
+
         System.out.println("Before: " + temp.position());
 
         boolean moveResult = board.movePiece(firstTile.getPos(), pos);

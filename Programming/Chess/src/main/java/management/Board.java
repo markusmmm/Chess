@@ -4,6 +4,7 @@ import pieces.*;
 import resources.*;
 
 import java.util.HashMap;
+import java.util.Set;
 
 public class Board extends AbstractBoard {
 	private static final Piece[] defaultBoard = new Piece[] {
@@ -70,12 +71,14 @@ public class Board extends AbstractBoard {
 	public HashMap<Vector2, IChessPiece> getUsablePieces(Alliance alliance) {
 		HashMap<Vector2, IChessPiece> usablePieces = new HashMap<>();
 
-		for(Vector2 pos : getPositions()) {
+		Set<Vector2> positions = getPositions();
+		for(Vector2 pos : positions) {
 			IChessPiece piece = getPiece(pos);
-			if(piece == null) continue;
+			if(piece == null) continue; // Ignore empty squares
 
 			if(insideBoard(pos) && piece.alliance().equals(alliance)) {
-				if(piece.getPossibleDestinations("Board").size() == 0) continue; // If the piece has no valid moves, ignore it
+				Set<Vector2> possibleDestinations = piece.getPossibleDestinations("Board");
+				if(possibleDestinations.size() == 0) continue; // If the piece has no valid moves, ignore it
 
 				usablePieces.put(pos, piece);
 			}
