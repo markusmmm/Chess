@@ -159,6 +159,21 @@ public class Board {
 		return true;
 	}
 
+	/**
+	 * adds a piece from the outside of the Board
+	 * @param pos
+	 * @param piece
+	 * @return
+	 */
+	public boolean addPiece(Vector2 pos, ChessPiece piece) {
+		if(piece == null) return false;
+
+		pieces.put(pos, piece);
+		drawPieces.push(pos);
+
+		return true;
+	}
+
     private ChessPiece createPiece(Vector2 pos, Piece type, Alliance alliance) {
     	switch (type) {
 			case BISHOP:

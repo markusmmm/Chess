@@ -17,7 +17,12 @@ public class BoardTest {
         }
         assertEquals(board.getUsablePieces(Alliance.BLACK).size(), 16);
         assertEquals(board.getUsablePieces(Alliance.WHITE).size(), 10);
-
     }
+    @Test
+    public void addPieceEmptyBoard() {
+        Board board = new Board(1);
+        board.
+    }
+
 
 }
