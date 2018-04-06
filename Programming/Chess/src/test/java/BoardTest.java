@@ -46,6 +46,20 @@ public class BoardTest {
         board.movePiece(queenPos, newQueenPos);
 
         assertEquals(queen.position(), newQueenPos);
+    }
+
+    @Test
+    public void MovePieceUpdatesPosInBoard() {
+        Vector2 queenPos = new Vector2(1,1);
+        Board board = new Board(3);
+        Vector2 newQueenPos = new Vector2(2,1);
+
+        ChessPiece queen = new Queen(queenPos, Alliance.WHITE, board);
+        board.pieces.put(queenPos, queen);
+
+        board.movePiece(queenPos, newQueenPos);
+
+        assertEquals(board.getPiece(newQueenPos), queen);
 
     }
 
