@@ -32,20 +32,17 @@ public class ChessComputerMedium extends ChessComputer {
                 sim.movePiece(piece.position(),move);
                 moveChart.add(new MoveScore(scoreBoard(sim), new Move(piece.position(), move)));
                 System.out.println("mediumAI " + piece.toString() + piece.position().getY());
-               /* if(startTime + THINKING_TIME < System.currentTimeMillis()){
+                if(startTime + THINKING_TIME < System.currentTimeMillis()){
                     printPossibleMoves();
                     return Collections.max(moveChart).getMove();
-                }*/
+                }
                 printBoard(sim);
             }
         }
         printPossibleMoves();
 
-        Collections.sort(moveChart);
-
-        Move m = moveChart.get(moveChart.size() - 1).getMove();
         System.out.println("mediumAI" + m.start.toString() + m.end.toString());
-        return moveChart.get(moveChart.size() - 1).getMove();
+        return Collections.max(moveChart).getMove();
     }
 
     private void printPossibleMoves() {
@@ -116,6 +113,10 @@ public class ChessComputerMedium extends ChessComputer {
 
     private int fromZeroTo(int num) {
         return (int) (Math.random() * num * 1.0);
+    }
+    private void time(long start, String message) {
+        int SecondsPassed = (int) ((System.currentTimeMillis() - start) * 0.001);
+        System.out.println("seconds" + SecondsPassed + ", " + message);
     }
 
 }
