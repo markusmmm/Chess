@@ -1,5 +1,6 @@
 package pieces;
 
+import management.AbstractBoard;
 import management.Board;
 import resources.Alliance;
 import resources.Move;
@@ -25,10 +26,10 @@ public abstract class ChessPiece implements IChessPiece {
      *
      * @param position The piece's initial position on the board
      */
-    public ChessPiece(Vector2 position, Alliance alliance, Board board, boolean canJump, Piece piece, int value) {
+    public ChessPiece(Vector2 position, Alliance alliance, AbstractBoard board, boolean canJump, Piece piece, int value) {
         this.position = position;
         this.alliance = alliance;
-        this.board = board;
+        this.board = (Board)board;
         this.canJump = canJump;
         this.piece = piece;
         this.value = value;
@@ -50,7 +51,7 @@ public abstract class ChessPiece implements IChessPiece {
 	 * @return Whether or not the move can be performed
 	 */
 	protected boolean legalMove(Vector2 destination) {
-		System.out.println("(ChessPiece) Board is live: " + board.isLive());
+		//System.out.println("(ChessPiece) Board is live: " + board.isLive());
 
 		IChessPiece endPiece = board.getPiece(destination);
 		// Check if victim is of opposite alliance
@@ -58,8 +59,14 @@ public abstract class ChessPiece implements IChessPiece {
 
 		if(!board.insideBoard(position) || !board.insideBoard(destination)) return false;
 
+		if(!board.hasKing(alliance))
+			return true;	// Special-case check for boards where a king was never created
+
+		King king = board.getKing(alliance);
+		if(king == null) return false;
+
 		// Lastly, check if king is in check, and whether or not the move resolves it (SHOULD OCCUR LAST, FOR OPTIMIZATION)
-		return board.getKing(alliance).resolvesCheck(position, destination);
+		return king.resolvesCheck(position, destination);
 	}
 
 	/**
@@ -132,4 +139,7 @@ public abstract class ChessPiece implements IChessPiece {
     public String toString() {
 	    return alliance + " " + piece;
     }
+
+    @Override
+	public ChessPiece clone() { return clonePiece(); }
 }

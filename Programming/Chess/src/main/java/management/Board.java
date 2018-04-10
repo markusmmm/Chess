@@ -4,13 +4,9 @@ import pieces.*;
 import resources.*;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Set;
-import java.util.Stack;
 
-public class Board {
-	private final boolean isLive;
-
+public class Board extends AbstractBoard {
 	private static final Piece[] defaultBoard = new Piece[] {
 			Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY,
 			Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY,
@@ -18,52 +14,12 @@ public class Board {
 			Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN
 	};
 
-    private final int size;
-	private Player player1, player2;
-	private ChessClock clock = null;
-	private ChessPiece lastPiece = null;
-
-	private Alliance activePlayer = Alliance.WHITE;
-
-	public HashMap<Vector2, ChessPiece> pieces = new HashMap<>();
-	private Stack<Vector2> drawPieces = new Stack<>();
-	private HashMap<Vector2, ChessPiece> suspendedPieces = new HashMap<>();
-	private HashSet<ChessPiece> inactivePieces = new HashSet<>();
-
-	private Stack<MoveNode> gameLog = new Stack<>();
-
-	/**
-	 * creates empty board
-	 * @param size
-	 */
-	public Board(int size){
-		this.size = size;
-		isLive = true;
-	}
 	private Board(Board template, boolean isLive) {
-		this.isLive = isLive;
-
-		size = template.size;
-		player1 = template.player1;
-		player2 = template.player2;
-
-		if(clock != null) clock = template.clock.clone();
-		if(lastPiece != null) lastPiece = template.lastPiece.clonePiece();
-
-		activePlayer = template.activePlayer;
-		pieces = (HashMap<Vector2, ChessPiece>)template.pieces.clone();
-		inactivePieces = (HashSet<ChessPiece>)template.inactivePieces.clone();
-
-		gameLog = (Stack<MoveNode>)template.gameLog.clone();
+		super(template, isLive);
 	}
 
 	public Board(int size, boolean useClock) {
-		if(size < 2) throw new IllegalArgumentException("The board size must be at least 2");
-
-		isLive = true;
-
-		this.size = size;
-		setup(useClock, defaultBoard, true);
+		super(size, useClock, defaultBoard, true, true);
 	}
 
     /**
@@ -73,63 +29,11 @@ public class Board {
      * @throws IllegalArgumentException if ({@code size < 2})   //Pre-conditions
      */
     public Board(int size, boolean useClock, Piece[] initialSetup) {
-		if(size < 2) throw new IllegalArgumentException("The board size must be at least 2");
-
-		isLive = true;
-
-    	this.size = size;
-    	setup(useClock, initialSetup, false);
+    	super(size, useClock, initialSetup, false, true);
     }
 
     public Board(int size, boolean useClock, Piece[] initialSetup, boolean symmetric) {
-		if(size < 2) throw new IllegalArgumentException("The board size must be at least 2");
-
-		isLive = true;
-
-		this.size = size;
-
-		setup(useClock, initialSetup, symmetric);
-	}
-
-	private void setup(boolean useClock, Piece[] initialSetup, boolean symmetric) {
-		int p = 0;
-
-		if(useClock) {
-			clock = new ChessClock(2, 900, 12, -1);
-		}
-
-		for(Piece type : initialSetup) {
-			int x = p % size;
-			int y = p / size;
-
-			Vector2 pos = new Vector2(x, y);
-			Vector2 invPos = new Vector2(x, size - y - 1);
-
-			if(type.equals(Piece.EMPTY)) continue;
-
-			addPiece(pos, type, Alliance.BLACK);
-			System.out.println(pos + ": " + pieces.get(pos));
-
-			if (symmetric) {
-				addPiece(invPos, type, Alliance.WHITE);
-				System.out.println(invPos + ": " + pieces.get(invPos));
-			}
-
-			p++;
-		}
-	}
-
-	public Stack<Vector2> clearDrawPieces() {
-    	Stack<Vector2> result = (Stack<Vector2>)drawPieces.clone();
-    	drawPieces.clear();
-
-    	return result;
-	}
-
-	public boolean isLive() { return isLive; }
-
-    public Alliance getActivePlayer() {
-    	return activePlayer;
+		super(size, useClock, initialSetup, symmetric, true);
 	}
 
 	/*
@@ -149,103 +53,10 @@ public class Board {
 	}
 	*/
 
-	public boolean addPiece(Vector2 pos, Piece type, Alliance alliance) {
-		ChessPiece piece = createPiece(pos, type, alliance);
-		if(piece == null) return false;
-
-		pieces.put(pos, piece);
-		drawPieces.push(pos);
-
-		return true;
-	}
-
-	/**
-	 * adds a piece from the outside of the Board
-	 * @param pos
-	 * @param piece
-	 * @return
-	 */
-	public boolean addPiece(Vector2 pos, ChessPiece piece) {
-		if(piece == null) return false;
-
-		pieces.put(pos, piece);
-		drawPieces.push(pos);
-
-		return true;
-	}
-
-    private ChessPiece createPiece(Vector2 pos, Piece type, Alliance alliance) {
-    	switch (type) {
-			case BISHOP:
-				return new Bishop(pos, alliance, this);
-			case KNIGHT:
-				return new Knight(pos, alliance, this);
-			case QUEEN:
-				return new Queen(pos, alliance, this);
-			case KING:
-				return new King(pos, alliance, this);
-			case PAWN:
-				return new Pawn(pos, alliance, this);
-			case ROOK:
-				return new Rook(pos, alliance, this);
-		}
-		return null;
-	}
-
-	public boolean transformPiece(Vector2 pos, Piece newType) {
-    	ChessPiece piece = pieces.get(pos);
-    	if(piece == null) return false;
-
-    	pieces.remove(pos);
-
-    	ChessPiece newPiece = createPiece(pos, newType, piece.alliance());
-
-    	pieces.put(pos, newPiece);
-    	drawPieces.push(pos);
-
-    	return true;
-	}
-
-	public void suspendPiece(Vector2 pos) {
-		if(!pieces.containsKey(pos)) return;
-
-		suspendedPieces.put(pos, pieces.get(pos));
-		pieces.remove(pos);
-	}
-	public void releasePiece(Vector2 pos) {
-		if(!suspendedPieces.containsKey(pos)) return;
-
-		pieces.put(pos, suspendedPieces.get(pos));
-		suspendedPieces.remove(pos);
-	}
-
-    /**
-     *
-     * @return size of the square board
-     */
-    public int getSize() {
-        return size;
-    }
-
-    public boolean insideBoard(Vector2 pos) {
-    	return pos.getX() >= 0 && pos.getX() < size &&
-				pos.getY() >= 0 && pos.getY() < size;
-	}
-
-    /**
-     * Calls 'getPiece' on all players, until a match is found (if it exists)
-     * @param pos
-     * @return Type of piece at the given location (Piece.EMPTY if no match is found)
-     */
-	public IChessPiece getPiece(Vector2 pos) {
-        if(vacant(pos)) return null;
-		return pieces.get(pos).clonePiece();
-	}
-
 	public HashMap<Vector2, IChessPiece> getPieces(Alliance alliance) {
 		HashMap<Vector2, IChessPiece> temp = new HashMap<>();
 
-		for(Vector2 pos : pieces.keySet()) {
+		for(Vector2 pos : getPositions()) {
 			IChessPiece piece = getPiece(pos);
 			if(piece == null) continue;
 
@@ -258,20 +69,22 @@ public class Board {
 	}
 
 	public HashMap<Vector2, IChessPiece> getUsablePieces(Alliance alliance) {
-		HashMap<Vector2, IChessPiece> temp = new HashMap<>();
+		HashMap<Vector2, IChessPiece> usablePieces = new HashMap<>();
 
-		for(Vector2 pos : pieces.keySet()) {
-			IChessPiece piece = pieces.get(pos);
-			if(piece == null) continue;
+		Set<Vector2> positions = getPositions();
+		for(Vector2 pos : positions) {
+			IChessPiece piece = getPiece(pos);
+			if(piece == null) continue; // Ignore empty squares
 
 			if(insideBoard(pos) && piece.alliance().equals(alliance)) {
-				if(piece.getPossibleDestinations("Board").size() == 0) continue; // If the piece has no valid moves, ignore it
+				Set<Vector2> possibleDestinations = piece.getPossibleDestinations("Board");
+				if(possibleDestinations.size() == 0) continue; // If the piece has no valid moves, ignore it
 
-				temp.put(pos, piece);
+				usablePieces.put(pos, piece);
 			}
 		}
 
-		return temp;
+		return usablePieces;
 	}
 
 	public King getKing(Alliance alliance) {
@@ -283,22 +96,6 @@ public class Board {
 		return null;
 	}
 
-	public boolean vacant(Vector2 pos) {
-		return !pieces.containsKey(pos);
-    }
-
-    /**
-     *
-     * @return the piece that was last successfully moved
-     */
-	public IChessPiece getLastPiece() {
-		return lastPiece.clonePiece();
-	}
-
-	public HashSet<ChessPiece> getInactivePieces() {
-		return inactivePieces;
-	}
-
 	/**
 	 *
 	 * @param start
@@ -307,24 +104,31 @@ public class Board {
 	public boolean movePiece(Vector2 start, Vector2 end) {
 		if(!insideBoard(start)) return false;
 
-		ChessPiece piece = pieces.get(start);
+		ChessPiece piece = (ChessPiece)getPiece(start);
 
 		System.out.println("Currently " + activePlayer + "'s turn");
 
-		if(piece == null) return false; // Check if a piece exists at the given position
-		if(!piece.alliance().equals(activePlayer)) return false; // Checks if the active player owns the piece that is being moved
+		if(piece == null) {
+			return false; // Check if a piece exists at the given position
+		}
+		if(!piece.alliance().equals(activePlayer)) {
+			return false; // Checks if the active player owns the piece that is being moved
+		}
+		boolean moveSuccessful = piece.move(end);
 
-		System.out.println("Local before: " + piece.position() + ", has moved: " + piece.hasMoved());
-		if(!piece.move(end)) return false; // Attempt to move the piece
+		if(!moveSuccessful) { // Attempt to move the piece
+			System.out.println("piece.move failed. Mutex released");
+			return false;
+		}
 
-		lastPiece = piece;
-		ChessPiece endPiece = pieces.get(end);
+		setLastPiece(piece);
+		ChessPiece endPiece = (ChessPiece)getPiece(end);
 
 		ChessPiece victim = null;
 		if(endPiece != null) {
 			//Remove hostile attacked piece
 			if(!endPiece.alliance().equals(piece.alliance())) {
-				inactivePieces.add(endPiece);
+				capturePiece(endPiece);
 				removePiece(end);
 				victim = endPiece;
 			}
@@ -332,12 +136,12 @@ public class Board {
 
 		//assert(piece.position().equals(end));
 
-		gameLog.push(new MoveNode(piece, start, end, victim));
+		logMove(new MoveNode(piece, start, end, victim));
 
-		pieces.remove(start);
-		pieces.put(end, piece);
-		drawPieces.push(start);
-		drawPieces.push(end);
+		removePiece(start);
+		putPiece(end, piece);
+		addDrawPos(start);
+		addDrawPos(end);
 
 		//After a successful move, advance to the next player
 		activePlayer = activePlayer.equals(Alliance.WHITE) ? Alliance.BLACK : Alliance.WHITE;
@@ -352,32 +156,6 @@ public class Board {
 		return movePiece(move.start, move.end);
 	}
 
-	private boolean removePiece(Vector2 pos) {
-
-		if(!pieces.containsKey(pos)) return false;
-
-		ChessPiece piece = pieces.get(pos);
-		pieces.remove(pos);
-		inactivePieces.add(piece);
-		drawPieces.push(pos);
-
-		return true;
-	}
-	public boolean performAttack(Vector2 start, Vector2 end, Vector2 victim) {
-
-
-		MoveNode node = new MoveNode(pieces.get(start), start, end, pieces.get(victim));
-		System.out.println("Performing attack: " + node);
-
-
-		removePiece(victim);
-		gameLog.add(node);
-		return true;
-	}
-
-	public Stack<MoveNode> getGameLog() {
-		return (Stack<MoveNode>) gameLog.clone();
-	}
 
 	@Override
 	public Board clone() {
