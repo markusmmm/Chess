@@ -1,6 +1,7 @@
 import management.Board;
 import org.junit.jupiter.api.Test;
 import pieces.ChessPiece;
+import pieces.King;
 import pieces.Queen;
 import resources.Alliance;
 import resources.Vector2;
@@ -38,11 +39,15 @@ public class BoardTest {
     @Test
     public void MovePieceUpdatesPosInPieceTest() {
         Vector2 queenPos = new Vector2(1,1);
+        Vector2 kingPos = new Vector2(1,1);
         Board board = new Board(3);
         Vector2 newQueenPos = new Vector2(2,1);
 
         ChessPiece queen = new Queen(queenPos, Alliance.WHITE, board);
-        board.pieces.put(queenPos, queen);
+        ChessPiece king = new King(kingPos, Alliance.WHITE, board);
+
+        board.addPiece(queenPos, queen);
+        board.addPiece(kingPos, king);
 
         board.movePiece(queenPos, newQueenPos);
 
