@@ -46,7 +46,7 @@ public class BoardTest {
 
         board.movePiece(queenPos, newQueenPos);
 
-        assertEquals(queen.position(), newQueenPos);
+        assertTrue(queen.position().equals(newQueenPos));
     }
 
     @Test
