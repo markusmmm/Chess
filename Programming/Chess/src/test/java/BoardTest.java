@@ -47,7 +47,7 @@ public class BoardTest {
         ChessPiece king = new King(kingPos, Alliance.WHITE, board);
 
         board.addPiece(queenPos, queen);
-        board.addPiece(kingPos, king);
+        board.addPiece(kingPos, king); //can't move without a king
 
         board.movePiece(queenPos, newQueenPos);
 
@@ -63,8 +63,5 @@ public class BoardTest {
         board.pieces.put(queenPos, queen);
 
         assertTrue(board.getPiece(queenPos) instanceof Queen);
-
     }
-
-
 }
