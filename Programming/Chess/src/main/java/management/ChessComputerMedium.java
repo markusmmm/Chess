@@ -1,6 +1,5 @@
 package management;
 
-import com.sun.org.apache.xpath.internal.SourceTree;
 import pieces.IChessPiece;
 import resources.*;
 
@@ -54,8 +53,8 @@ public class ChessComputerMedium extends ChessComputer {
             System.out.println(s.getMove().start.toString() + " " + s.getMove().end.toString());
         }
     }private void printBoard(Board board) {
-        for (int y = 0; y < board.getSize(); y++) {
-            for (int x = 0; x < board.getSize(); x++) {
+        for (int y = 0; y < board.size(); y++) {
+            for (int x = 0; x < board.size(); x++) {
                 if(board.getPiece(new Vector2(x,y)) != null) {
                     System.out.print(board.getPiece(new Vector2(x, y)).getValue());
                 } else {

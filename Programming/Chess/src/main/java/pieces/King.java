@@ -1,5 +1,6 @@
 package pieces;
 
+import management.AbstractBoard;
 import management.Board;
 import resources.Alliance;
 import resources.Piece;
@@ -18,7 +19,7 @@ public class King extends ChessPiece {
     /**
      * @param position
      */
-    public King(Vector2 position, Alliance alliance, Board board) {
+    public King(Vector2 position, Alliance alliance, AbstractBoard board) {
         super(position, alliance, board, false, Piece.KING, 2);
     }
 
@@ -71,7 +72,7 @@ public class King extends ChessPiece {
         // The inactive player's king can NOT be in check (Impossible state)
         if(!board.getActivePlayer().equals(alliance)) return false;
 
-        // NEVER USE 'board.getUsablePieces' WITHIN THIS METHOD
+        // NEVER USE 'board.getUsablePieces' WITHIN THIS METHOD (WILL CREATE A CIRCULAR METHOD CALL)
         HashMap<Vector2, IChessPiece> hostilePieces = board.getPieces(otherAlliance());
 
         for(Vector2 key : hostilePieces.keySet()) {
@@ -85,11 +86,13 @@ public class King extends ChessPiece {
             }
             else if(piece instanceof Pawn) {
                 Pawn hostilePawn = (Pawn) piece;
-                if(hostilePawn.getPossibleAttacks().contains(destination))
+                Set<Vector2> attacks = hostilePawn.getPossibleAttacks();
+                if(attacks.contains(destination))
                     return true;
             }
             else {
-                if (piece.getPossibleDestinations(toString()).contains(destination))
+                Set<Vector2> destinations = piece.getPossibleDestinations(toString());
+                if (destinations.contains(destination))
                     return true;
             }
         }
@@ -101,11 +104,11 @@ public class King extends ChessPiece {
     }
 
     private boolean movesIntoCheck(Vector2 end) {
-        board.suspendPiece(position);
+        board.suspendPieces(position);
 
         boolean setsCheck = inCheck(end);
 
-        board.releasePiece(position);
+        board.releasePieces(position);
 
         return setsCheck;
     }
@@ -124,7 +127,7 @@ public class King extends ChessPiece {
         for (Vector2 move : moves)
             destinations.add(position.add(move));
 
-        board.suspendPiece(position);
+        board.suspendPieces(position);
 
         for (Vector2 destination : destinations) {
             if (inCheck(destination)) {
@@ -134,7 +137,7 @@ public class King extends ChessPiece {
 
         endangered.remove(end);
 
-        board.releasePiece(position);
+        board.releasePieces(position);
 
         return endangered.size() == 0;
     }

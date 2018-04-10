@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 import management.*;
 import pieces.ChessPiece;
 import pieces.IChessPiece;
+import pieces.King;
 import resources.Alliance;
 import resources.Move;
 import resources.MoveNode;
@@ -136,11 +137,25 @@ public class GameBoard {
 
     private void attemptMove(Tile firstTile, Vector2 pos) {
         IChessPiece temp = board.getPiece(firstTile.getPos());
+        if(!board.ready()) {
+            System.out.println("Board not ready. Move failed");
+            return;
+        } else if(temp == null) {
+            System.out.println("No piece at " + pos + ". Move failed");
+            return;
+        }
+
         System.out.println("Before: " + temp.position());
 
-        if (board.movePiece(firstTile.getPos(), pos)) {
+        boolean moveResult = board.movePiece(firstTile.getPos(), pos);
+        System.out.println("Outer move result: " + moveResult);
+        if (moveResult) {
+            if(board.getKing(Alliance.WHITE).checkmate())
+
+            System.out.println("Has computer: " + computer != null);
             if (computer != null) {
                 Move move = computer.getMove();
+                System.out.println("Computer attempting move " + move);
                 board.movePiece(move);
                 int row = move.start.getY();
                 int col = move.start.getX();
@@ -162,6 +177,8 @@ public class GameBoard {
 
     private boolean tileClick(MouseEvent e, Tile tile) {
         Vector2 pos = tile.getPos();
+        //if(!board.ready()) return false;
+
         Alliance alliance = board.getActivePlayer();
         IChessPiece piece = board.getPiece(pos);
 
@@ -191,6 +208,9 @@ public class GameBoard {
 
             firstClick = false;
             firstTile = null;
+
+            if(gameOver())
+                return false;
 
         /*
          * checks if the tile clicked has a piece, and that the
@@ -224,13 +244,16 @@ public class GameBoard {
         ObservableList<MoveNode> observableGameLog =
                 FXCollections.observableArrayList(gameLog);
         ObservableList<ChessPiece> observableInactivePieces =
-                FXCollections.observableArrayList(board.getInactivePieces());
+                FXCollections.observableArrayList(board.getCapturedPieces());
         moveLog.setItems(observableGameLog);
         capturedPieces.setItems(observableInactivePieces);
     }
 
     private void highlightSquares(Vector2 pos) {
-        Set<Vector2> list = board.getPiece(pos).getPossibleDestinations("GameBoard");
+        IChessPiece piece = board.getPiece(pos);
+        if(piece == null) return;
+
+        Set<Vector2> list = piece.getPossibleDestinations("GameBoard");
         for (Vector2 possibleDestination : list) {
             if (board.getPiece(possibleDestination) != null) {
                 squares[possibleDestination.getY()][possibleDestination.getX()].setFill(Color.RED);
@@ -270,11 +293,26 @@ public class GameBoard {
     /**
      * TODO: tell the user which player won the game, and update highscore
      */
-    public void gameOver() {
+    public boolean gameOver() {
+        King whiteKing = board.getKing(Alliance.WHITE),
+             blackKing = board.getKing(Alliance.BLACK);
+
+        if(whiteKing.checkmate())
+            System.out.println("Game over\nBlack player won!");
+        else if(blackKing.checkmate())
+            System.out.println("Game over\nWhite player won!");
+        else if(whiteKing.stalemate() || blackKing.stalemate())
+            System.out.println("Game Over\nRemiss");
+        else {
+            return false;
+        }
+
         /* Changes back from GameBoard to main menu */
         Scene scene = new Scene(new Main().mainMenu(username));
         scene.getStylesheets().add("stylesheet.css");
         stage.setScene(scene);
+
+        return true;
     }
 
     public BorderPane getContainer() {

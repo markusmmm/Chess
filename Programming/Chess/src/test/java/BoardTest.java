@@ -3,6 +3,7 @@ import org.junit.jupiter.api.Test;
 import pieces.ChessPiece;
 import pieces.Queen;
 import resources.Alliance;
+import resources.Piece;
 import resources.Vector2;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -15,7 +16,7 @@ public class BoardTest {
         int y = 1;
         Board board = new Board(size,false);
         for (int x = 0; x < size; x++) {
-            board.pieces.remove(new Vector2(x,y));
+            board.removePieces(new Vector2(x,y));
         }
         assertEquals(board.getUsablePieces(Alliance.BLACK).size(), 16);
 
@@ -30,19 +31,17 @@ public class BoardTest {
     @Test
     public void addPieceEmptyBoardTest() {
         Vector2 queenPos = new Vector2(1,1);
-        Board board = new Board(3);
-        ChessPiece queen = new Queen(queenPos, Alliance.WHITE, board);
-        board.addPiece(queenPos, queen);
-        assertEquals(queen, board.pieces.get(queenPos));
+        Board board = new Board(3, false);
+        ChessPiece queen = board.addPiece(queenPos, Piece.QUEEN, Alliance.WHITE);
+        assertEquals(queen, board.getPiece(queenPos));
     }
     @Test
     public void MovePieceUpdatesPosInPieceTest() {
         Vector2 queenPos = new Vector2(1,1);
-        Board board = new Board(3);
+        Board board = new Board(3, false);
         Vector2 newQueenPos = new Vector2(2,1);
 
-        ChessPiece queen = new Queen(queenPos, Alliance.WHITE, board);
-        board.pieces.put(queenPos, queen);
+        ChessPiece queen = board.addPiece(queenPos, Piece.QUEEN, Alliance.WHITE);
 
         board.movePiece(queenPos, newQueenPos);
 
@@ -52,10 +51,9 @@ public class BoardTest {
     @Test
     public void getPieceTest() {
         Vector2 queenPos = new Vector2(1,1);
-        Board board = new Board(3);
+        Board board = new Board(3, false);
 
-        ChessPiece queen = new Queen(queenPos, Alliance.WHITE, board);
-        board.pieces.put(queenPos, queen);
+        ChessPiece queen = board.addPiece(queenPos, Piece.QUEEN, Alliance.WHITE);
 
         assertTrue(board.getPiece(queenPos) instanceof Queen);
 

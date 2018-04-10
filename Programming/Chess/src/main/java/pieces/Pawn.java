@@ -1,6 +1,6 @@
 package pieces;
 
-import management.Board;
+import management.AbstractBoard;
 import resources.Alliance;
 import resources.Piece;
 import resources.Vector2;
@@ -8,7 +8,6 @@ import resources.Vector2;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Vector;
 
 import static resources.Alliance.BLACK;
 import static resources.Alliance.WHITE;
@@ -23,11 +22,11 @@ public class Pawn extends ChessPiece {
 	 * @param alliance
 	 */
 
-	private Pawn(Vector2 position, Alliance alliance, Board board, boolean hasDoubleStepped) {
+	private Pawn(Vector2 position, Alliance alliance, AbstractBoard board, boolean hasDoubleStepped) {
 		super(position, alliance, board, false, Piece.PAWN, 1);
 		this.hasDoubleStepped = hasDoubleStepped;
 	}
-	public Pawn(Vector2 position, Alliance alliance, Board board){
+	public Pawn(Vector2 position, Alliance alliance, AbstractBoard board){
 		super(position, alliance, board, false, Piece.PAWN, 1);
 	}
 	public Pawn clonePiece() {
@@ -56,9 +55,9 @@ public class Pawn extends ChessPiece {
 		boolean blackResult = this.alliance.equals(BLACK) && enPassant(blackEnpasant);
 		boolean whiteResult = this.alliance.equals(WHITE) && enPassant(whiteEnpasant);
 
-		System.out.println(blackResult + "HEHEHEHEHEHEHEHEHEHE");
+		System.out.println("Black result: " + blackResult);
 
-		System.out.println(whiteResult + "HEHEHEHEHEHEHEHEHEHEH");
+		System.out.println("White result: " + whiteResult);
 
 		return (
 				((blackResult ||
@@ -295,7 +294,7 @@ public class Pawn extends ChessPiece {
 
 		int startY = 1;
 		int dir = alliance == Alliance.BLACK ? 1 : -1;
-		if(alliance == Alliance.WHITE) startY = board.getSize() - 1 - startY;
+		if(alliance == Alliance.WHITE) startY = board.size() - 1 - startY;
 
 		if(position.getY() != startY) {
 			possibleMoves.remove(new Vector2(position.getX(), position.getY() + dir * 2));

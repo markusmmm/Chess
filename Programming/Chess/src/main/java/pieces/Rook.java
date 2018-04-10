@@ -1,6 +1,6 @@
 package pieces;
 
-import management.Board;
+import management.AbstractBoard;
 import resources.Alliance;
 import resources.Piece;
 import resources.Vector2;
@@ -15,7 +15,7 @@ public class Rook extends ChessPiece {
 	/**
 	 * @param position
 	 */
-	public Rook(Vector2 position, Alliance alliance, Board board) {
+	public Rook(Vector2 position, Alliance alliance, AbstractBoard board) {
 		super(position, alliance, board, false, Piece.ROOK, 5);
 	}
 
@@ -34,8 +34,8 @@ public class Rook extends ChessPiece {
 	public boolean legalMove(Vector2 destination) {
 		if(!super.legalMove(destination)) return false;
 
-		System.out.println("inStraights: " + inStraights(destination));
-		System.out.println("freePath: " + freePath(destination));
+		//System.out.println("inStraights: " + inStraights(destination));
+		//System.out.println("freePath: " + freePath(destination));
 
 		return (
 			inStraights(destination) &&
@@ -51,7 +51,7 @@ public class Rook extends ChessPiece {
 		logActionPossibleDestinations(caller);
 
 		possibleMoves.clear();
-		for (int variable = 0; variable < board.getSize(); variable++) {
+		for (int variable = 0; variable < board.size(); variable++) {
 			//Straights
 			evalMove(new Vector2(position.getX(), position.getY() + variable));
 			evalMove(new Vector2(position.getX(), position.getY() - variable));
