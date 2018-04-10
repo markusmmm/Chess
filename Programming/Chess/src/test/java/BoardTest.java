@@ -1,6 +1,7 @@
 import management.Board;
 import org.junit.jupiter.api.Test;
 import pieces.ChessPiece;
+import pieces.King;
 import pieces.Queen;
 import resources.Alliance;
 import resources.Piece;
@@ -38,10 +39,12 @@ public class BoardTest {
     @Test
     public void MovePieceUpdatesPosInPieceTest() {
         Vector2 queenPos = new Vector2(1,1);
+        Vector2 kingPos = new Vector2(1,1);
         Board board = new Board(3, false);
         Vector2 newQueenPos = new Vector2(2,1);
 
         ChessPiece queen = board.addPiece(queenPos, Piece.QUEEN, Alliance.WHITE);
+        ChessPiece king = board.addPiece(kingPos, Piece.KING, Alliance.WHITE); //can't move without a king
 
         board.movePiece(queenPos, newQueenPos);
 
@@ -56,8 +59,5 @@ public class BoardTest {
         ChessPiece queen = board.addPiece(queenPos, Piece.QUEEN, Alliance.WHITE);
 
         assertTrue(board.getPiece(queenPos) instanceof Queen);
-
     }
-
-
 }
