@@ -1,5 +1,6 @@
 import management.Board;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 import pieces.Rook;
 import resources.Alliance;
 import resources.Piece;
@@ -7,10 +8,21 @@ import resources.Vector2;
 
 public class RookTest {
 
+    private Board board;
+
+    @Before
+    public void initObj() {
+        Piece[] testBoard = new Piece[]{};
+        board = new Board(8, false, testBoard);
+
+        Vector2 king1 = new Vector2(1,1);
+        Vector2 king2 = new Vector2(6,6);
+        board.addPiece(king1, Piece.KING, Alliance.WHITE);
+        board.addPiece(king2, Piece.KING, Alliance.BLACK);
+    }
+
     @Test
     public void rookCanMoveVertical() {
-        Piece[] testBoard = new Piece[]{};
-        Board board = new Board(8, false, testBoard);
         Vector2 oldPos = new Vector2(0,7);
         Vector2 newPos = new Vector2(0,6);
         board.addPiece(oldPos, Piece.ROOK, Alliance.WHITE);
@@ -20,8 +32,6 @@ public class RookTest {
 
     @Test
     public void rookCanMoveHorizontal() {
-        Piece[] testBoard = new Piece[]{};
-        Board board = new Board(8, false, testBoard);
         Vector2 oldPos = new Vector2(0,7);
         Vector2 newPos = new Vector2(7,7);
         board.addPiece(oldPos, Piece.ROOK, Alliance.WHITE);
@@ -32,36 +42,30 @@ public class RookTest {
 
     @Test
     public void rookCanAttackVertical() {
-        Piece[] testBoard = new Piece[]{};
-        Board board = new Board(8, false, testBoard);
         Vector2 oldPos = new Vector2(0,7);
         Vector2 newPos = new Vector2(0,6);
         board.addPiece(oldPos, Piece.ROOK, Alliance.WHITE);
         board.addPiece(newPos, Piece.PAWN, Alliance.BLACK);
         board.movePiece(oldPos, newPos);
-        assert(board.pieces.size() == 1);
+        assert(board.pieces.size() == 3);
         assert(board.getPiece(newPos).piece() == Piece.ROOK);
         assert(board.getPiece(newPos).alliance() == Alliance.WHITE);
     }
 
     @Test
     public void rookCanAttackHorizontal() {
-        Piece[] testBoard = new Piece[]{};
-        Board board = new Board(8, false, testBoard);
         Vector2 oldPos = new Vector2(0,7);
         Vector2 newPos = new Vector2(1,7);
         board.addPiece(oldPos, Piece.ROOK, Alliance.WHITE);
         board.addPiece(newPos, Piece.PAWN, Alliance.BLACK);
         board.movePiece(oldPos, newPos);
-        assert(board.pieces.size() == 1);
+        assert(board.pieces.size() == 3);
         assert(board.getPiece(newPos).piece() == Piece.ROOK);
         assert(board.getPiece(newPos).alliance() == Alliance.WHITE);
     }
 
     @Test
     public void rookCanNotJumpOverPiece() {
-        Piece[] testBoard = new Piece[]{};
-        Board board = new Board(8, false, testBoard);
         Vector2 oldPos = new Vector2(0,7);
         Vector2 newPos = new Vector2(0,6);
         board.addPiece(oldPos, Piece.ROOK, Alliance.WHITE);
@@ -73,8 +77,6 @@ public class RookTest {
 
     @Test
     public void rookPossibleMovesSizeTest() {
-        Piece[] testBoard = new Piece[]{};
-        Board board = new Board(8, false, testBoard);
         Vector2 pos = new Vector2(0,7);
         board.addPiece(pos, Piece.ROOK, Alliance.WHITE);
         assert(board.getPiece(pos).getPossibleDestinations().size() == 14);
@@ -82,11 +84,9 @@ public class RookTest {
 
     @Test
     public void rookPossibleMovesSizeTest2() {
-        Piece[] testBoard = new Piece[]{};
-        Board board = new Board(8, false, testBoard);
         Vector2 pos = new Vector2(3,3);
         board.addPiece(pos, Piece.ROOK, Alliance.WHITE);
-        assert(board.getPiece(pos).getPossibleDestinations().size() == 13);
+        assert(board.getPiece(pos).getPossibleDestinations().size() == 14);
     }
 
 }

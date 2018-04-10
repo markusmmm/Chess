@@ -1,12 +1,14 @@
 import management.Board;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import pieces.ChessPiece;
 import pieces.Queen;
 import resources.Alliance;
 import resources.Vector2;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 
 public class BoardTest {
     @Test

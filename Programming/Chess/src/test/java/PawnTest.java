@@ -1,13 +1,9 @@
 import management.Board;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import pieces.Pawn;
 import resources.Alliance;
 import resources.Piece;
 import resources.Vector2;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 
 public class PawnTest
 {
