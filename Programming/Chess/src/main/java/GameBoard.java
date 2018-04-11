@@ -16,10 +16,7 @@ import management.*;
 import pieces.ChessPiece;
 import pieces.IChessPiece;
 import pieces.King;
-import resources.Alliance;
-import resources.Move;
-import resources.MoveNode;
-import resources.Vector2;
+import resources.*;
 
 import java.util.Collections;
 import java.util.Set;
@@ -45,8 +42,9 @@ public class GameBoard {
     private boolean firstClick;
     private Tile firstTile;
 
-    public GameBoard(String username, int difficulty, Stage stage) {
-        this.board = new Board(SIZE, false);
+    public GameBoard(String username, int difficulty, BoardMode boardMode, Stage stage) {
+        this.board = new Board(SIZE, false, boardMode,false);
+
         this.stage = stage;
         this.grid = new GridPane();
         this.tiles = new Tile[SIZE][SIZE];

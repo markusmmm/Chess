@@ -203,8 +203,6 @@ public class AbstractBoard {
                 return new Pawn(pos, alliance, this);
             case ROOK:
                 return new Rook(pos, alliance, this);
-            case DUMMY:
-                return new Dummy(pos, alliance, this);
         }
         return null;
     }

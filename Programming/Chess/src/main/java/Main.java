@@ -10,6 +10,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import resources.BoardMode;
 
 public class Main extends Application {
 
@@ -112,10 +113,10 @@ public class Main extends Application {
         Button buttonQuit = new Button();
         buttonQuit.setText("QUIT");
 
-        buttonPlayVersus.setOnAction(e -> root.setCenter(createChessGame(username, 0, stage)));
-        buttonPlayEasy.setOnAction(e -> root.setCenter(createChessGame(username, 1, stage)));
-        buttonPlayMedium.setOnAction(e -> root.setCenter(createChessGame(username, 2, stage)));
-        buttonPlayHard.setOnAction(e -> root.setCenter(createChessGame(username, 3, stage)));
+        buttonPlayVersus.setOnAction(e -> root.setCenter(createChessGame(username, 0, BoardMode.DEFAULT, stage)));
+        buttonPlayEasy.setOnAction(e -> root.setCenter(createChessGame(username, 1, BoardMode.DEFAULT, stage)));
+        buttonPlayMedium.setOnAction(e -> root.setCenter(createChessGame(username, 2, BoardMode.DEFAULT, stage)));
+        buttonPlayHard.setOnAction(e -> root.setCenter(createChessGame(username, 3, BoardMode.DEFAULT, stage)));
         buttonQuit.setOnAction(e -> onQuit());
 
         VBox buttonContainer = new VBox(10);
@@ -138,8 +139,8 @@ public class Main extends Application {
      *
      * @return chessGame
      */
-    private BorderPane createChessGame(String username, int difficulty, Stage stage) {
-        GameBoard gameBoard = new GameBoard(username, difficulty, stage);
+    private BorderPane createChessGame(String username, int difficulty, BoardMode boardMode, Stage stage) {
+        GameBoard gameBoard = new GameBoard(username, difficulty, boardMode, stage);
         gameBoard.createBoard();
         return gameBoard.getContainer();
     }

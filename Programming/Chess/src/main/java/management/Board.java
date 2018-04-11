@@ -29,11 +29,19 @@ public class Board extends AbstractBoard {
      * @throws IllegalArgumentException if ({@code size < 2})   //Pre-conditions
      */
     public Board(int size, boolean useClock, Piece[] initialSetup) {
-    	super(size, useClock, initialSetup, false, true);
+    	super(size, useClock, initialSetup == null ? defaultBoard : initialSetup, false, true);
     }
 
     public Board(int size, boolean useClock, Piece[] initialSetup, boolean symmetric) {
 		super(size, useClock, initialSetup, symmetric, true);
+	}
+
+	public Board(int size, boolean useClock, BoardMode mode, boolean symmetric) {
+    	super(size, useClock, mode == BoardMode.DEFAULT ? defaultBoard : new Piece[] {}, symmetric, true);
+
+		if(mode == BoardMode.RANDOM) {
+    		// TODO Implement random board generation
+		}
 	}
 
 	/*

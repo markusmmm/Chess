@@ -114,32 +114,15 @@ public class King extends ChessPiece {
     }
 
     public boolean resolvesCheck(Vector2 start, Vector2 end) {
-        // TODO Add alliance check (A hostile piece cannot resolve check)
+        Board dummyBoard = board.clone();
+        King dummyKing = dummyBoard.getKing(alliance);
 
         if(start.equals(position))
             return !movesIntoCheck(end);
-        
-        if(!inCheck()) return true;
 
-        Set<Vector2> endangered = new HashSet<>();
-        Set<Vector2> destinations = new HashSet<>();
+        dummyBoard.movePiece(start, end);
 
-        for (Vector2 move : moves)
-            destinations.add(position.add(move));
-
-        board.suspendPieces(position);
-
-        for (Vector2 destination : destinations) {
-            if (inCheck(destination)) {
-                endangered.add(destination);
-            }
-        }
-
-        endangered.remove(end);
-
-        board.releasePieces(position);
-
-        return endangered.size() == 0;
+        return dummyKing.inCheck();
     }
 
     public boolean checkmate() {
