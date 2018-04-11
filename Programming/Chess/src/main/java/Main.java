@@ -1,3 +1,4 @@
+import com.mongodb.client.MongoCollection;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -10,12 +11,16 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import management.DatabaseController;
+import org.bson.Document;
 
 public class Main extends Application {
 
-    private Stage stage;
     static final int WIDTH = 720;
     static final int HEIGHT = 500;
+
+    private Stage stage;
+    private DatabaseController database = new DatabaseController();
 
     public void start(Stage primaryStage) throws Exception {
         stage = primaryStage;
@@ -72,6 +77,9 @@ public class Main extends Application {
         if (username == null || username.trim().isEmpty())
             errorField.setText("Please enter a non-empty username.");
         else {
+            MongoCollection<Document> collection = database.db.getCollection("users");
+            Document document = new Document("name", username);
+            collection.insertOne(document);
             Scene scene = new Scene(mainMenu(username));
             scene.getStylesheets().add("stylesheet.css");
             stage.setScene(scene);
