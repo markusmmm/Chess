@@ -41,8 +41,9 @@ public class ChessComputerMedium extends ChessComputer {
         }
         printPossibleMoves();
 
-        System.out.println("mediumAI" + m.start.toString() + m.end.toString());
-        return Collections.max(moveChart).getMove();
+        Move m = Collections.max(moveChart).getMove();
+        System.out.println("mediumAI " + m.start.toString() + m.end.toString());
+        return m;
     }
 
     private void printPossibleMoves() {
