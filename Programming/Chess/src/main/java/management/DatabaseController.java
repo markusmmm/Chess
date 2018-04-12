@@ -76,9 +76,7 @@ public class DatabaseController {
      */
     public void addUser(String username) {
         if (!userExists(username)) {
-            db.getCollection("users")
-                    .insertOne(new Document("name", username)
-                    .append("score", 0));
+            db.getCollection("users").insertOne(new Document("name", username).append("score", 0));
         }
     }
 

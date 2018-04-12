@@ -10,6 +10,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import management.DatabaseController;
 import org.bson.Document;
@@ -97,11 +98,13 @@ public class Main extends Application {
     public Parent mainMenu(String username) {
         BorderPane root = new BorderPane();
 
-        Label labelWelcome = new Label("Welcome, " + username + "!\nScore: " + database.getScore(username) );
+        Label labelWelcome = new Label("Welcome, " + username +
+                "!\nYour score: " + database.getScore(username) );
         labelWelcome.setPrefWidth(WIDTH);
         labelWelcome.setMinHeight((HEIGHT / 8) * 2);
         labelWelcome.setAlignment(Pos.CENTER);
         labelWelcome.setId("title");
+        labelWelcome.setTextAlignment(TextAlignment.CENTER);
 
         Button buttonPlayVersus = new Button();
         buttonPlayVersus.setText("PLAY: VERSUS");
