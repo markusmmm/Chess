@@ -20,6 +20,9 @@ public class Console {
     public static final String ANSI_CYAN_BG = "\u001B[46m";
     public static final String ANSI_WHITE_BG = "\u001B[47m";
 
+    public static void printNotice(String msg) {
+        System.out.println(ANSI_CYAN + msg + ANSI_RESET);
+    }
     public static void printSuccess(String msg) {
         System.out.println(ANSI_GREEN + msg + ANSI_RESET);
     }
