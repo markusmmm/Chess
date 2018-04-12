@@ -217,7 +217,7 @@ public class AbstractBoard {
     }
 
     protected AbstractBoard(String fileName) throws FileNotFoundException {
-        fileName = "saves/" + fileName + ".txt";
+        fileName += ".txt";
 
         Scanner file = new Scanner(new File(fileName));
         size = file.nextInt();
