@@ -10,8 +10,7 @@ public class PawnTest
     @Test
     public void movePawnForward()
     {
-        Piece[] testBoard = new Piece[]{};
-        Board board = new Board(8, false, testBoard);
+        Board board = new Board(8, false);
 
         Vector2 posPawn0 = new Vector2(0, 6);
         Vector2 posPawn1 = new Vector2(1, 6);

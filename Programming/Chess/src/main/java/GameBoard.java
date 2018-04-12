@@ -18,6 +18,7 @@ import pieces.IChessPiece;
 import pieces.King;
 import resources.*;
 
+import java.io.FileNotFoundException;
 import java.util.Collections;
 import java.util.Set;
 import java.util.Stack;
@@ -43,7 +44,21 @@ public class GameBoard {
     private Tile firstTile;
 
     public GameBoard(String username, int difficulty, BoardMode boardMode, Stage stage) {
-        this.board = new Board(SIZE, false, boardMode,false);
+        Board boardVal = null;
+
+        if(boardMode == BoardMode.DEFAULT) {
+            //this.board = new Board(SIZE, false, boardMode); TEMP TEST
+            try {
+                boardVal = new Board("default");
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                System.err.println("Game setup failed! exiting...");
+                System.exit(1);
+            }
+        } else {
+            boardVal = new Board(SIZE, false, boardMode);
+        }
+        board = boardVal;
 
         this.stage = stage;
         this.grid = new GridPane();
