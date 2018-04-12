@@ -259,6 +259,10 @@ public class Pawn extends ChessPiece {
 			{
 				possibleMoves.add(new Vector2(x + 1, y - 1));
 			}
+			if(promotion(new Vector2(x, y +1)))
+			{
+				possibleMoves.add(new Vector2(x, y - 1));
+			}
 		}
 		else if(this.alliance.equals(BLACK))
 		{
@@ -289,6 +293,10 @@ public class Pawn extends ChessPiece {
 			if(enPassant(new Vector2(x + 1, y)))
 			{
 				possibleMoves.add(new Vector2(x + 1, y + 1));
+			}
+			if(promotion(new Vector2(x, y +1)))
+			{
+				possibleMoves.add(new Vector2(x, y + 1));
 			}
 		}
 
@@ -331,6 +339,19 @@ public class Pawn extends ChessPiece {
 					return true;
 				}
 			}
+		}
+		return false;
+	}
+
+	public boolean promotion(Vector2 move)
+	{
+		if(this.position.getY() == 0 && this.alliance.equals(WHITE))
+		{
+			return true;
+		}
+		else if(this.position().getY() == 7 && this.alliance.equals(BLACK))
+		{
+			return true;
 		}
 		return false;
 	}
