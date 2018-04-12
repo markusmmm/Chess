@@ -130,6 +130,8 @@ public class King extends ChessPiece {
 
         if(!inCheck()) return true;
 
+
+
         Set<Vector2> endangered = new HashSet<>();
         Set<Vector2> destinations = new HashSet<>();
 
