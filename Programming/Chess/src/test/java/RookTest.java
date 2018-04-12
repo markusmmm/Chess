@@ -12,7 +12,7 @@ public class RookTest {
 
     @Before
     public void initObj() {
-        board = new Board(8, false);
+        board = new Board(8);
 
         Vector2 king1 = new Vector2(1,1);
         Vector2 king2 = new Vector2(6,6);

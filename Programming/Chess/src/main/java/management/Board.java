@@ -20,18 +20,15 @@ public class Board extends AbstractBoard {
 			Piece.ROOK,   Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN,  Piece.KING,   Piece.BISHOP, Piece.KNIGHT, Piece.ROOK
 	};
 
-	private Board(Board template, boolean isLive) {
-		super(template, isLive);
+	private Board(Board template) {
+		super(template);
 	}
 
     public Board(int size) {
-        super(size, false, true);
+        super(size, false);
     }
-    public Board(int size, boolean isLive) {
-		super(size, false, isLive);
-	}
     public Board(int size, boolean useClock, BoardMode mode) {
-    	super(size, useClock, true);
+    	super(size, useClock);
 
 		if(mode == BoardMode.DEFAULT) {
 			int p = 0;
@@ -417,10 +414,6 @@ public class Board extends AbstractBoard {
 
     @Override
     public Board clone() {
-        return clone(true);
-    }
-
-    public Board clone(boolean isLive) {
-        return new Board(this, isLive);
+        return new Board(this);
     }
 }

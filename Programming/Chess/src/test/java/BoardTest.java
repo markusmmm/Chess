@@ -17,7 +17,7 @@ public class BoardTest {
     public void getUsablePiecesAllIsTest() {
         int size = 8;
         int y = 1;
-        Board board = new Board(size,false);
+        Board board = new Board(size);
         for (int x = 0; x < size; x++) {
             board.removePieces(new Vector2(x,y));
         }
@@ -28,13 +28,13 @@ public class BoardTest {
     @Test
     public void getUsablePiecesValidSomeIsTest() {
         int size = 8;
-        Board board = new Board(size,false);
+        Board board = new Board(size);
         assertEquals(board.getUsablePieces(Alliance.WHITE).size(), 10);
     }
     @Test
     public void addPieceEmptyBoardTest() {
         Vector2 queenPos = new Vector2(1,1);
-        Board board = new Board(3, false);
+        Board board = new Board(3);
         ChessPiece queen = board.addPiece(queenPos, Piece.QUEEN, Alliance.WHITE);
         assertEquals(queen, board.getPiece(queenPos));
     }
@@ -42,7 +42,7 @@ public class BoardTest {
     public void MovePieceUpdatesPosInPieceTest() {
         Vector2 queenPos = new Vector2(1,1);
         Vector2 kingPos = new Vector2(1,1);
-        Board board = new Board(3, false);
+        Board board = new Board(3);
         Vector2 newQueenPos = new Vector2(2,1);
 
         ChessPiece queen = board.addPiece(queenPos, Piece.QUEEN, Alliance.WHITE);
@@ -56,7 +56,7 @@ public class BoardTest {
     @Test
     public void getPieceTest() {
         Vector2 queenPos = new Vector2(1,1);
-        Board board = new Board(3, false);
+        Board board = new Board(3);
 
         ChessPiece queen = board.addPiece(queenPos, Piece.QUEEN, Alliance.WHITE);
 

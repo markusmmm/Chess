@@ -10,7 +10,6 @@ import java.util.concurrent.Semaphore;
 
 public class AbstractBoard {
     private Semaphore mutex = new Semaphore(1);
-    private final boolean isLive;
 
     private boolean hasWhiteKing, hasBlackKing;
 
@@ -28,9 +27,7 @@ public class AbstractBoard {
 
     private Stack<MoveNode> gameLog = new Stack<>();
 
-    protected AbstractBoard(AbstractBoard other, boolean isLive) {
-        this.isLive = isLive;
-
+    protected AbstractBoard(AbstractBoard other) {
         hasBlackKing = other.hasBlackKing;
         hasWhiteKing = other.hasWhiteKing;
 
@@ -50,11 +47,10 @@ public class AbstractBoard {
         gameLog = (Stack<MoveNode>) other.gameLog.clone();
     }
 
-    protected AbstractBoard(int size, boolean useClock, boolean isLive) {
+    protected AbstractBoard(int size, boolean useClock) {
         if(size < 2) throw new IllegalArgumentException("The board size must be at least 2");
 
         this.size = size;
-        this.isLive = isLive;
 
         generateClock(useClock);
     }
@@ -65,7 +61,6 @@ public class AbstractBoard {
         Scanner file = new Scanner(new File(fileName));
         size = file.nextInt();
         generateClock(file.nextInt() != 0);
-        isLive = true;
 
         System.out.println("Size read from file: " + size);
 
@@ -86,7 +81,7 @@ public class AbstractBoard {
         file.close();
     }
 
-    public static Piece randomPiece() {
+    protected static Piece randomPiece() {
         int pick = new Random().nextInt(Piece.values().length);
         return Piece.values()[pick];
     }
@@ -98,10 +93,6 @@ public class AbstractBoard {
 
     public boolean ready() {
         return mutex.availablePermits() == 1;
-    }
-
-    public boolean isLive() {
-        return isLive;
     }
 
     public int nPieces() {
