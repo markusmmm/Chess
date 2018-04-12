@@ -21,12 +21,12 @@ public class King extends ChessPiece {
     /**
      * @param position
      */
-    public King(Vector2 position, Alliance alliance, AbstractBoard board) {
+    public King(Vector2 position, Alliance alliance, AbstractBoard board, Boolean hasMoved) {
         super(position, alliance, board, false, Piece.KING, 2);
     }
 
     public King clonePiece() {
-        return new King(position, alliance, board);
+        return new King(position, alliance, board, hasMoved());
     }
 
     @Override
