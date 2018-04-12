@@ -2,5 +2,6 @@ package resources;
 
 public enum BoardMode {
     DEFAULT,
-    RANDOM
+    RANDOM,
+    EMPTY
 }

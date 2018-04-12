@@ -3,10 +3,9 @@ package management;
 import pieces.*;
 import resources.*;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Stack;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.*;
 import java.util.concurrent.Semaphore;
 
 public class AbstractBoard {
@@ -16,10 +15,12 @@ public class AbstractBoard {
     private boolean hasWhiteKing, hasBlackKing;
 
     private static final Piece[] defaultBoard = new Piece[] {
-            Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY,
-            Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY,
-            Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK,
-            Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN
+            Piece.ROOK,   Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN,  Piece.KING,   Piece.BISHOP, Piece.KNIGHT, Piece.ROOK,
+            Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,
+            Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,
+            Piece.PAWN,   Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,
+            Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,
+            Piece.ROOK,   Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN,  Piece.KING,   Piece.BISHOP, Piece.KNIGHT, Piece.ROOK
     };
 
     private final int size;
@@ -58,37 +59,198 @@ public class AbstractBoard {
         gameLog = (Stack<MoveNode>) other.gameLog.clone();
     }
 
-    protected AbstractBoard(int size, boolean useClock, Piece[] initialSetup, boolean symmetric, boolean isLive) {
+    protected AbstractBoard(int size, boolean useClock, BoardMode mode, boolean isLive) {
         if(size < 2) throw new IllegalArgumentException("The board size must be at least 2");
-
-        int p = 0;
 
         this.size = size;
         this.isLive = isLive;
 
-        if(useClock) {
-            clock = new ChessClock(2, 900, 12, -1);
-        }
+        generateClock(useClock);
 
-        for(Piece type : initialSetup) {
-            int x = p % size;
-            int y = p / size;
+        if(mode == BoardMode.DEFAULT) {
+            int p = 0;
 
-            Vector2 pos = new Vector2(x, y);
-            Vector2 invPos = new Vector2(x, size - y - 1);
+            for (Piece type : defaultBoard) {
+                int x = p % size;
+                int y = p / size;
 
-            if(type.equals(Piece.EMPTY)) continue;
+                Vector2 pos = new Vector2(x, y);
+                Vector2 invPos = new Vector2(x, size - y - 1);
 
-            addPiece(pos, type, Alliance.BLACK);
-            System.out.println(pos + ": " + pieces.get(pos));
+                if (type.equals(Piece.EMPTY)) continue;
 
-            if (symmetric) {
+                addPiece(pos, type, Alliance.BLACK);
+                System.out.println(pos + ": " + pieces.get(pos));
+
                 addPiece(invPos, type, Alliance.WHITE);
                 System.out.println(invPos + ": " + pieces.get(invPos));
-            }
 
-            p++;
+                p++;
+            }
+        } else {
+            if (mode == BoardMode.RANDOM) {
+                int bRooks = 0, bPawns = 0, bQueens = 0, bKings = 0, bBishops = 0, bKnights = 0;
+                int wRooks = 0, wPawns = 0, wQueens = 0, wKings = 0, wBishops = 0, wKnights = 0;
+                int w = 0;
+                int b = 0;
+                int q = 0;
+
+                int p = 0;
+                Random random = new Random();
+                while (b < 16) {
+                    Piece aPiece = randomPiece();
+                    int x =random.nextInt(7 - 0 + 1) + 0;
+                    int y = random.nextInt(7 - 0 + 1) + 0;
+
+                    Vector2 pos = new Vector2(x, y);
+                    if(!vacant(pos)){
+                        p++;
+                        continue;
+                    }
+                    if (aPiece.equals(Piece.ROOK) && bRooks < 2) {
+                        addPiece(pos, aPiece, Alliance.BLACK);
+                        p++;
+                        b++;
+                        bRooks++;
+                        continue;
+                    }
+                    if (aPiece.equals(Piece.PAWN) && bPawns < 8) {
+                        addPiece(pos, aPiece, Alliance.BLACK);
+                        p++;
+                        b++;
+                        bPawns++;
+                        continue;
+                    }
+                    if (aPiece.equals(Piece.QUEEN) && bQueens < 1) {
+                        addPiece(pos, aPiece, Alliance.BLACK);
+                        p++;
+                        b++;
+                        bQueens++;
+                        continue;
+                    }
+                    if (aPiece.equals(Piece.KING) && bKings == 0) {
+                        addPiece(pos, aPiece, Alliance.BLACK);
+                        p++;
+                        b++;
+                        bKings++;
+                        continue;
+                    }
+                    if (aPiece.equals(Piece.BISHOP) && bBishops < 2) {
+                        addPiece(pos, aPiece, Alliance.BLACK);
+                        p++;
+                        b++;
+                        bBishops++;
+                        continue;
+                    }
+                    if (aPiece.equals(Piece.KNIGHT) && bKnights < 2) {
+                        addPiece(pos, aPiece, Alliance.BLACK);
+                        p++;
+                        b++;
+                        bKnights++;
+                        continue;
+                    }
+                    if(aPiece.equals(Piece.EMPTY)) {
+                        b++;
+                        continue;
+                    }
+                }
+                while (w < 16) {
+                    Piece aPiece = randomPiece();
+
+                    int x =random.nextInt(7 - 0 + 1) + 0;
+                    int y = random.nextInt(7 - 0 + 1) + 0;
+
+                    Vector2 invPos = new Vector2(x, y);
+                    if(!vacant(invPos)){
+                        q++;
+                        continue;
+                    }
+                    if (aPiece.equals(Piece.ROOK) && wRooks < 2) {
+                        addPiece(invPos, aPiece, Alliance.WHITE);
+                        q++;
+                        w++;
+                        wRooks++;
+                        continue;
+                    }
+                    if (aPiece.equals(Piece.PAWN) && wPawns <8) {
+                        addPiece(invPos, aPiece, Alliance.WHITE);
+                        q++;
+                        w++;
+                        wPawns++;
+                        continue;
+                    }
+                    if (aPiece.equals(Piece.QUEEN) && wQueens < 1) {
+                        addPiece(invPos, aPiece, Alliance.WHITE);
+                        q++;
+                        w++;
+                        wQueens++;
+                        continue;
+                    }
+                    if (aPiece.equals(Piece.KING) && wKings < 1) {
+                        addPiece(invPos, aPiece, Alliance.WHITE);
+                        q++;
+                        w++;
+                        wKings++;
+                        continue;
+                    }
+                    if (aPiece.equals(Piece.BISHOP) && wBishops < 2) {
+                        addPiece(invPos, aPiece, Alliance.WHITE);
+                        q++;
+                        w++;
+                        wBishops++;
+                        continue;
+                    }
+                    if (aPiece.equals(Piece.KNIGHT) && wKnights < 2) {
+                        addPiece(invPos, aPiece, Alliance.WHITE);
+                        q++;
+                        w++;
+                        wKnights++;
+                        continue;
+                    }
+                    if(aPiece.equals(Piece.EMPTY)) {
+                        b++;
+                        continue;
+                    }
+                }
+            }
         }
+    }
+
+    protected AbstractBoard(String fileName) throws FileNotFoundException {
+        fileName = "saves/" + fileName + ".txt";
+
+        Scanner file = new Scanner(new File(fileName));
+        size = file.nextInt();
+        generateClock(file.nextInt() != 0);
+        isLive = true;
+
+        System.out.println("Size read from file: " + size);
+
+        for (int y = 0; y < size; y++) {
+            String line = file.next();
+            for (int x = 0; x < size; x++) {
+                char c = line.charAt(x);
+
+                Vector2 pos = new Vector2(x, y);
+                Piece type = PieceManager.toPiece(c);
+                Alliance alliance = Character.isLowerCase(c) ? Alliance.BLACK : Alliance.WHITE;
+
+                System.out.println("Setting piece at " + pos);
+                addPiece(pos, type, alliance);
+            }
+        }
+
+        file.close();
+    }
+
+    private static Piece randomPiece() {
+        int pick = new Random().nextInt(Piece.values().length);
+        return Piece.values()[pick];
+    }
+
+    private void generateClock(boolean doGenerate) {
+        if(!doGenerate) return;
+        clock = new ChessClock(2, 900, 12, -1);
     }
 
     public boolean ready() {
