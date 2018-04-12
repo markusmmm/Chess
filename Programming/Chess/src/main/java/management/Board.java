@@ -162,7 +162,7 @@ public class Board extends AbstractBoard {
                     continue;
                 }
                 if(aPiece.equals(Piece.EMPTY)) {
-                    p++;
+                    b++;
                     continue;
                 }
             }
@@ -220,7 +220,7 @@ public class Board extends AbstractBoard {
                     continue;
                 }
                 if(aPiece.equals(Piece.EMPTY)) {
-                    q++;
+                    b++;
                     continue;
                 }
             }
