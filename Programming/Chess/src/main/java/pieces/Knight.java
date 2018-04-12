@@ -17,7 +17,6 @@ public class Knight  extends ChessPiece {
 			new Vector2(-2, 1), new Vector2(-1, 2),
 			new Vector2( 2,-1), new Vector2( 1,-2),
 			new Vector2(-2,-1), new Vector2(-1,-2)));
-	private final int value = 3;
 
 	/**
 	 * 
@@ -26,8 +25,12 @@ public class Knight  extends ChessPiece {
 	public Knight (Vector2 position, Alliance alliance, AbstractBoard board){
 		super(position, alliance, board, true, Piece.KNIGHT, 3);
 	}
+
+	private Knight(Knight other) {
+		super(other);
+	}
     public Knight clonePiece() {
-        return new Knight(position, alliance, board);
+        return new Knight(this);
     }
 
 	@Override
@@ -46,17 +49,11 @@ public class Knight  extends ChessPiece {
 		return moves.contains(delta);
 	}
 
-	public Set<Vector2> getPossibleDestinations(String caller) {
-		logActionPossibleDestinations(caller);
-
-		Set<Vector2> possibleDestinations = new HashSet<>();
-
+	protected void calculatePossibleDestinations() {
 		for (Vector2 move : moves) {
 			Vector2 endPos = position.add(move);
 			if(legalMove(endPos))
-				possibleDestinations.add(endPos);
+				destinationBuffer.add(endPos);
 		}
-
-		return possibleDestinations;
 	}
 }

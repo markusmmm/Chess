@@ -55,8 +55,8 @@ public class AbstractBoard {
         generateClock(useClock);
     }
 
-    protected AbstractBoard(String fileName) throws FileNotFoundException {
-        fileName += ".txt";
+    protected AbstractBoard(String saveName) throws FileNotFoundException {
+        String fileName = saveName + ".txt";
 
         Scanner file = new Scanner(new File(fileName));
         size = file.nextInt();
@@ -79,6 +79,7 @@ public class AbstractBoard {
         }
 
         file.close();
+        Console.printSuccess("Loaded board '" + saveName + "'");
     }
 
     protected static Piece randomPiece() {
@@ -198,7 +199,7 @@ public class AbstractBoard {
                     hasWhiteKing = true;
                 else
                     hasBlackKing = true;
-                return new King(pos, alliance, this, false);
+                return new King(pos, alliance, this);
             case PAWN:
                 return new Pawn(pos, alliance, this);
             case ROOK:

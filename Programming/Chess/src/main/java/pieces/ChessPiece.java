@@ -8,6 +8,8 @@ import resources.Piece;
 import resources.Vector2;
 
 import javax.naming.OperationNotSupportedException;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 
 public abstract class ChessPiece implements IChessPiece {
@@ -21,6 +23,9 @@ public abstract class ChessPiece implements IChessPiece {
 	protected final int value;
 
 	private boolean hasMoved = false;
+	private int moveI = -1;
+
+	protected Set<Vector2> destinationBuffer = new HashSet<>();
 
     /**
      *
@@ -34,6 +39,25 @@ public abstract class ChessPiece implements IChessPiece {
         this.piece = piece;
         this.value = value;
     }
+    protected ChessPiece(ChessPiece other) {
+    	//if(!getClass().isInstance(other.getClass())) { Will always run, even if instances are equal
+		//	Console.printWarning("Attempting to clone " + other.getClass().getCanonicalName() + " into " + getClass().getCanonicalName());
+		//}
+
+    	position = other.position;
+    	alliance = other.alliance;
+    	canJump = other.canJump;
+    	piece = other.piece;
+    	board = other.board.clone();
+    	value = other.value;
+
+    	hasMoved = other.hasMoved;
+    	moveI = other.moveI;
+
+    	Set<Vector2> tempBuffer = new HashSet<>();
+		tempBuffer.addAll(destinationBuffer);
+    	destinationBuffer = tempBuffer;
+	}
 
 	public Vector2 position() { return position; }
 	public Alliance alliance() { return alliance; }
@@ -78,14 +102,16 @@ public abstract class ChessPiece implements IChessPiece {
 
 	/**
 	 * 
-	 * @param move
+	 * @param destination
 	 */
-	public boolean move(Vector2 move) {
-		System.out.println("Attempting to move " + alliance + " " + piece + " from " + position + " to " + move);
+	public boolean move(Vector2 destination, int moveI) {
+		System.out.println("Attempting to move " + alliance + " " + piece + " from " + position + " to " + destination);
 
-		if (!legalMove(move)) return false; // If the destination is unreachable, the move fails
+		getPossibleDestinations(moveI);
+		if(!destinationBuffer.contains(destination))
+			return false;
 
-		position = new Vector2(move.getX(), move.getY());
+		position = new Vector2(destination.getX(), destination.getY());
 		hasMoved = true;
 
 		System.out.println("Move performed. New pos: " + position);
@@ -128,12 +154,24 @@ public abstract class ChessPiece implements IChessPiece {
 	}
 
 	public Set<Vector2> getPossibleDestinations() {
-		return getPossibleDestinations("Anonymous");
+		return getPossibleDestinations(board.moveI());
+	}
+	public Set<Vector2> getPossibleDestinations(int moveI) {
+		if(this.moveI != moveI) {
+			System.out.println("Calculating destinations for " + toString() + " [" + this.moveI + " -> " + moveI + "]");
+			this.moveI = moveI;
+
+			destinationBuffer.clear();
+			calculatePossibleDestinations();
+		}
+
+		Set<Vector2> tempBuffer = new HashSet<>();
+		for(Vector2 v : destinationBuffer)
+			tempBuffer.add(v);
+		return tempBuffer;
 	}
 
-	protected void logActionPossibleDestinations(String caller) {
-		System.out.println(caller + " is checking possible destinations for " + toString());
-	}
+	protected abstract void calculatePossibleDestinations();
 
 	@Override
     public String toString() {

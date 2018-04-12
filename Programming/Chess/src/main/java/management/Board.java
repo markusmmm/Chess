@@ -11,13 +11,13 @@ import java.util.Random;
 import java.util.Set;
 
 public class Board extends AbstractBoard {
+	private int moveI = 0;
+
+	// [DEPRECATED] Legacy-solution, that creates a symmetrical setup (one side for each color)
+	// Generates the pieces in 'defaultBoard' in order, from top-left. Goes right, then down. Assumes that the size is 8.
 	private static final Piece[] defaultBoard = new Piece[] {
 			Piece.ROOK,   Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN,  Piece.KING,   Piece.BISHOP, Piece.KNIGHT, Piece.ROOK,
-			Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,
-			Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,
-			Piece.PAWN,   Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,
-			Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,
-			Piece.ROOK,   Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN,  Piece.KING,   Piece.BISHOP, Piece.KNIGHT, Piece.ROOK
+			Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN
 	};
 
 	private Board(Board template) {
@@ -74,6 +74,8 @@ public class Board extends AbstractBoard {
     	return true;
 	}
 	*/
+
+	public int moveI() { return moveI; }
 
 	private void generateRandomBoard() {
 		int bRooks = 0, bPawns = 0, bQueens = 0, bKings = 0, bBishops = 0, bKnights = 0;
@@ -278,7 +280,7 @@ public class Board extends AbstractBoard {
             if (piece == null) continue; // Ignore empty squares
 
             if (insideBoard(pos) && piece.alliance().equals(alliance)) {
-                Set<Vector2> possibleDestinations = piece.getPossibleDestinations("Board");
+                Set<Vector2> possibleDestinations = piece.getPossibleDestinations();
                 if (possibleDestinations.size() == 0) continue; // If the piece has no valid moves, ignore it
 
                 usablePieces.put(pos, piece);
@@ -302,22 +304,22 @@ public class Board extends AbstractBoard {
      * @param end
      */
     public boolean movePiece(Vector2 start, Vector2 end) {
-        if (!insideBoard(start)) return false;
+        if (!insideBoard(start)) return advanceMove(false);
 
         ChessPiece piece = (ChessPiece) getPiece(start);
 
         System.out.println("Currently " + activePlayer + "'s turn");
 
         if (piece == null) {
-            return false; // Check if a piece exists at the given position
+            return advanceMove(true); // Check if a piece exists at the given position
         }
         if (!piece.alliance().equals(activePlayer)) {
-            return false; // Checks if the active player owns the piece that is being moved
+            return advanceMove(false); // Checks if the active player owns the piece that is being moved
         }
 
-        if(piece instanceof  King){
-            int kingSideRookX = end.getX()+1;
-            int queenSideRookX = end.getX()-2;
+        if(piece instanceof  King) {
+            int kingSideRookX = end.getX() + 1;
+            int queenSideRookX = end.getX() - 2;
 
             // castling kingside
             if (((King) piece).castling(new Vector2(kingSideRookX,end.getY()))){
@@ -339,7 +341,7 @@ public class Board extends AbstractBoard {
                 logMove(new MoveNode(piece, start, end, (ChessPiece) getPiece(end)));
                 activePlayer = activePlayer.equals(Alliance.WHITE) ? Alliance.BLACK : Alliance.WHITE;
 
-                return true;
+				return advanceMove(true);
 
             }
 
@@ -363,17 +365,15 @@ public class Board extends AbstractBoard {
                 logMove(new MoveNode(piece, start, end, (ChessPiece) getPiece(end)));
                 activePlayer = activePlayer.equals(Alliance.WHITE) ? Alliance.BLACK : Alliance.WHITE;
 
-                return true;
-
-
+                return advanceMove(true);
             }
 
         }
-        boolean moveSuccessful = piece.move(end);
+        boolean moveSuccessful = piece.move(end, moveI);
 
         if (!moveSuccessful) { // Attempt to move the piece
             System.out.println("piece.move failed. Mutex released");
-            return false;
+            return advanceMove(false);
         }
 
         setLastPiece(piece);
@@ -398,14 +398,22 @@ public class Board extends AbstractBoard {
         addDrawPos(start);
         addDrawPos(end);
 
-        //After a successful move, advance to the next player
-        activePlayer = activePlayer.equals(Alliance.WHITE) ? Alliance.BLACK : Alliance.WHITE;
-
         //System.out.println("Local after: " + piece.position() + ", has moved: " + piece.hasMoved());
         //System.out.println("Move successful!");
 
-        return true;
+        return advanceMove(true);
     }
+
+    private boolean advanceMove(boolean state) {
+    	if(state) {
+			//After a successful move, advance to the next player
+			activePlayer = activePlayer.equals(Alliance.WHITE) ? Alliance.BLACK : Alliance.WHITE;
+			moveI++;
+			System.out.println("Beginning move " + moveI);
+		}
+
+    	return state;
+	}
 
     public boolean movePiece(Move move) {
         return movePiece(move.start, move.end);

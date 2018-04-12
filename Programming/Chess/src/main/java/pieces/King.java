@@ -10,7 +10,6 @@ import resources.Vector2;
 import java.util.*;
 
 public class King extends ChessPiece {
-    private final int value = 2;
     private Set<Vector2> moves = new HashSet<>(Arrays.asList(
         new Vector2(-1, -1), new Vector2( 0, -1), new Vector2( 1, -1),
         new Vector2(-1,  0), new Vector2( 1,  0), new Vector2(-1,  1),
@@ -21,12 +20,15 @@ public class King extends ChessPiece {
     /**
      * @param position
      */
-    public King(Vector2 position, Alliance alliance, AbstractBoard board, Boolean hasMoved) {
+    public King(Vector2 position, Alliance alliance, AbstractBoard board) {
         super(position, alliance, board, false, Piece.KING, 2);
     }
 
+    private King(King other) {
+        super(other);
+    }
     public King clonePiece() {
-        return new King(position, alliance, board, hasMoved());
+        return new King(this);
     }
 
     @Override
@@ -62,19 +64,13 @@ public class King extends ChessPiece {
         );
     }
 
-    public Set<Vector2> getPossibleDestinations(String caller) {
-        logActionPossibleDestinations(caller);
-
-        Set<Vector2> possibleMoves = new HashSet<>();
-
+    protected void calculatePossibleDestinations() {
         for(Vector2 move : moves) {
             Vector2 endPos = position.add(move);
 
             if(legalMove(endPos))
-                possibleMoves.add(endPos);
+                destinationBuffer.add(endPos);
         }
-
-        return possibleMoves;
     }
 
     public boolean inCheck(Vector2 destination) {
@@ -100,7 +96,7 @@ public class King extends ChessPiece {
                     return true;
             }
             else {
-                Set<Vector2> destinations = piece.getPossibleDestinations(toString());
+                Set<Vector2> destinations = piece.getPossibleDestinations();
                 if (destinations.contains(destination))
                     return true;
             }

@@ -21,7 +21,7 @@ public class ChessComputerEasy extends ChessComputer {
 
         for(Vector2 key : pieces.keySet()) {
             IChessPiece piece = pieces.get(key);
-            Set<Vector2> destinations = piece.getPossibleDestinations("ChessComputerEasy");
+            Set<Vector2> destinations = piece.getPossibleDestinations();
 
             for(Vector2 destination : destinations) {
                 IChessPiece endPiece = board.getPiece(destination);

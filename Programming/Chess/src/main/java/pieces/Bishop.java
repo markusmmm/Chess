@@ -11,12 +11,15 @@ import java.util.Set;
 
 
 public class Bishop extends ChessPiece {
-	private Set<Vector2> possibleMoves = new HashSet<>();
 	public Bishop(Vector2 position, Alliance alliance, AbstractBoard board){
 		super(position, alliance, board, false, Piece.BISHOP, 3);
 	}
+
+	private Bishop(Bishop other) {
+		super(other);
+	}
     public Bishop clonePiece() {
-        return new Bishop(position, alliance, board);
+        return new Bishop(this);
     }
 
 	/**
@@ -25,10 +28,7 @@ public class Bishop extends ChessPiece {
 	 */
 
 
-	public Set<Vector2> getPossibleDestinations(String caller) {
-		logActionPossibleDestinations(caller);
-
-		possibleMoves.clear();
+	protected void calculatePossibleDestinations() {
 		for (int variable = 0; variable < board.size(); variable++) {
 			//diagonals
 			evalMove(new Vector2(position.getX() + variable, position.getY() + variable));
@@ -37,10 +37,9 @@ public class Bishop extends ChessPiece {
 			evalMove(new Vector2(position.getX() - variable, position.getY() + variable));
 			evalMove(new Vector2(position.getX() - variable, position.getY() - variable));
 		}
-		return possibleMoves;
 	}
 	private void evalMove(Vector2 vector) {
-		if(legalMove(vector)) possibleMoves.add(vector);
+		if(legalMove(vector)) destinationBuffer.add(vector);
 	}
 
 	/**

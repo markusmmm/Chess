@@ -13,8 +13,8 @@ public interface IChessPiece {
 	Piece piece();
 	int getValue();
 
-	Set<Vector2> getPossibleDestinations(String caller);
 	Set<Vector2> getPossibleDestinations();
+	Set<Vector2> getPossibleDestinations(int moveI);
 
 	boolean hasMoved();
 
@@ -22,7 +22,7 @@ public interface IChessPiece {
 	 *
 	 * @param end
 	 */
-	boolean move(Vector2 end);
+	boolean move(Vector2 end, int moveI);
 
 	ChessPiece clonePiece();
 }

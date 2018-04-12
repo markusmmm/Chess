@@ -22,15 +22,16 @@ public class Pawn extends ChessPiece {
 	 * @param alliance
 	 */
 
-	private Pawn(Vector2 position, Alliance alliance, AbstractBoard board, boolean hasDoubleStepped) {
-		super(position, alliance, board, false, Piece.PAWN, 1);
-		this.hasDoubleStepped = hasDoubleStepped;
-	}
 	public Pawn(Vector2 position, Alliance alliance, AbstractBoard board){
 		super(position, alliance, board, false, Piece.PAWN, 1);
 	}
+
+	private Pawn(Pawn other) {
+		super(other);
+		hasDoubleStepped = other.hasDoubleStepped;
+	}
 	public Pawn clonePiece() {
-        return new Pawn(position, alliance, board, hasDoubleStepped);
+        return new Pawn(this);
     }
 
     public boolean getHasDoubleStepped(){
@@ -55,9 +56,8 @@ public class Pawn extends ChessPiece {
 		boolean blackResult = this.alliance.equals(BLACK) && enPassant(blackEnpasant);
 		boolean whiteResult = this.alliance.equals(WHITE) && enPassant(whiteEnpasant);
 
-		System.out.println("Black result: " + blackResult);
-
-		System.out.println("White result: " + whiteResult);
+		//System.out.println("Black result: " + blackResult);
+		//System.out.println("White result: " + whiteResult);
 
 		return (
 				((blackResult ||
@@ -202,11 +202,7 @@ public class Pawn extends ChessPiece {
 		return true;
 	}
 
-	public Set<Vector2> getPossibleDestinations(String caller) {
-		logActionPossibleDestinations(caller);
-
-		Set<Vector2> possibleMoves = new HashSet<>();
-
+	protected void calculatePossibleDestinations() {
 		int x = this.position.getX();
 		int y = this.position.getY();
 
@@ -216,43 +212,43 @@ public class Pawn extends ChessPiece {
 
 			//First move 2 step
 			if(legalMove(end))
-				possibleMoves.add(new Vector2(x, y - 2));
+				destinationBuffer.add(new Vector2(x, y - 2));
 			//One step
 			if(legalMove(new Vector2(x, y - 1)))
-				possibleMoves.add(new Vector2(x, y - 1));
+				destinationBuffer.add(new Vector2(x, y - 1));
 			//Take out enemy diagonal to left
 			if(legalMove(new Vector2(x - 1, y - 1)))
-				possibleMoves.add(new Vector2(x - 1, y - 1));
+				destinationBuffer.add(new Vector2(x - 1, y - 1));
 			//Take out enemy diagonal to right
 			if(legalMove(new Vector2(x + 1, y - 1)))
-				possibleMoves.add(new Vector2(x + 1, y - 1));
+				destinationBuffer.add(new Vector2(x + 1, y - 1));
 			if(enPassant(new Vector2(x - 1, y)))
-				possibleMoves.add(new Vector2(x - 1, y - 1));
+				destinationBuffer.add(new Vector2(x - 1, y - 1));
 			if(enPassant(new Vector2(x + 1, y)))
-				possibleMoves.add(new Vector2(x + 1, y - 1));
+				destinationBuffer.add(new Vector2(x + 1, y - 1));
 			if(promotion(new Vector2(x, y +1)))
-				possibleMoves.add(new Vector2(x, y - 1));
+				destinationBuffer.add(new Vector2(x, y - 1));
 		}
 		else if(this.alliance.equals(BLACK))
 		{
 			//First move 2 step
 			if(legalMove(new Vector2(x, y + 2)))
-				possibleMoves.add(new Vector2(x, y + 2));
+				destinationBuffer.add(new Vector2(x, y + 2));
 			//One step
 			if(legalMove(new Vector2(x, y + 1)))
-				possibleMoves.add(new Vector2(x, y + 1));
+				destinationBuffer.add(new Vector2(x, y + 1));
 			//Take out enemy diagonal to left
 			if(legalMove(new Vector2(x - 1, y + 1)))
-				possibleMoves.add(new Vector2(x - 1, y + 1));
+				destinationBuffer.add(new Vector2(x - 1, y + 1));
 			//take out enemy diagonal to right
 			if(legalMove(new Vector2(x + 1, y + 1)))
-				possibleMoves.add(new Vector2(x + 1, y + 1));
+				destinationBuffer.add(new Vector2(x + 1, y + 1));
 			if(enPassant(new Vector2(x - 1, y)))
-				possibleMoves.add(new Vector2(x - 1, y + 1));
+				destinationBuffer.add(new Vector2(x - 1, y + 1));
 			if(enPassant(new Vector2(x + 1, y)))
-				possibleMoves.add(new Vector2(x + 1, y + 1));
+				destinationBuffer.add(new Vector2(x + 1, y + 1));
 			if(promotion(new Vector2(x, y +1)))
-				possibleMoves.add(new Vector2(x, y + 1));
+				destinationBuffer.add(new Vector2(x, y + 1));
 		}
 
 		int startY = 1;
@@ -260,9 +256,7 @@ public class Pawn extends ChessPiece {
 		if(alliance == Alliance.WHITE) startY = board.size() - 1 - startY;
 
 		if(position.getY() != startY)
-			possibleMoves.remove(new Vector2(position.getX(), position.getY() + dir * 2));
-
-		return possibleMoves;
+			destinationBuffer.remove(new Vector2(position.getX(), position.getY() + dir * 2));
 	}
 
 	public Set<Vector2> getPossibleAttacks() {

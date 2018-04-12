@@ -9,14 +9,15 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Queen extends ChessPiece {
-
-    private Set<Vector2> possibleMoves = new HashSet<>();
-
     public Queen(Vector2 position, Alliance alliance, AbstractBoard board){
 		super(position, alliance, board, false, Piece.QUEEN, 9);
 	}
+
+	private Queen(Queen other) {
+        super(other);
+    }
     public Queen clonePiece() {
-        return new Queen(position, alliance, board);
+        return new Queen(this);
     }
 
 	/**
@@ -32,10 +33,7 @@ public class Queen extends ChessPiece {
         );
 	}
 
-	public Set<Vector2> getPossibleDestinations(String caller) {
-        logActionPossibleDestinations(caller);
-
-	    possibleMoves.clear();
+	protected void calculatePossibleDestinations() {
         for (int variable = 0; variable < board.size(); variable++) {
             //Straights
             evalMove(new Vector2(position.getX(), position.getY() + variable));
@@ -48,9 +46,8 @@ public class Queen extends ChessPiece {
             evalMove(new Vector2(position.getX() - variable, position.getY() + variable));
             evalMove(new Vector2(position.getX() - variable, position.getY() - variable));
         }
-        return possibleMoves;
     }
     private void evalMove(Vector2 vector) {
-        if(legalMove(vector)) possibleMoves.add(vector);
+        if(legalMove(vector)) destinationBuffer.add(vector);
     }
 }
