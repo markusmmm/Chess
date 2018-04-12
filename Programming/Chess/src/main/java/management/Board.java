@@ -107,6 +107,7 @@ public class Board extends AbstractBoard {
             return false; // Checks if the active player owns the piece that is being moved
         }
 
+        //castling
         if(piece instanceof  King){
             int kingSideRookX = end.getX()+1;
             int queenSideRookX = end.getX()-2;

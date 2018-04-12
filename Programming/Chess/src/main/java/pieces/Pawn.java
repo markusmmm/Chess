@@ -23,11 +23,11 @@ public class Pawn extends ChessPiece {
 	 */
 
 	private Pawn(Vector2 position, Alliance alliance, AbstractBoard board, boolean hasDoubleStepped) {
-		super(position, alliance, board, false, Piece.PAWN, 1);
+		super(position, alliance, board, false, Piece.PAWN, 1,false);
 		this.hasDoubleStepped = hasDoubleStepped;
 	}
 	public Pawn(Vector2 position, Alliance alliance, AbstractBoard board){
-		super(position, alliance, board, false, Piece.PAWN, 1);
+		super(position, alliance, board, false, Piece.PAWN, 1, false);
 	}
 	public Pawn clonePiece() {
         return new Pawn(position, alliance, board, hasDoubleStepped);

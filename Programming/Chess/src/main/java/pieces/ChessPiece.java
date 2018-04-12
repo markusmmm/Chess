@@ -20,19 +20,20 @@ public abstract class ChessPiece implements IChessPiece {
 	protected final Board board;
 	protected final int value;
 
-	private boolean hasMoved = false;
+	private boolean hasMoved;
 
     /**
      *
      * @param position The piece's initial position on the board
      */
-    public ChessPiece(Vector2 position, Alliance alliance, AbstractBoard board, boolean canJump, Piece piece, int value) {
+    public ChessPiece(Vector2 position, Alliance alliance, AbstractBoard board, boolean canJump, Piece piece, int value, boolean hasMoved) {
         this.position = position;
         this.alliance = alliance;
         this.board = (Board)board;
         this.canJump = canJump;
         this.piece = piece;
         this.value = value;
+        this.hasMoved = hasMoved;
     }
 
 	public Vector2 position() { return position; }
