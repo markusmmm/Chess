@@ -13,8 +13,9 @@ public class King extends ChessPiece {
     private final int value = 2;
     private Set<Vector2> moves = new HashSet<>(Arrays.asList(
         new Vector2(-1, -1), new Vector2( 0, -1), new Vector2( 1, -1),
-        new Vector2(-1,  0),                           new Vector2( 1,  0),
-        new Vector2(-1,  1), new Vector2( 0,  1), new Vector2( 1,  1)
+        new Vector2(-1,  0), new Vector2( 1,  0), new Vector2(-1,  1),
+            new Vector2( 0,  1), new Vector2( 1,  1),
+            new Vector2( -2,  0), new Vector2( 2,  0)
     ));
 
     /**
@@ -159,7 +160,8 @@ public class King extends ChessPiece {
     }
 
     public boolean castling(Vector2 pos){
-        if (this.hasMoved()) return false;
+        if(board.getKing(this.alliance).hasMoved()) return false;
+
 
         if(inCheck()) return false;
 

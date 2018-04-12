@@ -106,6 +106,61 @@ public class Board extends AbstractBoard {
         if (!piece.alliance().equals(activePlayer)) {
             return false; // Checks if the active player owns the piece that is being moved
         }
+
+        if(piece instanceof  King){
+            int kingSideRookX = end.getX()+1;
+            int queenSideRookX = end.getX()-2;
+
+            // castling kingside
+            if (((King) piece).castling(new Vector2(kingSideRookX,end.getY()))){
+                Vector2 rookPos = new Vector2(kingSideRookX, end.getY());
+                IChessPiece rook = getPiece(rookPos);
+                Alliance alliance = rook.alliance();
+                Piece pieceType = rook.piece();
+
+                IChessPiece king = getKing(alliance);
+                Vector2 kingPos = king.position();
+
+                removePiece(rookPos);
+                removePiece(kingPos);
+
+
+                addPiece(new Vector2(kingSideRookX-2, end.getY()), pieceType, alliance);
+                addPiece(new Vector2(kingSideRookX-1, end.getY()), Piece.KING, alliance);
+
+                logMove(new MoveNode(piece, start, end, (ChessPiece) getPiece(end)));
+                activePlayer = activePlayer.equals(Alliance.WHITE) ? Alliance.BLACK : Alliance.WHITE;
+
+                return true;
+
+            }
+
+            // castling queenside
+            if (((King) piece).castling(new Vector2(queenSideRookX,end.getY()))){
+                Vector2 rookPos = new Vector2(queenSideRookX, end.getY());
+                IChessPiece rook = getPiece(rookPos);
+                Alliance alliance = rook.alliance();
+                Piece pieceType = rook.piece();
+
+                IChessPiece king = getKing(alliance);
+                Vector2 kingPos = king.position();
+
+                removePiece(rookPos);
+                removePiece(kingPos);
+
+
+                addPiece(new Vector2(queenSideRookX+3, end.getY()), pieceType, alliance);
+                addPiece(new Vector2(queenSideRookX+2, end.getY()), Piece.KING, alliance);
+
+                logMove(new MoveNode(piece, start, end, (ChessPiece) getPiece(end)));
+                activePlayer = activePlayer.equals(Alliance.WHITE) ? Alliance.BLACK : Alliance.WHITE;
+
+                return true;
+
+
+            }
+
+        }
         boolean moveSuccessful = piece.move(end);
 
         if (!moveSuccessful) { // Attempt to move the piece
