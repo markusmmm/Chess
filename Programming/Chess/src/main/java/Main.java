@@ -77,9 +77,10 @@ public class Main extends Application {
         if (username == null || username.trim().isEmpty())
             errorField.setText("Please enter a non-empty username.");
         else {
-            MongoCollection<Document> collection = database.db.getCollection("users");
-            Document document = new Document("name", username);
-            collection.insertOne(document);
+            if (database.userExists(username)) {
+                System.out.println("users exists");
+                System.out.println(database.getScore(username));
+            } else System.out.println("does not exists");
             Scene scene = new Scene(mainMenu(username));
             scene.getStylesheets().add("stylesheet.css");
             stage.setScene(scene);
