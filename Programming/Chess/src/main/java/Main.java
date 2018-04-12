@@ -103,6 +103,9 @@ public class Main extends Application {
         Button buttonPlayMedium = new Button();
         buttonPlayMedium.setText("PLAY: MEDIUM");
 
+        Button randomBoardPlay = new Button();
+        randomBoardPlay.setText("Random Board");
+
         Button buttonPlayHard = new Button();
         buttonPlayHard.setText("PLAY: HARD");
         buttonPlayHard.setVisible(false);
@@ -115,13 +118,14 @@ public class Main extends Application {
 
         buttonPlayVersus.setOnAction(e -> root.setCenter(createChessGame(username, 0, BoardMode.DEFAULT, stage)));
         buttonPlayEasy.setOnAction(e -> root.setCenter(createChessGame(username, 1, BoardMode.DEFAULT, stage)));
+        randomBoardPlay.setOnAction(e -> root.setCenter(createChessGame(username, 1, BoardMode.RANDOM, stage)));
         buttonPlayMedium.setOnAction(e -> root.setCenter(createChessGame(username, 2, BoardMode.DEFAULT, stage)));
         buttonPlayHard.setOnAction(e -> root.setCenter(createChessGame(username, 3, BoardMode.DEFAULT, stage)));
         buttonQuit.setOnAction(e -> onQuit());
 
         VBox buttonContainer = new VBox(10);
         buttonContainer.setAlignment(Pos.BASELINE_CENTER);
-        buttonContainer.getChildren().addAll(buttonPlayVersus, buttonPlayEasy, buttonPlayMedium/*, buttonPlayHard*/, buttonHighScore, buttonQuit);
+        buttonContainer.getChildren().addAll(buttonPlayVersus, buttonPlayEasy, buttonPlayMedium, randomBoardPlay, buttonHighScore, buttonQuit);
 
         VBox mainContent = new VBox(0);
         mainContent.setAlignment(Pos.TOP_CENTER);
