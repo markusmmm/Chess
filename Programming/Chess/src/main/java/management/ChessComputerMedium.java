@@ -1,123 +1,72 @@
 package management;
 
-import pieces.IChessPiece;
 import resources.*;
 
 import java.util.*;
 
 public class ChessComputerMedium extends ChessComputer {
 
-    private final long THINKING_TIME = 3000;
+    private final int DEPTH = 3000;
     private Alliance enemy;
     private ArrayList<MoveScore> moveChart = new ArrayList<>();
+    private int size;
+    private int store;
 
 
     public ChessComputerMedium(Board board) {
         super(board);
-        if (alliance() == Alliance.WHITE) {
-            enemy = Alliance.BLACK;
-        } else {
-            enemy = Alliance.WHITE;
-        }
-
+        size = board.size();
     }
 
     public Move getMove() {
-        Board sim;
-        long startTime = System.currentTimeMillis();
-
-        for(IChessPiece piece: board.getUsablePieces(alliance()).values()) {
-            for(Vector2 move: piece.getPossibleDestinations()) {
-                sim = board.clone();
-                sim.movePiece(piece.position(),move);
-                moveChart.add(new MoveScore(scoreBoard(sim), new Move(piece.position(), move)));
-                System.out.println("mediumAI " + piece.toString() + piece.position().getY());
-                if(startTime + THINKING_TIME < System.currentTimeMillis()){
-                    printPossibleMoves();
-                    return Collections.max(moveChart).getMove();
-                }
-                printBoard(sim);
+        int turn = 1;
+        int[][] chessB = translateBoard();
+        for (int y = 0; y < size; y++) {
+            for (int x = 0; x < size; x++) {
+                score(x,y, chessB, DEPTH, 1, 0);
+                turn *= -1;
             }
         }
-        printPossibleMoves();
-
-        Move m = Collections.max(moveChart).getMove();
-        System.out.println("mediumAI " + m.start.toString() + m.end.toString());
-        return m;
+        return null;
     }
 
-    private void printPossibleMoves() {
-        for(MoveScore s: moveChart) {
-            System.out.println(s.getMove().start.toString() + " " + s.getMove().end.toString());
+    private int score(int x, int y, int[][] chessB, int depth, int turn, int score) {
+                if(depth <= 0) return score;
+                else if(chessB[x][y] == 1 * turn) return pawn(x,y, chessB.clone(), depth, turn, score);
+                else if (chessB[x][y] == 3 * turn) return Knight(x,y, chessB.clone(), depth, turn, score);
+                else if (chessB[x][y] == 4 * turn) return bishop(x,y, chessB.clone(), depth, turn, score);
+                else if (chessB[x][y] == 5 * turn) return rook(x,y, chessB.clone(), depth, turn, score);
+                else if (chessB[x][y] == 2 * turn) return king(x,y, chessB.clone(), depth, turn, score);
+                else if (chessB[x][y] == 9 * turn) return queen(x,y, chessB.clone(), depth, turn, score);
+    }
+
+    private int queen(int x, int y, int[][] chessB, int depth, int turn, int score) {
+        return diagonals(x,y, chessB, depth, turn, score) + inStraights(x,y, chessB, depth, turn, score);
+    }
+
+    private int diagonals(int x, int y, int[][] chessB, int depth, int turn, int score) {
+        for (int i = 0; ; i++) {
+
         }
-    }private void printBoard(Board board) {
-        for (int y = 0; y < board.size(); y++) {
-            for (int x = 0; x < board.size(); x++) {
-                if(board.getPiece(new Vector2(x,y)) != null) {
-                    System.out.print(board.getPiece(new Vector2(x, y)).getValue());
-                } else {
-                    System.out.print(" ");
-                }
-            }
-            System.out.println();
-        }
+        score(move(x,y,toX,ToY))
     }
 
-    /**
-     *
-     * @param sim the board that gets scored
-     * @return gives score to current state of board
-     */
-    private int scoreBoard(Board sim) {
-        return  diffPieceValue(sim) + diffPossibleMoves(sim);
+    private int move(int[][] chessB, int fromX, int fromY, int toX, int toY) {
+        store = chessB[toX][toY];
+        chessB[toX][toY] = chessB[fromX][fromY];
+        chessB[fromX][fromY] = 0;
+        return store;//store is the killed piece's value
     }
 
-    /**
-     *
-     * @param sim
-     * @return gives the difference between the total value of black and white's pieces
-     */
-    private int diffPieceValue(Board sim) {
-        return pieceValue(alliance(), sim) - pieceValue(enemy, sim);
-    }
+    private int[][] translateBoard() {
+        int[][] chessB = new int[size][size];
+        for (int y = 0; y < size; y++) {
+            for (int x = 0; x < size; x++) {
 
-    private int pieceValue(Alliance alliance, Board sim) {
-        int sum = 0;
-        for(IChessPiece piece: sim.getUsablePieces(alliance).values()) {
-            sum += piece.getValue();
-        }
-        return sum;
-    }
-
-    /**
-     *
-     * @param sim
-     * @return gives the difference between the possible moves black and white have
-     */
-    private int diffPossibleMoves(Board sim) {
-        return possibleMoves(alliance(), sim) - possibleMoves(enemy, sim);
-    }
-
-    private int possibleMoves(Alliance alliance, Board sim) {
-        int sum = 0;
-        for(IChessPiece piece: sim.getPieces(alliance).values()) {
-            for (Vector2 move: piece.getPossibleDestinations()) {
-                sum++;
             }
         }
-        return sum;
+        return chessB;
     }
 
-    private IChessPiece getRandomPiece(ArrayList<IChessPiece> pieces) {
-        return pieces.get(fromZeroTo(pieces.size() - 1));
-    }
-
-    private int fromZeroTo(int num) {
-        return (int) (Math.random() * num * 1.0);
-    }
-    private void time(long start, String message) {
-        int SecondsPassed = (int) ((System.currentTimeMillis() - start) * 0.001);
-        System.out.println("seconds" + SecondsPassed + ", " + message);
-    }
 
 }
