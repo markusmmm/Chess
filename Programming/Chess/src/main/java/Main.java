@@ -4,19 +4,22 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+import management.DatabaseController;
 import resources.BoardMode;
+
 
 public class Main extends Application {
 
-    private Stage stage;
     static final int WIDTH = 720;
     static final int HEIGHT = 500;
+
+    private Stage stage;
+    private DatabaseController database = new DatabaseController();
 
     public void start(Stage primaryStage) throws Exception {
         stage = primaryStage;
@@ -73,6 +76,11 @@ public class Main extends Application {
         if (username == null || username.trim().isEmpty())
             errorField.setText("Please enter a non-empty username.");
         else {
+            if (database.userExists(username)) {
+                // database.updateScore(username, 9999);
+            } else {
+                database.addUser(username);
+            }
             Scene scene = new Scene(mainMenu(username));
             scene.getStylesheets().add("stylesheet.css");
             stage.setScene(scene);
@@ -88,11 +96,13 @@ public class Main extends Application {
     public Parent mainMenu(String username) {
         BorderPane root = new BorderPane();
 
-        Label labelWelcome = new Label("Welcome, " + username + "!");
+        Label labelWelcome = new Label("Welcome, " + username +
+                "!\nYour score: " + database.getScore(username));
         labelWelcome.setPrefWidth(WIDTH);
         labelWelcome.setMinHeight((HEIGHT / 8) * 2);
         labelWelcome.setAlignment(Pos.CENTER);
         labelWelcome.setId("title");
+        labelWelcome.setTextAlignment(TextAlignment.CENTER);
 
         Button buttonPlayVersus = new Button();
         buttonPlayVersus.setText("PLAY: VERSUS");
