@@ -78,9 +78,10 @@ public class Main extends Application {
             errorField.setText("Please enter a non-empty username.");
         else {
             if (database.userExists(username)) {
-                System.out.println("users exists");
-                System.out.println(database.getScore(username));
-            } else System.out.println("does not exists");
+                // database.updateScore(username, 9999);
+            } else {
+                database.addUser(username);
+            }
             Scene scene = new Scene(mainMenu(username));
             scene.getStylesheets().add("stylesheet.css");
             stage.setScene(scene);
@@ -96,7 +97,7 @@ public class Main extends Application {
     public Parent mainMenu(String username) {
         BorderPane root = new BorderPane();
 
-        Label labelWelcome = new Label("Welcome, " + username + "!");
+        Label labelWelcome = new Label("Welcome, " + username + "!\nScore: " + database.getScore(username) );
         labelWelcome.setPrefWidth(WIDTH);
         labelWelcome.setMinHeight((HEIGHT / 8) * 2);
         labelWelcome.setAlignment(Pos.CENTER);
