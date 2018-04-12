@@ -20,6 +20,9 @@ public class DatabaseController {
     public MongoClient mongoClient;
     public MongoDatabase db;
 
+    /**
+     * Establish a connection to the database
+     */
     public DatabaseController() {
         MongoClientURI uri = new MongoClientURI("mongodb://" + dbUser + ":" + dbPassword +
                 "@" + dbURL + ":" + dbPort + "/" + dbName);
@@ -27,7 +30,6 @@ public class DatabaseController {
         db = mongoClient.getDatabase(uri.getDatabase());
     }
 
-    /* Tests adding a user and a highscore to the users collection */
     public static void main(String[] args) throws UnknownHostException {
         DatabaseController databaseController = new DatabaseController();
         MongoCollection<Document> collection = databaseController.db.getCollection("users");
@@ -37,6 +39,11 @@ public class DatabaseController {
         databaseController.close();
     }
 
+    /**
+     * Check if user already exists in the database
+     * @param username
+     * @return true/false
+     */
     public boolean userExists(String username) {
         long count = db.getCollection("users")
                 .count(new Document("name",
@@ -48,6 +55,11 @@ public class DatabaseController {
         return false;
     }
 
+    /**
+     * Retrieves the score for the given user from the database
+     * @param username
+     * @return score
+     */
     public int getScore(String username) {
         if (userExists(username)) {
             FindIterable<Document> it = db.getCollection("users")
@@ -58,6 +70,10 @@ public class DatabaseController {
         return 0;
     }
 
+    /**
+     * Adds the user to the database
+     * @param username
+     */
     public void addUser(String username) {
         if (!userExists(username)) {
             db.getCollection("users")
@@ -66,6 +82,11 @@ public class DatabaseController {
         }
     }
 
+    /**
+     * Updates the score of the user
+     * @param username
+     * @param newScore
+     */
     public void updateScore(String username, int newScore) {
         if (userExists(username)) {
             Document newDoc = new Document();
@@ -77,6 +98,9 @@ public class DatabaseController {
         }
     }
 
+    /**
+     * Closes the database connection
+     */
     public void close() {
         mongoClient.close();
     }
