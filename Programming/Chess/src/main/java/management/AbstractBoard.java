@@ -14,13 +14,13 @@ public class AbstractBoard {
 
     private boolean hasWhiteKing, hasBlackKing;
 
-    private static final Piece[] defaultBoard = new Piece[] {
-            Piece.ROOK,   Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN,  Piece.KING,   Piece.BISHOP, Piece.KNIGHT, Piece.ROOK,
-            Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,
-            Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,
-            Piece.PAWN,   Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,
-            Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,
-            Piece.ROOK,   Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN,  Piece.KING,   Piece.BISHOP, Piece.KNIGHT, Piece.ROOK
+    private static final Piece[] defaultBoard = new Piece[]{
+            Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK,
+            Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN,
+            Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY,
+            Piece.PAWN, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY,
+            Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN,
+            Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK
     };
 
     private final int size;
@@ -47,8 +47,8 @@ public class AbstractBoard {
         player1 = other.player1;
         player2 = other.player2;
 
-        if(clock != null) clock = other.clock.clone();
-        if(lastPiece != null) lastPiece = other.lastPiece.clonePiece();
+        if (clock != null) clock = other.clock.clone();
+        if (lastPiece != null) lastPiece = other.lastPiece.clonePiece();
 
         activePlayer = other.activePlayer;
         pieces = (HashMap<Vector2, ChessPiece>) other.pieces.clone();
@@ -60,14 +60,14 @@ public class AbstractBoard {
     }
 
     protected AbstractBoard(int size, boolean useClock, BoardMode mode, boolean isLive) {
-        if(size < 2) throw new IllegalArgumentException("The board size must be at least 2");
+        if (size < 2) throw new IllegalArgumentException("The board size must be at least 2");
 
         this.size = size;
         this.isLive = isLive;
 
         generateClock(useClock);
 
-        if(mode == BoardMode.DEFAULT) {
+        if (mode == BoardMode.DEFAULT) {
             int p = 0;
 
             for (Piece type : defaultBoard) {
@@ -93,63 +93,93 @@ public class AbstractBoard {
                 int wRooks = 0, wPawns = 0, wQueens = 0, wKings = 0, wBishops = 0, wKnights = 0;
                 int w = 0;
                 int b = 0;
-                int q = 0;
 
-                int p = 0;
+                int bishopX = 0;
+                int bishopY = 0;
+
+                int bishopWX = 0;
+                int bishopWY = 0;
+
                 Random random = new Random();
                 while (b < 16) {
                     Piece aPiece = randomPiece();
-                    int x =random.nextInt(7 - 0 + 1) + 0;
+                    int x = random.nextInt(7 - 0 + 1) + 0;
                     int y = random.nextInt(7 - 0 + 1) + 0;
 
                     Vector2 pos = new Vector2(x, y);
-                    if(!vacant(pos)){
-                        p++;
+                    if (!vacant(pos)) {
                         continue;
                     }
+                    if (b == 15 && bKings == 0) {
+                        addPiece(pos, Piece.KING, Alliance.BLACK);
+                        if (getKing(Alliance.BLACK).inCheck()) {
+                            removePiece(pos);
+                            continue;
+                        }
+                        w++;
+                        wKings++;
+                        continue;
+                    }
+
                     if (aPiece.equals(Piece.ROOK) && bRooks < 2) {
+
                         addPiece(pos, aPiece, Alliance.BLACK);
-                        p++;
+
+
                         b++;
                         bRooks++;
                         continue;
                     }
                     if (aPiece.equals(Piece.PAWN) && bPawns < 8) {
+                        if (y == 0) {
+                            continue;
+                        }
                         addPiece(pos, aPiece, Alliance.BLACK);
-                        p++;
                         b++;
                         bPawns++;
                         continue;
                     }
                     if (aPiece.equals(Piece.QUEEN) && bQueens < 1) {
                         addPiece(pos, aPiece, Alliance.BLACK);
-                        p++;
                         b++;
                         bQueens++;
                         continue;
                     }
-                    if (aPiece.equals(Piece.KING) && bKings == 0) {
+                    if (aPiece.equals(Piece.KING) && bKings < 1) {
+
                         addPiece(pos, aPiece, Alliance.BLACK);
-                        p++;
+                        if (getKing(Alliance.BLACK).inCheck()) {
+                            removePiece(pos);
+                            continue;
+                        }
                         b++;
                         bKings++;
                         continue;
                     }
                     if (aPiece.equals(Piece.BISHOP) && bBishops < 2) {
+                        if (bBishops == 0) {
+                            bishopX = x;
+                            bishopY = y;
+                        }
+                        if (bBishops == 1) {
+                            boolean b1 = bishopX % 2 == bishopY % 2;
+                            boolean b2 = x % 2 == y % 2;
+                            if (b1 == b2) {
+                                continue;
+                            }
+                        }
                         addPiece(pos, aPiece, Alliance.BLACK);
-                        p++;
                         b++;
                         bBishops++;
                         continue;
                     }
                     if (aPiece.equals(Piece.KNIGHT) && bKnights < 2) {
                         addPiece(pos, aPiece, Alliance.BLACK);
-                        p++;
                         b++;
                         bKnights++;
                         continue;
                     }
-                    if(aPiece.equals(Piece.EMPTY)) {
+                    if (aPiece.equals(Piece.EMPTY)) {
                         b++;
                         continue;
                     }
@@ -157,57 +187,80 @@ public class AbstractBoard {
                 while (w < 16) {
                     Piece aPiece = randomPiece();
 
-                    int x =random.nextInt(7 - 0 + 1) + 0;
+                    int x = random.nextInt(7 - 0 + 1) + 0;
                     int y = random.nextInt(7 - 0 + 1) + 0;
 
                     Vector2 invPos = new Vector2(x, y);
-                    if(!vacant(invPos)){
-                        q++;
+                    if (!vacant(invPos)) {
+                        continue;
+                    }
+                    if (w == 15 && wKings == 0) {
+                        addPiece(invPos, Piece.KING, Alliance.WHITE);
+                        if (getKing(Alliance.WHITE).inCheck()) {
+                            removePiece(invPos);
+                            continue;
+                        }
+                        w++;
+                        wKings++;
                         continue;
                     }
                     if (aPiece.equals(Piece.ROOK) && wRooks < 2) {
                         addPiece(invPos, aPiece, Alliance.WHITE);
-                        q++;
                         w++;
                         wRooks++;
                         continue;
                     }
-                    if (aPiece.equals(Piece.PAWN) && wPawns <8) {
+                    if (aPiece.equals(Piece.PAWN) && wPawns < 8) {
+                        if (y == 7) {
+                            continue;
+                        }
                         addPiece(invPos, aPiece, Alliance.WHITE);
-                        q++;
                         w++;
                         wPawns++;
                         continue;
                     }
                     if (aPiece.equals(Piece.QUEEN) && wQueens < 1) {
                         addPiece(invPos, aPiece, Alliance.WHITE);
-                        q++;
                         w++;
                         wQueens++;
                         continue;
                     }
                     if (aPiece.equals(Piece.KING) && wKings < 1) {
+
                         addPiece(invPos, aPiece, Alliance.WHITE);
-                        q++;
+                        if (getKing(Alliance.WHITE).inCheck()) {
+                            removePiece(invPos);
+                            continue;
+                        }
+
                         w++;
                         wKings++;
                         continue;
                     }
                     if (aPiece.equals(Piece.BISHOP) && wBishops < 2) {
+                        if (wBishops == 0) {
+                            bishopWX = x;
+                            bishopWY = y;
+                        }
+                        if (wBishops == 1) {
+                            boolean b1 = bishopWX % 2 == bishopWY % 2;
+                            boolean b2 = x % 2 == y % 2;
+                            if (b1 == b2) {
+                                continue;
+                            }
+                        }
                         addPiece(invPos, aPiece, Alliance.WHITE);
-                        q++;
                         w++;
                         wBishops++;
                         continue;
                     }
                     if (aPiece.equals(Piece.KNIGHT) && wKnights < 2) {
                         addPiece(invPos, aPiece, Alliance.WHITE);
-                        q++;
                         w++;
                         wKnights++;
                         continue;
                     }
-                    if(aPiece.equals(Piece.EMPTY)) {
+                    if (aPiece.equals(Piece.EMPTY)) {
                         b++;
                         continue;
                     }
@@ -249,7 +302,7 @@ public class AbstractBoard {
     }
 
     private void generateClock(boolean doGenerate) {
-        if(!doGenerate) return;
+        if (!doGenerate) return;
         clock = new ChessClock(2, 900, 12, -1);
     }
 
@@ -257,12 +310,15 @@ public class AbstractBoard {
         return mutex.availablePermits() == 1;
     }
 
-    public boolean isLive() { return isLive; }
+    public boolean isLive() {
+        return isLive;
+    }
+
     public int nPieces() {
         return pieces.size();
     }
+
     /**
-     *
      * @return size of the square board
      */
     public int size() {
@@ -277,13 +333,14 @@ public class AbstractBoard {
     public Alliance getActivePlayer() {
         return activePlayer;
     }
+
     public Set<Vector2> getPositions() {
         try {
             mutex.acquire();
 
             Set<Vector2> temp = pieces.keySet();
             Set<Vector2> positions = new HashSet<>();
-            for(Vector2 p : temp)
+            for (Vector2 p : temp)
                 positions.add(p);
 
             mutex.release();
@@ -324,7 +381,7 @@ public class AbstractBoard {
             //System.out.println("Mutex acquired by addPiece");
 
             ChessPiece piece = createPiece(pos, type, alliance);
-            if(piece == null) {
+            if (piece == null) {
                 mutex.release();
                 //System.out.println("Mutex released");
                 return null;
@@ -356,7 +413,7 @@ public class AbstractBoard {
             case QUEEN:
                 return new Queen(pos, alliance, this);
             case KING:
-                if(alliance == Alliance.WHITE)
+                if (alliance == Alliance.WHITE)
                     hasWhiteKing = true;
                 else
                     hasBlackKing = true;
@@ -379,7 +436,7 @@ public class AbstractBoard {
             //System.out.println("Mutex acquired by transformPiece");
 
             ChessPiece piece = pieces.get(pos);
-            if(piece == null) {
+            if (piece == null) {
                 mutex.release();
                 return false;
             }
@@ -408,8 +465,8 @@ public class AbstractBoard {
             mutex.acquire();
             //System.out.println("Mutex acquired by suspendPieces");
 
-            for(Vector2 pos : positions) {
-                if(!pieces.containsKey(pos)) continue;
+            for (Vector2 pos : positions) {
+                if (!pieces.containsKey(pos)) continue;
                 suspendedPieces.put(pos, pieces.get(pos));
                 pieces.remove(pos);
             }
@@ -420,13 +477,14 @@ public class AbstractBoard {
             //System.out.println("Mutex released");
         }
     }
+
     public void releasePieces(Vector2... positions) {
         try {
             mutex.acquire();
             //System.out.println("Mutex acquired by releasePieces");
 
-            for(Vector2 pos : positions) {
-                if(!suspendedPieces.containsKey(pos)) continue;
+            for (Vector2 pos : positions) {
+                if (!suspendedPieces.containsKey(pos)) continue;
 
                 pieces.put(pos, suspendedPieces.get(pos));
                 suspendedPieces.remove(pos);
@@ -445,11 +503,12 @@ public class AbstractBoard {
 
     /**
      * Calls 'getPiece' on all players, until a match is found (if it exists)
+     *
      * @param pos
      * @return Type of piece at the given location (Piece.EMPTY if no match is found)
      */
     public IChessPiece getPiece(Vector2 pos) {
-        if(vacant(pos)) return null;
+        if (vacant(pos)) return null;
         //if(!mutex.tryAcquire()) return null;
         ////System.out.println("Mutex tryAcquired by getPiece");
 
@@ -485,6 +544,7 @@ public class AbstractBoard {
         }
 
     }
+
     protected void setLastPiece(ChessPiece piece) {
         lastPiece = piece;
     }
@@ -509,7 +569,7 @@ public class AbstractBoard {
             mutex.acquire();
             //System.out.println("Mutex acquired by addDrawPos");
 
-            for(Vector2 pos : positions)
+            for (Vector2 pos : positions)
                 drawPositions.add(pos);
 
         } catch (InterruptedException e) {
@@ -536,7 +596,6 @@ public class AbstractBoard {
     }
 
     /**
-     *
      * @return the piece that was last successfully moved
      */
     public IChessPiece getLastPiece() {
@@ -548,7 +607,7 @@ public class AbstractBoard {
     }
 
     public boolean removePiece(Vector2 pos) {
-        if(!pieces.containsKey(pos)) return false;
+        if (!pieces.containsKey(pos)) return false;
         try {
             mutex.acquire();
             //System.out.println("Mutex acquired by removePiece");
@@ -567,13 +626,14 @@ public class AbstractBoard {
             return false;
         }
     }
+
     public void removePieces(Vector2... positions) {
         try {
             mutex.acquire();
             //System.out.println("Mutex acquired by removePieces");
 
-            for(Vector2 pos : positions) {
-                if(!pieces.containsKey(pos)) continue;
+            for (Vector2 pos : positions) {
+                if (!pieces.containsKey(pos)) continue;
 
                 ChessPiece piece = pieces.get(pos);
                 pieces.remove(pos);
