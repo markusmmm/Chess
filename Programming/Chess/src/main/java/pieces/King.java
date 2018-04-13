@@ -80,6 +80,9 @@ public class King extends ChessPiece {
     }
 
     public boolean inCheck(Vector2 destination) {
+        if(!board.getActivePlayer().equals(alliance))
+            return false;
+
         boolean checked = false;
         board.suspendPieces(position);
 
