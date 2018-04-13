@@ -2,13 +2,18 @@ package pieces;
 
 import management.AbstractBoard;
 import management.Board;
-import resources.Alliance;
-import resources.Move;
-import resources.Piece;
-import resources.Vector2;
+import resources.*;
+import sun.applet.Main;
 
 import javax.naming.OperationNotSupportedException;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import java.io.IOException;
 import java.util.Set;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 
 public abstract class ChessPiece implements IChessPiece {
 
@@ -54,7 +59,6 @@ public abstract class ChessPiece implements IChessPiece {
 	 */
 	protected boolean legalMove(Vector2 destination) {
 		//System.out.println("(ChessPiece) Board is live: " + board.isLive());
-
 		IChessPiece endPiece = board.getPiece(destination);
 		// Check if victim is of opposite alliance
 		if(endPiece != null && endPiece.alliance().equals(alliance)) return false;
@@ -79,7 +83,6 @@ public abstract class ChessPiece implements IChessPiece {
 	}
 
 
-
 	/**
 	 * 
 	 * @param move
@@ -92,8 +95,8 @@ public abstract class ChessPiece implements IChessPiece {
 		position = new Vector2(move.getX(), move.getY());
 		hasMoved = true;
 
+		//MediaHelper.getSound("DT.wav").play();
 		//System.out.println("Move performed. New pos: " + position);
-
 		return true;
 	}
 
@@ -144,6 +147,8 @@ public abstract class ChessPiece implements IChessPiece {
 	    //return alliance + " " + piece;
 
     }*/
+
+
 
     @Override
 	public ChessPiece clone() { return clonePiece(); }
