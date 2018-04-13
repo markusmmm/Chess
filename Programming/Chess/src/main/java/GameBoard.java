@@ -1,7 +1,6 @@
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -142,7 +141,11 @@ public class GameBoard {
         capturedPieces.setPrefHeight(200);
         capturedPieces.setId("moveLog");
 
-        right.getChildren().addAll(labelMoveLog, moveLog, labelCapturedPieces, capturedPieces);
+        Button buttonSave = new Button();
+        buttonSave.setText("Save");
+        buttonSave.setOnAction(e -> board.saveFile("test"));
+
+        right.getChildren().addAll(labelMoveLog, moveLog, labelCapturedPieces, capturedPieces, buttonSave);
 
         VBox statusFieldContainer = new VBox();
         statusFieldContainer.setAlignment(Pos.CENTER);

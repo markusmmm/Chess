@@ -6,6 +6,7 @@ import pieces.King;
 import pieces.Pawn;
 import resources.*;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -472,9 +473,14 @@ public class Board extends AbstractBoard {
     }
 
 	public void saveFile(String saveName) {
-		String fileName = saveName + ".txt";
+        String dirPath = System.getenv("APPDATA") + "/GitGud/saves/";
+        File dir = new File(dirPath);
+        if(!dir.exists())
+            dir.mkdir();
+
+		String path = dirPath + saveName + ".txt";
 		try {
-			FileWriter save = new FileWriter(fileName);
+			FileWriter save = new FileWriter(path);
 			int n = size();
 
 			save.write(n + " 0\n");
