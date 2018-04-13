@@ -4,19 +4,22 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+import management.DatabaseController;
 import resources.BoardMode;
+
 
 public class Main extends Application {
 
-    private Stage stage;
     static final int WIDTH = 720;
     static final int HEIGHT = 500;
+
+    private Stage stage;
+    private DatabaseController database = new DatabaseController();
 
     public void start(Stage primaryStage) throws Exception {
         stage = primaryStage;
@@ -73,6 +76,11 @@ public class Main extends Application {
         if (username == null || username.trim().isEmpty())
             errorField.setText("Please enter a non-empty username.");
         else {
+            if (database.userExists(username)) {
+                // database.updateScore(username, 9999);
+            } else {
+                database.addUser(username);
+            }
             Scene scene = new Scene(mainMenu(username));
             scene.getStylesheets().add("stylesheet.css");
             stage.setScene(scene);
@@ -88,11 +96,13 @@ public class Main extends Application {
     public Parent mainMenu(String username) {
         BorderPane root = new BorderPane();
 
-        Label labelWelcome = new Label("Welcome, " + username + "!");
+        Label labelWelcome = new Label("Welcome, " + username +
+                "!\nYour score: " + database.getScore(username));
         labelWelcome.setPrefWidth(WIDTH);
         labelWelcome.setMinHeight((HEIGHT / 8) * 2);
         labelWelcome.setAlignment(Pos.CENTER);
         labelWelcome.setId("title");
+        labelWelcome.setTextAlignment(TextAlignment.CENTER);
 
         Button buttonPlayVersus = new Button();
         buttonPlayVersus.setText("PLAY: VERSUS");
@@ -102,6 +112,9 @@ public class Main extends Application {
 
         Button buttonPlayMedium = new Button();
         buttonPlayMedium.setText("PLAY: MEDIUM");
+
+        Button randomBoardPlay = new Button();
+        randomBoardPlay.setText("Random Board");
 
         Button buttonPlayHard = new Button();
         buttonPlayHard.setText("PLAY: HARD");
@@ -115,13 +128,14 @@ public class Main extends Application {
 
         buttonPlayVersus.setOnAction(e -> root.setCenter(createChessGame(username, 0, BoardMode.DEFAULT, stage)));
         buttonPlayEasy.setOnAction(e -> root.setCenter(createChessGame(username, 1, BoardMode.DEFAULT, stage)));
+        randomBoardPlay.setOnAction(e -> root.setCenter(createChessGame(username, 1, BoardMode.RANDOM, stage)));
         buttonPlayMedium.setOnAction(e -> root.setCenter(createChessGame(username, 2, BoardMode.DEFAULT, stage)));
         buttonPlayHard.setOnAction(e -> root.setCenter(createChessGame(username, 3, BoardMode.DEFAULT, stage)));
         buttonQuit.setOnAction(e -> onQuit());
 
         VBox buttonContainer = new VBox(10);
         buttonContainer.setAlignment(Pos.BASELINE_CENTER);
-        buttonContainer.getChildren().addAll(buttonPlayVersus, buttonPlayEasy, buttonPlayMedium/*, buttonPlayHard*/, buttonHighScore, buttonQuit);
+        buttonContainer.getChildren().addAll(buttonPlayVersus, buttonPlayEasy, buttonPlayMedium, randomBoardPlay, buttonHighScore, buttonQuit);
 
         VBox mainContent = new VBox(0);
         mainContent.setAlignment(Pos.TOP_CENTER);
