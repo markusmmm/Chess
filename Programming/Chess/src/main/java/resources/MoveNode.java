@@ -15,8 +15,8 @@ public class MoveNode {
         else this.victimPiece = null;
     }
 
-    @Override
+    /*@Override
     public String toString() {
         return piece + " from " + start + " to " + end;
-    }
+    }*/
 }

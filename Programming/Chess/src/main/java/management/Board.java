@@ -47,10 +47,10 @@ public class Board extends AbstractBoard {
                 if (type.equals(Piece.EMPTY)) continue;
 
                 addPiece(pos, type, Alliance.BLACK);
-                System.out.println(pos + ": " + getPiece(pos));
+                //System.out.println(pos + ": " + getPiece(pos));
 
                 addPiece(invPos, type, Alliance.WHITE);
-                System.out.println(invPos + ": " + getPiece(invPos));
+                //System.out.println(invPos + ": " + getPiece(invPos));
 
                 p++;
             }
@@ -324,7 +324,7 @@ public class Board extends AbstractBoard {
         ChessPiece piece = (ChessPiece) getPiece(start);
 
 
-        System.out.println("Currently " + activePlayer + "'s turn");
+        //System.out.println("Currently " + activePlayer + "'s turn");
 
         if (piece == null) {
             return false; // Check if a piece exists at the given position
@@ -424,7 +424,7 @@ public class Board extends AbstractBoard {
         boolean moveSuccessful = piece.move(end);
 
         if (!moveSuccessful) { // Attempt to move the piece
-            System.out.println("piece.move failed. Mutex released");
+           // System.out.println("piece.move failed. Mutex released");
             return false;
         }
 
@@ -465,7 +465,7 @@ public class Board extends AbstractBoard {
 
     public void performAttack(Vector2 start, Vector2 end, Vector2 victim) {
         MoveNode node = new MoveNode(getPiece(start), start, end, getPiece(victim));
-        System.out.println("Performing attack: " + node);
+        //System.out.println("Performing attack: " + node);
 
         removePiece(victim);
         logMove(node);

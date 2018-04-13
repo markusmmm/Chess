@@ -8,8 +8,8 @@ public class Move {
         this.end = end;
     }
 
-    @Override
+    /*@Override
     public String toString() {
         return start + "->" + end;
-    }
+    }*/
 }

@@ -163,17 +163,17 @@ public class GameBoard {
             return;
         }
 
-        System.out.println("Before: " + temp.position());
+        //System.out.println("Before: " + temp.position());
 
         boolean moveResult = board.movePiece(firstTile.getPos(), pos);
-        System.out.println("Outer move result: " + moveResult);
+       // System.out.println("Outer move result: " + moveResult);
         if (moveResult) {
             if(board.getKing(Alliance.WHITE).checkmate())
 
-                System.out.println("Has computer: " + computer != null);
+               // System.out.println("Has computer: " + computer != null);
             if (computer != null) {
                 Move move = computer.getMove();
-                System.out.println("Computer attempting move " + move);
+               // System.out.println("Computer attempting move " + move);
                 board.movePiece(move);
                 int row = move.start.getY();
                 int col = move.start.getX();
@@ -184,13 +184,13 @@ public class GameBoard {
             //firstTile.setFill(Color.TRANSPARENT);
             drawBoard();
             updateLogs();
-            System.out.println("Moving " + board.getPiece(firstTile.getPos()) +
-                    " from " + firstTile.getPos() + " to " + pos);
+            /*System.out.println("Moving " + board.getPiece(firstTile.getPos()) +
+                    " from " + firstTile.getPos() + " to " + pos);*/
         } else {
             drawBoard();
         }
 
-        System.out.println("After:" + temp.position());
+        //System.out.println("After:" + temp.position());
     }
 
     private boolean tileClick(MouseEvent e, Tile tile) {
@@ -245,7 +245,7 @@ public class GameBoard {
                 System.out.println("Not your alliance");
                 return false;
             }
-            System.out.println(piece);
+            //System.out.println(piece);
 
             firstClick = true;
             firstTile = tile;

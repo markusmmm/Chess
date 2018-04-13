@@ -85,14 +85,14 @@ public abstract class ChessPiece implements IChessPiece {
 	 * @param move
 	 */
 	public boolean move(Vector2 move) {
-		System.out.println("Attempting to move " + alliance + " " + piece + " from " + position + " to " + move);
+		//System.out.println("Attempting to move " + alliance + " " + piece + " from " + position + " to " + move);
 
 		if (!legalMove(move)) return false; // If the destination is unreachable, the move fails
 
 		position = new Vector2(move.getX(), move.getY());
 		hasMoved = true;
 
-		System.out.println("Move performed. New pos: " + position);
+		//System.out.println("Move performed. New pos: " + position);
 
 		return true;
 	}
@@ -136,13 +136,14 @@ public abstract class ChessPiece implements IChessPiece {
 	}
 
 	protected void logActionPossibleDestinations(String caller) {
-		System.out.println(caller + " is checking possible destinations for " + toString());
+		//System.out.println(caller + " is checking possible destinations for " + toString());
 	}
 
-	@Override
+	/*@Override
     public String toString() {
-	    return alliance + " " + piece;
-    }
+	    //return alliance + " " + piece;
+
+    }*/
 
     @Override
 	public ChessPiece clone() { return clonePiece(); }

@@ -89,7 +89,7 @@ public class AbstractBoard {
                 Piece type = PieceManager.toPiece(c);
                 Alliance alliance = Character.isLowerCase(c) ? Alliance.BLACK : Alliance.WHITE;
 
-                System.out.println("Setting piece at " + pos);
+                //System.out.println("Setting piece at " + pos);
                 addPiece(pos, type, alliance);
             }
         }
@@ -329,7 +329,7 @@ public class AbstractBoard {
 
     public void putPiece(Vector2 pos, ChessPiece piece) {
         try {
-            System.out.println("Attempting to put " + piece + " at " + pos);
+            //System.out.println("Attempting to put " + piece + " at " + pos);
             mutex.acquire();
 
             pieces.put(pos, piece.clone());

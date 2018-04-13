@@ -52,9 +52,9 @@ public class Pawn extends ChessPiece {
 		boolean blackResult = this.alliance.equals(BLACK) && enPassant(blackEnpasant);
 		boolean whiteResult = this.alliance.equals(WHITE) && enPassant(whiteEnpasant);
 
-		System.out.println("Black result: " + blackResult);
+		//System.out.println("Black result: " + blackResult);
 
-		System.out.println("White result: " + whiteResult);
+		//System.out.println("White result: " + whiteResult);
 
 		return (
 				((blackResult ||

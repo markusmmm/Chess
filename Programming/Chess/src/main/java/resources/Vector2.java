@@ -70,8 +70,8 @@ public class Vector2 {
         return x == v.x && y == v.y;
     }
 
-    @Override
+    /*@Override
     public String toString() {
     	return "(" + x + "," + y + ")";
-	}
+	}*/
 }

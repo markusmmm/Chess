@@ -61,7 +61,7 @@ public class Tile extends Rectangle {
     public boolean tileClicked(MouseEvent e, Alliance alliance) {
         IChessPiece piece = getPiece();
 
-        System.out.println(pos + ": ");
+       // System.out.println(pos + ": ");
 
         if (piece == null) {
             System.out.println("No piece");
