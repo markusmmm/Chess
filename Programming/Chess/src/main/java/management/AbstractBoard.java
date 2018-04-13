@@ -590,9 +590,8 @@ public class AbstractBoard {
         }
     }
 
-    public boolean performAttack(Vector2 start, Vector2 end, Vector2 victim) {
-        try {
-            mutex.acquire();
+    public void performAttack(Vector2 start, Vector2 end, Vector2 victim) {
+
             //System.out.println("Mutex acquired by performAttack");
 
             MoveNode node = new MoveNode(pieces.get(start), start, end, pieces.get(victim));
@@ -601,16 +600,9 @@ public class AbstractBoard {
             removePiece(victim);
             gameLog.add(node);
 
-            mutex.release();
-            //System.out.println("Mutex released");
-            return true;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
 
-            mutex.release();
-            //System.out.println("Mutex released");
-            return false;
-        }
+
+
     }
 
     public Stack<MoveNode> getGameLog() {
