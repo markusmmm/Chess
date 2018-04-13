@@ -23,6 +23,7 @@ public class Main extends Application {
     static final int HEIGHT = 500;
 
     private Stage stage;
+    private BorderPane root;
     private DatabaseController database = new DatabaseController();
 
     public void start(Stage primaryStage) throws Exception {
@@ -70,11 +71,11 @@ public class Main extends Application {
         loginContainer.setMaxWidth(240);
         loginContainer.getChildren().addAll(labelUsername, textUsername);
 
-        VBox root = new VBox(10);
-        root.setAlignment(Pos.CENTER);
-        root.getChildren().addAll(labelTitle, loginContainer, loginButton, errorField);
-        root.setPrefSize(WIDTH, HEIGHT);
-        return root;
+        VBox container = new VBox(10);
+        container.setAlignment(Pos.CENTER);
+        container.getChildren().addAll(labelTitle, loginContainer, loginButton, errorField);
+        container.setPrefSize(WIDTH, HEIGHT);
+        return container;
     }
 
     private void handleLogin(String username, Text errorField) {
@@ -86,20 +87,18 @@ public class Main extends Application {
             } else {
                 database.addUser(username);
             }
-            Scene scene = new Scene(mainMenu(username));
-            scene.getStylesheets().add("stylesheet.css");
-            stage.setScene(scene);
+            mainMenu(username, stage);
         }
     }
 
     /**
-     * Generates the main menu
+     * Generates the main menu, and set it to the scene
      *
      * @param username
      * @return mainMenu
      */
-    public Parent mainMenu(String username) {
-        BorderPane root = new BorderPane();
+    public void mainMenu(String username, Stage stage) {
+        root = new BorderPane();
 
         Label labelWelcome = new Label("Welcome, " + username +
                 "!\nYour score: " + database.getScore(username));
@@ -131,11 +130,11 @@ public class Main extends Application {
         Button buttonQuit = new Button();
         buttonQuit.setText("QUIT");
 
-        buttonPlayVersus.setOnAction(e -> root.setCenter(createChessGame(username, 0, BoardMode.DEFAULT, stage)));
-        buttonPlayEasy.setOnAction(e -> root.setCenter(createChessGame(username, 1, BoardMode.DEFAULT, stage)));
-        randomBoardPlay.setOnAction(e -> root.setCenter(createChessGame(username, 1, BoardMode.RANDOM, stage)));
-        buttonPlayMedium.setOnAction(e -> root.setCenter(createChessGame(username, 2, BoardMode.DEFAULT, stage)));
-        buttonPlayHard.setOnAction(e -> root.setCenter(createChessGame(username, 3, BoardMode.DEFAULT, stage)));
+        buttonPlayVersus.setOnAction(e -> createChessGame(username, 0, BoardMode.DEFAULT, stage, root));
+        buttonPlayEasy.setOnAction(e -> createChessGame(username, 1, BoardMode.DEFAULT, stage, root));
+        randomBoardPlay.setOnAction(e -> createChessGame(username, 1, BoardMode.RANDOM, stage, root));
+        buttonPlayMedium.setOnAction(e -> createChessGame(username, 2, BoardMode.DEFAULT, stage, root));
+        buttonPlayHard.setOnAction(e -> createChessGame(username, 3, BoardMode.DEFAULT, stage, root));
         buttonQuit.setOnAction(e -> onQuit());
 
         VBox buttonContainer = new VBox(10);
@@ -150,7 +149,9 @@ public class Main extends Application {
         root.setTop(generateMenuBar());
         root.setCenter(mainContent);
 
-        return root;
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add("stylesheet.css");
+        stage.setScene(scene);
     }
 
     /**
@@ -158,10 +159,12 @@ public class Main extends Application {
      *
      * @return chessGame
      */
-    private BorderPane createChessGame(String username, int difficulty, BoardMode boardMode, Stage stage) {
-        GameBoard gameBoard = new GameBoard(username, difficulty, boardMode, stage);
+    private void createChessGame(String username, int difficulty, BoardMode boardMode, Stage stage, BorderPane root) {
+        GameBoard gameBoard = new GameBoard(username, difficulty, boardMode, stage, root);
         gameBoard.createBoard();
-        return gameBoard.getContainer();
+        root.setCenter(gameBoard.getContainer());
+        root.setTop(gameBoard.generateGameMenuBar());
+        //return gameBoard.getContainer();
     }
 
     /**
@@ -169,7 +172,7 @@ public class Main extends Application {
      *
      * @return menubar
      */
-    private MenuBar generateMenuBar() {
+    public MenuBar generateMenuBar() {
         MenuBar menuBar = new MenuBar();
         Menu menuFile = new Menu("File");
         Menu menuHelp = new Menu("Help");

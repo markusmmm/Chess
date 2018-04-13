@@ -60,7 +60,7 @@ public abstract class ChessPiece implements IChessPiece {
 	protected boolean legalMove(Vector2 destination) {
 		//System.out.println("(ChessPiece) Board is live: " + board.isLive());
 		IChessPiece endPiece = board.getPiece(destination);
-		// Check if victim is of opposite alliance
+		// Prevents attack on an allied piece
 		if(endPiece != null && endPiece.alliance().equals(alliance)) return false;
 
 		if(!board.insideBoard(position) || !board.insideBoard(destination)) return false;
@@ -142,11 +142,11 @@ public abstract class ChessPiece implements IChessPiece {
 		//System.out.println(caller + " is checking possible destinations for " + toString());
 	}
 
-	/*@Override
+	@Override
     public String toString() {
-	    //return alliance + " " + piece;
+	    return alliance + " " + piece;
 
-    }*/
+    }
 
 
 
