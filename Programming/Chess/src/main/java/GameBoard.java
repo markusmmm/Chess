@@ -51,9 +51,12 @@ public class GameBoard {
             try {
                 boardVal = new Board("default");
             } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                System.err.println("Game setup failed! exiting...");
-                System.exit(1);
+                //e.printStackTrace();
+                //System.err.println("Game setup failed! exiting...");
+                //System.exit(1);
+
+                Console.printWarning("Save file 'default' not found. Attempting legacy generation...");
+                boardVal = new Board(SIZE, false, boardMode);
             }
         } else {
             boardVal = new Board(SIZE, false, boardMode);
@@ -77,6 +80,8 @@ public class GameBoard {
         else if (difficulty == 2) computer = new ChessComputerMedium(board);
         else if (difficulty == 3) computer = new ChessComputerHard(board);
         else computer = null;
+
+        Console.printSuccess("Game setup");
     }
 
     /**
@@ -165,7 +170,7 @@ public class GameBoard {
         if (moveResult) {
             if(board.getKing(Alliance.WHITE).checkmate())
 
-            System.out.println("Has computer: " + computer != null);
+                System.out.println("Has computer: " + computer != null);
             if (computer != null) {
                 Move move = computer.getMove();
                 System.out.println("Computer attempting move " + move);
@@ -266,7 +271,7 @@ public class GameBoard {
         IChessPiece piece = board.getPiece(pos);
         if(piece == null) return;
 
-        Set<Vector2> list = piece.getPossibleDestinations("GameBoard");
+        Set<Vector2> list = piece.getPossibleDestinations();
         for (Vector2 possibleDestination : list) {
             if (board.getPiece(possibleDestination) != null) {
                 squares[possibleDestination.getY()][possibleDestination.getX()].setFill(Color.RED);
@@ -308,7 +313,7 @@ public class GameBoard {
      */
     public boolean gameOver() {
         King whiteKing = board.getKing(Alliance.WHITE),
-             blackKing = board.getKing(Alliance.BLACK);
+                blackKing = board.getKing(Alliance.BLACK);
 
         if(whiteKing.checkmate())
             System.out.println("Game over\nBlack player won!");
