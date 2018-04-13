@@ -29,6 +29,10 @@ public class Board extends AbstractBoard {
         super(size, false);
     }
 
+    public void setAlliance(Alliance alliance){
+        this.activePlayer = alliance;
+    }
+
     public Board(int size, boolean useClock, BoardMode mode) {
         super(size, useClock);
 
