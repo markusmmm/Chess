@@ -98,6 +98,7 @@ public class Board extends AbstractBoard {
 
             Vector2 pos = new Vector2(x, y);
             if (!vacant(pos)) {
+                b++;
                 continue;
             }
             if (b == 15 && bKings == 0) {
@@ -122,6 +123,11 @@ public class Board extends AbstractBoard {
             }
             if (aPiece.equals(Piece.PAWN) && bPawns < 8) {
                 if (y == 0) {
+                    continue;
+                }
+                if(y == 7){
+                    addPiece(pos, Piece.QUEEN, Alliance.BLACK);
+                    b++;
                     continue;
                 }
                 addPiece(pos, aPiece, Alliance.BLACK);
@@ -182,6 +188,7 @@ public class Board extends AbstractBoard {
 
             Vector2 invPos = new Vector2(x, y);
             if (!vacant(invPos)) {
+                w++;
                 continue;
             }
             if (w == 15 && wKings == 0) {
@@ -202,6 +209,11 @@ public class Board extends AbstractBoard {
             }
             if (aPiece.equals(Piece.PAWN) && wPawns < 8) {
                 if (y == 7) {
+                    continue;
+                }
+                if(y == 0){
+                    addPiece(invPos, Piece.QUEEN, Alliance.WHITE);
+                    w++;
                     continue;
                 }
                 addPiece(invPos, aPiece, Alliance.WHITE);
@@ -396,19 +408,17 @@ public class Board extends AbstractBoard {
 
         }
 
-        if(piece instanceof Pawn)
-		{
-			if(((Pawn) piece).promotion(end))
-			{
-				IChessPiece pawnPromoted = piece;
-				Vector2 pawnPos = pawnPromoted.position();
-				Alliance pawnAlliance = pawnPromoted.alliance();
+        if (piece instanceof Pawn) {
+            if (((Pawn) piece).promotion(end)) {
+                IChessPiece pawnPromoted = piece;
+                Vector2 pawnPos = pawnPromoted.position();
+                Alliance pawnAlliance = pawnPromoted.alliance();
 
-				removePiece(pawnPos);
-				addPiece(new Vector2(end.getX(), end.getY()), Piece.QUEEN, pawnAlliance);
-				return true;
-			}
-		}
+                removePiece(pawnPos);
+                addPiece(new Vector2(end.getX(), end.getY()), Piece.QUEEN, pawnAlliance);
+                return true;
+            }
+        }
         boolean moveSuccessful = piece.move(end);
 
         if (!moveSuccessful) { // Attempt to move the piece
@@ -451,13 +461,13 @@ public class Board extends AbstractBoard {
         return movePiece(move.start, move.end);
     }
 
-	public void performAttack(Vector2 start, Vector2 end, Vector2 victim) {
-		MoveNode node = new MoveNode(getPiece(start), start, end, getPiece(victim));
-		System.out.println("Performing attack: " + node);
+    public void performAttack(Vector2 start, Vector2 end, Vector2 victim) {
+        MoveNode node = new MoveNode(getPiece(start), start, end, getPiece(victim));
+        System.out.println("Performing attack: " + node);
 
-		removePiece(victim);
-		logMove(node);
-	}
+        removePiece(victim);
+        logMove(node);
+    }
 
     @Override
     public Board clone() {
