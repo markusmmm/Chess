@@ -9,6 +9,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import management.*;
 import pieces.ChessPiece;
@@ -16,6 +17,7 @@ import pieces.IChessPiece;
 import pieces.King;
 import resources.*;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Collections;
 import java.util.Set;
@@ -23,7 +25,7 @@ import java.util.Stack;
 
 public class GameBoard {
     private final int SIZE = 8;
-    private final Board board;
+    private Board board;
     private final ChessComputer computer;
 
     private Stage stage;
@@ -42,6 +44,8 @@ public class GameBoard {
 
     private boolean firstClick;
     private Tile firstTile;
+
+    private File savesDir = new File(System.getProperty("user.home"), "GitGud/");
 
     public GameBoard(String username, int difficulty, BoardMode boardMode, Stage stage, BorderPane root) {
         Board boardVal = null;
@@ -82,6 +86,10 @@ public class GameBoard {
         else if (difficulty == 2) computer = new ChessComputerMedium(board);
         else if (difficulty == 3) computer = new ChessComputerHard(board);
         else computer = null;
+
+        if (!savesDir.exists()) {
+            savesDir.mkdirs();
+        }
 
         Console.printSuccess("Game setup");
     }
@@ -143,7 +151,7 @@ public class GameBoard {
 
         Button buttonSave = new Button();
         buttonSave.setText("Save");
-        buttonSave.setOnAction(e -> board.saveFile("test"));
+        // buttonSave.setOnAction(e -> board.saveFile("test"));
 
         right.getChildren().addAll(labelMoveLog, moveLog, labelCapturedPieces, capturedPieces, buttonSave);
 
@@ -182,10 +190,20 @@ public class GameBoard {
             root.setCenter(newGameBoard.getContainer());
         });
         menuItemLoad.setOnAction(e -> {
-
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Open Chess Game File");
+            fileChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("Chess Game File", "*.txt"));
+            fileChooser.setInitialDirectory(savesDir);
+            File selectedFile = fileChooser.showOpenDialog(stage);
         });
         menuItemSave.setOnAction(e -> {
-
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Open Chess Game File");
+            fileChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("Chess Game File", "*.txt"));
+            fileChooser.setInitialDirectory(savesDir);
+            board.saveFile(fileChooser.showSaveDialog(stage));
         });
         menuItemQuit.setOnAction(e -> System.exit(0));
 
