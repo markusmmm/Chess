@@ -159,7 +159,7 @@ public class ChessComputerMedium extends ChessComputer {
         return false;
     }
     private Move evalPathMove(int fromX, int fromY, int toX, int  toY, int[][] chessB, int bolIndex) {
-        if(chessB[toX][toY] == 0 && insideBoard(toX,toY)) {
+        if(insideBoard(toX,toY) && chessB[toX][toY] == 0) {
             return new Move (new Vector2(fromX,fromY), new Vector2(toX, toY));
         } else stillMoving[bolIndex] = false;
         return null;
@@ -187,9 +187,9 @@ public class ChessComputerMedium extends ChessComputer {
             for (int x = 0; x < size; x++) {
                 position = new Vector2(x,y);
                 selectedPiece = (ChessPiece) board.getPiece(position);
-                color = selectedPiece.alliance();
                 if(selectedPiece == null) continue;
-                else if (selectedPiece instanceof Pawn && color == black) chessB[x][y] = 1;
+                color = selectedPiece.alliance();
+                if (selectedPiece instanceof Pawn && color == black) chessB[x][y] = 1;
                 else if (selectedPiece instanceof Pawn && color == white) chessB[x][y] = -1;
                 else if (selectedPiece instanceof Knight && color == black) chessB[x][y] = 3;
                 else if (selectedPiece instanceof Knight && color == white) chessB[x][y] = -3;
