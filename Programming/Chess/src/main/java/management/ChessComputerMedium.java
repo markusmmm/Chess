@@ -90,7 +90,7 @@ public class ChessComputerMedium extends ChessComputer {
     }
 
     private Move pawnAttack(int fromX, int fromY, int toX, int toY, int[][] chessB) {
-        if(chessB[toX][toY] != 0) return new Move(new Vector2(fromX, fromY), new Vector2(toX, toY));
+        if(chessB[toX][toY] != 0 && insideBoard(toX, toY)) return new Move(new Vector2(fromX, fromY), new Vector2(toX, toY));
         return null;
     }
 
