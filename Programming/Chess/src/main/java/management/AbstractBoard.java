@@ -5,6 +5,7 @@ import resources.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
@@ -14,13 +15,13 @@ public class AbstractBoard {
     private boolean hasWhiteKing, hasBlackKing;
 
 
-    private static final Piece[] defaultBoard = new Piece[] {
-            Piece.ROOK,   Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN,  Piece.KING,   Piece.BISHOP, Piece.KNIGHT, Piece.ROOK,
-            Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,
-            Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,
-            Piece.PAWN,   Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,
-            Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,
-            Piece.ROOK,   Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN,  Piece.KING,   Piece.BISHOP, Piece.KNIGHT, Piece.ROOK
+    private static final Piece[] defaultBoard = new Piece[]{
+            Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK,
+            Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN,
+            Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY,
+            Piece.PAWN, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY,
+            Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN,
+            Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK
     };
 
     private final int size;
@@ -45,8 +46,8 @@ public class AbstractBoard {
         player1 = other.player1;
         player2 = other.player2;
 
-        if(clock != null) clock = other.clock.clone();
-        if(lastPiece != null) lastPiece = other.lastPiece.clonePiece();
+        if (clock != null) clock = other.clock.clone();
+        if (lastPiece != null) lastPiece = other.lastPiece.clonePiece();
 
         activePlayer = other.activePlayer;
         pieces = (HashMap<Vector2, ChessPiece>) other.pieces.clone();
@@ -60,7 +61,7 @@ public class AbstractBoard {
 
     protected AbstractBoard(int size, boolean useClock) {
 
-        if(size < 2) throw new IllegalArgumentException("The board size must be at least 2");
+        if (size < 2) throw new IllegalArgumentException("The board size must be at least 2");
 
         this.size = size;
 
@@ -71,7 +72,9 @@ public class AbstractBoard {
     protected AbstractBoard(String fileName) throws FileNotFoundException {
         fileName += ".txt";
 
-        Scanner file = new Scanner(new File(fileName));
+        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+        InputStream is = classloader.getResourceAsStream(fileName);
+        Scanner file = new Scanner(is);
         size = file.nextInt();
         generateClock(file.nextInt() != 0);
 
@@ -100,7 +103,7 @@ public class AbstractBoard {
     }
 
     private void generateClock(boolean doGenerate) {
-        if(!doGenerate) return;
+        if (!doGenerate) return;
         clock = new ChessClock(2, 900, 12, -1);
     }
 
@@ -112,8 +115,8 @@ public class AbstractBoard {
     public int nPieces() {
         return pieces.size();
     }
+
     /**
-     *
      * @return size of the square board
      */
     public int size() {
@@ -128,13 +131,14 @@ public class AbstractBoard {
     public Alliance getActivePlayer() {
         return activePlayer;
     }
+
     public Set<Vector2> getPositions() {
         try {
             mutex.acquire();
 
             Set<Vector2> temp = pieces.keySet();
             Set<Vector2> positions = new HashSet<>();
-            for(Vector2 p : temp)
+            for (Vector2 p : temp)
                 positions.add(p);
 
             mutex.release();
@@ -175,7 +179,7 @@ public class AbstractBoard {
             //System.out.println("Mutex acquired by addPiece");
 
             ChessPiece piece = createPiece(pos, type, alliance);
-            if(piece == null) {
+            if (piece == null) {
                 mutex.release();
                 //System.out.println("Mutex released");
                 return null;
@@ -207,7 +211,7 @@ public class AbstractBoard {
             case QUEEN:
                 return new Queen(pos, alliance, this);
             case KING:
-                if(alliance == Alliance.WHITE)
+                if (alliance == Alliance.WHITE)
                     hasWhiteKing = true;
                 else
                     hasBlackKing = true;
@@ -230,7 +234,7 @@ public class AbstractBoard {
             //System.out.println("Mutex acquired by transformPiece");
 
             ChessPiece piece = pieces.get(pos);
-            if(piece == null) {
+            if (piece == null) {
                 mutex.release();
                 return false;
             }
@@ -259,8 +263,8 @@ public class AbstractBoard {
             mutex.acquire();
             //System.out.println("Mutex acquired by suspendPieces");
 
-            for(Vector2 pos : positions) {
-                if(!pieces.containsKey(pos)) continue;
+            for (Vector2 pos : positions) {
+                if (!pieces.containsKey(pos)) continue;
                 suspendedPieces.put(pos, pieces.get(pos));
                 pieces.remove(pos);
             }
@@ -271,13 +275,14 @@ public class AbstractBoard {
             //System.out.println("Mutex released");
         }
     }
+
     public void releasePieces(Vector2... positions) {
         try {
             mutex.acquire();
             //System.out.println("Mutex acquired by releasePieces");
 
-            for(Vector2 pos : positions) {
-                if(!suspendedPieces.containsKey(pos)) continue;
+            for (Vector2 pos : positions) {
+                if (!suspendedPieces.containsKey(pos)) continue;
 
                 pieces.put(pos, suspendedPieces.get(pos));
                 suspendedPieces.remove(pos);
@@ -296,11 +301,12 @@ public class AbstractBoard {
 
     /**
      * Calls 'getPiece' on all players, until a match is found (if it exists)
+     *
      * @param pos
      * @return Type of piece at the given location (Piece.EMPTY if no match is found)
      */
     public ChessPiece getPiece(Vector2 pos) {
-        if(vacant(pos)) return null;
+        if (vacant(pos)) return null;
 
         try {
             mutex.acquire();
@@ -334,6 +340,7 @@ public class AbstractBoard {
         }
 
     }
+
     protected void setLastPiece(ChessPiece piece) {
         lastPiece = piece;
     }
@@ -358,7 +365,7 @@ public class AbstractBoard {
             mutex.acquire();
             //System.out.println("Mutex acquired by addDrawPos");
 
-            for(Vector2 pos : positions)
+            for (Vector2 pos : positions)
                 drawPositions.add(pos);
 
         } catch (InterruptedException e) {
@@ -385,7 +392,6 @@ public class AbstractBoard {
     }
 
     /**
-     *
      * @return the piece that was last successfully moved
      */
     public IChessPiece getLastPiece() {
@@ -397,7 +403,7 @@ public class AbstractBoard {
     }
 
     public boolean removePiece(Vector2 pos) {
-        if(!pieces.containsKey(pos)) return false;
+        if (!pieces.containsKey(pos)) return false;
         try {
             mutex.acquire();
             //System.out.println("Mutex acquired by removePiece");
@@ -416,13 +422,14 @@ public class AbstractBoard {
             return false;
         }
     }
+
     public void removePieces(Vector2... positions) {
         try {
             mutex.acquire();
             //System.out.println("Mutex acquired by removePieces");
 
-            for(Vector2 pos : positions) {
-                if(!pieces.containsKey(pos)) continue;
+            for (Vector2 pos : positions) {
+                if (!pieces.containsKey(pos)) continue;
 
                 ChessPiece piece = pieces.get(pos);
                 pieces.remove(pos);
