@@ -10,6 +10,7 @@ import resources.Vector2;
 import java.util.*;
 
 public class King extends ChessPiece {
+    private Board clonedBoard;
     private final int value = 2;
     private Set<Vector2> moves = new HashSet<>(Arrays.asList(
         new Vector2(-1, -1), new Vector2( 0, -1), new Vector2( 1, -1),
@@ -25,6 +26,7 @@ public class King extends ChessPiece {
 
         super(position, alliance, board, false, Piece.KING, 2, hasMoved);
 
+
     }
 
     public King clonePiece() {
@@ -38,7 +40,6 @@ public class King extends ChessPiece {
 
     @Override
     public boolean legalMove(Vector2 destination) {
-        System.out.println(hasMoved() + "HEHHEHEHEHEHEHEH");
         //IMPORTANT! King can NOT call super.legalMove, as the king demands a custom alliance check (when performing castling),
         //and does not need to perform the inCheck-call that occurs from within super
 
@@ -53,6 +54,8 @@ public class King extends ChessPiece {
         }
 
         if(endPiece != null && endPiece.alliance().equals(alliance)) return false; // Temporary fix, until castling has been integrated
+
+        if(inCheck()) return false;
 
         // Ensures that the king can't be moved into check
         // Ignored if king is not on live board
@@ -81,11 +84,12 @@ public class King extends ChessPiece {
     }
 
     public boolean inCheck(Vector2 destination) {
+        clonedBoard = board.clone();
         // The inactive player's king can NOT be in check (Impossible state)
         if(!board.getActivePlayer().equals(alliance)) return false;
 
         // NEVER USE 'board.getUsablePieces' WITHIN THIS METHOD (WILL CREATE A CIRCULAR METHOD CALL)
-        HashMap<Vector2, IChessPiece> hostilePieces = board.getPieces(otherAlliance());
+        HashMap<Vector2, IChessPiece> hostilePieces = clonedBoard.getPieces(otherAlliance());
 
         for(Vector2 key : hostilePieces.keySet()) {
             IChessPiece piece = hostilePieces.get(key);
@@ -116,6 +120,9 @@ public class King extends ChessPiece {
     }
 
     private boolean movesIntoCheck(Vector2 end) {
+        clonedBoard.addPiece(end, Piece.KING, alliance);
+
+
         board.suspendPieces(position);
 
         boolean setsCheck = inCheck(end);
