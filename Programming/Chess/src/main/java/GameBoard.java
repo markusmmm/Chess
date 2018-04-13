@@ -2,8 +2,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -29,6 +28,7 @@ public class GameBoard {
     private final ChessComputer computer;
 
     private Stage stage;
+    private BorderPane root;
     private GridPane grid;
     private BorderPane container;
     private ListView<MoveNode> moveLog;
@@ -39,11 +39,12 @@ public class GameBoard {
     private Rectangle[][] squares;
     private String username;
     private int difficulty;
+    private BoardMode boardMode;
 
     private boolean firstClick;
     private Tile firstTile;
 
-    public GameBoard(String username, int difficulty, BoardMode boardMode, Stage stage) {
+    public GameBoard(String username, int difficulty, BoardMode boardMode, Stage stage, BorderPane root) {
         Board boardVal = null;
 
         if(boardMode == BoardMode.DEFAULT) {
@@ -64,6 +65,8 @@ public class GameBoard {
         board = boardVal;
 
         this.stage = stage;
+        this.boardMode = boardMode;
+        this.root = root;
         this.grid = new GridPane();
         this.tiles = new Tile[SIZE][SIZE];
         this.squares = new Rectangle[SIZE][SIZE];
@@ -150,7 +153,45 @@ public class GameBoard {
         container.setRight(right);
         container.setBottom(statusFieldContainer);
 
+        root.setTop(generateGameMenuBar());
+        root.setCenter(container);
+
         drawBoard();
+    }
+
+    public MenuBar generateGameMenuBar() {
+        MenuBar menuBar = new MenuBar();
+        Menu menuFile = new Menu("File");
+        Menu menuHelp = new Menu("Help");
+
+        MenuItem menuItemExit = new MenuItem("Main Menu");
+        MenuItem menuItemReset = new MenuItem("Reset Game");
+        MenuItem menuItemLoad = new MenuItem("Load Game");
+        MenuItem menuItemSave = new MenuItem("Save Game");
+        MenuItem menuItemQuit = new MenuItem("Quit");
+
+        menuItemExit.setOnAction(e -> {
+            new Main().mainMenu(username, stage);
+        });
+        menuItemReset.setOnAction(e -> {
+            GameBoard newGameBoard = new GameBoard(username, difficulty, boardMode, stage, root);
+            newGameBoard.createBoard();
+            root.setCenter(newGameBoard.getContainer());
+        });
+        menuItemLoad.setOnAction(e -> {
+
+        });
+        menuItemSave.setOnAction(e -> {
+
+        });
+        menuItemQuit.setOnAction(e -> System.exit(0));
+
+        menuFile.getItems().addAll(menuItemExit, menuItemReset, menuItemLoad, menuItemSave, menuItemQuit);
+        MenuItem menuItemAbout = new MenuItem("About");
+        menuHelp.getItems().add(menuItemAbout);
+
+        menuBar.getMenus().addAll(menuFile, menuHelp);
+        return menuBar;
     }
 
     private void attemptMove(Tile firstTile, Vector2 pos) {
@@ -325,10 +366,7 @@ public class GameBoard {
             return false;
         }
 
-        /* Changes back from GameBoard to main menu */
-        Scene scene = new Scene(new Main().mainMenu(username));
-        scene.getStylesheets().add("stylesheet.css");
-        stage.setScene(scene);
+        // new Main().mainMenu(username, stage);
 
         return true;
     }
