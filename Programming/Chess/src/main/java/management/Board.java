@@ -427,6 +427,13 @@ public class Board extends AbstractBoard {
         return movePiece(move.start, move.end);
     }
 
+	public void performAttack(Vector2 start, Vector2 end, Vector2 victim) {
+		MoveNode node = new MoveNode(getPiece(start), start, end, getPiece(victim));
+		System.out.println("Performing attack: " + node);
+
+		removePiece(victim);
+		logMove(node);
+	}
 
     @Override
     public Board clone() {

@@ -299,14 +299,14 @@ public class AbstractBoard {
      * @param pos
      * @return Type of piece at the given location (Piece.EMPTY if no match is found)
      */
-    public IChessPiece getPiece(Vector2 pos) {
+    public ChessPiece getPiece(Vector2 pos) {
         if(vacant(pos)) return null;
 
         try {
             mutex.acquire();
             ////System.out.println("Mutex acquired by getPiece");
 
-            IChessPiece piece = pieces.get(pos).clonePiece();
+            ChessPiece piece = pieces.get(pos).clonePiece();
             mutex.release();
             ////System.out.println("Mutex released");
             return piece;
@@ -432,22 +432,6 @@ public class AbstractBoard {
 
             mutex.release();
             //System.out.println("Mutex released");
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } finally {
-            mutex.release();
-        }
-    }
-
-    public void performAttack(Vector2 start, Vector2 end, Vector2 victim) {
-        try {
-            mutex.acquire();
-
-            MoveNode node = new MoveNode(pieces.get(start), start, end, pieces.get(victim));
-            System.out.println("Performing attack: " + node);
-
-            pieces.remove(victim);
-            gameLog.add(node);
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
