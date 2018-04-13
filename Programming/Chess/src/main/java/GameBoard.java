@@ -141,11 +141,7 @@ public class GameBoard {
         capturedPieces.setPrefHeight(200);
         capturedPieces.setId("moveLog");
 
-        Button buttonSave = new Button();
-        buttonSave.setText("Save");
-        buttonSave.setOnAction(e -> board.saveFile("test"));
-
-        right.getChildren().addAll(labelMoveLog, moveLog, labelCapturedPieces, capturedPieces, buttonSave);
+        right.getChildren().addAll(labelMoveLog, moveLog, labelCapturedPieces, capturedPieces);
 
         VBox statusFieldContainer = new VBox();
         statusFieldContainer.setAlignment(Pos.CENTER);

@@ -140,7 +140,6 @@ public class King extends ChessPiece {
     public boolean castling(Vector2 pos){
         if(board.getKing(this.alliance).hasMoved()) return false;
 
-
         if(inCheck()) return false;
 
         IChessPiece rook = board.getPiece(pos);
