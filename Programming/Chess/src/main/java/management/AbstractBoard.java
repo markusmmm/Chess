@@ -245,6 +245,8 @@ public class AbstractBoard {
 
             pieces.put(pos, newPiece);
             drawPositions.push(pos);
+            activePlayer = activePlayer.equals(Alliance.WHITE) ? Alliance.BLACK : Alliance.WHITE;
+
 
             mutex.release();
             //System.out.println("Mutex released");
