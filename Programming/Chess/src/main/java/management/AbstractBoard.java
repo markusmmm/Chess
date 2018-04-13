@@ -440,16 +440,19 @@ public class AbstractBoard {
     }
 
     public void performAttack(Vector2 start, Vector2 end, Vector2 victim) {
+        try {
+            mutex.acquire();
 
             MoveNode node = new MoveNode(pieces.get(start), start, end, pieces.get(victim));
             System.out.println("Performing attack: " + node);
 
-            removePiece(victim);
+            pieces.remove(victim);
             gameLog.add(node);
-
-
-
-
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            mutex.release();
+        }
     }
 
     public Stack<MoveNode> getGameLog() {
