@@ -73,6 +73,7 @@ public class ChessComputerMedium extends ChessComputer {
         else if (chessB[x][y] == 5 * turn) return rook(x,y, chessB);
         else if (chessB[x][y] == 2 * turn) return king(x,y, chessB);
         else if (chessB[x][y] == 9 * turn) return queen(x,y, chessB);
+        return null;
     }
 
     private ArrayList<Move> pawn(int x, int y, int[][] chessB, int turn) {
