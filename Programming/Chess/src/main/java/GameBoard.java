@@ -203,7 +203,9 @@ public class GameBoard {
             fileChooser.getExtensionFilters().addAll(
                     new FileChooser.ExtensionFilter("Chess Game File", "*.txt"));
             fileChooser.setInitialDirectory(savesDir);
-            board.saveFile(fileChooser.showSaveDialog(stage));
+            File file = fileChooser.showSaveDialog(stage);
+            if (file != null)
+                board.saveFile(fileChooser.showSaveDialog(stage));
         });
         menuItemQuit.setOnAction(e -> System.exit(0));
 
