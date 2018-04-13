@@ -22,7 +22,9 @@ public class King extends ChessPiece {
      * @param position
      */
     public King(Vector2 position, Alliance alliance, AbstractBoard board, Boolean hasMoved) {
-        super(position, alliance, board, false, Piece.KING, 2);
+
+        super(position, alliance, board, false, Piece.KING, 2, hasMoved);
+
     }
 
     public King clonePiece() {
@@ -36,6 +38,7 @@ public class King extends ChessPiece {
 
     @Override
     public boolean legalMove(Vector2 destination) {
+        System.out.println(hasMoved() + "HEHHEHEHEHEHEHEH");
         //IMPORTANT! King can NOT call super.legalMove, as the king demands a custom alliance check (when performing castling),
         //and does not need to perform the inCheck-call that occurs from within super
 

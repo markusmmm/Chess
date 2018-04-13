@@ -13,6 +13,16 @@ public class AbstractBoard {
 
     private boolean hasWhiteKing, hasBlackKing;
 
+
+    private static final Piece[] defaultBoard = new Piece[] {
+            Piece.ROOK,   Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN,  Piece.KING,   Piece.BISHOP, Piece.KNIGHT, Piece.ROOK,
+            Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,
+            Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,
+            Piece.PAWN,   Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,
+            Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,
+            Piece.ROOK,   Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN,  Piece.KING,   Piece.BISHOP, Piece.KNIGHT, Piece.ROOK
+    };
+
     private final int size;
     private Player player1, player2;
     private ChessClock clock = null;
@@ -35,8 +45,8 @@ public class AbstractBoard {
         player1 = other.player1;
         player2 = other.player2;
 
-        if (clock != null) clock = other.clock.clone();
-        if (lastPiece != null) lastPiece = other.lastPiece.clonePiece();
+        if(clock != null) clock = other.clock.clone();
+        if(lastPiece != null) lastPiece = other.lastPiece.clonePiece();
 
         activePlayer = other.activePlayer;
         pieces = (HashMap<Vector2, ChessPiece>) other.pieces.clone();
@@ -47,12 +57,15 @@ public class AbstractBoard {
         gameLog = (Stack<MoveNode>) other.gameLog.clone();
     }
 
+
     protected AbstractBoard(int size, boolean useClock) {
+
         if(size < 2) throw new IllegalArgumentException("The board size must be at least 2");
 
         this.size = size;
 
         generateClock(useClock);
+
     }
 
     protected AbstractBoard(String fileName) throws FileNotFoundException {
@@ -87,7 +100,7 @@ public class AbstractBoard {
     }
 
     private void generateClock(boolean doGenerate) {
-        if (!doGenerate) return;
+        if(!doGenerate) return;
         clock = new ChessClock(2, 900, 12, -1);
     }
 
@@ -95,11 +108,12 @@ public class AbstractBoard {
         return mutex.availablePermits() == 1;
     }
 
+
     public int nPieces() {
         return pieces.size();
     }
-
     /**
+     *
      * @return size of the square board
      */
     public int size() {
@@ -114,14 +128,13 @@ public class AbstractBoard {
     public Alliance getActivePlayer() {
         return activePlayer;
     }
-
     public Set<Vector2> getPositions() {
         try {
             mutex.acquire();
 
             Set<Vector2> temp = pieces.keySet();
             Set<Vector2> positions = new HashSet<>();
-            for (Vector2 p : temp)
+            for(Vector2 p : temp)
                 positions.add(p);
 
             mutex.release();
@@ -162,7 +175,7 @@ public class AbstractBoard {
             //System.out.println("Mutex acquired by addPiece");
 
             ChessPiece piece = createPiece(pos, type, alliance);
-            if (piece == null) {
+            if(piece == null) {
                 mutex.release();
                 //System.out.println("Mutex released");
                 return null;
@@ -194,15 +207,15 @@ public class AbstractBoard {
             case QUEEN:
                 return new Queen(pos, alliance, this);
             case KING:
-                if (alliance == Alliance.WHITE)
+                if(alliance == Alliance.WHITE)
                     hasWhiteKing = true;
                 else
                     hasBlackKing = true;
                 return new King(pos, alliance, this, false);
             case PAWN:
-                return new Pawn(pos, alliance, this);
+                return new Pawn(pos, alliance, this, false, false);
             case ROOK:
-                return new Rook(pos, alliance, this);
+                return new Rook(pos, alliance, this, false);
         }
         return null;
     }
@@ -217,7 +230,7 @@ public class AbstractBoard {
             //System.out.println("Mutex acquired by transformPiece");
 
             ChessPiece piece = pieces.get(pos);
-            if (piece == null) {
+            if(piece == null) {
                 mutex.release();
                 return false;
             }
@@ -246,8 +259,8 @@ public class AbstractBoard {
             mutex.acquire();
             //System.out.println("Mutex acquired by suspendPieces");
 
-            for (Vector2 pos : positions) {
-                if (!pieces.containsKey(pos)) continue;
+            for(Vector2 pos : positions) {
+                if(!pieces.containsKey(pos)) continue;
                 suspendedPieces.put(pos, pieces.get(pos));
                 pieces.remove(pos);
             }
@@ -258,14 +271,13 @@ public class AbstractBoard {
             //System.out.println("Mutex released");
         }
     }
-
     public void releasePieces(Vector2... positions) {
         try {
             mutex.acquire();
             //System.out.println("Mutex acquired by releasePieces");
 
-            for (Vector2 pos : positions) {
-                if (!suspendedPieces.containsKey(pos)) continue;
+            for(Vector2 pos : positions) {
+                if(!suspendedPieces.containsKey(pos)) continue;
 
                 pieces.put(pos, suspendedPieces.get(pos));
                 suspendedPieces.remove(pos);
@@ -284,7 +296,6 @@ public class AbstractBoard {
 
     /**
      * Calls 'getPiece' on all players, until a match is found (if it exists)
-     *
      * @param pos
      * @return Type of piece at the given location (Piece.EMPTY if no match is found)
      */
@@ -323,7 +334,6 @@ public class AbstractBoard {
         }
 
     }
-
     protected void setLastPiece(ChessPiece piece) {
         lastPiece = piece;
     }
@@ -348,7 +358,7 @@ public class AbstractBoard {
             mutex.acquire();
             //System.out.println("Mutex acquired by addDrawPos");
 
-            for (Vector2 pos : positions)
+            for(Vector2 pos : positions)
                 drawPositions.add(pos);
 
         } catch (InterruptedException e) {
@@ -375,6 +385,7 @@ public class AbstractBoard {
     }
 
     /**
+     *
      * @return the piece that was last successfully moved
      */
     public IChessPiece getLastPiece() {
@@ -386,7 +397,7 @@ public class AbstractBoard {
     }
 
     public boolean removePiece(Vector2 pos) {
-        if (!pieces.containsKey(pos)) return false;
+        if(!pieces.containsKey(pos)) return false;
         try {
             mutex.acquire();
             //System.out.println("Mutex acquired by removePiece");
@@ -405,14 +416,13 @@ public class AbstractBoard {
             return false;
         }
     }
-
     public void removePieces(Vector2... positions) {
         try {
             mutex.acquire();
             //System.out.println("Mutex acquired by removePieces");
 
-            for (Vector2 pos : positions) {
-                if (!pieces.containsKey(pos)) continue;
+            for(Vector2 pos : positions) {
+                if(!pieces.containsKey(pos)) continue;
 
                 ChessPiece piece = pieces.get(pos);
                 pieces.remove(pos);
@@ -429,10 +439,7 @@ public class AbstractBoard {
         }
     }
 
-    public boolean performAttack(Vector2 start, Vector2 end, Vector2 victim) {
-        try {
-            mutex.acquire();
-            //System.out.println("Mutex acquired by performAttack");
+    public void performAttack(Vector2 start, Vector2 end, Vector2 victim) {
 
             MoveNode node = new MoveNode(pieces.get(start), start, end, pieces.get(victim));
             System.out.println("Performing attack: " + node);
@@ -440,16 +447,9 @@ public class AbstractBoard {
             removePiece(victim);
             gameLog.add(node);
 
-            mutex.release();
-            //System.out.println("Mutex released");
-            return true;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
 
-            mutex.release();
-            //System.out.println("Mutex released");
-            return false;
-        }
+
+
     }
 
     public Stack<MoveNode> getGameLog() {
