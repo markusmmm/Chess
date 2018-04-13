@@ -1,123 +1,227 @@
 package management;
 
-import pieces.IChessPiece;
+import pieces.*;
 import resources.*;
 
 import java.util.*;
 
 public class ChessComputerMedium extends ChessComputer {
 
-    private final long THINKING_TIME = 3000;
+    private final int DEPTH = 3;
     private Alliance enemy;
-    private ArrayList<MoveScore> moveChart = new ArrayList<>();
+    private final Alliance black = Alliance.BLACK;
+    private final Alliance white = Alliance.WHITE;
+    private Boolean[] stillMoving = new Boolean[4];
+    private int size;
+    private int store;
 
 
     public ChessComputerMedium(Board board) {
         super(board);
-        if (alliance() == Alliance.WHITE) {
-            enemy = Alliance.BLACK;
-        } else {
-            enemy = Alliance.WHITE;
-        }
-
+        size = board.size();
     }
 
     public Move getMove() {
-        Board sim;
-        long startTime = System.currentTimeMillis();
-
-        for(IChessPiece piece: board.getUsablePieces(alliance()).values()) {
-            for(Vector2 move: piece.getPossibleDestinations()) {
-                sim = board.clone();
-                sim.movePiece(piece.position(),move);
-                moveChart.add(new MoveScore(scoreBoard(sim), new Move(piece.position(), move)));
-                System.out.println("mediumAI " + piece.toString() + piece.position().getY());
-                if(startTime + THINKING_TIME < System.currentTimeMillis()){
-                    printPossibleMoves();
-                    return Collections.max(moveChart).getMove();
-                }
-                printBoard(sim);
-            }
+        int turn = 1;
+        int score = 0;
+        int[][] chessB = translateBoard();
+        ArrayList<Move> moveStorage = allMovesOneSide(chessB, turn);
+        ArrayList<MoveScore> moveChart = new ArrayList<>();
+        for (int i = 0; i < moveStorage.size(); i++) {
+            score = scoreMove(chessB.clone(), moveStorage.get(i), DEPTH, turn);
+            moveChart.add(new MoveScore(score, moveStorage.get(i)));
         }
-        printPossibleMoves();
 
-        Move m = Collections.max(moveChart).getMove();
-        System.out.println("mediumAI " + m.start.toString() + m.end.toString());
-        return m;
+        return Collections.max(moveChart).getMove();
     }
 
-    private void printPossibleMoves() {
-        for(MoveScore s: moveChart) {
-            System.out.println(s.getMove().start.toString() + " " + s.getMove().end.toString());
+    private int scoreMove(int[][] chessB, Move move, int depth, int turn) {
+        if(depth <= 0) return 0;
+        int score;
+        ArrayList<Move> moves = new ArrayList<>();
+        score = PerformMove(chessB, move);
+        moves = allMovesOneSide(chessB,turn * -1);
+
+        for (int i = 0; i < moves.size(); i++) {
+            score += scoreMove(chessB.clone(), moves.get(i),depth - 1, turn);
         }
-    }private void printBoard(Board board) {
-        for (int y = 0; y < board.size(); y++) {
-            for (int x = 0; x < board.size(); x++) {
-                if(board.getPiece(new Vector2(x,y)) != null) {
-                    System.out.print(board.getPiece(new Vector2(x, y)).getValue());
-                } else {
-                    System.out.print(" ");
-                }
+        return score;//noe + scoremove
+    }
+
+    private ArrayList<Move> allMovesOneSide(int[][] chessB, int turn) {
+        ArrayList<Move> moves = new ArrayList<>();
+        for (int y = 0; y < size; y++) {
+            for (int x = 0; x < size; x++) {
+                moves.addAll(genMovesPiece(x,y, chessB, turn));
+            }
+        }
+        return moves;
+    }
+
+    /**
+     * ads positions to moveStorage. needs to be cleared between boards
+     * @param x
+     * @param y
+     * @param chessB
+     * @param turn
+     * @return
+     */
+    private ArrayList<Move> genMovesPiece(int x, int y, int[][] chessB, int turn) {
+        if(chessB[x][y] == 1 * turn) return pawn(x,y, chessB, turn);
+        else if (chessB[x][y] == 3 * turn) return knight(x,y, chessB);
+        else if (chessB[x][y] == 4 * turn) return bishop(x,y, chessB);
+        else if (chessB[x][y] == 5 * turn) return rook(x,y, chessB);
+        else if (chessB[x][y] == 2 * turn) return king(x,y, chessB);
+        else if (chessB[x][y] == 9 * turn) return queen(x,y, chessB);
+        return null;
+    }
+
+    private ArrayList<Move> pawn(int x, int y, int[][] chessB, int turn) {
+        int pawnMoveLength = 1;
+        if(y == 6 || y == 1) pawnMoveLength = 2;
+        ArrayList<Move> moves = new ArrayList<>();
+        for (int i = 0; i < pawnMoveLength; i++) {
+            moves.add(pawnForward(x, y ,x , y + 1 * turn, chessB));
+            moves.add(pawnAttack(x,y,x + 1, y + 1 + 1 * turn, chessB));
+            moves.add(pawnAttack(x,y,x - 1, y + 1 + 1 * turn, chessB));
+
+        }
+        return moves;
+    }
+
+    private Move pawnAttack(int fromX, int fromY, int toX, int toY, int[][] chessB) {
+        if(chessB[toX][toY] != 0) return new Move(new Vector2(fromX, fromY), new Vector2(toX, toY));
+        return null;
+    }
+
+    private Move pawnForward(int fromX, int fromY, int toX, int toY, int[][] chessB) {
+        if(chessB[toX][toY] == 0) return new Move(new Vector2(fromX, fromY), new Vector2(toX, toY));
+        return null;
+    }
+
+    private ArrayList<Move> king(int x, int y, int[][] chessB) {
+        return new ArrayList<Move>();
+    }
+
+    private ArrayList<Move> knight(int x, int y, int[][] chessB) {
+        return new ArrayList<Move>();
+    }
+
+    private ArrayList<Move> queen(int x, int y, int[][] chessB) {
+        ArrayList<Move> moves = new ArrayList<>();
+        moves.addAll(diagonals(x,y, chessB));
+        moves.addAll(straights(x,y,chessB));
+        return  moves;
+    }
+    private ArrayList<Move> rook(int x, int y, int[][] chessB) {
+        return straights(x,y, chessB);
+    }
+    private ArrayList<Move> bishop(int x, int y, int[][] chessB) {
+        return diagonals(x,y, chessB);
+    }
+
+    private ArrayList<Move> diagonals(int x, int y, int[][] chessB) {
+        ArrayList<Move> moves = new ArrayList<>();
+        activateMoves();
+        while (movesLeft()) {
+            if(stillMoving[0]) moves.add(evalPathMove(x, y,--x, ++y, chessB, 0));
+            if(stillMoving[1]) moves.add(evalPathMove(x, y,--x, ++y, chessB, 1));
+            if(stillMoving[2]) moves.add(evalPathMove(x, y,--x, --y, chessB, 2));
+            if(stillMoving[3]) moves.add(evalPathMove(x, y,++x, --y, chessB, 3));
+        }
+        return moves;
+    }
+    private ArrayList<Move> straights(int x, int y, int[][] chessB) {
+        ArrayList<Move> moves = new ArrayList<>();
+        activateMoves();
+        while (movesLeft()) {
+            if(stillMoving[0]) moves.add(evalPathMove(x, y,x, ++y, chessB, 0));
+            if(stillMoving[1]) moves.add(evalPathMove(x, y,x, --y, chessB, 1));
+            if(stillMoving[2]) moves.add(evalPathMove(x, y,--x, y, chessB, 2));
+            if(stillMoving[3]) moves.add(evalPathMove(x, y,++x, y, chessB, 3));
+        }
+        return moves;
+    }
+
+    /**
+     * sets all booleans in stillMoving to true
+     */
+    private void activateMoves() {
+        for (int i = 0; i < stillMoving.length; i++) {
+            stillMoving[i] = true;
+        }
+    }
+
+    private boolean movesLeft() {
+        for (int i = 0; i < stillMoving.length; i++) {
+            if(stillMoving[i]) return true;
+        }
+        return false;
+    }
+    private Move evalPathMove(int fromX, int fromY, int toX, int  toY, int[][] chessB, int bolIndex) {
+        if(chessB[toX][toY] == 0 && insideBoard(toX,toY)) {
+            return new Move (new Vector2(fromX,fromY), new Vector2(toX, toY));
+        } else stillMoving[bolIndex] = false;
+        return null;
+    }
+
+    private int PerformMove(int[][] chessB, Move move) {
+        store = chessB[move.end.getX()][move.end.getY()];
+        chessB[move.end.getX()][move.end.getY()] = chessB[move.start.getX()][move.start.getY()];
+        chessB[move.start.getX()][move.start.getY()] = 0;
+        return store;//store is the killed piece's value
+    }
+
+    private boolean insideBoard(int fromX, int fromY) {
+        return (0 <= fromX && fromX <= size &&
+        0 <= fromY && fromY <= size);
+    }
+
+    private int[][] translateBoard() {
+        int[][] chessB = new int[size][size];
+        ChessPiece selectedPiece;
+        Vector2 position;
+        Alliance color;
+
+        for (int y = 0; y < size; y++) {
+            for (int x = 0; x < size; x++) {
+                position = new Vector2(x,y);
+                selectedPiece = (ChessPiece) board.getPiece(position);
+                color = selectedPiece.alliance();
+                if(selectedPiece == null) continue;
+                else if (selectedPiece instanceof Pawn && color == black) chessB[x][y] = 1;
+                else if (selectedPiece instanceof Pawn && color == white) chessB[x][y] = -1;
+                else if (selectedPiece instanceof Knight && color == black) chessB[x][y] = 3;
+                else if (selectedPiece instanceof Knight && color == white) chessB[x][y] = -3;
+                else if (selectedPiece instanceof Bishop && color == black) chessB[x][y] = 4;
+                else if (selectedPiece instanceof Bishop && color == white) chessB[x][y] = -4;
+                else if (selectedPiece instanceof Rook && color == black) chessB[x][y] = 5;
+                else if (selectedPiece instanceof Rook && color == white) chessB[x][y] = -5;
+                else if (selectedPiece instanceof King && color == black) chessB[x][y] = 2;
+                else if (selectedPiece instanceof King && color == white) chessB[x][y] = -2;
+                else if (selectedPiece instanceof Queen && color == black) chessB[x][y] = 9;
+                else if (selectedPiece instanceof Queen && color == white) chessB[x][y] = -9;
+            }
+        }
+        return chessB;
+    }
+    public void printChessb(int[][] chessB) {
+        for (int y = 0; y < size; y++) {
+            for (int x = 0; x < size; x++) {
+                if (chessB[x][y] == 1) System.out.print('p');       //pawn
+                else if (chessB[x][y] == -1) System.out.print('P');
+                else if (chessB[x][y] == 3) System.out.print('h');  //Knight
+                else if (chessB[x][y] == -3) System.out.print('H');
+                else if (chessB[x][y] == 4) System.out.print('b');  //Bishop
+                else if (chessB[x][y] == -4) System.out.print('B');
+                else if (chessB[x][y] == 5) System.out.print('r');  //Rook
+                else if (chessB[x][y] == -5) System.out.print('R');
+                else if (chessB[x][y] == 2) System.out.print('k');  //King
+                else if (chessB[x][y] == -2) System.out.print('K');
+                else if (chessB[x][y] == 9) System.out.print('q');  //Queen
+                else if (chessB[x][y] == -9) System.out.print('Q');
             }
             System.out.println();
         }
     }
-
-    /**
-     *
-     * @param sim the board that gets scored
-     * @return gives score to current state of board
-     */
-    private int scoreBoard(Board sim) {
-        return  diffPieceValue(sim) + diffPossibleMoves(sim);
-    }
-
-    /**
-     *
-     * @param sim
-     * @return gives the difference between the total value of black and white's pieces
-     */
-    private int diffPieceValue(Board sim) {
-        return pieceValue(alliance(), sim) - pieceValue(enemy, sim);
-    }
-
-    private int pieceValue(Alliance alliance, Board sim) {
-        int sum = 0;
-        for(IChessPiece piece: sim.getUsablePieces(alliance).values()) {
-            sum += piece.getValue();
-        }
-        return sum;
-    }
-
-    /**
-     *
-     * @param sim
-     * @return gives the difference between the possible moves black and white have
-     */
-    private int diffPossibleMoves(Board sim) {
-        return possibleMoves(alliance(), sim) - possibleMoves(enemy, sim);
-    }
-
-    private int possibleMoves(Alliance alliance, Board sim) {
-        int sum = 0;
-        for(IChessPiece piece: sim.getPieces(alliance).values()) {
-            for (Vector2 move: piece.getPossibleDestinations()) {
-                sum++;
-            }
-        }
-        return sum;
-    }
-
-    private IChessPiece getRandomPiece(ArrayList<IChessPiece> pieces) {
-        return pieces.get(fromZeroTo(pieces.size() - 1));
-    }
-
-    private int fromZeroTo(int num) {
-        return (int) (Math.random() * num * 1.0);
-    }
-    private void time(long start, String message) {
-        int SecondsPassed = (int) ((System.currentTimeMillis() - start) * 0.001);
-        System.out.println("seconds" + SecondsPassed + ", " + message);
-    }
-
 }
