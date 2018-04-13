@@ -27,8 +27,8 @@ public class DatabaseController {
      */
     public DatabaseController() {
         /* Removes the console clutter */
-        // Logger mongoLogger = Logger.getLogger("org.mongodb.driver");
-        // mongoLogger.setLevel(Level.SEVERE);
+        Logger mongoLogger = Logger.getLogger("org.mongodb.driver");
+        mongoLogger.setLevel(Level.SEVERE);
 
         MongoClientURI uri = new MongoClientURI("mongodb://" + dbUser + ":" + dbPassword +
                 "@" + dbURL + ":" + dbPort + "/" + dbName);
