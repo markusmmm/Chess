@@ -228,7 +228,7 @@ public class AbstractBoard {
         return alliance == Alliance.WHITE ? hasWhiteKing : hasBlackKing;
     }
 
-    public boolean transformPiece(Vector2 pos, Piece newType) {
+    public boolean transformPiece(Vector2 pos, Piece newType, Alliance alliance) {
         try {
             mutex.acquire();
             //System.out.println("Mutex acquired by transformPiece");
@@ -241,7 +241,7 @@ public class AbstractBoard {
 
             pieces.remove(pos);
 
-            ChessPiece newPiece = createPiece(pos, newType, piece.alliance());
+            ChessPiece newPiece = createPiece(pos, newType, alliance);
 
             pieces.put(pos, newPiece);
             drawPositions.push(pos);
