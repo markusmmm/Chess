@@ -8,6 +8,8 @@ import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 
 import java.net.UnknownHostException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DatabaseController {
 
@@ -24,6 +26,10 @@ public class DatabaseController {
      * Establish a connection to the database
      */
     public DatabaseController() {
+        /* Removes the console clutter */
+        // Logger mongoLogger = Logger.getLogger("org.mongodb.driver");
+        // mongoLogger.setLevel(Level.SEVERE);
+
         MongoClientURI uri = new MongoClientURI("mongodb://" + dbUser + ":" + dbPassword +
                 "@" + dbURL + ":" + dbPort + "/" + dbName);
         mongoClient = new MongoClient(uri);
@@ -42,7 +48,7 @@ public class DatabaseController {
     /**
      * Check if user already exists in the database
      * @param username
-     * @return true/false
+     * @return true (user exists)/false (user does not exist)
      */
     public boolean userExists(String username) {
         long count = db.getCollection("users")
