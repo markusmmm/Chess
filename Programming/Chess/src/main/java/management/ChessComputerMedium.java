@@ -11,8 +11,6 @@ public class ChessComputerMedium extends ChessComputer {
     private Alliance enemy;
     private final Alliance black = Alliance.BLACK;
     private final Alliance white = Alliance.WHITE;
-    private ArrayList<MoveScore> moveChart = new ArrayList<>();
-    private ArrayList<Move> moveStorage = new ArrayList<>();
     private Boolean[] stillMoving = new Boolean[4];
     private int size;
     private int store;
@@ -25,13 +23,39 @@ public class ChessComputerMedium extends ChessComputer {
 
     public Move getMove() {
         int turn = 1;
+        int score = 0;
         int[][] chessB = translateBoard();
+        ArrayList<Move> moveStorage = allMovesOneSide(chessB, turn);
+        ArrayList<MoveScore> moveChart = new ArrayList<>();
+        for (int i = 0; i < moveStorage.size(); i++) {
+            score = scoreMove(chessB.clone(), moveStorage.get(i), DEPTH, turn);
+            moveChart.add(new MoveScore(score, moveStorage.get(i)));
+        }
+
+        return Collections.max(moveChart).getMove();
+    }
+
+    private int scoreMove(int[][] chessB, Move move, int depth, int turn) {
+        if(depth <= 0) return 0;
+        int score;
+        ArrayList<Move> moves = new ArrayList<>();
+        score = PerformMove(chessB, move);
+        moves = allMovesOneSide(chessB,turn * -1);
+
+        for (int i = 0; i < moves.size(); i++) {
+            score += scoreMove(chessB.clone(), moves.get(i),depth - 1, turn);
+        }
+        return score;//noe + scoremove
+    }
+
+    private ArrayList<Move> allMovesOneSide(int[][] chessB, int turn) {
+        ArrayList<Move> moves = new ArrayList<>();
         for (int y = 0; y < size; y++) {
             for (int x = 0; x < size; x++) {
-               getMoves(x,y, chessB, DEPTH, turn, 0);
+                moves.addAll(genMovesPiece(x,y, chessB, turn));
             }
         }
-        return null;
+        return moves;
     }
 
     /**
@@ -42,43 +66,80 @@ public class ChessComputerMedium extends ChessComputer {
      * @param turn
      * @return
      */
-    private ArrayList<Move> getMoves(int x, int y, int[][] chessB, int turn) {
-        if(chessB[x][y] == 1 * turn)  pawn(x,y, chessB);
-        else if (chessB[x][y] == 3 * turn) Knight(x,y, chessB);
-        else if (chessB[x][y] == 4 * turn) bishop(x,y, chessB);
-        else if (chessB[x][y] == 5 * turn) rook(x,y, chessB);
-        else if (chessB[x][y] == 2 * turn) king(x,y, chessB);
-        else if (chessB[x][y] == 9 * turn) queen(x,y, chessB);
+    private ArrayList<Move> genMovesPiece(int x, int y, int[][] chessB, int turn) {
+        if(chessB[x][y] == 1 * turn) return pawn(x,y, chessB, turn);
+        else if (chessB[x][y] == 3 * turn) return knight(x,y, chessB);
+        else if (chessB[x][y] == 4 * turn) return bishop(x,y, chessB);
+        else if (chessB[x][y] == 5 * turn) return rook(x,y, chessB);
+        else if (chessB[x][y] == 2 * turn) return king(x,y, chessB);
+        else if (chessB[x][y] == 9 * turn) return queen(x,y, chessB);
     }
 
-    private void queen(int x, int y, int[][] chessB) {
-        diagonals(x,y, chessB);
-        straights(x,y, chessB);
-    }
-    private void rook(int x, int y, int[][] chessB, int depth, int turn, int score) {
-        straights(x,y, chessB);
-    }
-    private void bishop(int x, int y, int[][] chessB) {
-        diagonals(x,y, chessB);
+    private ArrayList<Move> pawn(int x, int y, int[][] chessB, int turn) {
+        int pawnMoveLength = 1;
+        if(y == 6 || y == 1) pawnMoveLength = 2;
+        ArrayList<Move> moves = new ArrayList<>();
+        for (int i = 0; i < pawnMoveLength; i++) {
+            moves.add(pawnForward(x, y ,x , y + 1 * turn, chessB));
+            moves.add(pawnAttack(x,y,x + 1, y + 1 + 1 * turn, chessB));
+            moves.add(pawnAttack(x,y,x - 1, y + 1 + 1 * turn, chessB));
+
+        }
+        return moves;
     }
 
-    private void diagonals(int x, int y, int[][] chessB) {
-        activateMoves();
-        while (movesLeft()) {
-            if(stillMoving[0]) evalMoveDone(x, y,--x, ++y, chessB, 0);
-            if(stillMoving[1]) evalMoveDone(x, y,--x, ++y, chessB, 1);
-            if(stillMoving[2]) evalMoveDone(x, y,--x, --y, chessB, 2);
-            if(stillMoving[3]) evalMoveDone(x, y,++x, --y, chessB, 3);
-        }
+    private Move pawnAttack(int fromX, int fromY, int toX, int toY, int[][] chessB) {
+        if(chessB[toX][toY] != 0) return new Move(new Vector2(fromX, fromY), new Vector2(toX, toY));
+        return null;
     }
-    private void straights(int x, int y, int[][] chessB) {
+
+    private Move pawnForward(int fromX, int fromY, int toX, int toY, int[][] chessB) {
+        if(chessB[toX][toY] == 0) return new Move(new Vector2(fromX, fromY), new Vector2(toX, toY));
+        return null;
+    }
+
+    private ArrayList<Move> king(int x, int y, int[][] chessB) {
+        return new ArrayList<Move>();
+    }
+
+    private ArrayList<Move> knight(int x, int y, int[][] chessB) {
+        return new ArrayList<Move>();
+    }
+
+    private ArrayList<Move> queen(int x, int y, int[][] chessB) {
+        ArrayList<Move> moves = new ArrayList<>();
+        moves.addAll(diagonals(x,y, chessB));
+        moves.addAll(straights(x,y,chessB));
+        return  moves;
+    }
+    private ArrayList<Move> rook(int x, int y, int[][] chessB) {
+        return straights(x,y, chessB);
+    }
+    private ArrayList<Move> bishop(int x, int y, int[][] chessB) {
+        return diagonals(x,y, chessB);
+    }
+
+    private ArrayList<Move> diagonals(int x, int y, int[][] chessB) {
+        ArrayList<Move> moves = new ArrayList<>();
         activateMoves();
         while (movesLeft()) {
-            if(stillMoving[0]) evalMoveDone(x, y,x, ++y, chessB, 0);
-            if(stillMoving[1]) evalMoveDone(x, y,x, --y, chessB, 1);
-            if(stillMoving[2]) evalMoveDone(x, y,--x, y, chessB, 2);
-            if(stillMoving[3]) evalMoveDone(x, y,++x, y, chessB, 3);
+            if(stillMoving[0]) moves.add(evalPathMove(x, y,--x, ++y, chessB, 0));
+            if(stillMoving[1]) moves.add(evalPathMove(x, y,--x, ++y, chessB, 1));
+            if(stillMoving[2]) moves.add(evalPathMove(x, y,--x, --y, chessB, 2));
+            if(stillMoving[3]) moves.add(evalPathMove(x, y,++x, --y, chessB, 3));
         }
+        return moves;
+    }
+    private ArrayList<Move> straights(int x, int y, int[][] chessB) {
+        ArrayList<Move> moves = new ArrayList<>();
+        activateMoves();
+        while (movesLeft()) {
+            if(stillMoving[0]) moves.add(evalPathMove(x, y,x, ++y, chessB, 0));
+            if(stillMoving[1]) moves.add(evalPathMove(x, y,x, --y, chessB, 1));
+            if(stillMoving[2]) moves.add(evalPathMove(x, y,--x, y, chessB, 2));
+            if(stillMoving[3]) moves.add(evalPathMove(x, y,++x, y, chessB, 3));
+        }
+        return moves;
     }
 
     /**
@@ -96,31 +157,17 @@ public class ChessComputerMedium extends ChessComputer {
         }
         return false;
     }
-    private void evalMoveDone(int fromX, int fromY, int toX, int  toY, int[][] chessB, int bolIndex) {
+    private Move evalPathMove(int fromX, int fromY, int toX, int  toY, int[][] chessB, int bolIndex) {
         if(chessB[toX][toY] == 0 && insideBoard(toX,toY)) {
-            moveStorage.add(new Move (new Vector2(fromX,fromY), new Vector2(toX, toY)));
+            return new Move (new Vector2(fromX,fromY), new Vector2(toX, toY));
         } else stillMoving[bolIndex] = false;
+        return null;
     }
 
-    private int calcOtherSide(int fromX, int fromY, int toX, int toY, int[][] chessB, int depth, int turn, int score) {
-        int sum = 0;
-        int[][] clone = chessB.clone();
-        sum += move(clone,fromX, fromY, toX, toY);
-        for (int y = 0; y < size; y++) {
-            for (int x = 0; x < size; x++) {
-                sum += getMoves(x,y, chessB, depth, turn, score);
-            }
-        }
-        return sum + score;
-    }
-
-    private int move(int[][] chessB, int fromX, int fromY, int toX, int toY) {
-        if(insideBoard(fromX,fromY) && insideBoard(toX,toY)) {
-            return 0;
-        }
-        store = chessB[toX][toY];
-        chessB[toX][toY] = chessB[fromX][fromY];
-        chessB[fromX][fromY] = 0;
+    private int PerformMove(int[][] chessB, Move move) {
+        store = chessB[move.end.getX()][move.end.getY()];
+        chessB[move.end.getX()][move.end.getY()] = chessB[move.start.getX()][move.start.getY()];
+        chessB[move.start.getX()][move.start.getY()] = 0;
         return store;//store is the killed piece's value
     }
 
