@@ -11,6 +11,10 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import management.DatabaseController;
 import resources.BoardMode;
+import sun.audio.AudioPlayer;
+import sun.audio.AudioStream;
+
+import java.io.InputStream;
 
 
 public class Main extends Application {
@@ -41,6 +45,7 @@ public class Main extends Application {
         Label labelTitle = new Label("CHESS");
         labelTitle.setUnderline(true);
         labelTitle.setId("title");
+
 
         Label labelUsername = new Label("Username:");
         labelUsername.setPrefWidth(120);

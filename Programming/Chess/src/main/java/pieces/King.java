@@ -48,6 +48,7 @@ public class King extends ChessPiece {
         int queenSideRookX = destination.getX()-2;
 
         if (castling(new Vector2(kingSideRookX,destination.getY())) || castling(new Vector2(queenSideRookX, destination.getY()))){
+
             return true;
         }
 

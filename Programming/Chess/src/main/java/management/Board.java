@@ -472,14 +472,15 @@ public class Board extends AbstractBoard {
         logMove(node);
     }
 
-	public void saveFile(String saveName) {
-        String dirPath = System.getProperty("user.home") + "\\GitGud\\";
+	public void saveFile(File file) {
+        /*String dirPath = System.getProperty("user.home") + "\\GitGud\\";
         Console.printNotice("Save directory: " + dirPath);
         File dir = new File(dirPath);
         if(!dir.exists())
             dir.mkdir();
 
-		String path = dirPath + saveName + ".txt";
+		String path = dirPath + saveName + ".txt";*/
+        String path = file.getAbsolutePath();
 		try {
 			FileWriter save = new FileWriter(path);
 			int n = size();
@@ -499,7 +500,7 @@ public class Board extends AbstractBoard {
 			}
 
 			save.close();
-			Console.printSuccess("Board saved to " + saveName);
+			Console.printSuccess("Board saved to " + path);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
