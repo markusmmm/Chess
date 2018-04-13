@@ -34,6 +34,7 @@ public abstract class ChessPiece implements IChessPiece {
         this.piece = piece;
         this.value = value;
         this.hasMoved = hasMoved;
+
     }
 
 	public Vector2 position() { return position; }
@@ -76,6 +77,8 @@ public abstract class ChessPiece implements IChessPiece {
 	public boolean hasMoved() {
 		return hasMoved;
 	}
+
+
 
 	/**
 	 * 

@@ -22,20 +22,17 @@ public class Pawn extends ChessPiece {
 	 * @param alliance
 	 */
 
-	private Pawn(Vector2 position, Alliance alliance, AbstractBoard board, boolean hasDoubleStepped) {
-		super(position, alliance, board, false, Piece.PAWN, 1,false);
+
+	public Pawn(Vector2 position, Alliance alliance, AbstractBoard board, boolean hasMoved, boolean hasDoubleStepped) {
+		super(position, alliance, board, false, Piece.PAWN, 1, hasMoved);
 		this.hasDoubleStepped = hasDoubleStepped;
 	}
-	public Pawn(Vector2 position, Alliance alliance, AbstractBoard board){
-		super(position, alliance, board, false, Piece.PAWN, 1, false);
-	}
+
 	public Pawn clonePiece() {
-        return new Pawn(position, alliance, board, hasDoubleStepped);
+        return new Pawn(position, alliance, board, hasMoved(), hasDoubleStepped);
     }
 
-    public boolean getHasDoubleStepped(){
-		return hasDoubleStepped;
-	}
+
 
 	/**
 	 * 
@@ -92,7 +89,6 @@ public class Pawn extends ChessPiece {
 			board.performAttack(start, destination, blackEnpasant);
 		}
 		else if(whiteResult) {
-			System.out.println("KKKKKKKKKKKKKK");
 			System.out.println(whiteEnpasant);
 			board.performAttack(start, destination, whiteEnpasant);
 		}

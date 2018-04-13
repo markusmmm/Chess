@@ -362,7 +362,7 @@ public class AbstractBoard {
                     hasBlackKing = true;
                 return new King(pos, alliance, this, false);
             case PAWN:
-                return new Pawn(pos, alliance, this);
+                return new Pawn(pos, alliance, this, false, false);
             case ROOK:
                 return new Rook(pos, alliance, this, false);
         }
