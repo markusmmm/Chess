@@ -125,6 +125,12 @@ public class King extends ChessPiece {
         return setsCheck;
     }
 
+    /**
+     * Determines if the attempted
+     * @param start
+     * @param end
+     * @return
+     */
     public boolean resolvesCheck(Vector2 start, Vector2 end) {
         Board dummyBoard = board.clone();
 

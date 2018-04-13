@@ -7,6 +7,8 @@ import pieces.Pawn;
 import resources.*;
 
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.Set;
@@ -468,6 +470,34 @@ public class Board extends AbstractBoard {
         removePiece(victim);
         logMove(node);
     }
+
+	public void saveFile(String saveName) {
+		String fileName = saveName + ".txt";
+		try {
+			FileWriter save = new FileWriter(fileName);
+			int n = size();
+
+			save.write(n + " 0\n");
+			for(int y = 0; y < n; y++) {
+				String line = "";
+				for(int x = 0; x < n; x++) {
+					ChessPiece p = getPiece(new Vector2(x,y));
+					char s = 'e';
+					if(p != null)
+						s = PieceManager.toSymbol(p.piece());
+
+					line += s;
+				}
+				save.write(line + "\n");
+			}
+
+			save.close();
+			Console.printSuccess("Board saved to " + saveName);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
 
     @Override
     public Board clone() {
