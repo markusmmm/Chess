@@ -12,52 +12,54 @@ import java.util.Random;
 import java.util.Set;
 
 public class Board extends AbstractBoard {
-	private static final Piece[] defaultBoard = new Piece[] {
-			Piece.ROOK,   Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN,  Piece.KING,   Piece.BISHOP, Piece.KNIGHT, Piece.ROOK,
-			Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,
-			Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,
-			Piece.PAWN,   Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,  Piece.EMPTY,
-			Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,   Piece.PAWN,
-			Piece.ROOK,   Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN,  Piece.KING,   Piece.BISHOP, Piece.KNIGHT, Piece.ROOK
-	};
+    private static final Piece[] defaultBoard = new Piece[]{
+            Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK,
+            Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN,
+            Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY,
+            Piece.PAWN, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY,
+            Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN,
+            Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK
+    };
 
-	private Board(Board template) {
-		super(template);
-	}
+    private Board(Board template) {
+        super(template);
+    }
 
     public Board(int size) {
         super(size, false);
     }
+
     public Board(int size, boolean useClock, BoardMode mode) {
-    	super(size, useClock);
+        super(size, useClock);
 
-		if(mode == BoardMode.DEFAULT) {
-			int p = 0;
+        if (mode == BoardMode.DEFAULT) {
+            int p = 0;
 
-			for (Piece type : defaultBoard) {
-				int x = p % size;
-				int y = p / size;
+            for (Piece type : defaultBoard) {
+                int x = p % size;
+                int y = p / size;
 
-				Vector2 pos = new Vector2(x, y);
-				Vector2 invPos = new Vector2(x, size - y - 1);
+                Vector2 pos = new Vector2(x, y);
+                Vector2 invPos = new Vector2(x, size - y - 1);
 
-				if (type.equals(Piece.EMPTY)) continue;
+                if (type.equals(Piece.EMPTY)) continue;
 
-				addPiece(pos, type, Alliance.BLACK);
-				System.out.println(pos + ": " + getPiece(pos));
+                addPiece(pos, type, Alliance.BLACK);
+                System.out.println(pos + ": " + getPiece(pos));
 
-				addPiece(invPos, type, Alliance.WHITE);
-				System.out.println(invPos + ": " + getPiece(invPos));
+                addPiece(invPos, type, Alliance.WHITE);
+                System.out.println(invPos + ": " + getPiece(invPos));
 
-				p++;
-			}
-		} else if (mode == BoardMode.RANDOM) {
-			generateRandomBoard();
-		}
-	}
+                p++;
+            }
+        } else if (mode == BoardMode.RANDOM) {
+            generateRandomBoard();
+        }
+    }
+
     public Board(String fileName) throws FileNotFoundException {
-    	super(fileName);
-	}
+        super(fileName);
+    }
 
 	/*
 	public boolean undoMove() {
@@ -76,184 +78,184 @@ public class Board extends AbstractBoard {
 	}
 	*/
 
-	private void generateRandomBoard() {
-		int bRooks = 0, bPawns = 0, bQueens = 0, bKings = 0, bBishops = 0, bKnights = 0;
-		int wRooks = 0, wPawns = 0, wQueens = 0, wKings = 0, wBishops = 0, wKnights = 0;
-		int w = 0;
-		int b = 0;
+    private void generateRandomBoard() {
+        int bRooks = 0, bPawns = 0, bQueens = 0, bKings = 0, bBishops = 0, bKnights = 0;
+        int wRooks = 0, wPawns = 0, wQueens = 0, wKings = 0, wBishops = 0, wKnights = 0;
+        int w = 0;
+        int b = 0;
 
-		int bishopX = 0;
-		int bishopY = 0;
+        int bishopX = 0;
+        int bishopY = 0;
 
-		int bishopWX = 0;
-		int bishopWY = 0;
+        int bishopWX = 0;
+        int bishopWY = 0;
 
-		Random random = new Random();
-		while (b < 16) {
-			Piece aPiece = randomPiece();
-			int x = random.nextInt(7 - 0 + 1) + 0;
-			int y = random.nextInt(7 - 0 + 1) + 0;
+        Random random = new Random();
+        while (b < 16) {
+            Piece aPiece = randomPiece();
+            int x = random.nextInt(7 - 0 + 1) + 0;
+            int y = random.nextInt(7 - 0 + 1) + 0;
 
-			Vector2 pos = new Vector2(x, y);
-			if (!vacant(pos)) {
-				continue;
-			}
-			if (b == 15 && bKings == 0) {
-				addPiece(pos, Piece.KING, Alliance.BLACK);
-				if (getKing(Alliance.BLACK).inCheck()) {
-					removePiece(pos);
-					continue;
-				}
-				w++;
-				wKings++;
-				continue;
-			}
+            Vector2 pos = new Vector2(x, y);
+            if (!vacant(pos)) {
+                continue;
+            }
+            if (b == 15 && bKings == 0) {
+                addPiece(pos, Piece.KING, Alliance.BLACK);
+                if (getKing(Alliance.BLACK).inCheck()) {
+                    removePiece(pos);
+                    continue;
+                }
+                w++;
+                wKings++;
+                continue;
+            }
 
-			if (aPiece.equals(Piece.ROOK) && bRooks < 2) {
+            if (aPiece.equals(Piece.ROOK) && bRooks < 2) {
 
-				addPiece(pos, aPiece, Alliance.BLACK);
+                addPiece(pos, aPiece, Alliance.BLACK);
 
 
-				b++;
-				bRooks++;
-				continue;
-			}
-			if (aPiece.equals(Piece.PAWN) && bPawns < 8) {
-				if (y == 0) {
-					continue;
-				}
-				addPiece(pos, aPiece, Alliance.BLACK);
-				b++;
-				bPawns++;
-				continue;
-			}
-			if (aPiece.equals(Piece.QUEEN) && bQueens < 1) {
-				addPiece(pos, aPiece, Alliance.BLACK);
-				b++;
-				bQueens++;
-				continue;
-			}
-			if (aPiece.equals(Piece.KING) && bKings < 1) {
+                b++;
+                bRooks++;
+                continue;
+            }
+            if (aPiece.equals(Piece.PAWN) && bPawns < 8) {
+                if (y == 0) {
+                    continue;
+                }
+                addPiece(pos, aPiece, Alliance.BLACK);
+                b++;
+                bPawns++;
+                continue;
+            }
+            if (aPiece.equals(Piece.QUEEN) && bQueens < 1) {
+                addPiece(pos, aPiece, Alliance.BLACK);
+                b++;
+                bQueens++;
+                continue;
+            }
+            if (aPiece.equals(Piece.KING) && bKings < 1) {
 
-				addPiece(pos, aPiece, Alliance.BLACK);
-				if (getKing(Alliance.BLACK).inCheck()) {
-					removePiece(pos);
-					continue;
-				}
-				b++;
-				bKings++;
-				continue;
-			}
-			if (aPiece.equals(Piece.BISHOP) && bBishops < 2) {
-				if (bBishops == 0) {
-					bishopX = x;
-					bishopY = y;
-				}
-				if (bBishops == 1) {
-					boolean b1 = bishopX % 2 == bishopY % 2;
-					boolean b2 = x % 2 == y % 2;
-					if (b1 == b2) {
-						continue;
-					}
-				}
-				addPiece(pos, aPiece, Alliance.BLACK);
-				b++;
-				bBishops++;
-				continue;
-			}
-			if (aPiece.equals(Piece.KNIGHT) && bKnights < 2) {
-				addPiece(pos, aPiece, Alliance.BLACK);
-				b++;
-				bKnights++;
-				continue;
-			}
-			if (aPiece.equals(Piece.EMPTY)) {
-				b++;
-				continue;
-			}
-		}
-		while (w < 16) {
-			Piece aPiece = randomPiece();
+                addPiece(pos, aPiece, Alliance.BLACK);
+                if (getKing(Alliance.BLACK).inCheck()) {
+                    removePiece(pos);
+                    continue;
+                }
+                b++;
+                bKings++;
+                continue;
+            }
+            if (aPiece.equals(Piece.BISHOP) && bBishops < 2) {
+                if (bBishops == 0) {
+                    bishopX = x;
+                    bishopY = y;
+                }
+                if (bBishops == 1) {
+                    boolean b1 = bishopX % 2 == bishopY % 2;
+                    boolean b2 = x % 2 == y % 2;
+                    if (b1 == b2) {
+                        continue;
+                    }
+                }
+                addPiece(pos, aPiece, Alliance.BLACK);
+                b++;
+                bBishops++;
+                continue;
+            }
+            if (aPiece.equals(Piece.KNIGHT) && bKnights < 2) {
+                addPiece(pos, aPiece, Alliance.BLACK);
+                b++;
+                bKnights++;
+                continue;
+            }
+            if (aPiece.equals(Piece.EMPTY)) {
+                b++;
+                continue;
+            }
+        }
+        while (w < 16) {
+            Piece aPiece = randomPiece();
 
-			int x = random.nextInt(7 - 0 + 1) + 0;
-			int y = random.nextInt(7 - 0 + 1) + 0;
+            int x = random.nextInt(7 - 0 + 1) + 0;
+            int y = random.nextInt(7 - 0 + 1) + 0;
 
-			Vector2 invPos = new Vector2(x, y);
-			if (!vacant(invPos)) {
-				continue;
-			}
-			if (w == 15 && wKings == 0) {
-				addPiece(invPos, Piece.KING, Alliance.WHITE);
-				if (getKing(Alliance.WHITE).inCheck()) {
-					removePiece(invPos);
-					continue;
-				}
-				w++;
-				wKings++;
-				continue;
-			}
-			if (aPiece.equals(Piece.ROOK) && wRooks < 2) {
-				addPiece(invPos, aPiece, Alliance.WHITE);
-				w++;
-				wRooks++;
-				continue;
-			}
-			if (aPiece.equals(Piece.PAWN) && wPawns < 8) {
-				if (y == 7) {
-					continue;
-				}
-				addPiece(invPos, aPiece, Alliance.WHITE);
-				w++;
-				wPawns++;
-				continue;
-			}
-			if (aPiece.equals(Piece.QUEEN) && wQueens < 1) {
-				addPiece(invPos, aPiece, Alliance.WHITE);
-				w++;
-				wQueens++;
-				continue;
-			}
-			if (aPiece.equals(Piece.KING) && wKings < 1) {
+            Vector2 invPos = new Vector2(x, y);
+            if (!vacant(invPos)) {
+                continue;
+            }
+            if (w == 15 && wKings == 0) {
+                addPiece(invPos, Piece.KING, Alliance.WHITE);
+                if (getKing(Alliance.WHITE).inCheck()) {
+                    removePiece(invPos);
+                    continue;
+                }
+                w++;
+                wKings++;
+                continue;
+            }
+            if (aPiece.equals(Piece.ROOK) && wRooks < 2) {
+                addPiece(invPos, aPiece, Alliance.WHITE);
+                w++;
+                wRooks++;
+                continue;
+            }
+            if (aPiece.equals(Piece.PAWN) && wPawns < 8) {
+                if (y == 7) {
+                    continue;
+                }
+                addPiece(invPos, aPiece, Alliance.WHITE);
+                w++;
+                wPawns++;
+                continue;
+            }
+            if (aPiece.equals(Piece.QUEEN) && wQueens < 1) {
+                addPiece(invPos, aPiece, Alliance.WHITE);
+                w++;
+                wQueens++;
+                continue;
+            }
+            if (aPiece.equals(Piece.KING) && wKings < 1) {
 
-				addPiece(invPos, aPiece, Alliance.WHITE);
-				if (getKing(Alliance.WHITE).inCheck()) {
-					removePiece(invPos);
-					continue;
-				}
+                addPiece(invPos, aPiece, Alliance.WHITE);
+                if (getKing(Alliance.WHITE).inCheck()) {
+                    removePiece(invPos);
+                    continue;
+                }
 
-				w++;
-				wKings++;
-				continue;
-			}
-			if (aPiece.equals(Piece.BISHOP) && wBishops < 2) {
-				if (wBishops == 0) {
-					bishopWX = x;
-					bishopWY = y;
-				}
-				if (wBishops == 1) {
-					boolean b1 = bishopWX % 2 == bishopWY % 2;
-					boolean b2 = x % 2 == y % 2;
-					if (b1 == b2) {
-						continue;
-					}
-				}
-				addPiece(invPos, aPiece, Alliance.WHITE);
-				w++;
-				wBishops++;
-				continue;
-			}
-			if (aPiece.equals(Piece.KNIGHT) && wKnights < 2) {
-				addPiece(invPos, aPiece, Alliance.WHITE);
-				w++;
-				wKnights++;
-				continue;
-			}
-			if (aPiece.equals(Piece.EMPTY)) {
-				b++;
-				continue;
-			}
-		}
-	}
+                w++;
+                wKings++;
+                continue;
+            }
+            if (aPiece.equals(Piece.BISHOP) && wBishops < 2) {
+                if (wBishops == 0) {
+                    bishopWX = x;
+                    bishopWY = y;
+                }
+                if (wBishops == 1) {
+                    boolean b1 = bishopWX % 2 == bishopWY % 2;
+                    boolean b2 = x % 2 == y % 2;
+                    if (b1 == b2) {
+                        continue;
+                    }
+                }
+                addPiece(invPos, aPiece, Alliance.WHITE);
+                w++;
+                wBishops++;
+                continue;
+            }
+            if (aPiece.equals(Piece.KNIGHT) && wKnights < 2) {
+                addPiece(invPos, aPiece, Alliance.WHITE);
+                w++;
+                wKnights++;
+                continue;
+            }
+            if (aPiece.equals(Piece.EMPTY)) {
+                b++;
+                continue;
+            }
+        }
+    }
 
     public HashMap<Vector2, IChessPiece> getPieces(Alliance alliance) {
         HashMap<Vector2, IChessPiece> temp = new HashMap<>();
@@ -307,6 +309,7 @@ public class Board extends AbstractBoard {
 
         ChessPiece piece = (ChessPiece) getPiece(start);
 
+
         System.out.println("Currently " + activePlayer + "'s turn");
 
         if (piece == null) {
@@ -316,13 +319,34 @@ public class Board extends AbstractBoard {
             return false; // Checks if the active player owns the piece that is being moved
         }
 
+        // pawn promotion
+        if (piece instanceof Pawn) {
+            Vector2 piecePos = piece.position();
+            int x = piecePos.getX();
+            int y = piecePos.getY();
+
+            if (y == 1 && piece.alliance() == Alliance.WHITE && end.getY() == 0) {
+                removePiece(piecePos);
+                addPiece(end, Piece.QUEEN, piece.alliance());
+                return true;
+
+            }
+
+            if (y == 6 && piece.alliance() == Alliance.BLACK && end.getY() == 7) {
+                removePiece(piecePos);
+                addPiece(end, Piece.QUEEN, piece.alliance());
+                return true;
+            }
+
+        }
+
         //castling
-        if(piece instanceof  King){
-            int kingSideRookX = end.getX()+1;
-            int queenSideRookX = end.getX()-2;
+        if (piece instanceof King) {
+            int kingSideRookX = end.getX() + 1;
+            int queenSideRookX = end.getX() - 2;
 
             // castling kingside
-            if (((King) piece).castling(new Vector2(kingSideRookX,end.getY()))){
+            if (((King) piece).castling(new Vector2(kingSideRookX, end.getY()))) {
                 Vector2 rookPos = new Vector2(kingSideRookX, end.getY());
                 IChessPiece rook = getPiece(rookPos);
                 Alliance alliance = rook.alliance();
@@ -335,8 +359,8 @@ public class Board extends AbstractBoard {
                 removePiece(kingPos);
 
 
-                addPiece(new Vector2(kingSideRookX-2, end.getY()), pieceType, alliance);
-                addPiece(new Vector2(kingSideRookX-1, end.getY()), Piece.KING, alliance);
+                addPiece(new Vector2(kingSideRookX - 2, end.getY()), pieceType, alliance);
+                addPiece(new Vector2(kingSideRookX - 1, end.getY()), Piece.KING, alliance);
 
                 logMove(new MoveNode(piece, start, end, (ChessPiece) getPiece(end)));
                 activePlayer = activePlayer.equals(Alliance.WHITE) ? Alliance.BLACK : Alliance.WHITE;
@@ -346,7 +370,7 @@ public class Board extends AbstractBoard {
             }
 
             // castling queenside
-            if (((King) piece).castling(new Vector2(queenSideRookX,end.getY()))){
+            if (((King) piece).castling(new Vector2(queenSideRookX, end.getY()))) {
                 Vector2 rookPos = new Vector2(queenSideRookX, end.getY());
                 IChessPiece rook = getPiece(rookPos);
                 Alliance alliance = rook.alliance();
@@ -359,8 +383,8 @@ public class Board extends AbstractBoard {
                 removePiece(kingPos);
 
 
-                addPiece(new Vector2(queenSideRookX+3, end.getY()), pieceType, alliance);
-                addPiece(new Vector2(queenSideRookX+2, end.getY()), Piece.KING, alliance);
+                addPiece(new Vector2(queenSideRookX + 3, end.getY()), pieceType, alliance);
+                addPiece(new Vector2(queenSideRookX + 2, end.getY()), Piece.KING, alliance);
 
                 logMove(new MoveNode(piece, start, end, (ChessPiece) getPiece(end)));
                 activePlayer = activePlayer.equals(Alliance.WHITE) ? Alliance.BLACK : Alliance.WHITE;
