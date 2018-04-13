@@ -331,26 +331,6 @@ public class Board extends AbstractBoard {
             return false; // Checks if the active player owns the piece that is being moved
         }
 
-        // pawn promotion
-        if (piece instanceof Pawn) {
-            Vector2 piecePos = piece.position();
-            int x = piecePos.getX();
-            int y = piecePos.getY();
-
-            if (y == 1 && piece.alliance() == Alliance.WHITE && end.getY() == 0) {
-                removePiece(piecePos);
-                addPiece(end, Piece.QUEEN, piece.alliance());
-                return true;
-
-            }
-
-            if (y == 6 && piece.alliance() == Alliance.BLACK && end.getY() == 7) {
-                removePiece(piecePos);
-                addPiece(end, Piece.QUEEN, piece.alliance());
-                return true;
-            }
-
-        }
 
         //castling
         if (piece instanceof King) {
@@ -465,9 +445,12 @@ public class Board extends AbstractBoard {
         MoveNode node = new MoveNode(getPiece(start), start, end, getPiece(victim));
         System.out.println("Performing attack: " + node);
 
+
         removePiece(victim);
         logMove(node);
     }
+
+
 
     @Override
     public Board clone() {

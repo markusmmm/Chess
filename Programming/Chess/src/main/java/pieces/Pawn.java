@@ -79,7 +79,22 @@ public class Pawn extends ChessPiece {
 		boolean blackResult = this.alliance.equals(BLACK) && enPassant(blackEnpasant);
 		boolean whiteResult = this.alliance.equals(WHITE) && enPassant(whiteEnpasant);
 
+
+
+		if(destination.getY() == 0 && super.move(destination) == true){
+			System.out.println(this.position + "KKKKMFKSNGJKSHDGJSDGJKSHDGJHKSDHGJSD");
+
+			board.performAttack(start,destination,destination);
+
+
+		}
+		if(destination.getY() == 7 && super.move(destination) == true){
+
+			board.performAttack(start,destination,destination);
+		}
+
 		if(!super.move(destination)) return false;
+
 
 		if(!hasDoubleStepped && (whiteNegative2 || blackPositive2))
 			hasDoubleStepped = true;
@@ -95,10 +110,6 @@ public class Pawn extends ChessPiece {
 			board.performAttack(start, destination, whiteEnpasant);
 		}
 
-		if(promotion(destination))
-		{
-
-		}
 		return true;
 	}
 
