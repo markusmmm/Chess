@@ -296,10 +296,13 @@ public class Pawn extends ChessPiece {
 
 	public boolean promotion(Vector2 move)
 	{
-		if(this.position.getY() == 0 && this.alliance.equals(WHITE))
-			return true;
-		else if(this.position().getY() == 7 && this.alliance.equals(BLACK))
-			return true;
+		if(board.vacant(move))
+		{
+			if (this.position.getY() == 0 && this.alliance.equals(WHITE))
+				return true;
+			else if (this.position().getY() == 7 && this.alliance.equals(BLACK))
+				return true;
+		}
 		return false;
 	}
 }

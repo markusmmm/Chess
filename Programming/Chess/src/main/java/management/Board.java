@@ -3,6 +3,7 @@ package management;
 import pieces.ChessPiece;
 import pieces.IChessPiece;
 import pieces.King;
+import pieces.Pawn;
 import resources.*;
 
 import java.io.FileNotFoundException;
@@ -370,6 +371,20 @@ public class Board extends AbstractBoard {
             }
 
         }
+
+        if(piece instanceof Pawn)
+		{
+			if(((Pawn) piece).promotion(end))
+			{
+				IChessPiece pawnPromoted = piece;
+				Vector2 pawnPos = pawnPromoted.position();
+				Alliance pawnAlliance = pawnPromoted.alliance();
+
+				removePiece(pawnPos);
+				addPiece(new Vector2(end.getX(), end.getY()), Piece.PAWN, pawnAlliance);
+				return true;
+			}
+		}
         boolean moveSuccessful = piece.move(end);
 
         if (!moveSuccessful) { // Attempt to move the piece
