@@ -5,6 +5,7 @@ import resources.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
@@ -70,8 +71,13 @@ public class AbstractBoard {
 
     protected AbstractBoard(String fileName) throws FileNotFoundException {
         fileName += ".txt";
-
-        Scanner file = new Scanner(new File(fileName));
+        
+        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+        InputStream is = classloader.getResourceAsStream(fileName);
+        
+ 
+        
+        Scanner file = new Scanner(is);
         size = file.nextInt();
         generateClock(file.nextInt() != 0);
 

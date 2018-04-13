@@ -6,6 +6,9 @@
     <groupId>Git_Gud</groupId>
     <artifactId>Chess</artifactId>
     <version>1.0</version>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
     <build>
         <plugins>
             <plugin>
