@@ -381,7 +381,7 @@ public class Board extends AbstractBoard {
 				Alliance pawnAlliance = pawnPromoted.alliance();
 
 				removePiece(pawnPos);
-				addPiece(new Vector2(end.getX(), end.getY()), Piece.PAWN, pawnAlliance);
+				addPiece(new Vector2(end.getX(), end.getY()), Piece.QUEEN, pawnAlliance);
 				return true;
 			}
 		}
