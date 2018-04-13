@@ -473,7 +473,8 @@ public class Board extends AbstractBoard {
     }
 
 	public void saveFile(String saveName) {
-        String dirPath = System.getenv("APPDATA") + "/GitGud/saves/";
+        String dirPath = System.getProperty("user.home") + "\\GitGud\\";
+        Console.printNotice("Save directory: " + dirPath);
         File dir = new File(dirPath);
         if(!dir.exists())
             dir.mkdir();
