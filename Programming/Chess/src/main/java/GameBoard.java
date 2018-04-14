@@ -15,6 +15,7 @@ import management.*;
 import pieces.ChessPiece;
 import pieces.IChessPiece;
 import pieces.King;
+import pieces.MediaHelper;
 import resources.*;
 
 import java.io.File;
@@ -386,7 +387,7 @@ public class GameBoard {
         }
 
         // new Main().mainMenu(username, stage);
-
+        MediaHelper.getSound("game_over.mp3").play();
         return true;
     }
 

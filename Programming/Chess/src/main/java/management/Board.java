@@ -108,6 +108,7 @@ public class Board extends AbstractBoard {
                 addPiece(pos, Piece.KING, Alliance.BLACK);
                 if (getKing(Alliance.BLACK).inCheck()) {
                     removePiece(pos);
+
                     continue;
                 }
                 w++;

@@ -20,7 +20,6 @@ public class MediaHelper {
     public static MediaPlayer getSound(String fileName) {
 
         MediaPlayer sound = sounds.get(fileName);
-        System.out.println(sound);
         if (sound != null) {
             return sound;
         }

@@ -9,7 +9,7 @@ import resources.Vector2;
 
 import java.util.*;
 
-public class King extends ChessPiece {
+public class    King extends ChessPiece {
     private final int value = 2;
     private Set<Vector2> moves = new HashSet<>(Arrays.asList(
             new Vector2(-1, -1), new Vector2( 0, -1), new Vector2( 1, -1),

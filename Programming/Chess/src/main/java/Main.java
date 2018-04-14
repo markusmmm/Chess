@@ -10,6 +10,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import management.DatabaseController;
+import pieces.MediaHelper;
 import resources.BoardMode;
 import sun.audio.AudioPlayer;
 import sun.audio.AudioStream;
@@ -135,6 +136,7 @@ public class Main extends Application {
         randomBoardPlay.setOnAction(e -> createChessGame(username, 1, BoardMode.RANDOM, stage, root));
         buttonPlayMedium.setOnAction(e -> createChessGame(username, 2, BoardMode.DEFAULT, stage, root));
         buttonPlayHard.setOnAction(e -> createChessGame(username, 3, BoardMode.DEFAULT, stage, root));
+        MediaHelper.getSound("welcome.mp3").play();
         buttonQuit.setOnAction(e -> onQuit());
 
         VBox buttonContainer = new VBox(10);
@@ -164,6 +166,7 @@ public class Main extends Application {
         gameBoard.createBoard();
         root.setCenter(gameBoard.getContainer());
         root.setTop(gameBoard.generateGameMenuBar());
+        MediaHelper.getSound("startup.mp3").play();
         //return gameBoard.getContainer();
     }
 

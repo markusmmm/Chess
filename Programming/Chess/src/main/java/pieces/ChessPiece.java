@@ -89,13 +89,15 @@ public abstract class ChessPiece implements IChessPiece {
 	 */
 	public boolean move(Vector2 move) {
 		//System.out.println("Attempting to move " + alliance + " " + piece + " from " + position + " to " + move);
-
 		if (!legalMove(move)) return false; // If the destination is unreachable, the move fails
 
+		MediaHelper.getSound("move.mp3").play();
+		MediaHelper.getSound("move.mp3").stop();
+		MediaHelper.getSound("move.mp3").play();
+		MediaHelper.getSound("move.mp3").stop();
 		position = new Vector2(move.getX(), move.getY());
 		hasMoved = true;
 
-		//MediaHelper.getSound("DT.wav").play();
 		//System.out.println("Move performed. New pos: " + position);
 		return true;
 	}
