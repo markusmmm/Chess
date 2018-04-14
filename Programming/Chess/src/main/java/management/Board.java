@@ -320,7 +320,7 @@ public class Board extends AbstractBoard {
      * @param end
      */
     public boolean movePiece(Vector2 start, Vector2 end) {
-        if (!insideBoard(start)) return false;
+        if (!insideBoard(start)) return advanceMove(false);
 
         ChessPiece piece = (ChessPiece) getPiece(start);
 
@@ -328,10 +328,10 @@ public class Board extends AbstractBoard {
         //System.out.println("Currently " + activePlayer + "'s turn");
 
         if (piece == null) {
-            return false; // Check if a piece exists at the given position
+            return advanceMove(false); // Check if a piece exists at the given position
         }
         if (!piece.alliance().equals(activePlayer)) {
-            return false; // Checks if the active player owns the piece that is being moved
+            return advanceMove(false); // Checks if the active player owns the piece that is being moved
         }
 
         // pawn promotion
@@ -343,14 +343,16 @@ public class Board extends AbstractBoard {
             if (y == 1 && piece.alliance() == Alliance.WHITE && end.getY() == 0) {
                 removePiece(piecePos);
                 addPiece(end, Piece.QUEEN, piece.alliance());
-                return true;
+
+                return advanceMove(true);
 
             }
 
             if (y == 6 && piece.alliance() == Alliance.BLACK && end.getY() == 7) {
                 removePiece(piecePos);
                 addPiece(end, Piece.QUEEN, piece.alliance());
-                return true;
+
+                return advanceMove(true);
             }
 
         }
@@ -378,9 +380,8 @@ public class Board extends AbstractBoard {
                 addPiece(new Vector2(kingSideRookX - 1, end.getY()), Piece.KING, alliance);
 
                 logMove(new MoveNode(piece, start, end, (ChessPiece) getPiece(end)));
-                activePlayer = activePlayer.equals(Alliance.WHITE) ? Alliance.BLACK : Alliance.WHITE;
 
-                return true;
+                return advanceMove(true);
 
             }
 
@@ -402,11 +403,8 @@ public class Board extends AbstractBoard {
                 addPiece(new Vector2(queenSideRookX + 2, end.getY()), Piece.KING, alliance);
 
                 logMove(new MoveNode(piece, start, end, (ChessPiece) getPiece(end)));
-                activePlayer = activePlayer.equals(Alliance.WHITE) ? Alliance.BLACK : Alliance.WHITE;
 
-                return true;
-
-
+                return advanceMove(true);
             }
 
         }
@@ -419,14 +417,14 @@ public class Board extends AbstractBoard {
 
                 removePiece(pawnPos);
                 addPiece(new Vector2(end.getX(), end.getY()), Piece.QUEEN, pawnAlliance);
-                return true;
+
+                return advanceMove(true);
             }
         }
         boolean moveSuccessful = piece.move(end);
 
-        if (!moveSuccessful) { // Attempt to move the piece
-           // System.out.println("piece.move failed. Mutex released");
-            return false;
+        if (!moveSuccessful) {
+            return advanceMove(false);
         }
 
         setLastPiece(piece);
@@ -451,13 +449,18 @@ public class Board extends AbstractBoard {
         addDrawPos(start);
         addDrawPos(end);
 
-        //After a successful move, advance to the next player
-        activePlayer = activePlayer.equals(Alliance.WHITE) ? Alliance.BLACK : Alliance.WHITE;
-
         //System.out.println("Local after: " + piece.position() + ", has moved: " + piece.hasMoved());
         //System.out.println("Move successful!");
 
-        return true;
+        return advanceMove(true);
+    }
+
+    private boolean advanceMove(boolean state) {
+        if(state) {
+            activePlayer = activePlayer.equals(Alliance.WHITE) ? Alliance.BLACK : Alliance.WHITE;
+        }
+
+        return state;
     }
 
     public boolean movePiece(Move move) {
