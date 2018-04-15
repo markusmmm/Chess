@@ -386,8 +386,8 @@ public class GameBoard {
             return false;
         }
 
-        // new Main().mainMenu(username, stage);
-        MediaHelper.getSound("game_over.mp3").play();
+        MediaHelper media = new MediaHelper();
+        media.playSound39("game_over.mp3");
         return true;
     }
 

@@ -12,17 +12,13 @@ import javafx.stage.Stage;
 import management.DatabaseController;
 import pieces.MediaHelper;
 import resources.BoardMode;
-import sun.audio.AudioPlayer;
-import sun.audio.AudioStream;
-
-import java.io.InputStream;
 
 
 public class Main extends Application {
 
     static final int WIDTH = 720;
     static final int HEIGHT = 500;
-
+    MediaHelper media = new MediaHelper();
     private Stage stage;
     private BorderPane root;
     private DatabaseController database = new DatabaseController();
@@ -136,7 +132,7 @@ public class Main extends Application {
         randomBoardPlay.setOnAction(e -> createChessGame(username, 1, BoardMode.RANDOM, stage, root));
         buttonPlayMedium.setOnAction(e -> createChessGame(username, 2, BoardMode.DEFAULT, stage, root));
         buttonPlayHard.setOnAction(e -> createChessGame(username, 3, BoardMode.DEFAULT, stage, root));
-        MediaHelper.getSound("welcome.mp3").play();
+        media.playSound39("welcome.mp3");
         buttonQuit.setOnAction(e -> onQuit());
 
         VBox buttonContainer = new VBox(10);
@@ -166,7 +162,9 @@ public class Main extends Application {
         gameBoard.createBoard();
         root.setCenter(gameBoard.getContainer());
         root.setTop(gameBoard.generateGameMenuBar());
-        MediaHelper.getSound("startup.mp3").play();
+
+
+        media.playSound39("startup.mp3");
         //return gameBoard.getContainer();
     }
 

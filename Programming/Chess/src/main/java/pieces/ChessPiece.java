@@ -3,17 +3,8 @@ package pieces;
 import management.AbstractBoard;
 import management.Board;
 import resources.*;
-import sun.applet.Main;
 
-import javax.naming.OperationNotSupportedException;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import java.io.IOException;
 import java.util.Set;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
 
 public abstract class ChessPiece implements IChessPiece {
 
@@ -91,10 +82,8 @@ public abstract class ChessPiece implements IChessPiece {
 		//System.out.println("Attempting to move " + alliance + " " + piece + " from " + position + " to " + move);
 		if (!legalMove(move)) return false; // If the destination is unreachable, the move fails
 
-		MediaHelper.getSound("move.mp3").play();
-		MediaHelper.getSound("move.mp3").stop();
-		MediaHelper.getSound("move.mp3").play();
-		MediaHelper.getSound("move.mp3").stop();
+		MediaHelper media = new MediaHelper();
+		media.playSound39("move.mp3");
 		position = new Vector2(move.getX(), move.getY());
 		hasMoved = true;
 
