@@ -25,6 +25,7 @@ import java.util.Set;
 import java.util.Stack;
 
 public class GameBoard {
+    MediaHelper media = new MediaHelper();
     private final int SIZE = 8;
     private Board board;
     private final ChessComputer computer;
@@ -248,6 +249,7 @@ public class GameBoard {
             /*System.out.println("Moving " + board.getPiece(firstTile.getPos()) +
                     " from " + firstTile.getPos() + " to " + pos);*/
         } else {
+            media.playSound39("denied.mp3");
             drawBoard();
         }
 
