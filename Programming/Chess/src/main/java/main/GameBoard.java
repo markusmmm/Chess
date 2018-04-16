@@ -17,7 +17,7 @@ import management.*;
 import pieces.ChessPiece;
 import pieces.IChessPiece;
 import pieces.King;
-import pieces.MediaHelper;
+import resources.MediaHelper;
 import resources.*;
 import resources.Console;
 
@@ -250,7 +250,7 @@ public class GameBoard {
             /*resources.Console.println("Moving " + board.getPiece(firstTile.getPos()) +
                     " from " + firstTile.getPos() + " to " + pos);*/
         } else {
-            media.playSound39("denied.mp3");
+            media.playSound("denied.mp3");
             drawBoard();
         }
 
@@ -390,7 +390,7 @@ public class GameBoard {
         }
 
         MediaHelper media = new MediaHelper();
-        media.playSound39("game_over.mp3");
+        media.playSound("game_over.mp3");
         return true;
     }
 
