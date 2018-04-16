@@ -34,7 +34,7 @@ public class ChessComputerMedium extends ChessComputer {
             moveChart.add(new MoveScore(score, moveStorage.get(i)));
         }
         printMoves(moveChart);
-        return Collections.min(moveChart).getMove().;
+        return Collections.min(moveChart).getMove();
     }
 
     private int scoreMove(int[][] chessB, Move move, int depth, int turn) {
