@@ -81,18 +81,26 @@ public class Board extends AbstractBoard {
 	}
 	*/
 
+
+    /**
+     * Generates a random board with random amount of pieces.
+     *
+     * @return ChessBoard
+     */
+
     private void generateRandomBoard() {
         int bRooks = 0, bPawns = 0, bQueens = 0, bKings = 0, bBishops = 0, bKnights = 0;
         int wRooks = 0, wPawns = 0, wQueens = 0, wKings = 0, wBishops = 0, wKnights = 0;
+        //Keeps track of how many of each pieces is added, so that we don't get to many of one.
         int w = 0;
         int b = 0;
-
+        //Counters for black and white pieces
         int bishopX = 0;
         int bishopY = 0;
 
         int bishopWX = 0;
         int bishopWY = 0;
-
+        //X and Y positions of bishops. This is to make sure that bishops from the same alliance don't controll the same colored tiles.
         Random random = new Random();
         while (b < 16) {
             Piece aPiece = randomPiece();
@@ -100,39 +108,40 @@ public class Board extends AbstractBoard {
             int y = random.nextInt(7 - 0 + 1) + 0;
 
             Vector2 pos = new Vector2(x, y);
+            //Creates a random position
             if (!vacant(pos)) {
                 b++;
                 continue;
+                //Checks if the position is vacant.
             }
             if (b == 15 && bKings == 0) {
                 addPiece(pos, Piece.KING, Alliance.BLACK);
                 if (getKing(Alliance.BLACK).inCheck()) {
                     removePiece(pos);
-
                     continue;
                 }
                 w++;
                 wKings++;
+                //If a black king has not been added by the last count, a black king will be added.
                 continue;
             }
 
             if (aPiece.equals(Piece.ROOK) && bRooks < 2) {
-
                 addPiece(pos, aPiece, Alliance.BLACK);
-
-
                 b++;
                 bRooks++;
                 continue;
             }
             if (aPiece.equals(Piece.PAWN) && bPawns < 8) {
                 if (y == 0) {
+                    //Checks that the pawn isn't put in an invalid position on the board.
                     continue;
                 }
-                if(y == 7){
+                if (y == 7) {
                     addPiece(pos, Piece.QUEEN, Alliance.BLACK);
                     b++;
                     continue;
+                    //If the pawn is placed on the opposite side of the board, there will be pawn promotion
                 }
                 addPiece(pos, aPiece, Alliance.BLACK);
                 b++;
@@ -146,7 +155,6 @@ public class Board extends AbstractBoard {
                 continue;
             }
             if (aPiece.equals(Piece.KING) && bKings < 1) {
-
                 addPiece(pos, aPiece, Alliance.BLACK);
                 if (getKing(Alliance.BLACK).inCheck()) {
                     removePiece(pos);
@@ -167,6 +175,7 @@ public class Board extends AbstractBoard {
                     if (b1 == b2) {
                         continue;
                     }
+                    //Makes sure that if there's two bishops to be added, they will control their own colored tiles.
                 }
                 addPiece(pos, aPiece, Alliance.BLACK);
                 b++;
@@ -185,8 +194,8 @@ public class Board extends AbstractBoard {
             }
         }
         while (w < 16) {
+            //Same conditions and method as the black pieces
             Piece aPiece = randomPiece();
-
             int x = random.nextInt(7 - 0 + 1) + 0;
             int y = random.nextInt(7 - 0 + 1) + 0;
 
@@ -215,7 +224,7 @@ public class Board extends AbstractBoard {
                 if (y == 7) {
                     continue;
                 }
-                if(y == 0){
+                if (y == 0) {
                     addPiece(invPos, Piece.QUEEN, Alliance.WHITE);
                     w++;
                     continue;
@@ -232,13 +241,11 @@ public class Board extends AbstractBoard {
                 continue;
             }
             if (aPiece.equals(Piece.KING) && wKings < 1) {
-
                 addPiece(invPos, aPiece, Alliance.WHITE);
                 if (getKing(Alliance.WHITE).inCheck()) {
                     removePiece(invPos);
                     continue;
                 }
-
                 w++;
                 wKings++;
                 continue;
@@ -284,7 +291,6 @@ public class Board extends AbstractBoard {
                 temp.put(pos, piece);
             }
         }
-
         return temp;
     }
 
@@ -457,7 +463,7 @@ public class Board extends AbstractBoard {
     }
 
     private boolean advanceMove(boolean state) {
-        if(state) {
+        if (state) {
             activePlayer = activePlayer.equals(Alliance.WHITE) ? Alliance.BLACK : Alliance.WHITE;
         }
 
@@ -476,7 +482,7 @@ public class Board extends AbstractBoard {
         logMove(node);
     }
 
-	public void saveFile(File file) {
+    public void saveFile(File file) {
         /*String dirPath = System.getProperty("user.home") + "\\GitGud\\";
         Console.printNotice("Save directory: " + dirPath);
         File dir = new File(dirPath);
@@ -485,31 +491,31 @@ public class Board extends AbstractBoard {
 
 		String path = dirPath + saveName + ".txt";*/
         String path = file.getAbsolutePath();
-		try {
-			FileWriter save = new FileWriter(path);
-			int n = size();
+        try {
+            FileWriter save = new FileWriter(path);
+            int n = size();
 
-			save.write(n + " 0\n");
-			for(int y = 0; y < n; y++) {
-				String line = "";
-				for(int x = 0; x < n; x++) {
-					ChessPiece p = getPiece(new Vector2(x,y));
-					char s = 'e';
-					if(p != null)
-						s = PieceManager.toSymbol(p.piece());
+            save.write(n + " 0\n");
+            for (int y = 0; y < n; y++) {
+                String line = "";
+                for (int x = 0; x < n; x++) {
+                    ChessPiece p = getPiece(new Vector2(x, y));
+                    char s = 'e';
+                    if (p != null)
+                        s = PieceManager.toSymbol(p.piece());
 
-					line += s;
-				}
-				save.write(line + "\n");
-			}
+                    line += s;
+                }
+                save.write(line + "\n");
+            }
 
-			save.close();
-			Console.printSuccess("Board saved to " + path);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+            save.close();
+            Console.printSuccess("Board saved to " + path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-	}
+    }
 
     @Override
     public Board clone() {
