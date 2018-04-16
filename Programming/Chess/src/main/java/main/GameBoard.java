@@ -198,12 +198,14 @@ public class GameBoard {
             fileChooser.setInitialDirectory(savesDir);
             File selectedFile = fileChooser.showOpenDialog(stage);
 
-            try {
-                board = new Board(selectedFile);
-                createBoard();
-            } catch (FileNotFoundException e1) {
-                Console.printError("Save file " + selectedFile.getName() + " does not exist");
-                e1.printStackTrace();
+            if(selectedFile != null) {
+                try {
+                    board = new Board(selectedFile);
+                    createBoard();
+                } catch (FileNotFoundException e1) {
+                    Console.printError("Save file " + selectedFile.getName() + " does not exist");
+                    e1.printStackTrace();
+                }
             }
         });
         menuItemSave.setOnAction(e -> {
