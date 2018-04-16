@@ -115,8 +115,8 @@ public class    King extends ChessPiece {
      * @return Whether or not the move successfully protects the king
      */
     public boolean resolvesCheck(Vector2 start, Vector2 end) {
-        Console.printNotice("\nSimulating move " + new Move(start, end));
-        //Console.printCaller();
+        //resources.Console.printNotice("\nSimulating move " + new Move(start, end));
+        //resources.Console.printCaller();
 
         Board dummyBoard = board.clone();
 

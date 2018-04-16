@@ -34,8 +34,8 @@ public class Rook extends ChessPiece {
 	public boolean legalMove(Vector2 destination) {
 		if(!super.legalMove(destination)) return false;
 
-		//System.out.println("inStraights: " + inStraights(destination));
-		//System.out.println("freePath: " + freePath(destination));
+		//resources.Console.println("inStraights: " + inStraights(destination));
+		//resources.Console.println("freePath: " + freePath(destination));
 
 		return (
 			inStraights(destination) &&

@@ -64,10 +64,10 @@ public class Board extends AbstractBoard {
                 if (type.equals(Piece.EMPTY)) continue;
 
                 addPiece(pos, type, Alliance.BLACK);
-                //System.out.println(pos + ": " + getPiece(pos));
+                //resources.Console.println(pos + ": " + getPiece(pos));
 
                 addPiece(invPos, type, Alliance.WHITE);
-                //System.out.println(invPos + ": " + getPiece(invPos));
+                //resources.Console.println(invPos + ": " + getPiece(invPos));
 
                 p++;
             }
@@ -367,7 +367,7 @@ public class Board extends AbstractBoard {
         ChessPiece piece = (ChessPiece) getPiece(start);
 
 
-        //System.out.println("Currently " + activePlayer + "'s turn");
+        //resources.Console.println("Currently " + activePlayer + "'s turn");
 
         if (piece == null) {
             return advanceMove(false); // Check if a piece exists at the given position
@@ -491,8 +491,8 @@ public class Board extends AbstractBoard {
         addDrawPos(start);
         addDrawPos(end);
 
-        //System.out.println("Local after: " + piece.position() + ", has moved: " + piece.hasMoved());
-        //System.out.println("Move successful!");
+        //resources.Console.println("Local after: " + piece.position() + ", has moved: " + piece.hasMoved());
+        //resources.Console.println("Move successful!");
 
         return advanceMove(true);
     }
@@ -527,7 +527,7 @@ public class Board extends AbstractBoard {
      */
     public void performAttack(Vector2 start, Vector2 end, Vector2 victim) {
         MoveNode node = new MoveNode(getPiece(start), start, end, getPiece(victim));
-        //System.out.println("Performing attack: " + node);
+        //resources.Console.println("Performing attack: " + node);
 
         removePiece(victim);
         logMove(node);
@@ -539,7 +539,7 @@ public class Board extends AbstractBoard {
      */
 	public void saveFile(File file) {
         /*String dirPath = System.getProperty("user.home") + "\\GitGud\\";
-        Console.printNotice("Save directory: " + dirPath);
+        resources.Console.printNotice("Save directory: " + dirPath);
         File dir = new File(dirPath);
         if(!dir.exists())
             dir.mkdir();

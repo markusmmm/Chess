@@ -1,3 +1,5 @@
+package main;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
@@ -17,6 +19,7 @@ import pieces.IChessPiece;
 import pieces.King;
 import pieces.MediaHelper;
 import resources.*;
+import resources.Console;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -93,7 +96,7 @@ public class GameBoard {
             savesDir.mkdirs();
         }
 
-        Console.printSuccess("Game setup");
+        Console.printSuccess("Game setup (Difficulty " + difficulty + ")");
     }
 
     /**
@@ -173,7 +176,7 @@ public class GameBoard {
         Menu menuFile = new Menu("File");
         Menu menuHelp = new Menu("Help");
 
-        MenuItem menuItemExit = new MenuItem("Main Menu");
+        MenuItem menuItemExit = new MenuItem("main.Main Menu");
         MenuItem menuItemReset = new MenuItem("Reset Game");
         MenuItem menuItemLoad = new MenuItem("Load Game");
         MenuItem menuItemSave = new MenuItem("Save Game");
@@ -218,24 +221,22 @@ public class GameBoard {
     private void attemptMove(Tile firstTile, Vector2 pos) {
         IChessPiece temp = board.getPiece(firstTile.getPos());
         if(!board.ready()) {
-            System.out.println("Board not ready. Move failed");
+            Console.println("Board not ready. Move failed");
             return;
         } else if(temp == null) {
-            System.out.println("No piece at " + pos + ". Move failed");
+            Console.println("No piece at " + pos + ". Move failed");
             return;
         }
 
-        //System.out.println("Before: " + temp.position());
+        //resources.Console.println("Before: " + temp.position());
 
         boolean moveResult = board.movePiece(firstTile.getPos(), pos);
-       // System.out.println("Outer move result: " + moveResult);
+       // resources.Console.println("Outer move result: " + moveResult);
         if (moveResult) {
-            if(board.getKing(Alliance.WHITE).checkmate())
-
-               // System.out.println("Has computer: " + computer != null);
+            Console.println("Has computer: " + (computer != null));
             if (computer != null) {
                 Move move = computer.getMove();
-               // System.out.println("Computer attempting move " + move);
+                Console.println("Computer attempting move " + move);
                 board.movePiece(move);
                 int row = move.start.getY();
                 int col = move.start.getX();
@@ -246,14 +247,14 @@ public class GameBoard {
             //firstTile.setFill(Color.TRANSPARENT);
             drawBoard();
             updateLogs();
-            /*System.out.println("Moving " + board.getPiece(firstTile.getPos()) +
+            /*resources.Console.println("Moving " + board.getPiece(firstTile.getPos()) +
                     " from " + firstTile.getPos() + " to " + pos);*/
         } else {
             media.playSound39("denied.mp3");
             drawBoard();
         }
 
-        //System.out.println("After:" + temp.position());
+        //resources.Console.println("After:" + temp.position());
     }
 
     private boolean tileClick(MouseEvent e, Tile tile) {
@@ -284,7 +285,7 @@ public class GameBoard {
              * to the new location
              */
             IChessPiece firstPiece = board.getPiece(firstTile.getPos());
-            System.out.println(firstClick + " " + firstPiece);
+            Console.println(firstClick + " " + firstPiece);
             attemptMove(firstTile, pos);
 
             firstClick = false;
@@ -302,13 +303,13 @@ public class GameBoard {
         } else {
             System.out.print(pos + ": ");
             if (piece == null) {
-                System.out.println("No piece");
+                Console.println("No piece");
                 return false;
             } else if (piece.alliance() != alliance) {
-                System.out.println("Not your alliance");
+                Console.println("Not your alliance");
                 return false;
             }
-            //System.out.println(piece);
+            //resources.Console.println(piece);
 
             firstClick = true;
             firstTile = tile;
@@ -379,11 +380,11 @@ public class GameBoard {
                 blackKing = board.getKing(Alliance.BLACK);
 
         if(whiteKing.checkmate())
-            System.out.println("Game over\nBlack player won!");
+            Console.println("Game over\nBlack player won!");
         else if(blackKing.checkmate())
-            System.out.println("Game over\nWhite player won!");
+            Console.println("Game over\nWhite player won!");
         else if(whiteKing.stalemate() || blackKing.stalemate())
-            System.out.println("Game Over\nRemiss");
+            Console.println("Game Over\nRemiss");
         else {
             return false;
         }

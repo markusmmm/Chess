@@ -221,7 +221,7 @@ public class ChessComputerMedium extends ChessComputer {
                 else if (chessB[x][y] == 9) System.out.print('q');  //Queen
                 else if (chessB[x][y] == -9) System.out.print('Q');
             }
-            System.out.println();
+            Console.println();
         }
     }
 }

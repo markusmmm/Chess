@@ -2,6 +2,7 @@ package pieces;
 
 import management.AbstractBoard;
 import resources.Alliance;
+import resources.Console;
 import resources.Piece;
 import resources.Vector2;
 
@@ -52,9 +53,9 @@ public class Pawn extends ChessPiece {
 		boolean blackResult = this.alliance.equals(BLACK) && enPassant(blackEnpasant);
 		boolean whiteResult = this.alliance.equals(WHITE) && enPassant(whiteEnpasant);
 
-		//System.out.println("Black result: " + blackResult);
+		//resources.Console.println("Black result: " + blackResult);
 
-		//System.out.println("White result: " + whiteResult);
+		//resources.Console.println("White result: " + whiteResult);
 
 		return (
 				((blackResult ||
@@ -88,7 +89,7 @@ public class Pawn extends ChessPiece {
 			board.performAttack(start, destination, blackEnpasant);
 		}
 		else if(whiteResult) {
-			System.out.println(whiteEnpasant);
+			Console.println(whiteEnpasant);
 			board.performAttack(start, destination, whiteEnpasant);
 		}
 

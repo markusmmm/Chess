@@ -2,6 +2,7 @@ import management.Board;
 import org.junit.Test;
 import pieces.Pawn;
 import resources.Alliance;
+import resources.Console;
 import resources.Piece;
 import resources.Vector2;
 
@@ -101,10 +102,10 @@ public class PawnTest
         Pawn testWhitePawn = (Pawn) board.getPiece(pawnIWantToMove);
         Vector2 amountOfYTilesIWantToMove = new Vector2(0, -1);
 
-        System.out.println("Position before moving" + testWhitePawn.position());
+        Console.println("Position before moving" + testWhitePawn.position());
         board.movePiece(testWhitePawn.position(), testWhitePawn.position().add(amountOfYTilesIWantToMove));
-        System.out.println("Position after moving" + testWhitePawn.position());
-        System.out.println();
+        Console.println("Position after moving" + testWhitePawn.position());
+        Console.println();
 
         assert(testWhitePawn != null);
     }
