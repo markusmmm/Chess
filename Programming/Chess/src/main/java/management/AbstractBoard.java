@@ -89,7 +89,7 @@ public class AbstractBoard {
                 Piece type = PieceManager.toPiece(c);
                 Alliance alliance = Character.isLowerCase(c) ? Alliance.BLACK : Alliance.WHITE;
 
-                System.out.println("Setting piece at " + pos);
+                //System.out.println("Setting piece at " + pos);
                 addPiece(pos, type, alliance);
             }
         }
@@ -236,6 +236,7 @@ public class AbstractBoard {
             ChessPiece piece = pieces.get(pos);
             if (piece == null) {
                 mutex.release();
+                //System.out.println("Mutex released");
                 return false;
             }
 
@@ -326,12 +327,12 @@ public class AbstractBoard {
 
     }
 
-    protected void putPiece(Vector2 pos, ChessPiece piece) {
+    public void putPiece(Vector2 pos, ChessPiece piece) {
         try {
-            System.out.println("Attempting to put " + piece + " at " + pos);
+            //System.out.println("Attempting to put " + piece + " at " + pos);
             mutex.acquire();
 
-            pieces.put(pos, piece);
+            pieces.put(pos, piece.clone());
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
@@ -410,7 +411,7 @@ public class AbstractBoard {
 
             ChessPiece piece = pieces.get(pos);
             pieces.remove(pos);
-            capturedPieces.add(piece);
+            //capturedPieces.add(piece);
             drawPositions.push(pos);
 
             mutex.release();
@@ -433,7 +434,7 @@ public class AbstractBoard {
 
                 ChessPiece piece = pieces.get(pos);
                 pieces.remove(pos);
-                capturedPieces.add(piece);
+                //capturedPieces.add(piece);
                 drawPositions.push(pos);
             }
 

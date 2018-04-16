@@ -2,12 +2,8 @@ package pieces;
 
 import management.AbstractBoard;
 import management.Board;
-import resources.Alliance;
-import resources.Move;
-import resources.Piece;
-import resources.Vector2;
+import resources.*;
 
-import javax.naming.OperationNotSupportedException;
 import java.util.Set;
 
 public abstract class ChessPiece implements IChessPiece {
@@ -54,9 +50,8 @@ public abstract class ChessPiece implements IChessPiece {
 	 */
 	protected boolean legalMove(Vector2 destination) {
 		//System.out.println("(ChessPiece) Board is live: " + board.isLive());
-
 		IChessPiece endPiece = board.getPiece(destination);
-		// Check if victim is of opposite alliance
+		// Prevents attack on an allied piece
 		if(endPiece != null && endPiece.alliance().equals(alliance)) return false;
 
 		if(!board.insideBoard(position) || !board.insideBoard(destination)) return false;
@@ -79,21 +74,20 @@ public abstract class ChessPiece implements IChessPiece {
 	}
 
 
-
 	/**
 	 * 
 	 * @param move
 	 */
 	public boolean move(Vector2 move) {
-		System.out.println("Attempting to move " + alliance + " " + piece + " from " + position + " to " + move);
-
+		//System.out.println("Attempting to move " + alliance + " " + piece + " from " + position + " to " + move);
 		if (!legalMove(move)) return false; // If the destination is unreachable, the move fails
 
+		MediaHelper media = new MediaHelper();
+		media.playSound("move.mp3");
 		position = new Vector2(move.getX(), move.getY());
 		hasMoved = true;
 
-		System.out.println("Move performed. New pos: " + position);
-
+		//System.out.println("Move performed. New pos: " + position);
 		return true;
 	}
 
@@ -136,13 +130,16 @@ public abstract class ChessPiece implements IChessPiece {
 	}
 
 	protected void logActionPossibleDestinations(String caller) {
-		System.out.println(caller + " is checking possible destinations for " + toString());
+		//System.out.println(caller + " is checking possible destinations for " + toString());
 	}
 
 	@Override
     public String toString() {
 	    return alliance + " " + piece;
+
     }
+
+
 
     @Override
 	public ChessPiece clone() { return clonePiece(); }

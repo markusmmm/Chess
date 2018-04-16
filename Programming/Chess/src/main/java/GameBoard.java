@@ -1,9 +1,7 @@
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -11,24 +9,29 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import management.*;
 import pieces.ChessPiece;
 import pieces.IChessPiece;
 import pieces.King;
+import resources.MediaHelper;
 import resources.*;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Collections;
 import java.util.Set;
 import java.util.Stack;
 
 public class GameBoard {
+    MediaHelper media = new MediaHelper();
     private final int SIZE = 8;
-    private final Board board;
+    private Board board;
     private final ChessComputer computer;
 
     private Stage stage;
+    private BorderPane root;
     private GridPane grid;
     private BorderPane container;
     private ListView<MoveNode> moveLog;
@@ -39,11 +42,14 @@ public class GameBoard {
     private Rectangle[][] squares;
     private String username;
     private int difficulty;
+    private BoardMode boardMode;
 
     private boolean firstClick;
     private Tile firstTile;
 
-    public GameBoard(String username, int difficulty, BoardMode boardMode, Stage stage) {
+    private File savesDir = new File(System.getProperty("user.home"), "GitGud/");
+
+    public GameBoard(String username, int difficulty, BoardMode boardMode, Stage stage, BorderPane root) {
         Board boardVal = null;
 
         if(boardMode == BoardMode.DEFAULT) {
@@ -64,6 +70,8 @@ public class GameBoard {
         board = boardVal;
 
         this.stage = stage;
+        this.boardMode = boardMode;
+        this.root = root;
         this.grid = new GridPane();
         this.tiles = new Tile[SIZE][SIZE];
         this.squares = new Rectangle[SIZE][SIZE];
@@ -80,6 +88,10 @@ public class GameBoard {
         else if (difficulty == 2) computer = new ChessComputerMedium(board);
         else if (difficulty == 3) computer = new ChessComputerHard(board);
         else computer = null;
+
+        if (!savesDir.exists()) {
+            savesDir.mkdirs();
+        }
 
         Console.printSuccess("Game setup");
     }
@@ -150,7 +162,57 @@ public class GameBoard {
         container.setRight(right);
         container.setBottom(statusFieldContainer);
 
+        root.setTop(generateGameMenuBar());
+        root.setCenter(container);
+
         drawBoard();
+    }
+
+    public MenuBar generateGameMenuBar() {
+        MenuBar menuBar = new MenuBar();
+        Menu menuFile = new Menu("File");
+        Menu menuHelp = new Menu("Help");
+
+        MenuItem menuItemExit = new MenuItem("Main Menu");
+        MenuItem menuItemReset = new MenuItem("Reset Game");
+        MenuItem menuItemLoad = new MenuItem("Load Game");
+        MenuItem menuItemSave = new MenuItem("Save Game");
+        MenuItem menuItemQuit = new MenuItem("Quit");
+
+        menuItemExit.setOnAction(e -> {
+            new Main().mainMenu(username, stage);
+        });
+        menuItemReset.setOnAction(e -> {
+            GameBoard newGameBoard = new GameBoard(username, difficulty, boardMode, stage, root);
+            newGameBoard.createBoard();
+            root.setCenter(newGameBoard.getContainer());
+        });
+        menuItemLoad.setOnAction(e -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Open Chess Game File");
+            fileChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("Chess Game File", "*.txt"));
+            fileChooser.setInitialDirectory(savesDir);
+            File selectedFile = fileChooser.showOpenDialog(stage);
+        });
+        menuItemSave.setOnAction(e -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Open Chess Game File");
+            fileChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("Chess Game File", "*.txt"));
+            fileChooser.setInitialDirectory(savesDir);
+            File file = fileChooser.showSaveDialog(stage);
+            if (file != null)
+                board.saveFile(fileChooser.showSaveDialog(stage));
+        });
+        menuItemQuit.setOnAction(e -> System.exit(0));
+
+        menuFile.getItems().addAll(menuItemExit, menuItemReset, menuItemLoad, menuItemSave, menuItemQuit);
+        MenuItem menuItemAbout = new MenuItem("About");
+        menuHelp.getItems().add(menuItemAbout);
+
+        menuBar.getMenus().addAll(menuFile, menuHelp);
+        return menuBar;
     }
 
     private void attemptMove(Tile firstTile, Vector2 pos) {
@@ -163,17 +225,17 @@ public class GameBoard {
             return;
         }
 
-        System.out.println("Before: " + temp.position());
+        //System.out.println("Before: " + temp.position());
 
         boolean moveResult = board.movePiece(firstTile.getPos(), pos);
-        System.out.println("Outer move result: " + moveResult);
+       // System.out.println("Outer move result: " + moveResult);
         if (moveResult) {
             if(board.getKing(Alliance.WHITE).checkmate())
 
-                System.out.println("Has computer: " + computer != null);
+               // System.out.println("Has computer: " + computer != null);
             if (computer != null) {
                 Move move = computer.getMove();
-                System.out.println("Computer attempting move " + move);
+               // System.out.println("Computer attempting move " + move);
                 board.movePiece(move);
                 int row = move.start.getY();
                 int col = move.start.getX();
@@ -184,13 +246,14 @@ public class GameBoard {
             //firstTile.setFill(Color.TRANSPARENT);
             drawBoard();
             updateLogs();
-            System.out.println("Moving " + board.getPiece(firstTile.getPos()) +
-                    " from " + firstTile.getPos() + " to " + pos);
+            /*System.out.println("Moving " + board.getPiece(firstTile.getPos()) +
+                    " from " + firstTile.getPos() + " to " + pos);*/
         } else {
+            media.playSound("denied.mp3");
             drawBoard();
         }
 
-        System.out.println("After:" + temp.position());
+        //System.out.println("After:" + temp.position());
     }
 
     private boolean tileClick(MouseEvent e, Tile tile) {
@@ -245,7 +308,7 @@ public class GameBoard {
                 System.out.println("Not your alliance");
                 return false;
             }
-            System.out.println(piece);
+            //System.out.println(piece);
 
             firstClick = true;
             firstTile = tile;
@@ -325,11 +388,8 @@ public class GameBoard {
             return false;
         }
 
-        /* Changes back from GameBoard to main menu */
-        Scene scene = new Scene(new Main().mainMenu(username));
-        scene.getStylesheets().add("stylesheet.css");
-        stage.setScene(scene);
-
+        MediaHelper media = new MediaHelper();
+        media.playSound("game_over.mp3");
         return true;
     }
 

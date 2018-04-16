@@ -52,9 +52,9 @@ public class Pawn extends ChessPiece {
 		boolean blackResult = this.alliance.equals(BLACK) && enPassant(blackEnpasant);
 		boolean whiteResult = this.alliance.equals(WHITE) && enPassant(whiteEnpasant);
 
-		System.out.println("Black result: " + blackResult);
+		//System.out.println("Black result: " + blackResult);
 
-		System.out.println("White result: " + whiteResult);
+		//System.out.println("White result: " + whiteResult);
 
 		return (
 				((blackResult ||
@@ -84,9 +84,6 @@ public class Pawn extends ChessPiece {
 		if(!hasDoubleStepped && (whiteNegative2 || blackPositive2))
 			hasDoubleStepped = true;
 
-
-
-
 		if(blackResult) {
 			board.performAttack(start, destination, blackEnpasant);
 		}
@@ -102,15 +99,24 @@ public class Pawn extends ChessPiece {
 		return true;
 	}
 
+	public boolean withinBoard(Vector2 move)
+	{
+		int moveGetX = move.getX();
+		int moveGetY = move.getY();
+		return (moveGetX >= 0 && moveGetX <= 7 && moveGetY >= 0 && moveGetY <= 7);
+
+	}
 
 	public boolean whiteNegative(Vector2 move)
 	{
+		if(!withinBoard(move)) return false;
 		Vector2 white = new Vector2(this.position().getX(), this.position().getY() - 1);
 		return move.equals(white) && board.vacant(move);
 	}
 
 	public boolean whiteNegative2(Vector2 move)
 	{
+		if(!withinBoard(move)) return false;
 		if(hasMoved()) return false;
 
 		Vector2 white1 = new Vector2(this.position().getX(), this.position().getY() - 1);
@@ -120,12 +126,14 @@ public class Pawn extends ChessPiece {
 
 	public boolean blackPositive(Vector2 move)
 	{
+		if(!withinBoard(move)) return false;
 		Vector2 black = new Vector2(this.position().getX(), this.position().getY() + 1);
 		return move.equals(black) && board.vacant(move);
 	}
 
 	public boolean blackPositive2(Vector2 move)
 	{
+		if(!withinBoard(move)) return false;
 		if(hasMoved()) return false;
 
 		Vector2 black1 = new Vector2(this.position().getX(), this.position().getY() + 1);
@@ -135,6 +143,7 @@ public class Pawn extends ChessPiece {
 
 	public boolean whiteLDiag(Vector2 move)
 	{
+		if(!withinBoard(move)) return false;
 		Vector2 whiteLD = new Vector2(this.position().getX() - 1, this.position().getY() - 1);
 		if (!board.vacant(move)) {
 			ChessPiece enemy = (ChessPiece) board.getPiece(move);
@@ -147,6 +156,7 @@ public class Pawn extends ChessPiece {
 
 	public boolean whiteRDiag(Vector2 move)
 	{
+		if(!withinBoard(move)) return false;
 		Vector2 whiteRD = new Vector2(this.position().getX() + 1, this.position().getY() - 1);
 		if (!board.vacant(move)) {
 			ChessPiece enemy = (ChessPiece) board.getPiece(move);
@@ -159,6 +169,7 @@ public class Pawn extends ChessPiece {
 
 	public boolean blackLDiag(Vector2 move)
 	{
+		if(!withinBoard(move)) return false;
 		Vector2 blackLD = new Vector2(this.position().getX() - 1, this.position().getY() + 1);
 		if (!board.vacant(move)) {
 			ChessPiece enemy = (ChessPiece) board.getPiece(move);
@@ -171,6 +182,7 @@ public class Pawn extends ChessPiece {
 
 	public boolean blackRDiag(Vector2 move)
 	{
+		if(!withinBoard(move)) return false;
 		Vector2 blackRD = new Vector2(this.position().getX() + 1, this.position().getY() + 1);
 		if (!board.vacant(move)) {
 			ChessPiece enemy = (ChessPiece) board.getPiece(move);
@@ -183,6 +195,7 @@ public class Pawn extends ChessPiece {
 
 	public boolean noTurnBackWhite(Vector2 move)
 	{
+		if(!withinBoard(move)) return false;
 		Vector2 turnBackWhite1 = new Vector2(this.position.getX(), this.position.getY() + 1);
 		Vector2 turnBackWhite2 = new Vector2(this.position.getX() + 1, this.position.getY() + 1);
 		Vector2 turnBackWhite3 = new Vector2(this.position.getX() - 1, this.position.getY() + 1);
@@ -193,6 +206,7 @@ public class Pawn extends ChessPiece {
 
 	public boolean noTurnBackBlack(Vector2 move)
 	{
+		if(!withinBoard(move)) return false;
 		Vector2 turnBackBlack1 = new Vector2(this.position.getX(), this.position.getY() - 1);
 		Vector2 turnBackBlack2 = new Vector2(this.position.getX() + 1, this.position.getY() - 1);
 		Vector2 turnBackBlack3 = new Vector2(this.position.getX() - 1, this.position.getY() - 1);
@@ -278,6 +292,7 @@ public class Pawn extends ChessPiece {
 
 	public boolean enPassant(Vector2 side)
 	{
+		if(!withinBoard(side)) return false;
 		if (!board.vacant(side))
 		{
 			if((this.alliance.equals(WHITE) && this.position.getY() == 3) || (this.alliance.equals(BLACK) && this.position.getY() == 4))
@@ -296,6 +311,7 @@ public class Pawn extends ChessPiece {
 
 	public boolean promotion(Vector2 move)
 	{
+		if(!withinBoard(move)) return false;
 		if(board.vacant(move))
 		{
 			if (this.position.getY() == 0 && this.alliance.equals(WHITE))
