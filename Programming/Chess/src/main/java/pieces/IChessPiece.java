@@ -13,7 +13,6 @@ public interface IChessPiece {
 	Piece piece();
 	int getValue();
 
-	Set<Vector2> getPossibleDestinations(String caller);
 	Set<Vector2> getPossibleDestinations();
 
 	boolean hasMoved();

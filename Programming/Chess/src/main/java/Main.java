@@ -3,9 +3,12 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
@@ -39,10 +42,13 @@ public class Main extends Application {
      * @return login window
      */
     private Parent loginWindow() {
-        Label labelTitle = new Label("CHESS");
-        labelTitle.setUnderline(true);
-        labelTitle.setId("title");
+        //Label labelTitle = new Label("CHESS");
+        //labelTitle.setUnderline(true);
+        //labelTitle.setId("title");
 
+        Image bootImage = new Image("images/bootDecal.png", 500, 250, true, true);
+        Rectangle bootDecal = new Rectangle(bootImage.getRequestedWidth(), bootImage.getRequestedHeight());
+        bootDecal.setFill(new ImagePattern(bootImage));
 
         Label labelUsername = new Label("Username:");
         labelUsername.setPrefWidth(120);
@@ -70,7 +76,7 @@ public class Main extends Application {
 
         VBox container = new VBox(10);
         container.setAlignment(Pos.CENTER);
-        container.getChildren().addAll(labelTitle, loginContainer, loginButton, errorField);
+        container.getChildren().addAll(bootDecal, loginContainer, loginButton, errorField);
         container.setPrefSize(WIDTH, HEIGHT);
         return container;
     }

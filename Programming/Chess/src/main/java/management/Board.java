@@ -15,6 +15,8 @@ import java.util.Random;
 import java.util.Set;
 
 public class Board extends AbstractBoard {
+    private int moveI = 0;
+
     private static final Piece[] defaultBoard = new Piece[]{
             Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK,
             Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN,
@@ -24,14 +26,28 @@ public class Board extends AbstractBoard {
             Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK
     };
 
+    /**
+     * Clones all data from 'template' into this board
+     * @param template The board to clone data from
+     */
     private Board(Board template) {
         super(template);
     }
 
+    /**
+     * Creates a new square board
+     * @param size The board's dimensions (One size parameter ensures a square board)
+     */
     public Board(int size) {
         super(size, false);
     }
 
+    /**
+     * Creates a new square board
+     * @param size The board's dimensions (One size parameter ensures a square board)
+     * @param useClock Whether or not the game should be timed
+     * @param mode How the board's initial state should be generated
+     */
     public Board(int size, boolean useClock, BoardMode mode) {
         super(size, useClock);
 
@@ -60,6 +76,11 @@ public class Board extends AbstractBoard {
         }
     }
 
+    /**
+     * Loads this board's content from a given file
+     * @param fileName Name of the save file
+     * @throws FileNotFoundException
+     */
     public Board(String fileName) throws FileNotFoundException {
         super(fileName);
     }
@@ -81,6 +102,9 @@ public class Board extends AbstractBoard {
 	}
 	*/
 
+    /**
+     * Generates a random (but legal) game state on this board
+     */
     private void generateRandomBoard() {
         int bRooks = 0, bPawns = 0, bQueens = 0, bKings = 0, bBishops = 0, bKnights = 0;
         int wRooks = 0, wPawns = 0, wQueens = 0, wKings = 0, wBishops = 0, wKnights = 0;
@@ -273,6 +297,11 @@ public class Board extends AbstractBoard {
         }
     }
 
+    /**
+     * Gives all active pieces of a given alliance
+     * @param alliance The alliance of the pieces to find
+     * @return All matching pieces on this board
+     */
     public HashMap<Vector2, IChessPiece> getPieces(Alliance alliance) {
         HashMap<Vector2, IChessPiece> temp = new HashMap<>();
 
@@ -288,6 +317,11 @@ public class Board extends AbstractBoard {
         return temp;
     }
 
+    /**
+     * Gives all active pieces of a given alliance, that can perform at least one legal move
+     * @param alliance The alliance of the pieces to find
+     * @return All matching pieces on this board
+     */
     public HashMap<Vector2, IChessPiece> getUsablePieces(Alliance alliance) {
         HashMap<Vector2, IChessPiece> usablePieces = new HashMap<>();
 
@@ -297,7 +331,7 @@ public class Board extends AbstractBoard {
             if (piece == null) continue; // Ignore empty squares
 
             if (insideBoard(pos) && piece.alliance().equals(alliance)) {
-                Set<Vector2> possibleDestinations = piece.getPossibleDestinations("Board");
+                Set<Vector2> possibleDestinations = piece.getPossibleDestinations();
                 if (possibleDestinations.size() == 0) continue; // If the piece has no valid moves, ignore it
 
                 usablePieces.put(pos, piece);
@@ -307,6 +341,11 @@ public class Board extends AbstractBoard {
         return usablePieces;
     }
 
+    /**
+     *
+     * @param alliance The alliance of the king to find
+     * @return The king on this board with the given alliance
+     */
     public King getKing(Alliance alliance) {
         HashMap<Vector2, IChessPiece> temp = getPieces(alliance);
         for (Vector2 pos : temp.keySet())
@@ -317,8 +356,10 @@ public class Board extends AbstractBoard {
     }
 
     /**
-     * @param start
-     * @param end
+     * Attempts to move a piece from 'start' to 'end'
+     * @param start Position of the piece to be moved
+     * @param end Destination of the attempted move
+     * @return If the move was successful
      */
     public boolean movePiece(Vector2 start, Vector2 end) {
         if (!insideBoard(start)) return advanceMove(false);
@@ -456,6 +497,20 @@ public class Board extends AbstractBoard {
         return advanceMove(true);
     }
 
+    /**
+     * Overload that takes in a Move object
+     * @param move The move to perform
+     * @return Whether or not the move was successful
+     */
+    public boolean movePiece(Move move) {
+        return movePiece(move.start, move.end);
+    }
+
+    /**
+     * Uses internally by board do advance to the next turn
+     * @param state Whether or not the move should be advanced
+     * @return 'state'
+     */
     private boolean advanceMove(boolean state) {
         if(state) {
             activePlayer = activePlayer.equals(Alliance.WHITE) ? Alliance.BLACK : Alliance.WHITE;
@@ -464,10 +519,12 @@ public class Board extends AbstractBoard {
         return state;
     }
 
-    public boolean movePiece(Move move) {
-        return movePiece(move.start, move.end);
-    }
-
+    /**
+     * Moves a piece from 'start' to 'end', and removes 'victim' from this board
+     * @param start Position of the attacking piece
+     * @param end Destination of the attack
+     * @param victim Attacked piece
+     */
     public void performAttack(Vector2 start, Vector2 end, Vector2 victim) {
         MoveNode node = new MoveNode(getPiece(start), start, end, getPiece(victim));
         //System.out.println("Performing attack: " + node);
@@ -476,6 +533,10 @@ public class Board extends AbstractBoard {
         logMove(node);
     }
 
+    /**
+     * Saves the board's state to a text-file
+     * @param file Name of the save (No path/file-extension)
+     */
 	public void saveFile(File file) {
         /*String dirPath = System.getProperty("user.home") + "\\GitGud\\";
         Console.printNotice("Save directory: " + dirPath);
@@ -511,6 +572,10 @@ public class Board extends AbstractBoard {
 
 	}
 
+    /**
+     * Returns an identical copy of this board
+     * @return Clone of this board
+     */
     @Override
     public Board clone() {
         return new Board(this);

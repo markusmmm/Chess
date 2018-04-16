@@ -32,4 +32,14 @@ public class Console {
     public static void printError(String msg) {
         System.out.println(ANSI_RED_BG + ANSI_WHITE + msg + ANSI_RESET);
     }
+
+    public static void printCaller(int i) {
+        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+        System.out.println("\t" + stackTraceElements[i]);
+    }
+    public static void printCaller() {
+        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+        for(StackTraceElement e : stackTraceElements)
+            System.out.println("\t" + e);
+    }
 }

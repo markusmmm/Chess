@@ -47,9 +47,7 @@ public class Rook extends ChessPiece {
 	 * @return a list of all possible moves from this position
 	 */
 
-	public Set<Vector2> getPossibleDestinations(String caller) {
-		logActionPossibleDestinations(caller);
-
+	public Set<Vector2> getPossibleDestinations() {
 		possibleMoves.clear();
 		for (int variable = 0; variable < board.size(); variable++) {
 			//Straights

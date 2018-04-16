@@ -2,10 +2,7 @@ package pieces;
 
 import management.AbstractBoard;
 import management.Board;
-import management.ChessRanking;
-import resources.Alliance;
-import resources.Piece;
-import resources.Vector2;
+import resources.*;
 
 import java.util.*;
 
@@ -65,8 +62,7 @@ public class    King extends ChessPiece {
         );
     }
 
-    public Set<Vector2> getPossibleDestinations(String caller) {
-        logActionPossibleDestinations(caller);
+    public Set<Vector2> getPossibleDestinations() {
 
         Set<Vector2> possibleMoves = new HashSet<>();
 
@@ -113,21 +109,21 @@ public class    King extends ChessPiece {
     }
 
     /**
-     * Determines if the attempted
-     * @param start
-     * @param end
-     * @return
+     * Determines if the attempted move puts the king in check
+     * @param start Start position of the attempted move
+     * @param end End position of the attempted move
+     * @return Whether or not the move successfully protects the king
      */
     public boolean resolvesCheck(Vector2 start, Vector2 end) {
+        Console.printNotice("\nSimulating move " + new Move(start, end));
+        //Console.printCaller();
+
         Board dummyBoard = board.clone();
 
         if(start.equals(position))
             return movesIntoCheck(end);
 
-        ChessPiece dummyPiece = dummyBoard.getPiece(start);
-        dummyBoard.removePiece(start);
-        dummyBoard.putPiece(end, dummyPiece);
-
+        dummyBoard.forceMovePiece(start, end);
         return !dummyBoard.getKing(alliance).inCheck();
     }
 

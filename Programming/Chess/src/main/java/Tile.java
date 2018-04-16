@@ -39,7 +39,7 @@ public class Tile extends Rectangle {
             s += "b_";
         s += pieceName.toLowerCase();
 
-        Image image = new Image("images/pieces/" + s + ".png");
+        Image image = new Image("images/pieces/" + s + ".png", 64, 64, true, true);
         this.setFill(new ImagePattern(image));
     }
 

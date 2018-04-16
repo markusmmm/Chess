@@ -215,9 +215,7 @@ public class Pawn extends ChessPiece {
 		return true;
 	}
 
-	public Set<Vector2> getPossibleDestinations(String caller) {
-		logActionPossibleDestinations(caller);
-
+	public Set<Vector2> getPossibleDestinations() {
 		Set<Vector2> possibleMoves = new HashSet<>();
 
 		int x = this.position.getX();

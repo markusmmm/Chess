@@ -125,18 +125,9 @@ public abstract class ChessPiece implements IChessPiece {
 		return Math.abs(this.position.getX() - newPos.getX()) == Math.abs(this.position.getY() - newPos.getY());
 	}
 
-	public Set<Vector2> getPossibleDestinations() {
-		return getPossibleDestinations("Anonymous");
-	}
-
-	protected void logActionPossibleDestinations(String caller) {
-		//System.out.println(caller + " is checking possible destinations for " + toString());
-	}
-
 	@Override
     public String toString() {
 	    return alliance + " " + piece;
-
     }
 
 

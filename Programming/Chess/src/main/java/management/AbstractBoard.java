@@ -2,6 +2,7 @@ package management;
 
 import pieces.*;
 import resources.*;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -224,6 +225,34 @@ public class AbstractBoard {
         return null;
     }
 
+    public boolean forceMovePiece(Vector2 start, Vector2 end) {
+        if(!(pieces.containsKey(start) && insideBoard(end))) return false;
+
+        try {
+            mutex.acquire();
+
+            ChessPiece piece = pieces.get(start);
+            pieces.remove(start);
+            pieces.put(end, piece);
+
+            mutex.release();
+            return true;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+
+            mutex.release();
+            return false;
+        }
+    }
+
+    public boolean undoMove() {
+        // TODO AbstractBoard.undoMove
+        throw new NotImplementedException();
+
+        //if(gameLog.size() == 0) return false;
+        //MoveNode lastMove = gameLog.peek();
+    }
+
     public boolean hasKing(Alliance alliance) {
         return alliance == Alliance.WHITE ? hasWhiteKing : hasBlackKing;
     }
@@ -327,7 +356,7 @@ public class AbstractBoard {
 
     }
 
-    public void putPiece(Vector2 pos, ChessPiece piece) {
+    protected void putPiece(Vector2 pos, ChessPiece piece) {
         try {
             //System.out.println("Attempting to put " + piece + " at " + pos);
             mutex.acquire();

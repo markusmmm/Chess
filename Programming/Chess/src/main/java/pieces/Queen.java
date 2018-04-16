@@ -32,9 +32,7 @@ public class Queen extends ChessPiece {
         );
 	}
 
-	public Set<Vector2> getPossibleDestinations(String caller) {
-        logActionPossibleDestinations(caller);
-
+	public Set<Vector2> getPossibleDestinations() {
 	    possibleMoves.clear();
         for (int variable = 0; variable < board.size(); variable++) {
             //Straights

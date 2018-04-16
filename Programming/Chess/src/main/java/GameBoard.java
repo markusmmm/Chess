@@ -57,7 +57,7 @@ public class GameBoard {
             try {
                 boardVal = new Board("default");
             } catch (FileNotFoundException e) {
-                //e.printStackTrace();
+                //e.printCaller();
                 //System.err.println("Game setup failed! exiting...");
                 //System.exit(1);
 

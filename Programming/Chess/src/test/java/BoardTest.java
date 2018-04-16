@@ -1,4 +1,5 @@
 import management.Board;
+import org.junit.Assert;
 import org.junit.Test;
 import pieces.ChessPiece;
 import pieces.King;
@@ -10,6 +11,8 @@ import resources.Vector2;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 public class BoardTest {
@@ -36,7 +39,7 @@ public class BoardTest {
         Vector2 queenPos = new Vector2(1,1);
         Board board = new Board(3);
         ChessPiece queen = board.addPiece(queenPos, Piece.QUEEN, Alliance.WHITE);
-        assertEquals(queen, board.getPiece(queenPos));
+        Assert.assertEquals(queen, board.getPiece(queenPos));
     }
     @Test
     public void MovePieceUpdatesPosInPieceTest() {
@@ -50,7 +53,7 @@ public class BoardTest {
 
         board.movePiece(queenPos, newQueenPos);
 
-        assertTrue(queen.position().equals(newQueenPos));
+        Assert.assertTrue(queen.position().equals(newQueenPos));
     }
 
     @Test
@@ -60,6 +63,6 @@ public class BoardTest {
 
         ChessPiece queen = board.addPiece(queenPos, Piece.QUEEN, Alliance.WHITE);
 
-        assertTrue(board.getPiece(queenPos) instanceof Queen);
+        Assert.assertTrue(board.getPiece(queenPos) instanceof Queen);
     }
 }
