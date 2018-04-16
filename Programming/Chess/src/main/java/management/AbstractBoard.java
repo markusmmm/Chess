@@ -5,6 +5,7 @@ import resources.*;
 import resources.Console;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.*;
@@ -77,6 +78,17 @@ public class AbstractBoard {
         InputStream is = classloader.getResourceAsStream(fileName);
         Scanner file = new Scanner(is);
         size = file.nextInt();
+
+        loadBoard(file);
+    }
+    protected AbstractBoard(File file) throws FileNotFoundException {
+        Scanner reader = new Scanner(file);
+        size = reader.nextInt();
+
+        loadBoard(reader);
+    }
+
+    private void loadBoard(Scanner file) {
         generateClock(file.nextInt() != 0);
 
         Console.println("Size read from file: " + size);
@@ -230,6 +242,8 @@ public class AbstractBoard {
 
         try {
             mutex.acquire();
+
+            pieces.remove(end);
 
             ChessPiece piece = pieces.get(start);
             pieces.remove(start);

@@ -67,7 +67,7 @@ public class GameBoard {
                 Console.printWarning("Save file 'default' not found. Attempting legacy generation...");
                 boardVal = new Board(SIZE, false, boardMode);
             }
-        } else {
+        } else if(boardMode == BoardMode.RANDOM) {
             boardVal = new Board(SIZE, false, boardMode);
         }
         board = boardVal;
@@ -197,6 +197,14 @@ public class GameBoard {
                     new FileChooser.ExtensionFilter("Chess Game File", "*.txt"));
             fileChooser.setInitialDirectory(savesDir);
             File selectedFile = fileChooser.showOpenDialog(stage);
+
+            try {
+                board = new Board(selectedFile);
+                createBoard();
+            } catch (FileNotFoundException e1) {
+                Console.printError("Save file " + selectedFile.getName() + " does not exist");
+                e1.printStackTrace();
+            }
         });
         menuItemSave.setOnAction(e -> {
             FileChooser fileChooser = new FileChooser();

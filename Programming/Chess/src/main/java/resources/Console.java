@@ -2,12 +2,16 @@ package resources;
 
 import main.GameBoard;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 public class Console {
     private static final boolean DO_PRINT = true;
 
-    private static Class[] ignoredCallers = new Class[] {
+    private static Set<Class> ignoredCallers = new HashSet<>(Arrays.asList(
             //GameBoard.class
-    };
+    ));
 
     private static final String ANSI_RESET = "\u001B[0m";
     private static final String ANSI_BLACK = "\u001B[30m";
@@ -32,10 +36,9 @@ public class Console {
         if(!DO_PRINT) return false;
 
         String callerName = getCaller().getClassName();
-        for(Class c : ignoredCallers) {
+        for(Class c : ignoredCallers)
             if (c.getCanonicalName().equals(callerName))
                 return false;
-        }
 
         return true;
     }

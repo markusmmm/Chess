@@ -85,6 +85,15 @@ public class Board extends AbstractBoard {
         super(fileName);
     }
 
+    /**
+     * Loads this board's content from a given file
+     * @param file The file to be loaded
+     * @throws FileNotFoundException
+     */
+    public Board(File file) throws FileNotFoundException {
+        super(file);
+    }
+
 	/*
 	public boolean undoMove() {
     	if(gameLog.size() == 0) return false;
