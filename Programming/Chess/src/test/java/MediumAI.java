@@ -1,25 +1,26 @@
 import management.Board;
 import management.ChessComputerMedium;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.io.FileNotFoundException;
 
 public class MediumAI {
     private ChessComputerMedium minmax;
-    private Board chessB;
-    @Before
-    public void setup() {
+    @Test
+    public void pawn() {
+        test("bishop");
+    }
+    @Test
+    public void king() {
+        test("king");
+    }
+    private void test(String fileName) {
         try {
-            chessB = new Board("default");
+            Board chessB = new Board(fileName);
+            minmax = new ChessComputerMedium(chessB);
+            minmax.getMove();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-
-        minmax = new ChessComputerMedium(chessB);
-    }
-    @Test
-    public void startTestf() {
-        chessB.movePiece(minmax.getMove());
     }
 }

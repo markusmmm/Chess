@@ -23,7 +23,7 @@ public class ChessComputerMedium extends ChessComputer {
 
     public Move getMove() {
         int turn = 1;
-        int score = 0;
+        int score;
         int[][] chessB = translateBoard();
         ArrayList<Move> moveStorage = allMovesOneSide(chessB, turn);
         ArrayList<MoveScore> moveChart = new ArrayList<>();
