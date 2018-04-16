@@ -7,15 +7,15 @@ import java.util.*;
 
 public class ChessComputerMedium extends ChessComputer {
 
-    private final int DEPTH = 3;
+    private final int DEPTH = 1;
     private Alliance enemy;
     private final Alliance black = Alliance.BLACK;
     private final Alliance white = Alliance.WHITE;
     private Boolean[] stillMoving = new Boolean[4];
     private ArrayList<Move> emptyMoveList = new ArrayList<>();
     private Move emptyMove = new Move(new Vector2(0,0), new Vector2(0,0));
+    private int movesChecked = 0;
     private int size;
-    private int store;
 
 
     public ChessComputerMedium(Board board) {
@@ -33,18 +33,11 @@ public class ChessComputerMedium extends ChessComputer {
             score = scoreMove(chessB.clone(), moveStorage.get(i), DEPTH, turn);
             moveChart.add(new MoveScore(score, moveStorage.get(i)));
         }
-<<<<<<< Updated upstream
+
         printMoves(moveChart);
-        return Collections.min(moveChart).getMove();
-=======
-<<<<<<< Updated upstream
+
 
         return Collections.max(moveChart).getMove();
-=======
-        printChessb(chessB);
-        return Collections.min(moveChart).getMove();
->>>>>>> Stashed changes
->>>>>>> Stashed changes
     }
 
     private int scoreMove(int[][] chessB, Move move, int depth, int turn) {
@@ -55,22 +48,16 @@ public class ChessComputerMedium extends ChessComputer {
         moves = allMovesOneSide(chessB,turn * -1);
 
         for (int i = 0; i < moves.size(); i++) {
+            System.out.println(movesChecked++);
             score += scoreMove(chessB.clone(), moves.get(i),depth - 1, turn);
         }
-<<<<<<< Updated upstream
+
         return score;
     }
     public void printMoves(ArrayList<MoveScore> m) {
         for(MoveScore move: m) {
             System.out.println(move.toString());
         }
-=======
-<<<<<<< Updated upstream
-        return score;//noe + scoremove
-=======
-        return score;
->>>>>>> Stashed changes
->>>>>>> Stashed changes
     }
 
 
@@ -93,27 +80,19 @@ public class ChessComputerMedium extends ChessComputer {
      * @return
      */
     private ArrayList<Move> genMovesPiece(int x, int y, int[][] chessB, int turn) {
+        printChessb(chessB);
         if(chessB[x][y] == 1 * turn) return pawn(x,y, chessB, turn);
         else if (chessB[x][y] == 3 * turn) return knight(x,y, chessB);
         else if (chessB[x][y] == 4 * turn) return bishop(x,y, chessB, turn);
         else if (chessB[x][y] == 5 * turn) return rook(x,y, chessB, turn);
         else if (chessB[x][y] == 2 * turn) return king(x,y, chessB);
-<<<<<<< Updated upstream
-        else if (chessB[x][y] == 9 * turn) return queen(x,y, chessB);
-<<<<<<< Updated upstream
-        return emptyMoveList;
-=======
-        return null;
-=======
         else if (chessB[x][y] == 9 * turn) return queen(x,y, chessB, turn);
         return emptyMoveList;
->>>>>>> Stashed changes
->>>>>>> Stashed changes
     }
 
     private ArrayList<Move> pawn(int x, int y, int[][] chessB, int turn) {
         int pawnMoveLength = 1;
-        if(y == 6 || y == 1) pawnMoveLength = 2;
+        if((y == 6 && turn == -1) || (y == 1 && turn == 1)) pawnMoveLength = 2;
         ArrayList<Move> moves = new ArrayList<>();
         for (int i = 0; i < pawnMoveLength; i++) {
             moves.add(pawnForward(x, y ,x , y + 1 * turn, chessB));
@@ -124,24 +103,12 @@ public class ChessComputerMedium extends ChessComputer {
         return moves;
     }
 
-<<<<<<< Updated upstream
-    private Move pawnAttack(int fromX, int fromY, int toX, int toY, int[][] chessB) {
-<<<<<<< Updated upstream
-        if(insideBoard(toX, toY) && chessB[toX][toY] != 0){
-            return new Move(new Vector2(fromX, fromY), new Vector2(toX, toY));
-        }
-        return emptyMove;
-=======
-        if(chessB[toX][toY] != 0 && insideBoard(toX, toY)) return new Move(new Vector2(fromX, fromY), new Vector2(toX, toY));
-        return null;
-=======
+
     private Move pawnAttack(int fromX, int fromY, int toX, int toY, int[][] chessB, int turn) {
         if(LegalMove(toX, toY, chessB, turn) && chessB[toX][toY] != 0){
             return new Move(new Vector2(fromX, fromY), new Vector2(toX, toY));
         }
         return emptyMove;
->>>>>>> Stashed changes
->>>>>>> Stashed changes
     }
 
     private Move pawnForward(int fromX, int fromY, int toX, int toY, int[][] chessB) {
@@ -209,45 +176,32 @@ public class ChessComputerMedium extends ChessComputer {
         return false;
     }
     private Move evalPathMove(int fromX, int fromY, int toX, int  toY, int[][] chessB, int turn, int bolIndex) {
-        if(LegalMove(toX,toY,chessB,turn) && chessB[toX][toY] == 0) {
+        if(LegalMove(toX,toY,chessB,turn)) {
             return new Move (new Vector2(fromX,fromY), new Vector2(toX, toY));
         } else stillMoving[bolIndex] = false;
         return emptyMove;
     }
 
     private int PerformMove(int[][] chessB, Move move) {
-        store = chessB[move.end.getX()][move.end.getY()];
-        chessB[move.end.getX()][move.end.getY()] = chessB[move.start.getX()][move.start.getY()];
+        int end = chessB[move.end.getX()][move.end.getY()];
+        int start = chessB[move.start.getX()][move.start.getY()];
         chessB[move.start.getX()][move.start.getY()] = 0;
-        return store;//store is the killed piece's value
+        chessB[move.end.getX()][move.end.getY()] = start;
+        return end;//store is the killed piece's value
     }
 
-<<<<<<< Updated upstream
-    private boolean insideBoard(int x, int y) {
-        return (0 <= x && x < size &&
-        0 <= y && y < size);
-=======
-<<<<<<< Updated upstream
-    private boolean insideBoard(int fromX, int fromY) {
-        return (0 <= fromX && fromX <= size &&
-        0 <= fromY && fromY <= size);
-=======
     private boolean LegalMove(int x, int y, int[][] chessb, int turn) {
         return insideBoard(x,y) && notOwn(x,y,chessb, turn);
     }
 
     private boolean notOwn(int x, int y, int[][] chessb, int turn) {
        return (chessb[x][y] < 0 && turn == -1) || (chessb[x][y] > 0 && turn == 1);
->>>>>>> Stashed changes
     }
 
     private boolean insideBoard(int x, int y) {
         return (0 <= x && x < size &&
                 0 <= y && y < size);
->>>>>>> Stashed changes
     }
-
-
 
     private int[][] translateBoard() {
         int[][] chessB = new int[size][size];
@@ -296,5 +250,6 @@ public class ChessComputerMedium extends ChessComputer {
             }
             System.out.println();
         }
+        System.out.println();
     }
 }

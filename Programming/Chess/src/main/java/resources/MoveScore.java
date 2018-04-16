@@ -16,20 +16,10 @@ public class MoveScore implements Comparable<MoveScore>{
     public Move getMove() {
         return move;
     }
-<<<<<<< Updated upstream
-
-    @Override
-    public String toString() {
-        return score + move.toString()
-    }
-=======
-<<<<<<< Updated upstream
-=======
 
     @Override
     public String toString() {
         return score + move.toString();
     }
->>>>>>> Stashed changes
->>>>>>> Stashed changes
+
 }

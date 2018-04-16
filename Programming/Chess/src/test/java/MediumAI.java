@@ -22,6 +22,5 @@ public class MediumAI {
     @Test
     public void startTest() {
         chessB.movePiece(minmax.getMove());
-        minmax.getMove();
     }
 }
