@@ -90,7 +90,9 @@ public class ChessComputerMedium extends ChessComputer {
     }
 
     private Move pawnAttack(int fromX, int fromY, int toX, int toY, int[][] chessB) {
-        if(chessB[toX][toY] != 0 && insideBoard(toX, toY)) return new Move(new Vector2(fromX, fromY), new Vector2(toX, toY));
+        if(insideBoard(toX, toY) && chessB[toX][toY] != 0){
+            return new Move(new Vector2(fromX, fromY), new Vector2(toX, toY));
+        }
         return null;
     }
 
@@ -172,9 +174,9 @@ public class ChessComputerMedium extends ChessComputer {
         return store;//store is the killed piece's value
     }
 
-    private boolean insideBoard(int fromX, int fromY) {
-        return (0 <= fromX && fromX <= size &&
-        0 <= fromY && fromY <= size);
+    private boolean insideBoard(int x, int y) {
+        return (0 <= x && x < size &&
+        0 <= y && y < size);
     }
 
     private int[][] translateBoard() {
