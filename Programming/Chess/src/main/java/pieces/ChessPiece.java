@@ -7,7 +7,7 @@ import resources.*;
 import java.util.List;
 import java.util.Set;
 
-public abstract class ChessPiece implements IChessPiece {
+public abstract class ChessPiece implements IChessPiece, Comparable<ChessPiece> {
 
 	protected Vector2 position;
 
@@ -136,6 +136,11 @@ public abstract class ChessPiece implements IChessPiece {
 	}
 	protected boolean inDiagonals(Vector2 newPos) {
 		return Math.abs(this.position.getX() - newPos.getX()) == Math.abs(this.position.getY() - newPos.getY());
+	}
+
+	@Override
+	public int compareTo(ChessPiece other) {
+		return position.compareTo(other.position);
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package management;
 
+import javafx.collections.transformation.SortedList;
 import main.Main;
 import pieces.*;
 import resources.*;
@@ -33,7 +34,7 @@ public class AbstractBoard {
 
     protected Alliance activePlayer = Alliance.WHITE;
 
-    private HashMap<Vector2, ChessPiece> pieces = new HashMap<>();
+    private Set<ChessPiece> pieces = new HashSet<>();
     private Stack<Vector2> drawPositions = new Stack<>();
     private HashMap<Vector2, ChessPiece> suspendedPieces = new HashMap<>(); // Used to ignore pieces that are still on the board
     private HashSet<ChessPiece> capturedPieces = new HashSet<>();
