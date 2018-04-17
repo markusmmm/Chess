@@ -152,11 +152,11 @@ public class Main extends Application {
         Button buttonQuit = new Button();
         buttonQuit.setText("QUIT");
 
-        buttonPlayVersus.setOnAction(e -> createChessGame(username, 0, BoardMode.DEFAULT, stage, root));
-        buttonPlayEasy.setOnAction(e -> createChessGame(username, 1, BoardMode.DEFAULT, stage, root));
-        randomBoardPlay.setOnAction(e -> createChessGame(username, 1, BoardMode.RANDOM, stage, root));
-        buttonPlayMedium.setOnAction(e -> createChessGame(username, 2, BoardMode.DEFAULT, stage, root));
-        buttonPlayHard.setOnAction(e -> createChessGame(username, 3, BoardMode.DEFAULT, stage, root));
+        buttonPlayVersus.setOnAction(e -> createChessGame(username, 0, BoardMode.DEFAULT, root));
+        buttonPlayEasy.setOnAction(e -> createChessGame(username, 1, BoardMode.DEFAULT, root));
+        randomBoardPlay.setOnAction(e -> createChessGame(username, 1, BoardMode.RANDOM, root));
+        buttonPlayMedium.setOnAction(e -> createChessGame(username, 2, BoardMode.DEFAULT, root));
+        buttonPlayHard.setOnAction(e -> createChessGame(username, 3, BoardMode.DEFAULT, root));
         media.playSound("welcome.mp3");
         buttonQuit.setOnAction(e -> onQuit());
 
@@ -182,8 +182,8 @@ public class Main extends Application {
      *
      * @return chessGame
      */
-    private void createChessGame(String username, int difficulty, BoardMode boardMode, Stage stage, BorderPane root) {
-        GameBoard gameBoard = new GameBoard(username, difficulty, boardMode, stage, root);
+    private void createChessGame(String username, int difficulty, BoardMode boardMode, BorderPane root) {
+        GameBoard gameBoard = new GameBoard(username, difficulty, boardMode, this, stage, root);
         gameBoard.createBoard();
         root.setCenter(gameBoard.getContainer());
         root.setTop(gameBoard.generateGameMenuBar());

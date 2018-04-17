@@ -33,6 +33,7 @@ public class GameBoard {
     private Board board;
     private final ChessComputer computer;
 
+    private Main main;
     private Stage stage;
     private BorderPane root;
     private GridPane grid;
@@ -50,7 +51,7 @@ public class GameBoard {
     private boolean firstClick;
     private Tile firstTile;
 
-    public GameBoard(String username, int difficulty, BoardMode boardMode, Stage stage, BorderPane root) {
+    public GameBoard(String username, int difficulty, BoardMode boardMode, Main main, Stage stage, BorderPane root) {
         Board boardVal = null;
 
         if(boardMode == BoardMode.DEFAULT) {
@@ -70,6 +71,7 @@ public class GameBoard {
         }
         board = boardVal;
 
+        this.main = main;
         this.stage = stage;
         this.boardMode = boardMode;
         this.root = root;
@@ -178,10 +180,10 @@ public class GameBoard {
         MenuItem menuItemQuit = new MenuItem("Quit");
 
         menuItemExit.setOnAction(e -> {
-            new Main().mainMenu(username, stage);
+            main.mainMenu(username, stage);
         });
         menuItemReset.setOnAction(e -> {
-            GameBoard newGameBoard = new GameBoard(username, difficulty, boardMode, stage, root);
+            GameBoard newGameBoard = new GameBoard(username, difficulty, boardMode, main, stage, root);
             newGameBoard.createBoard();
             root.setCenter(newGameBoard.getContainer());
         });
