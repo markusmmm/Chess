@@ -172,7 +172,7 @@ public class GameBoard {
         Menu menuFile = new Menu("File");
         Menu menuHelp = new Menu("Help");
 
-        MenuItem menuItemExit = new MenuItem("main.Main Menu");
+        MenuItem menuItemExit = new MenuItem("Main Menu");
         MenuItem menuItemReset = new MenuItem("Reset Game");
         MenuItem menuItemLoad = new MenuItem("Load Game");
         MenuItem menuItemSave = new MenuItem("Save Game");
@@ -232,7 +232,7 @@ public class GameBoard {
             if (file != null)
                 board.saveFile(file);
         });
-        menuItemQuit.setOnAction(e -> System.exit(0));
+        menuItemQuit.setOnAction(e -> main.onQuit());
 
         menuFile.getItems().addAll(menuItemExit, menuItemReset, menuItemLoad, menuItemSave, menuItemUndo, menuItemQuit);
         MenuItem menuItemAbout = new MenuItem("About");
