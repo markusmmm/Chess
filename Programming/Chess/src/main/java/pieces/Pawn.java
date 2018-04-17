@@ -40,8 +40,8 @@ public class Pawn extends ChessPiece {
 	}
 
 	@Override
-	public void reset(List<Boolean> vals) {
-		reset(vals);
+	public void loadData(List<Boolean> vals) {
+		super.loadData(vals);
 		hasDoubleStepped = vals.get(1);
 	}
 

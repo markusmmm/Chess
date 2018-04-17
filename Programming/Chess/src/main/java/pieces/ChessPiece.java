@@ -100,7 +100,7 @@ public abstract class ChessPiece implements IChessPiece {
 		return true;
 	}
 
-	public void reset(List<Boolean> vals) {
+	public void loadData(List<Boolean> vals) {
 		hasMoved = vals.get(0);
 	}
 

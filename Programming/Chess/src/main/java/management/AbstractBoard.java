@@ -4,7 +4,6 @@ import main.Main;
 import pieces.*;
 import resources.*;
 import resources.Console;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -102,11 +101,15 @@ public class AbstractBoard {
 
         Console.printNotice("Attempting to load board from save " + file.getAbsolutePath());
 
+        // Load board data
         size = reader.nextInt();
         generateClock(reader.nextInt() != 0);
         int logSize = reader.nextInt();
         moveI = reader.nextInt();
         activePlayer = moveI % 2 == 0 ? Alliance.WHITE : Alliance.BLACK;
+
+        int lastX = reader.nextInt(),
+        lastY = reader.nextInt();
 
         // Load pieces on board
         for (int y = 0; y < size; y++) {
@@ -119,6 +122,8 @@ public class AbstractBoard {
             }
         }
 
+        lastPiece = getPiece(new Vector2(lastX, lastY));
+
         // Load gameLog
         for(int i = 0; i < logSize; i++) {
             String p = reader.next();
@@ -127,32 +132,43 @@ public class AbstractBoard {
             String v = reader.next();
 
             PieceNode piece = PieceManager.toPiece(p.charAt(0)),
-                      victim = PieceManager.toPiece(v.charAt(0));
+                    victim = PieceManager.toPiece(v.charAt(0));
             MoveNode node = new MoveNode(piece, new Vector2(x0, y0), new Vector2(x1, y1), victim);
             gameLog.push(node);
         }
 
-        if(reader.hasNextLine() && reader.nextLine().equals(Main.DATA_SEPARATOR)) {
-            while(reader.hasNextLine()) {
-                int x = reader.nextInt(),
-                        y = reader.nextInt();
-                Vector2 pos = new Vector2(x, y);
+        // Load piece data
+        if(reader.hasNextLine()) reader.nextLine();
+        if(reader.hasNextLine()) {
+            String line = reader.nextLine();
+            Console.printNotice("Data separator: " + line);
+            if (line.equals(Main.DATA_SEPARATOR)) {
+                while (reader.hasNextInt()) {
+                    int x = reader.nextInt(),
+                            y = reader.nextInt();
+                    Vector2 pos = new Vector2(x, y);
 
-                List<Boolean> vals = new ArrayList<>();
-                boolean hasMoved = reader.nextInt() == 1;
-                vals.add(hasMoved);
+                    List<Boolean> vals = new ArrayList<>();
+                    boolean hasMoved = reader.nextInt() == 1;
+                    vals.add(hasMoved);
 
-                ChessPiece piece = getPiece(pos);
-                if(piece instanceof Pawn) {
-                    boolean hasDoubleStepped = reader.nextInt() == 1;
-                    vals.add(hasDoubleStepped);
+                    ChessPiece piece = getPiece(pos);
+                    if (piece instanceof Pawn) {
+                        boolean hasDoubleStepped = reader.nextInt() == 1;
+                        vals.add(hasDoubleStepped);
+                    }
+                    piece.loadData(vals);
+                    //Console.printNotice("Loading piece " + piece + "\nsource.hasMoved: " + vals.get(0) + ", target.hasMoved: " + piece.hasMoved());
+
+                    removePiece(pos);
+                    putPiece(pos, piece);
                 }
-
-                piece.reset(vals);
             }
         }
 
         reader.close();
+
+        Console.printSuccess("Board successfully loaded from file " + file.getName());
     }
 
     protected static Piece randomPiece() {
@@ -431,8 +447,6 @@ public class AbstractBoard {
             mutex.release();
             return null;
         }
-
-
     }
 
     protected void putPiece(Vector2 pos, ChessPiece piece) {
@@ -504,7 +518,7 @@ public class AbstractBoard {
      * @return the piece that was last successfully moved
      */
     public IChessPiece getLastPiece() {
-        return lastPiece.clonePiece();
+        return lastPiece == null ? null : lastPiece.clonePiece();
     }
 
     public HashSet<ChessPiece> getCapturedPieces() {
