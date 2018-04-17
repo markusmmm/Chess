@@ -1,5 +1,7 @@
 package resources;
 
 public enum Alliance {
-    WHITE, BLACK
+    WHITE,
+    BLACK,
+    NONE
 }

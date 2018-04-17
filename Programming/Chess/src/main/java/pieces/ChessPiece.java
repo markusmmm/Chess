@@ -1,12 +1,10 @@
 package pieces;
 
+import management.AbstractBoard;
 import management.Board;
-import resources.Alliance;
-import resources.Move;
-import resources.Piece;
-import resources.Vector2;
+import resources.*;
 
-import javax.naming.OperationNotSupportedException;
+import java.util.List;
 import java.util.Set;
 
 public abstract class ChessPiece implements IChessPiece {
@@ -19,20 +17,30 @@ public abstract class ChessPiece implements IChessPiece {
 	protected final Board board;
 	protected final int value;
 
-	private boolean hasMoved = false;
+	private boolean hasMoved;
 
     /**
      *
      * @param position The piece's initial position on the board
      */
-    public ChessPiece(Vector2 position, Alliance alliance, Board board, boolean canJump, Piece piece, int value) {
+    public ChessPiece(Vector2 position, Alliance alliance, AbstractBoard board, boolean canJump, Piece piece, int value, boolean hasMoved) {
         this.position = position;
         this.alliance = alliance;
-        this.board = board;
+        this.board = (Board)board;
         this.canJump = canJump;
         this.piece = piece;
         this.value = value;
+        this.hasMoved = hasMoved;
     }
+    protected ChessPiece(ChessPiece other) {
+    	position = other.position;
+    	alliance = other.alliance;
+    	board = other.board;
+    	canJump = other.canJump;
+    	piece = other.piece;
+    	value = other.value;
+    	hasMoved = other.hasMoved;
+	}
 
 	public Vector2 position() { return position; }
 	public Alliance alliance() { return alliance; }
@@ -50,16 +58,21 @@ public abstract class ChessPiece implements IChessPiece {
 	 * @return Whether or not the move can be performed
 	 */
 	protected boolean legalMove(Vector2 destination) {
-		System.out.println("(ChessPiece) Board is live: " + board.isLive());
-
+		//resources.Console.println("(ChessPiece) Board is live: " + board.isLive());
 		IChessPiece endPiece = board.getPiece(destination);
-		// Check if victim is of opposite alliance
+		// Prevents attack on an allied piece
 		if(endPiece != null && endPiece.alliance().equals(alliance)) return false;
 
 		if(!board.insideBoard(position) || !board.insideBoard(destination)) return false;
 
+		if(!board.hasKing(alliance))
+			return true;	// Special-case check for boards where a king was never created
+
+		King king = board.getKing(alliance);
+		if(king == null) return false;
+
 		// Lastly, check if king is in check, and whether or not the move resolves it (SHOULD OCCUR LAST, FOR OPTIMIZATION)
-		return board.getKing(alliance).resolvesCheck(position, destination);
+		return king.resolvesCheck(position, destination);
 	}
 
 	/**
@@ -69,21 +82,26 @@ public abstract class ChessPiece implements IChessPiece {
 		return hasMoved;
 	}
 
+
 	/**
 	 * 
 	 * @param move
 	 */
 	public boolean move(Vector2 move) {
-		System.out.println("Attempting to move " + alliance + " " + piece + " from " + position + " to " + move);
-
+		//resources.Console.println("Attempting to move " + alliance + " " + piece + " from " + position + " to " + move);
 		if (!legalMove(move)) return false; // If the destination is unreachable, the move fails
 
+		MediaHelper media = new MediaHelper();
+		media.playSound("move.mp3");
 		position = new Vector2(move.getX(), move.getY());
 		hasMoved = true;
 
-		System.out.println("Move performed. New pos: " + position);
-
+		//resources.Console.println("Move performed. New pos: " + position);
 		return true;
+	}
+
+	public void reset(List<Boolean> vals) {
+		hasMoved = vals.get(0);
 	}
 
 	/**
@@ -120,16 +138,12 @@ public abstract class ChessPiece implements IChessPiece {
 		return Math.abs(this.position.getX() - newPos.getX()) == Math.abs(this.position.getY() - newPos.getY());
 	}
 
-	public Set<Vector2> getPossibleDestinations() {
-		return getPossibleDestinations("Anonymous");
-	}
-
-	protected void logActionPossibleDestinations(String caller) {
-		System.out.println(caller + " is checking possible destinations for " + toString());
-	}
-
 	@Override
     public String toString() {
 	    return alliance + " " + piece;
     }
+
+    public ChessPiece clone() {
+		return clonePiece();
+	}
 }

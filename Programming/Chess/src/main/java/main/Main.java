@@ -1,27 +1,49 @@
+package main;
+
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import management.HighscoreController;
 import resources.Highscore;
 
 import java.util.List;
 
+import management.DatabaseController;
+import resources.MediaHelper;
+import resources.BoardMode;
+
+import java.io.File;
+
+
+
 public class Main extends Application {
 
-    private Stage stage;
     static final int WIDTH = 720;
     static final int HEIGHT = 500;
+    MediaHelper media = new MediaHelper();
+    private Stage stage;
+    private BorderPane root;
+    private DatabaseController database = new DatabaseController();
+
+    public static final File savesDir = new File(System.getProperty("user.home"), "GitGud/");
+    public static final File logsDir = new File(savesDir, ".logs/");
+
+    public static final String DATA_SEPARATOR = "====";
 
     public void start(Stage primaryStage) throws Exception {
+        directorySetup();
+
         stage = primaryStage;
         Scene scene = new Scene(loginWindow());
         scene.getStylesheets().add("stylesheet.css");
@@ -31,15 +53,27 @@ public class Main extends Application {
         stage.show();
     }
 
+    private void directorySetup() {
+        if (!savesDir.exists()) {
+            savesDir.mkdirs();
+        }
+        if(!logsDir.exists())
+            logsDir.mkdirs();
+    }
+
     /**
      * Generates the login window
      *
      * @return login window
      */
     private Parent loginWindow() {
-        Label labelTitle = new Label("CHESS");
-        labelTitle.setUnderline(true);
-        labelTitle.setId("title");
+        //Label labelTitle = new Label("CHESS");
+        //labelTitle.setUnderline(true);
+        //labelTitle.setId("title");
+
+        Image bootImage = new Image("images/bootDecal.png", 500, 250, true, true);
+        Rectangle bootDecal = new Rectangle(bootImage.getRequestedWidth(), bootImage.getRequestedHeight());
+        bootDecal.setFill(new ImagePattern(bootImage));
 
         Label labelUsername = new Label("Username:");
         labelUsername.setPrefWidth(120);
@@ -65,38 +99,44 @@ public class Main extends Application {
         loginContainer.setMaxWidth(240);
         loginContainer.getChildren().addAll(labelUsername, textUsername);
 
-        VBox root = new VBox(10);
 
-        root.setAlignment(Pos.CENTER);
-        root.getChildren().addAll(labelTitle, loginContainer, loginButton, errorField);
-        root.setPrefSize(WIDTH, HEIGHT);
-        return root;
+        VBox container = new VBox(10);
+        container.setAlignment(Pos.CENTER);
+        container.getChildren().addAll(bootDecal, loginContainer, loginButton, errorField);
+        container.setPrefSize(WIDTH, HEIGHT);
+        return container;
+
     }
 
     private void handleLogin(String username, Text errorField) {
         if (username == null || username.trim().isEmpty())
             errorField.setText("Please enter a non-empty username.");
         else {
-            Scene scene = new Scene(mainMenu(username));
-            scene.getStylesheets().add("stylesheet.css");
-            stage.setScene(scene);
+            if (database.userExists(username)) {
+                // database.updateScore(username, 9999);
+            } else {
+                database.addUser(username);
+            }
+            mainMenu(username, stage);
         }
     }
 
     /**
-     * Generates the main menu
+     * Generates the main menu, and set it to the scene
      *
      * @param username
      * @return mainMenu
      */
-    public Parent mainMenu(String username) {
-        BorderPane root = new BorderPane();
+    public void mainMenu(String username, Stage stage) {
+        root = new BorderPane();
 
-        Label labelWelcome = new Label("Welcome, " + username + "!");
+        Label labelWelcome = new Label("Welcome, " + username +
+                "!\nYour score: " + database.getScore(username));
         labelWelcome.setPrefWidth(WIDTH);
         labelWelcome.setMinHeight((HEIGHT / 8) * 2);
         labelWelcome.setAlignment(Pos.CENTER);
         labelWelcome.setId("title");
+        labelWelcome.setTextAlignment(TextAlignment.CENTER);
 
         Button buttonPlayVersus = new Button();
         buttonPlayVersus.setText("PLAY: VERSUS");
@@ -106,6 +146,9 @@ public class Main extends Application {
 
         Button buttonPlayMedium = new Button();
         buttonPlayMedium.setText("PLAY: MEDIUM");
+
+        Button randomBoardPlay = new Button();
+        randomBoardPlay.setText("PLAY: RANDOM BOARD");
 
         Button buttonPlayHard = new Button();
         buttonPlayHard.setText("PLAY: HARD");
@@ -117,16 +160,18 @@ public class Main extends Application {
         Button buttonQuit = new Button();
         buttonQuit.setText("QUIT");
 
-        buttonPlayVersus.setOnAction(e -> root.setCenter(createChessGame(username, 0, stage)));
-        buttonPlayEasy.setOnAction(e -> root.setCenter(createChessGame(username, 1, stage)));
-        buttonPlayMedium.setOnAction(e -> root.setCenter(createChessGame(username, 2, stage)));
-        buttonPlayHard.setOnAction(e -> root.setCenter(createChessGame(username, 3, stage)));
 
+        buttonPlayVersus.setOnAction(e -> createChessGame(username, 0, BoardMode.DEFAULT, root));
+        buttonPlayEasy.setOnAction(e -> createChessGame(username, 1, BoardMode.DEFAULT, root));
+        randomBoardPlay.setOnAction(e -> createChessGame(username, 1, BoardMode.RANDOM, root));
+        buttonPlayMedium.setOnAction(e -> createChessGame(username, 2, BoardMode.DEFAULT, root));
+        buttonPlayHard.setOnAction(e -> createChessGame(username, 3, BoardMode.DEFAULT, root));
+        media.playSound("welcome.mp3");
         buttonQuit.setOnAction(e -> onQuit());
 
         VBox buttonContainer = new VBox(10);
         buttonContainer.setAlignment(Pos.BASELINE_CENTER);
-        buttonContainer.getChildren().addAll(buttonPlayVersus, buttonPlayEasy, buttonPlayMedium/*, buttonPlayHard*/, buttonHighScore, buttonQuit);
+        buttonContainer.getChildren().addAll(buttonPlayVersus, buttonPlayEasy, buttonPlayMedium, randomBoardPlay, buttonHighScore, buttonQuit);
 
         VBox mainContent = new VBox(0);
         mainContent.setAlignment(Pos.TOP_CENTER);
@@ -136,7 +181,9 @@ public class Main extends Application {
         root.setTop(generateMenuBar());
         root.setCenter(mainContent);
 
-        return root;
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add("stylesheet.css");
+        stage.setScene(scene);
     }
 
     /**
@@ -154,10 +201,15 @@ public class Main extends Application {
      *
      * @return chessGame
      */
-    private BorderPane createChessGame(String username, int difficulty, Stage stage) {
-        GameBoard gameBoard = new GameBoard(username, difficulty, stage);
+    private void createChessGame(String username, int difficulty, BoardMode boardMode, BorderPane root) {
+        GameBoard gameBoard = new GameBoard(username, difficulty, boardMode, this, stage, root);
         gameBoard.createBoard();
-        return gameBoard.getContainer();
+        root.setCenter(gameBoard.getContainer());
+        root.setTop(gameBoard.generateGameMenuBar());
+
+
+        media.playSound("startup.mp3");
+        //return gameBoard.getContainer();
     }
 
     /**
@@ -165,7 +217,7 @@ public class Main extends Application {
      *
      * @return menubar
      */
-    private MenuBar generateMenuBar() {
+    public MenuBar generateMenuBar() {
         MenuBar menuBar = new MenuBar();
         Menu menuFile = new Menu("File");
         Menu menuHelp = new Menu("Help");
@@ -185,6 +237,7 @@ public class Main extends Application {
      * Exits the program
      */
     public void onQuit() {
+        database.close();
         System.exit(0);
     }
 

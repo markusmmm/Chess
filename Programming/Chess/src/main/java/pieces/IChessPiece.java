@@ -4,6 +4,7 @@ import resources.Alliance;
 import resources.Piece;
 import resources.Vector2;
 
+import java.util.List;
 import java.util.Set;
 
 public interface IChessPiece {
@@ -13,7 +14,6 @@ public interface IChessPiece {
 	Piece piece();
 	int getValue();
 
-	Set<Vector2> getPossibleDestinations(String caller);
 	Set<Vector2> getPossibleDestinations();
 
 	boolean hasMoved();
@@ -23,6 +23,8 @@ public interface IChessPiece {
 	 * @param end
 	 */
 	boolean move(Vector2 end);
+
+	void reset(List<Boolean> vals);
 
 	ChessPiece clonePiece();
 }
