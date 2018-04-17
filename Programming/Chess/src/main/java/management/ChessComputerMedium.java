@@ -27,6 +27,7 @@ public class ChessComputerMedium extends ChessComputer {
         int turn = 1;
         int score;
         int[][] chessB = translateBoard();
+        printChessb(chessB);
         ArrayList<Move> moveStorage = allMovesOneSide(chessB, turn);
         ArrayList<MoveScore> moveChart = new ArrayList<>();
         for (int i = 0; i < moveStorage.size(); i++) {
@@ -121,7 +122,7 @@ public class ChessComputerMedium extends ChessComputer {
     }
 
     private Move pawnForward(int fromX, int fromY, int toX, int toY, int[][] chessB) {
-        if(chessB[toX][toY] == 0) return new Move(new Vector2(fromX, fromY), new Vector2(toX, toY));
+        if(insideBoard(toX,toY) && chessB[toX][toY] == 0) return new Move(new Vector2(fromX, fromY), new Vector2(toX, toY));
         return emptyMove;
     }
 
@@ -234,7 +235,8 @@ public class ChessComputerMedium extends ChessComputer {
     public void printChessb(int[][] chessB) {
         for (int y = 0; y < size; y++) {
             for (int x = 0; x < size; x++) {
-                if (chessB[x][y] == 1) System.out.print('p');       //pawn
+                if (chessB[x][y] == 0) System.out.print(' ');
+                else if (chessB[x][y] == 1) System.out.print('p');       //pawn
                 else if (chessB[x][y] == -1) System.out.print('P');
                 else if (chessB[x][y] == 3) System.out.print('h');  //Knight
                 else if (chessB[x][y] == -3) System.out.print('H');
