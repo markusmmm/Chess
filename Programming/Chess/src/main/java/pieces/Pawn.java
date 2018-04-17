@@ -103,10 +103,7 @@ public class Pawn extends ChessPiece {
 			board.performAttack(start, destination, whiteEnpasant);
 		}
 
-		if(promotion(destination))
-		{
 
-		}
 		return true;
 	}
 
