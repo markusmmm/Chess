@@ -104,10 +104,12 @@ public class    King extends ChessPiece {
 
     private boolean movesIntoCheck(Vector2 end) {
         board.suspendPieces(position);
+        board.suspendPieces(end);
 
         boolean setsCheck = inCheck(end);
 
         board.releasePieces(position);
+        board.releasePieces(end);
 
         return setsCheck;
     }
