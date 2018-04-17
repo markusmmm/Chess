@@ -16,4 +16,9 @@ public class MoveScore implements Comparable<MoveScore>{
     public Move getMove() {
         return move;
     }
+
+    @Override
+    public String toString() {
+        return score + ":" + move.toString();
+    }
 }
