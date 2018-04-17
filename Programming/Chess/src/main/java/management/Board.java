@@ -507,6 +507,7 @@ public class Board extends AbstractBoard {
     public boolean movePiece(Move move) {
         //return movePiece(move.start, move.end);
     	return movePiece(move.getStart(),move.getEnd());
+    	//kommentar
     }
 
     /**

@@ -15,6 +15,7 @@ public class Move {
     public Vector2 getEnd(){
     	return this.end;
     }
+    ///kommentar
 
     @Override
     public String toString() {
