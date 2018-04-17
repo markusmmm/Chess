@@ -157,7 +157,8 @@ public class Main extends Application {
         randomBoardPlay.setOnAction(e -> createChessGame(username, 1, BoardMode.RANDOM, root));
         buttonPlayMedium.setOnAction(e -> createChessGame(username, 2, BoardMode.DEFAULT, root));
         buttonPlayHard.setOnAction(e -> createChessGame(username, 3, BoardMode.DEFAULT, root));
-        media.playSound("welcome.mp3");
+       // media.playSound("welcome.mp3");
+        media.playSound("calm_music.mp3");
         buttonQuit.setOnAction(e -> onQuit());
 
         VBox buttonContainer = new VBox(10);
