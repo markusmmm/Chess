@@ -11,10 +11,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Random;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 
 public class Board extends AbstractBoard {
     MediaHelper media = new MediaHelper();
@@ -304,7 +301,7 @@ public class Board extends AbstractBoard {
 
         for(Vector2 pos : pieces.keySet()) {
             ChessPiece piece = pieces.get(pos);
-            if (pieces.get(pos).alliance().equals(alliance))
+            if (piece.alliance().equals(alliance))
                 temp.put(pos, piece);
         }
 
@@ -323,6 +320,19 @@ public class Board extends AbstractBoard {
         }
 
         return temp;
+    }
+
+    public Set<Move> getAllPossibleMoves(Alliance alliance) {
+        Set<Move> moves = new HashSet<>();
+
+        HashMap<Vector2, ChessPiece> pieces = getPieces(alliance);
+        for(Vector2 pos : pieces.keySet()) {
+            ChessPiece piece = pieces.get(pos);
+            for(Vector2 end : piece.getPossibleDestinations())
+                moves.add(new Move(pos, end));
+        }
+
+        return moves;
     }
 
     /**
@@ -347,20 +357,6 @@ public class Board extends AbstractBoard {
         }
 
         return usablePieces;
-    }
-
-    /**
-     *
-     * @param alliance The alliance of the king to find
-     * @return The king on this board with the given alliance
-     */
-    public King getKing(Alliance alliance) {
-        HashMap<Vector2, ChessPiece> temp = getPieces(alliance);
-        for (Vector2 pos : temp.keySet())
-            if (temp.get(pos) instanceof King)
-                return (King) temp.get(pos);
-
-        return null;
     }
 
     /**

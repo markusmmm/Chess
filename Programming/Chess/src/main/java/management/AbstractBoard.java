@@ -16,7 +16,7 @@ public class AbstractBoard {
     private Semaphore mutex = new Semaphore(1);
     protected int moveI = 0;
 
-    private boolean hasWhiteKing, hasBlackKing;
+    private King blackKing, whiteKing;
 
     private static final Piece[] defaultBoard = new Piece[]{
             Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK,
@@ -42,25 +42,7 @@ public class AbstractBoard {
     private Stack<MoveNode> gameLog = new Stack<>();
 
     protected AbstractBoard(AbstractBoard other) {
-        hasBlackKing = other.hasBlackKing;
-        hasWhiteKing = other.hasWhiteKing;
-
-        moveI = other.moveI;
-
-        size = other.size;
-        player1 = other.player1;
-        player2 = other.player2;
-
-        if (clock != null) clock = other.clock.clone();
-        if (lastPiece != null) lastPiece = other.lastPiece.clonePiece();
-
-        activePlayer = other.activePlayer;
-        pieces = (HashMap<Vector2, ChessPiece>) other.pieces.clone();
-        drawPositions = (Stack<Vector2>) other.drawPositions.clone();
-        suspendedPieces = (HashMap<Vector2, ChessPiece>) other.suspendedPieces.clone();
-        capturedPieces = (HashSet<ChessPiece>) other.capturedPieces.clone();
-
-        gameLog = (Stack<MoveNode>) other.gameLog.clone();
+        sync(other);
     }
 
 
@@ -80,6 +62,28 @@ public class AbstractBoard {
     }
     protected AbstractBoard(File file) throws FileNotFoundException {
         loadBoard(file);
+    }
+
+    public void sync(AbstractBoard other) {
+        blackKing = (King)other.blackKing.clonePiece();
+        whiteKing = (King)other.whiteKing.clonePiece();
+
+        moveI = other.moveI;
+
+        size = other.size;
+        player1 = other.player1;
+        player2 = other.player2;
+
+        if (other.clock != null) clock = other.clock.clone();
+        if (other.lastPiece != null) lastPiece = other.lastPiece.clonePiece();
+
+        activePlayer = other.activePlayer;
+        pieces = (HashMap<Vector2, ChessPiece>) other.pieces.clone();
+        drawPositions = (Stack<Vector2>) other.drawPositions.clone();
+        suspendedPieces = (HashMap<Vector2, ChessPiece>) other.suspendedPieces.clone();
+        capturedPieces = (HashSet<ChessPiece>) other.capturedPieces.clone();
+
+        gameLog = (Stack<MoveNode>) other.gameLog.clone();
     }
 
     public int moveI() {
@@ -179,6 +183,24 @@ public class AbstractBoard {
         return activePlayer;
     }
 
+    /**
+     *
+     * @param alliance The alliance of the king to find
+     * @return The king on this board with the given alliance
+     */
+    public King getKing(Alliance alliance) {
+        if(alliance == Alliance.WHITE)
+            return whiteKing;
+        else if(alliance == Alliance.BLACK)
+            return blackKing;
+
+        return null;
+    }
+
+    public boolean hasKing(Alliance alliance) {
+        return getKing(alliance) != null;
+    }
+
     public Set<Vector2> getPositions() {
         try {
             mutex.acquire();
@@ -259,11 +281,12 @@ public class AbstractBoard {
             case QUEEN:
                 return new Queen(pos, alliance, this);
             case KING:
-                if (alliance == Alliance.WHITE)
-                    hasWhiteKing = true;
-                else
-                    hasBlackKing = true;
-                return new King(pos, alliance, this, false);
+                King king = new King(pos, alliance, this, false);
+                if (whiteKing == null && alliance == Alliance.WHITE)
+                    whiteKing = king;
+                else if(blackKing == null && alliance == Alliance.BLACK)
+                    blackKing = king;
+                return king;
             case PAWN:
                 return new Pawn(pos, alliance, this, false, false);
             case ROOK:
@@ -280,7 +303,7 @@ public class AbstractBoard {
 
             pieces.remove(end);
 
-            ChessPiece piece = pieces.get(start);
+            ChessPiece piece = pieces.get(start).clonePiece();
             pieces.remove(start);
             pieces.put(end, piece);
 
@@ -304,10 +327,6 @@ public class AbstractBoard {
         }
 
         return false;
-    }
-
-    public boolean hasKing(Alliance alliance) {
-        return alliance == Alliance.WHITE ? hasWhiteKing : hasBlackKing;
     }
 
     public boolean transformPiece(Vector2 pos, Piece newType) {

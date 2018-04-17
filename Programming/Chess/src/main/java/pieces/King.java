@@ -124,13 +124,18 @@ public class    King extends ChessPiece {
         //resources.Console.printNotice("\nSimulating move " + new Move(start, end));
         //resources.Console.printCaller();
 
-        Board dummyBoard = board.clone();
-
         if(start.equals(position))
             return movesIntoCheck(end);
 
-        dummyBoard.forceMovePiece(start, end);
-        return !dummyBoard.getKing(alliance).inCheck();
+        Board tempBoard = board.clone();
+        ChessPiece piece = board.getPiece(start);
+
+        board.forceMovePiece(start, end);
+        boolean checked = inCheck();
+
+        board.sync(tempBoard);
+
+        return !checked;
     }
 
     public boolean checkmate() {

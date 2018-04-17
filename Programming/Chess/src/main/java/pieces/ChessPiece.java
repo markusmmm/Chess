@@ -12,9 +12,9 @@ public abstract class ChessPiece implements IChessPiece {
 	protected Vector2 position;
 
 	protected final Alliance alliance;
+	protected final Board board;
 	protected final boolean canJump;
 	protected final Piece piece;
-	protected final Board board;
 	protected final int value;
 
 	private boolean hasMoved;
