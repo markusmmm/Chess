@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.util.*;
 
 public class Board extends AbstractBoard {
+    MediaHelper media = new MediaHelper();
+
     private static final Piece[] defaultBoard = new Piece[]{
             Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK,
             Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN,
@@ -124,12 +126,12 @@ public class Board extends AbstractBoard {
             }
             if (b == 15 && bKings == 0) {
                 addPiece(pos, Piece.KING, Alliance.BLACK);
-                if (getKing(Alliance.BLACK).inCheck()) {
+                /*if (getKing(Alliance.BLACK).inCheck()) {
                     removePiece(pos);
                     continue;
-                }
-                w++;
-                wKings++;
+                }*/
+                b++;
+                bKings++;
                 //If a black king has not been added by the last count, a black king will be added.
                 continue;
             }
@@ -214,10 +216,10 @@ public class Board extends AbstractBoard {
             }
             if (w == 15 && wKings == 0) {
                 addPiece(invPos, Piece.KING, Alliance.WHITE);
-                if (getKing(Alliance.WHITE).inCheck()) {
+               /* if (getKing(Alliance.WHITE).inCheck()) {
                     removePiece(invPos);
                     continue;
-                }
+                }*/
                 w++;
                 wKings++;
                 continue;
@@ -430,6 +432,7 @@ public class Board extends AbstractBoard {
 
                 addPiece(new Vector2(kingSideRookX - 2, end.getY()), pieceType, alliance);
                 addPiece(new Vector2(kingSideRookX - 1, end.getY()), Piece.KING, alliance);
+                media.playSound("move.mp3");
 
                 logMove(new MoveNode(piece, start, end, (ChessPiece) getPiece(end)));
 
@@ -453,6 +456,7 @@ public class Board extends AbstractBoard {
 
                 addPiece(new Vector2(queenSideRookX + 3, end.getY()), pieceType, alliance);
                 addPiece(new Vector2(queenSideRookX + 2, end.getY()), Piece.KING, alliance);
+                media.playSound("move.mp3");
 
                 logMove(new MoveNode(piece, start, end, getPiece(end)));
 
@@ -460,7 +464,6 @@ public class Board extends AbstractBoard {
             }
 
         }
-
 
         boolean moveSuccessful = piece.move(end);
 
