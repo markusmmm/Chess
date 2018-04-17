@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Console {
+    // Suppresses all console calls, regardless of caller
     private static final boolean DO_PRINT = true;
 
     private static Set<Class> ignoredCallers = new HashSet<>(Arrays.asList(

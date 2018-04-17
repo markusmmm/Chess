@@ -207,7 +207,8 @@ public class GameBoard {
             }
         });
         menuItemUndo.setOnAction(e -> {
-            int i = board.moveI() - 1;
+            int backStep = computer == null ? 1 : 2;
+            int i = board.moveI() - backStep;
 
             if(i >= 0) {
                 File logFile = new File(Main.logsDir, "log" + i + ".txt");
