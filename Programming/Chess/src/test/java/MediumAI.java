@@ -8,7 +8,7 @@ public class MediumAI {
     private ChessComputerMedium minmax;
     @Test
     public void pawn() {
-        test("bishop");
+        test("default");
     }
     @Test
     public void king() {
