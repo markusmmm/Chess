@@ -30,11 +30,19 @@ public class ChessComputerMedium extends ChessComputer {
         ArrayList<Move> moveStorage = allMovesOneSide(chessB, turn);
         ArrayList<MoveScore> moveChart = new ArrayList<>();
         for (int i = 0; i < moveStorage.size(); i++) {
-            score = scoreMove(chessB.clone(), moveStorage.get(i), DEPTH, turn);
-            moveChart.add(new MoveScore(score, moveStorage.get(i)));
+            if(nonEmptyMove(moveStorage, i)){
+                score = scoreMove(chessB.clone(), moveStorage.get(i), DEPTH, turn);
+                moveChart.add(new MoveScore(score, moveStorage.get(i)));
+            }
         }
         printMoves(moveChart);
         return Collections.min(moveChart).getMove();
+    }
+
+    private boolean nonEmptyMove(ArrayList<Move> moveStorage, int i) {
+        Vector2 start = moveStorage.get(i).start;
+        Vector2 end = moveStorage.get(i).end;
+        return start.getX() != 0 && start.getY() != 0 && end.getX() != 0 && end.getX() != 0;
     }
 
     private int scoreMove(int[][] chessB, Move move, int depth, int turn) {
