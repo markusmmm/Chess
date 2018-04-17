@@ -50,8 +50,9 @@ public class GameBoard {
 
     private boolean firstClick;
     private Tile firstTile;
+    private Player player1, player2;
 
-    public GameBoard(String username, int difficulty, BoardMode boardMode, Main main, Stage stage, BorderPane root) {
+    public GameBoard(String user1, String user2, int difficulty, BoardMode boardMode, Main main, Stage stage, BorderPane root) {
         Board boardVal = null;
 
         if(boardMode == BoardMode.DEFAULT) {
@@ -91,6 +92,11 @@ public class GameBoard {
         else if (difficulty == 2) computer = new ChessComputerMedium(board);
         else if (difficulty == 3) computer = new ChessComputerHard(board);
         else computer = null;
+
+        this.player1 = new Player(user1, Alliance.WHITE);
+        this.player2 = new Player(user2, Alliance.BLACK);
+        System.out.println(player1.getScore());
+        System.out.println(player2.getScore());
 
         Console.printSuccess("Game setup (Difficulty " + difficulty + ")");
     }
@@ -180,10 +186,10 @@ public class GameBoard {
         MenuItem menuItemQuit = new MenuItem("Quit");
 
         menuItemExit.setOnAction(e -> {
-            main.mainMenu(username, stage);
+            main.mainMenu(player1.getUsername(), stage);
         });
         menuItemReset.setOnAction(e -> {
-            GameBoard newGameBoard = new GameBoard(username, difficulty, boardMode, main, stage, root);
+            GameBoard newGameBoard = new GameBoard(player1.getUsername(), player2.getUsername(), difficulty, boardMode, main, stage, root);
             newGameBoard.createBoard();
             root.setCenter(newGameBoard.getContainer());
         });
@@ -384,7 +390,10 @@ public class GameBoard {
                 }
             }
         }
-        gameStatus.setText("It's " + board.getActivePlayer().toString() + " player's turn.");
+        String player;
+        if (board.getActivePlayer() == Alliance.WHITE) player = player1.getUsername();
+        else player = player2.getUsername();
+        gameStatus.setText("It's " + player + " turn.");
     }
 
     public void printTiles() {
@@ -407,32 +416,28 @@ public class GameBoard {
 
         if(whiteKing.checkmate()) {
             Console.println("Game over\nBlack player won!");
-            alert.setContentText("Black player won!");
+            alert.setContentText(player2.getUsername() + " won!");
         } else if(blackKing.checkmate()) {
             Console.println("Game over\nWhite player won!");
-            alert.setContentText("White player won!");
+            alert.setContentText(player1.getUsername() + " won!");
         } else if(whiteKing.stalemate() || blackKing.stalemate()) {
             Console.println("Game Over\nRemiss");
             alert.setContentText("Remiss!");
         } else {
             return false;
         }
-
         alert.setTitle("Game Over");
         alert.setHeaderText(null);
+        alert.setGraphic(null);
         MediaHelper media = new MediaHelper();
         media.playSound("game_over.mp3");
         alert.showAndWait();
-        main.mainMenu(username, stage);
+        main.mainMenu(player1.getUsername(), stage);
         return true;
     }
 
     public BorderPane getContainer() {
         return container;
-    }
-
-    public String getUsername() {
-        return username;
     }
 
     public int getDifficulty() {

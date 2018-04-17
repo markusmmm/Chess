@@ -14,11 +14,13 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import management.DatabaseController;
 import resources.MediaHelper;
 import resources.BoardMode;
 
 import java.io.File;
+import java.util.Optional;
 
 
 public class Main extends Application {
@@ -152,12 +154,27 @@ public class Main extends Application {
         Button buttonQuit = new Button();
         buttonQuit.setText("QUIT");
 
-        buttonPlayVersus.setOnAction(e -> createChessGame(username, 0, BoardMode.DEFAULT, root));
-        buttonPlayEasy.setOnAction(e -> createChessGame(username, 1, BoardMode.DEFAULT, root));
-        randomBoardPlay.setOnAction(e -> createChessGame(username, 1, BoardMode.RANDOM, root));
-        buttonPlayMedium.setOnAction(e -> createChessGame(username, 2, BoardMode.DEFAULT, root));
-        buttonPlayHard.setOnAction(e -> createChessGame(username, 3, BoardMode.DEFAULT, root));
-       // media.playSound("welcome.mp3");
+        buttonPlayVersus.setOnAction(e -> {
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.initStyle(StageStyle.UTILITY);
+            dialog.setTitle("Enter the second players username");
+            dialog.setHeaderText(null);
+            dialog.setGraphic(null);
+            dialog.setContentText("Enter the second players username:");
+            Optional<String> result = dialog.showAndWait();
+            result.ifPresent(player2 -> {
+                if (!username.toLowerCase().equals(player2.toLowerCase())) {
+                    if (!database.userExists(player2))
+                        database.addUser(player2);
+                    System.out.println("Player 2's username: " + player2);
+                    createChessGame(username, player2, 0, BoardMode.DEFAULT, root);
+                } else System.out.println("You can't play against yourself!");
+            });
+        });
+        buttonPlayEasy.setOnAction(e -> createChessGame(username, "AI: Easy", 1, BoardMode.DEFAULT, root));
+        buttonPlayMedium.setOnAction(e -> createChessGame(username, "AI: Medium", 2, BoardMode.DEFAULT, root));
+        buttonPlayHard.setOnAction(e -> createChessGame(username, "AI: Hard", 3, BoardMode.DEFAULT, root));
+        randomBoardPlay.setOnAction(e -> createChessGame(username, "AI: Easy", 1, BoardMode.RANDOM, root));
         media.playSound("welcome.mp3");
         buttonQuit.setOnAction(e -> onQuit());
 
@@ -183,8 +200,8 @@ public class Main extends Application {
      *
      * @return chessGame
      */
-    private void createChessGame(String username, int difficulty, BoardMode boardMode, BorderPane root) {
-        GameBoard gameBoard = new GameBoard(username, difficulty, boardMode, this, stage, root);
+    private void createChessGame(String player1, String player2, int difficulty, BoardMode boardMode, BorderPane root) {
+        GameBoard gameBoard = new GameBoard(player1, player2, difficulty, boardMode, this, stage, root);
         gameBoard.createBoard();
         root.setCenter(gameBoard.getContainer());
         root.setTop(gameBoard.generateGameMenuBar());
