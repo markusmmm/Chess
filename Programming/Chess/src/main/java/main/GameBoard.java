@@ -1,12 +1,20 @@
 package main;
 
+import com.sun.tools.doclets.formats.html.SourceToHTMLConverter;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -14,18 +22,19 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import management.*;
-import pieces.ChessPiece;
-import pieces.IChessPiece;
-import pieces.King;
+import pieces.*;
 import resources.MediaHelper;
 import resources.*;
 import resources.Console;
 
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Collections;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
+
+import static javax.swing.JFrame.EXIT_ON_CLOSE;
 
 public class GameBoard {
     MediaHelper media = new MediaHelper();
@@ -252,35 +261,93 @@ public class GameBoard {
             return;
         }
 
+
+        if(firstTile.getPiece() instanceof Pawn){
+            if((board.pawnPromotion((Pawn)firstTile.getPiece(), pos)))
+           {
+               Alliance alliance = firstTile.getPiece().alliance();
+               pawnPromotion(firstTile.getPos(), pos, alliance);
+
+           }
+       }
         //resources.Console.println("Before: " + temp.position());
 
-        boolean moveResult = board.movePiece(firstTile.getPos(), pos);
-       // resources.Console.println("Outer move result: " + moveResult);
-        if (moveResult) {
-            Console.println("Has computer: " + (computer != null));
-            if (computer != null) {
-                Move move = computer.getMove();
-                Console.println("Computer attempting move " + move);
-                board.movePiece(move);
-                int row = move.start.getY();
-                int col = move.start.getX();
+            Boolean moveResult = board.movePiece(firstTile.getPos(), pos);
 
-                //tiles[row][col].setFill(Color.TRANSPARENT);
-            }
 
-            //firstTile.setFill(Color.TRANSPARENT);
-            drawBoard();
-            updateLogs();
+            // resources.Console.println("Outer move result: " + moveResult);
+            if (moveResult) {
+                Console.println("Has computer: " + (computer != null));
+                if (computer != null) {
+                    Move move = computer.getMove();
+                    Console.println("Computer attempting move " + move);
+                    board.movePiece(move);
+                    int row = move.start.getY();
+                    int col = move.start.getX();
+
+                    //tiles[row][col].setFill(Color.TRANSPARENT);
+                }
+
+                //firstTile.setFill(Color.TRANSPARENT);
+                drawBoard();
+                updateLogs();
             /*resources.Console.println("Moving " + board.getPiece(firstTile.getPos()) +
                     " from " + firstTile.getPos() + " to " + pos);*/
-        } else {
-            media.playSound("denied.mp3");
-            drawBoard();
-        }
+            } else {
+                media.playSound("denied.mp3");
+                drawBoard();
+            }
 
-        //resources.Console.println("After:" + temp.position());
+            //resources.Console.println("After:" + temp.position());
+
     }
 
+
+    public void pawnPromotion(Vector2 piecePos, Vector2 end, Alliance alliance) {
+
+
+        ArrayList<String> choices = new ArrayList<>();
+        choices.add("QUEEN");
+        choices.add("BISHOP");
+        choices.add("KNIGHT");
+        choices.add("ROOK");
+
+        ChoiceDialog<String> dialog = new ChoiceDialog<>("QUEEN", choices);
+
+
+        dialog.setHeaderText("Promote your pawn");
+        dialog.setContentText("Choose your piece:");
+
+// Traditional way to get the response value.
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()) {
+            board.removePiece(piecePos);
+            board.advanceMove(true);
+
+
+            String s = result.get().toLowerCase();
+
+            switch (s.charAt(0)) {
+                case 'q':
+                    board.addPiece(end, Piece.QUEEN, alliance);
+                    break;
+                case 'b':
+                    board.addPiece(end, Piece.BISHOP, alliance);
+                    break;
+                case 'k':
+                    board.addPiece(end, Piece.KNIGHT, alliance);
+                    break;
+                case 'r':
+                    board.addPiece(end, Piece.ROOK, alliance);
+                    break;
+
+            }
+        }else {
+            board.removePiece(piecePos);
+            board.advanceMove(true);
+            board.addPiece(end, Piece.QUEEN, alliance);
+        }
+    }
     private boolean tileClick(MouseEvent e, Tile tile) {
         Vector2 pos = tile.getPos();
         //if(!board.ready()) return false;

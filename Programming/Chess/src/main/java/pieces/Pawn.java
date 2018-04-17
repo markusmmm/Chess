@@ -91,21 +91,6 @@ public class Pawn extends ChessPiece {
 		boolean whiteResult = this.alliance.equals(WHITE) && enPassant(whiteEnpasant);
 
 
-		//pawn promotion
-		if(destination.getY() == 0 && super.move(destination) == true){
-
-			board.transformPiece(destination, Piece.QUEEN, Alliance.WHITE);
-			board.removePiece(start);
-
-
-		}
-		if(destination.getY() == 7 && super.move(destination) == true){
-
-			board.transformPiece(destination, Piece.QUEEN, Alliance.BLACK);
-			board.removePiece(start);
-
-		}
-
 		if(!super.move(destination)) return false;
 
 
@@ -120,10 +105,7 @@ public class Pawn extends ChessPiece {
 			board.performAttack(start, destination, whiteEnpasant);
 		}
 
-<<<<<<< HEAD
-=======
 
->>>>>>> wip
 		return true;
 	}
 

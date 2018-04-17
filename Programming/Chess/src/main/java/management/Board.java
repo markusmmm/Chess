@@ -367,6 +367,31 @@ public class Board extends AbstractBoard {
         return null;
     }
 
+
+    public boolean pawnPromotion(ChessPiece piece, Vector2 end){
+
+        // pawn promotion
+        if (piece instanceof Pawn) {
+            Vector2 piecePos = piece.position();
+            int x = piecePos.getX();
+            int y = piecePos.getY();
+            if(((Pawn) piece).legalMove(end)) {
+                if (y == 1 && piece.alliance() == Alliance.WHITE && end.getY() == 0) {
+                    //advanceMove(true);
+                    return true;
+                }
+
+                if (y == 6 && piece.alliance() == Alliance.BLACK && end.getY() == 7){
+                    //advanceMove(true);
+                    return true;
+                }
+            }
+            return false;
+
+        }
+        return false;
+
+    }
     /**
      * Attempts to move a piece from 'start' to 'end'
      * @param start Position of the piece to be moved
@@ -388,36 +413,6 @@ public class Board extends AbstractBoard {
             return advanceMove(false); // Checks if the active player owns the piece that is being moved
         }
 
-
-        // pawn promotion
-        if (piece instanceof Pawn) {
-            Vector2 piecePos = piece.position();
-            int x = piecePos.getX();
-            int y = piecePos.getY();
-            if(((Pawn) piece).legalMove(end)) {
-                if (y == 1 && piece.alliance() == Alliance.WHITE && end.getY() == 0) {
-
-                    removePiece(piecePos);
-
-
-                    addPiece(end, Piece.QUEEN,Alliance.WHITE);
-
-                    return advanceMove(true);
-
-                }
-
-                if (y == 6 && piece.alliance() == Alliance.BLACK && end.getY() == 7) {
-                    removePiece(piecePos);
-
-
-                    addPiece(end, Piece.QUEEN,Alliance.BLACK);
-
-
-                    return advanceMove(true);
-                }
-            }
-
-        }
 
         //castling
         if (piece instanceof King) {
@@ -521,7 +516,7 @@ public class Board extends AbstractBoard {
      * @param state Whether or not the move should be advanced
      * @return 'state'
      */
-    private boolean advanceMove(boolean state) {
+    public boolean advanceMove(boolean state) {
         if (state) {
             activePlayer = activePlayer.equals(Alliance.WHITE) ? Alliance.BLACK : Alliance.WHITE;
             moveI++;
