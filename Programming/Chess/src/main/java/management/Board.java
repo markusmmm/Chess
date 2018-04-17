@@ -505,7 +505,8 @@ public class Board extends AbstractBoard {
      * @return Whether or not the move was successful
      */
     public boolean movePiece(Move move) {
-        return movePiece(move.start, move.end);
+        //return movePiece(move.start, move.end);
+    	return movePiece(move.getStart(),move.getEnd());
     }
 
     /**
