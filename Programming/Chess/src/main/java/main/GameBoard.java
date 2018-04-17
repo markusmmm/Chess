@@ -172,7 +172,7 @@ public class GameBoard {
         Menu menuFile = new Menu("File");
         Menu menuHelp = new Menu("Help");
 
-        MenuItem menuItemExit = new MenuItem("main.Main Menu");
+        MenuItem menuItemExit = new MenuItem("Main Menu");
         MenuItem menuItemReset = new MenuItem("Reset Game");
         MenuItem menuItemLoad = new MenuItem("Load Game");
         MenuItem menuItemSave = new MenuItem("Save Game");
@@ -232,7 +232,7 @@ public class GameBoard {
             if (file != null)
                 board.saveFile(file);
         });
-        menuItemQuit.setOnAction(e -> System.exit(0));
+        menuItemQuit.setOnAction(e -> main.onQuit());
 
         menuFile.getItems().addAll(menuItemExit, menuItemReset, menuItemLoad, menuItemSave, menuItemUndo, menuItemQuit);
         MenuItem menuItemAbout = new MenuItem("About");
@@ -403,18 +403,27 @@ public class GameBoard {
         King whiteKing = board.getKing(Alliance.WHITE),
                 blackKing = board.getKing(Alliance.BLACK);
 
-        if(whiteKing.checkmate())
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+
+        if(whiteKing.checkmate()) {
             Console.println("Game over\nBlack player won!");
-        else if(blackKing.checkmate())
+            alert.setContentText("Black player won!");
+        } else if(blackKing.checkmate()) {
             Console.println("Game over\nWhite player won!");
-        else if(whiteKing.stalemate() || blackKing.stalemate())
+            alert.setContentText("White player won!");
+        } else if(whiteKing.stalemate() || blackKing.stalemate()) {
             Console.println("Game Over\nRemiss");
-        else {
+            alert.setContentText("Remiss!");
+        } else {
             return false;
         }
 
+        alert.setTitle("Game Over");
+        alert.setHeaderText(null);
         MediaHelper media = new MediaHelper();
         media.playSound("game_over.mp3");
+        alert.showAndWait();
+        main.mainMenu(username, stage);
         return true;
     }
 

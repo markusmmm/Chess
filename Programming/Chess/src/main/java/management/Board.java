@@ -385,20 +385,27 @@ public class Board extends AbstractBoard {
             Vector2 piecePos = piece.position();
             int x = piecePos.getX();
             int y = piecePos.getY();
+            if(((Pawn) piece).legalMove(end)) {
+                if (y == 1 && piece.alliance() == Alliance.WHITE && end.getY() == 0) {
 
-            if (y == 1 && piece.alliance() == Alliance.WHITE && end.getY() == 0) {
-                removePiece(piecePos);
-                addPiece(end, Piece.QUEEN, piece.alliance());
+                    removePiece(piecePos);
 
-                return advanceMove(true);
 
-            }
+                    addPiece(end, Piece.QUEEN,Alliance.WHITE);
 
-            if (y == 6 && piece.alliance() == Alliance.BLACK && end.getY() == 7) {
-                removePiece(piecePos);
-                addPiece(end, Piece.QUEEN, piece.alliance());
+                    return advanceMove(true);
 
-                return advanceMove(true);
+                }
+
+                if (y == 6 && piece.alliance() == Alliance.BLACK && end.getY() == 7) {
+                    removePiece(piecePos);
+
+
+                    addPiece(end, Piece.QUEEN,Alliance.BLACK);
+
+
+                    return advanceMove(true);
+                }
             }
 
         }
@@ -457,17 +464,6 @@ public class Board extends AbstractBoard {
 
         }
 
-        if (piece instanceof Pawn) {
-            if (((Pawn) piece).promotion(end)) {
-
-                IChessPiece pawnPromoted = piece;
-                Vector2 pawnPos = pawnPromoted.position();
-                Alliance pawnAlliance = pawnPromoted.alliance();
-                removePiece(pawnPos);
-                addPiece(new Vector2(end.getX(), end.getY()), Piece.QUEEN, pawnAlliance);
-                return advanceMove(true);
-            }
-        }
         boolean moveSuccessful = piece.move(end);
 
         if (!moveSuccessful) {
@@ -508,7 +504,9 @@ public class Board extends AbstractBoard {
      * @return Whether or not the move was successful
      */
     public boolean movePiece(Move move) {
-        return movePiece(move.start, move.end);
+        //return movePiece(move.start, move.end);
+    	return movePiece(move.getStart(),move.getEnd());
+    	//kommentar
     }
 
     /**

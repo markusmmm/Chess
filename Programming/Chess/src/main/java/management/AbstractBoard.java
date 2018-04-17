@@ -91,7 +91,14 @@ public class AbstractBoard {
     }
 
     private void loadBoard(File file) throws FileNotFoundException {
-        Scanner reader = new Scanner(file);
+        Scanner reader;
+        if (file.getName().equals("default.txt")) {
+            InputStream is = Thread.currentThread().getContextClassLoader()
+                    .getResourceAsStream("default.txt");
+            reader = new Scanner(is);
+        } else {
+            reader = new Scanner(file);
+        }
 
         Console.printNotice("Attempting to load board from save " + file.getAbsolutePath());
 
