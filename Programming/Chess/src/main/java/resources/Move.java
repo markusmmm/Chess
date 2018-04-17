@@ -7,6 +7,14 @@ public class Move {
         this.start = start;
         this.end = end;
     }
+    
+    public Vector2 getStart(){
+    	return this.start;
+    }
+    
+    public Vector2 getEnd(){
+    	return this.end;
+    }
 
     @Override
     public String toString() {
