@@ -50,15 +50,13 @@ public class GameBoard {
     private boolean firstClick;
     private Tile firstTile;
 
-    private File savesDir = new File(System.getProperty("user.home"), "GitGud/");
-
     public GameBoard(String username, int difficulty, BoardMode boardMode, Stage stage, BorderPane root) {
         Board boardVal = null;
 
         if(boardMode == BoardMode.DEFAULT) {
             //this.board = new Board(SIZE, false, boardMode); TEMP TEST
             try {
-                boardVal = new Board("default");
+                boardVal = new Board(new File("default.txt"));
             } catch (FileNotFoundException e) {
                 //e.printCaller();
                 //System.err.println("Game setup failed! exiting...");
@@ -91,10 +89,6 @@ public class GameBoard {
         else if (difficulty == 2) computer = new ChessComputerMedium(board);
         else if (difficulty == 3) computer = new ChessComputerHard(board);
         else computer = null;
-
-        if (!savesDir.exists()) {
-            savesDir.mkdirs();
-        }
 
         Console.printSuccess("Game setup (Difficulty " + difficulty + ")");
     }
@@ -180,6 +174,7 @@ public class GameBoard {
         MenuItem menuItemReset = new MenuItem("Reset Game");
         MenuItem menuItemLoad = new MenuItem("Load Game");
         MenuItem menuItemSave = new MenuItem("Save Game");
+        MenuItem menuItemUndo = new MenuItem("Undo");
         MenuItem menuItemQuit = new MenuItem("Quit");
 
         menuItemExit.setOnAction(e -> {
@@ -195,15 +190,31 @@ public class GameBoard {
             fileChooser.setTitle("Open Chess Game File");
             fileChooser.getExtensionFilters().addAll(
                     new FileChooser.ExtensionFilter("Chess Game File", "*.txt"));
-            fileChooser.setInitialDirectory(savesDir);
+            fileChooser.setInitialDirectory(Main.savesDir);
             File selectedFile = fileChooser.showOpenDialog(stage);
 
             if(selectedFile != null) {
                 try {
                     board = new Board(selectedFile);
                     createBoard();
+                    updateLogs();
                 } catch (FileNotFoundException e1) {
                     Console.printError("Save file " + selectedFile.getName() + " does not exist");
+                    e1.printStackTrace();
+                }
+            }
+        });
+        menuItemUndo.setOnAction(e -> {
+            int i = board.moveI() - 1;
+
+            if(i >= 0) {
+                File logFile = new File(Main.logsDir, "log" + i + ".txt");
+                try {
+                    board = new Board(logFile);
+                    createBoard();
+                    updateLogs();
+                } catch (FileNotFoundException e1) {
+                    Console.printError("No log exists for turn " + i);
                     e1.printStackTrace();
                 }
             }
@@ -213,14 +224,14 @@ public class GameBoard {
             fileChooser.setTitle("Open Chess Game File");
             fileChooser.getExtensionFilters().addAll(
                     new FileChooser.ExtensionFilter("Chess Game File", "*.txt"));
-            fileChooser.setInitialDirectory(savesDir);
+            fileChooser.setInitialDirectory(Main.savesDir);
             File file = fileChooser.showSaveDialog(stage);
             if (file != null)
                 board.saveFile(fileChooser.showSaveDialog(stage));
         });
         menuItemQuit.setOnAction(e -> System.exit(0));
 
-        menuFile.getItems().addAll(menuItemExit, menuItemReset, menuItemLoad, menuItemSave, menuItemQuit);
+        menuFile.getItems().addAll(menuItemExit, menuItemReset, menuItemLoad, menuItemSave, menuItemUndo, menuItemQuit);
         MenuItem menuItemAbout = new MenuItem("About");
         menuHelp.getItems().add(menuItemAbout);
 

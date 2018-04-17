@@ -23,9 +23,13 @@ public class    King extends ChessPiece {
         super(position, alliance, board, false, Piece.KING, 2, hasMoved);
 
     }
+    public King(King other) {
+        super(other);
+    }
 
-    public King clonePiece() {
-        return new King(position, alliance, board, hasMoved());
+    @Override
+    public ChessPiece clonePiece() {
+        return new King(this);
     }
 
     @Override
@@ -83,7 +87,7 @@ public class    King extends ChessPiece {
         boolean checked = false;
         board.suspendPieces(position);
 
-        HashMap<Vector2, IChessPiece> hostilePieces = board.getPieces(otherAlliance());
+        HashMap<Vector2, ChessPiece> hostilePieces = board.getPieces(otherAlliance());
         for(IChessPiece hostile : hostilePieces.values()) {
             if(hostile.getPossibleDestinations().contains(destination)) {
                 checked = true;

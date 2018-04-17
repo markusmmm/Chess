@@ -18,9 +18,13 @@ public class Rook extends ChessPiece {
 	public Rook(Vector2 position, Alliance alliance, AbstractBoard board, boolean hasMoved) {
 		super(position, alliance, board, false, Piece.ROOK, 5,hasMoved);
 	}
+	public Rook(Rook other) {
+		super(other);
+	}
 
-	public Rook clonePiece() {
-		return new Rook(position, alliance, board, hasMoved());
+	@Override
+	public ChessPiece clonePiece() {
+		return new Rook(this);
 	}
 
 	@Override

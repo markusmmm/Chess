@@ -8,6 +8,7 @@ import resources.Vector2;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static resources.Alliance.BLACK;
@@ -28,12 +29,21 @@ public class Pawn extends ChessPiece {
 		super(position, alliance, board, false, Piece.PAWN, 1, hasMoved);
 		this.hasDoubleStepped = hasDoubleStepped;
 	}
+	public Pawn(Pawn other) {
+		super(other);
+		hasDoubleStepped = other.hasDoubleStepped;
+	}
 
-	public Pawn clonePiece() {
-        return new Pawn(position, alliance, board, hasMoved(), hasDoubleStepped);
-    }
+	@Override
+	public ChessPiece clonePiece() {
+		return new Pawn(this);
+	}
 
-
+	@Override
+	public void reset(List<Boolean> vals) {
+		reset(vals);
+		hasDoubleStepped = vals.get(1);
+	}
 
 	/**
 	 * 
@@ -98,6 +108,10 @@ public class Pawn extends ChessPiece {
 
 		}
 		return true;
+	}
+
+	public boolean hasDoubleStepped() {
+		return hasDoubleStepped;
 	}
 
 	public boolean withinBoard(Vector2 move)

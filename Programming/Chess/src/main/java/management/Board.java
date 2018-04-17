@@ -1,5 +1,6 @@
 package management;
 
+import main.Main;
 import pieces.ChessPiece;
 import pieces.IChessPiece;
 import pieces.King;
@@ -13,10 +14,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.Set;
+import java.util.Stack;
 
 public class Board extends AbstractBoard {
-    private int moveI = 0;
-
     private static final Piece[] defaultBoard = new Piece[]{
             Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK,
             Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN,
@@ -93,23 +93,6 @@ public class Board extends AbstractBoard {
     public Board(File file) throws FileNotFoundException {
         super(file);
     }
-
-	/*
-	public boolean undoMove() {
-    	if(gameLog.size() == 0) return false;
-
-    	MoveNode lastMove = gameLog.pop();
-
-    	pieces.remove(lastMove.end);
-    	pieces.put(lastMove.start, lastMove.piece);
-
-		ChessPiece victim = lastMove.victimPiece;
-		if(victim != null)
-			pieces.put(victim.position(), victim);
-
-    	return true;
-	}
-	*/
 
     /**
      * Generates a random board with random amount of pieces.
@@ -313,17 +296,30 @@ public class Board extends AbstractBoard {
      * @param alliance The alliance of the pieces to find
      * @return All matching pieces on this board
      */
-    public HashMap<Vector2, IChessPiece> getPieces(Alliance alliance) {
-        HashMap<Vector2, IChessPiece> temp = new HashMap<>();
+    public HashMap<Vector2, ChessPiece> getPieces(Alliance alliance) {
+        HashMap<Vector2, ChessPiece> pieces = getPieces();
+        HashMap<Vector2, ChessPiece> temp = new HashMap<>();
 
-        for (Vector2 pos : getPositions()) {
-            IChessPiece piece = getPiece(pos);
+        for(Vector2 pos : pieces.keySet()) {
+            ChessPiece piece = pieces.get(pos);
+            if (pieces.get(pos).alliance().equals(alliance))
+                temp.put(pos, piece);
+        }
+
+        return temp;
+    }
+    public HashMap<Vector2, ChessPiece> getPieces() {
+        HashMap<Vector2, ChessPiece> temp = new HashMap<>();
+
+        for(Vector2 pos : getPositions()) {
+            ChessPiece piece = getPiece(pos);
             if (piece == null) continue;
 
-            if (insideBoard(pos) && piece.alliance().equals(alliance)) {
+            if (insideBoard(pos)) {
                 temp.put(pos, piece);
             }
         }
+
         return temp;
     }
 
@@ -357,7 +353,7 @@ public class Board extends AbstractBoard {
      * @return The king on this board with the given alliance
      */
     public King getKing(Alliance alliance) {
-        HashMap<Vector2, IChessPiece> temp = getPieces(alliance);
+        HashMap<Vector2, ChessPiece> temp = getPieces(alliance);
         for (Vector2 pos : temp.keySet())
             if (temp.get(pos) instanceof King)
                 return (King) temp.get(pos);
@@ -374,10 +370,10 @@ public class Board extends AbstractBoard {
     public boolean movePiece(Vector2 start, Vector2 end) {
         if (!insideBoard(start)) return advanceMove(false);
 
-        ChessPiece piece = (ChessPiece) getPiece(start);
+        // Save board state, before changes are made (Enables undo)
+        saveFile(new File(Main.logsDir, "log" + moveI() + ".txt"), true);
 
-
-        //resources.Console.println("Currently " + activePlayer + "'s turn");
+        ChessPiece piece = getPiece(start);
 
         if (piece == null) {
             return advanceMove(false); // Check if a piece exists at the given position
@@ -454,7 +450,7 @@ public class Board extends AbstractBoard {
                 addPiece(new Vector2(queenSideRookX + 3, end.getY()), pieceType, alliance);
                 addPiece(new Vector2(queenSideRookX + 2, end.getY()), Piece.KING, alliance);
 
-                logMove(new MoveNode(piece, start, end, (ChessPiece) getPiece(end)));
+                logMove(new MoveNode(piece, start, end, getPiece(end)));
 
                 return advanceMove(true);
             }
@@ -524,6 +520,7 @@ public class Board extends AbstractBoard {
     private boolean advanceMove(boolean state) {
         if (state) {
             activePlayer = activePlayer.equals(Alliance.WHITE) ? Alliance.BLACK : Alliance.WHITE;
+            moveI++;
         }
 
         return state;
@@ -547,43 +544,67 @@ public class Board extends AbstractBoard {
      * Saves the board's state to a text-file
      * @param file Name of the save (No path/file-extension)
      */
-	public void saveFile(File file) {
-        /*String dirPath = System.getProperty("user.home") + "\\GitGud\\";
-        resources.Console.printNotice("Save directory: " + dirPath);
-        File dir = new File(dirPath);
-        if(!dir.exists())
-            dir.mkdir();
-
-		String path = dirPath + saveName + ".txt";*/
+	public void saveFile(File file, boolean deleteOnExit) {
         String path = file.getAbsolutePath();
         try {
             FileWriter save = new FileWriter(path);
             int n = size();
 
-            save.write(n + " 0\n");
+            Stack<MoveNode> gameLog = getGameLog();
+            save.write(n + " 0 " + gameLog.size() + " " + moveI + "\n");
             for (int y = 0; y < n; y++) {
                 String line = "";
                 for (int x = 0; x < n; x++) {
                     ChessPiece p = getPiece(new Vector2(x, y));
                     char s = 'e';
                     if (p != null)
-                        s = PieceManager.toSymbol(p.piece());
+                        s = PieceManager.toSymbol(p);
 
                     line += s;
                 }
                 save.write(line + "\n");
             }
 
+            for(MoveNode node : gameLog) {
+                int x0 = node.start.getX(), y0 = node.start.getY(),
+                        x1 = node.end.getX(), y1 = node.end.getY();
+                save.write(PieceManager.toSymbol(node.piece) + " " + x0 + " " + y0 + " " + x1 + " " + y1 + " " + PieceManager.toSymbol(node.victimPiece) + "\n");
+            }
+
+            // Save internal data for each piece on board
+            save.write(Main.DATA_SEPARATOR + "\n");
+            HashMap<Vector2, ChessPiece> pieces = getPieces();
+            for(Vector2 pos : pieces.keySet()) {
+                ChessPiece piece = pieces.get(pos);
+                save.write(pos.getX() + " " + pos.getY() + " " + (piece.hasMoved() ? 1 : 0));
+
+                if(piece instanceof Pawn)
+                    save.write(" " + ( ((Pawn)piece).hasDoubleStepped() ? 1 : 0));
+
+                save.write("\n");
+            }
+
             save.close();
             Console.printSuccess("Board saved to " + path);
+
+            if(deleteOnExit)
+                new File(path).deleteOnExit();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+    }
+    public void saveFile(File file) {
+	    saveFile(file, false);
+    }
+    public void saveFile(String saveName, boolean deleteOnExit) {
+	    saveFile(new File(Main.savesDir, saveName + ".txt"), deleteOnExit);
+    }
+    public void saveFile(String saveName) {
+	    saveFile(saveName, false);
     }
 
     /**
-     * Returns an identical copy of this board
+     *
      * @return Clone of this board
      */
     @Override

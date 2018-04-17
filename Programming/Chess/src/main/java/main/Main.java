@@ -18,6 +18,8 @@ import management.DatabaseController;
 import resources.MediaHelper;
 import resources.BoardMode;
 
+import java.io.File;
+
 
 public class Main extends Application {
 
@@ -28,7 +30,14 @@ public class Main extends Application {
     private BorderPane root;
     private DatabaseController database = new DatabaseController();
 
+    public static final File savesDir = new File(System.getProperty("user.home"), "GitGud/");
+    public static final File logsDir = new File(savesDir, ".logs/");
+
+    public static final String DATA_SEPARATOR = "====";
+
     public void start(Stage primaryStage) throws Exception {
+        directorySetup();
+
         stage = primaryStage;
         Scene scene = new Scene(loginWindow());
         scene.getStylesheets().add("stylesheet.css");
@@ -36,6 +45,14 @@ public class Main extends Application {
         stage.setTitle("Chess");
         stage.setResizable(false);
         stage.show();
+    }
+
+    private void directorySetup() {
+        if (!savesDir.exists()) {
+            savesDir.mkdirs();
+        }
+        if(!logsDir.exists())
+            logsDir.mkdirs();
     }
 
     /**

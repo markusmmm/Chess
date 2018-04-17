@@ -85,7 +85,7 @@ public class Console {
     }
     public static void printError(String msg) {
         if(!doPrint()) return;
-        System.out.println(ANSI_RED_BG + ANSI_WHITE + msg + ANSI_RESET);
+        System.out.println(ANSI_RED + msg + ANSI_RESET);
     }
     public static void printError(Object obj) {
         print(obj.toString());

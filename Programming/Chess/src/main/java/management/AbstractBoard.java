@@ -1,5 +1,6 @@
 package management;
 
+import main.Main;
 import pieces.*;
 import resources.*;
 import resources.Console;
@@ -13,9 +14,9 @@ import java.util.concurrent.Semaphore;
 
 public class AbstractBoard {
     private Semaphore mutex = new Semaphore(1);
+    protected int moveI = 0;
 
     private boolean hasWhiteKing, hasBlackKing;
-
 
     private static final Piece[] defaultBoard = new Piece[]{
             Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK,
@@ -26,7 +27,7 @@ public class AbstractBoard {
             Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK
     };
 
-    private final int size;
+    private int size;
     private Player player1, player2;
     private ChessClock clock = null;
     private ChessPiece lastPiece = null;
@@ -43,6 +44,8 @@ public class AbstractBoard {
     protected AbstractBoard(AbstractBoard other) {
         hasBlackKing = other.hasBlackKing;
         hasWhiteKing = other.hasWhiteKing;
+
+        moveI = other.moveI;
 
         size = other.size;
         player1 = other.player1;
@@ -71,43 +74,74 @@ public class AbstractBoard {
 
     }
 
-    protected AbstractBoard(String fileName) throws FileNotFoundException {
-        fileName += ".txt";
-
-        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-        InputStream is = classloader.getResourceAsStream(fileName);
-        Scanner file = new Scanner(is);
-        size = file.nextInt();
-
+    protected AbstractBoard(String saveName) throws FileNotFoundException {
+        File file = new File(Main.savesDir, saveName + ".txt");
         loadBoard(file);
     }
     protected AbstractBoard(File file) throws FileNotFoundException {
-        Scanner reader = new Scanner(file);
-        size = reader.nextInt();
-
-        loadBoard(reader);
+        loadBoard(file);
     }
 
-    private void loadBoard(Scanner file) {
-        generateClock(file.nextInt() != 0);
+    public int moveI() {
+        return moveI;
+    }
 
-        Console.println("Size read from file: " + size);
+    private void loadBoard(File file) throws FileNotFoundException {
+        Scanner reader = new Scanner(file);
 
+        Console.printNotice("Attempting to load board from save " + file.getAbsolutePath());
+
+        size = reader.nextInt();
+        generateClock(reader.nextInt() != 0);
+        int logSize = reader.nextInt();
+        moveI = reader.nextInt();
+        activePlayer = moveI % 2 == 0 ? Alliance.WHITE : Alliance.BLACK;
+
+        // Load pieces on board
         for (int y = 0; y < size; y++) {
-            String line = file.next();
+            String line = reader.next();
             for (int x = 0; x < size; x++) {
                 char c = line.charAt(x);
 
                 Vector2 pos = new Vector2(x, y);
-                Piece type = PieceManager.toPiece(c);
-                Alliance alliance = Character.isLowerCase(c) ? Alliance.BLACK : Alliance.WHITE;
-
-                //resources.Console.println("Setting piece at " + pos);
-                addPiece(pos, type, alliance);
+                addPiece(pos, PieceManager.toPiece(c));
             }
         }
 
-        file.close();
+        // Load gameLog
+        for(int i = 0; i < logSize; i++) {
+            String p = reader.next();
+            int x0 = reader.nextInt(), y0 = reader.nextInt();
+            int x1 = reader.nextInt(), y1 = reader.nextInt();
+            String v = reader.next();
+
+            PieceNode piece = PieceManager.toPiece(p.charAt(0)),
+                      victim = PieceManager.toPiece(v.charAt(0));
+            MoveNode node = new MoveNode(piece, new Vector2(x0, y0), new Vector2(x1, y1), victim);
+            gameLog.push(node);
+        }
+
+        if(reader.hasNextLine() && reader.nextLine().equals(Main.DATA_SEPARATOR)) {
+            while(reader.hasNextLine()) {
+                int x = reader.nextInt(),
+                        y = reader.nextInt();
+                Vector2 pos = new Vector2(x, y);
+
+                List<Boolean> vals = new ArrayList<>();
+                boolean hasMoved = reader.nextInt() == 1;
+                vals.add(hasMoved);
+
+                ChessPiece piece = getPiece(pos);
+                if(piece instanceof Pawn) {
+                    boolean hasDoubleStepped = reader.nextInt() == 1;
+                    vals.add(hasDoubleStepped);
+                }
+
+                piece.reset(vals);
+            }
+        }
+
+        reader.close();
     }
 
     protected static Piece randomPiece() {
@@ -211,8 +245,9 @@ public class AbstractBoard {
             //resources.Console.println("Mutex released");
             return null;
         }
-
-
+    }
+    public ChessPiece addPiece(Vector2 pos, PieceNode node) {
+        return addPiece(pos, node.piece, node.alliance);
     }
 
     private ChessPiece createPiece(Vector2 pos, Piece type, Alliance alliance) {
@@ -260,11 +295,15 @@ public class AbstractBoard {
     }
 
     public boolean undoMove() {
-        // TODO AbstractBoard.undoMove
-        throw new NotImplementedException();
+        try {
+            loadBoard(new File(Main.logsDir, "log" + (moveI()-1) + ".txt"));
+            return true;
+        } catch (FileNotFoundException e) {
+            Console.printNotice("Can't undo further");
+            e.printStackTrace();
+        }
 
-        //if(gameLog.size() == 0) return false;
-        //MoveNode lastMove = gameLog.peek();
+        return false;
     }
 
     public boolean hasKing(Alliance alliance) {

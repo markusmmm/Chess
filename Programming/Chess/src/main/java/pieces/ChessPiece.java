@@ -4,6 +4,7 @@ import management.AbstractBoard;
 import management.Board;
 import resources.*;
 
+import java.util.List;
 import java.util.Set;
 
 public abstract class ChessPiece implements IChessPiece {
@@ -30,8 +31,16 @@ public abstract class ChessPiece implements IChessPiece {
         this.piece = piece;
         this.value = value;
         this.hasMoved = hasMoved;
-
     }
+    protected ChessPiece(ChessPiece other) {
+    	position = other.position;
+    	alliance = other.alliance;
+    	board = other.board;
+    	canJump = other.canJump;
+    	piece = other.piece;
+    	value = other.value;
+    	hasMoved = other.hasMoved;
+	}
 
 	public Vector2 position() { return position; }
 	public Alliance alliance() { return alliance; }
@@ -91,6 +100,10 @@ public abstract class ChessPiece implements IChessPiece {
 		return true;
 	}
 
+	public void reset(List<Boolean> vals) {
+		hasMoved = vals.get(0);
+	}
+
 	/**
 	 * checks one by one position from this position
 	 * toward destination
@@ -130,8 +143,7 @@ public abstract class ChessPiece implements IChessPiece {
 	    return alliance + " " + piece;
     }
 
-
-
-    @Override
-	public ChessPiece clone() { return clonePiece(); }
+    public ChessPiece clone() {
+		return clonePiece();
+	}
 }
