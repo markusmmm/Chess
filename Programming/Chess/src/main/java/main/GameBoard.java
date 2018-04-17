@@ -95,8 +95,6 @@ public class GameBoard {
 
         this.player1 = new Player(user1, Alliance.WHITE);
         this.player2 = new Player(user2, Alliance.BLACK);
-        System.out.println(player1.getScore());
-        System.out.println(player2.getScore());
 
         Console.printSuccess("Game setup (Difficulty " + difficulty + ")");
     }
