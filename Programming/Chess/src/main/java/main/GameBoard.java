@@ -227,7 +227,7 @@ public class GameBoard {
             fileChooser.setInitialDirectory(Main.savesDir);
             File file = fileChooser.showSaveDialog(stage);
             if (file != null)
-                board.saveFile(fileChooser.showSaveDialog(stage));
+                board.saveFile(file);
         });
         menuItemQuit.setOnAction(e -> System.exit(0));
 
