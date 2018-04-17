@@ -16,7 +16,9 @@ public class Player {
     public Player(String username, Alliance alliance) {
         this.username = username;
         this.alliance = alliance;
-        this.score = new DatabaseController().getScore(username);
+        DatabaseController database = new DatabaseController();
+        this.score = database.getScore(username);
+        database.close();
     }
 
 	public String getUsername() {
