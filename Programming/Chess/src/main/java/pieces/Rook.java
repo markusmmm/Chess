@@ -18,9 +18,13 @@ public class Rook extends ChessPiece {
 	public Rook(Vector2 position, Alliance alliance, AbstractBoard board, boolean hasMoved) {
 		super(position, alliance, board, false, Piece.ROOK, 5,hasMoved);
 	}
+	public Rook(Rook other) {
+		super(other);
+	}
 
-	public Rook clonePiece() {
-		return new Rook(position, alliance, board, hasMoved());
+	@Override
+	public ChessPiece clonePiece() {
+		return new Rook(this);
 	}
 
 	@Override
@@ -34,8 +38,8 @@ public class Rook extends ChessPiece {
 	public boolean legalMove(Vector2 destination) {
 		if(!super.legalMove(destination)) return false;
 
-		//System.out.println("inStraights: " + inStraights(destination));
-		//System.out.println("freePath: " + freePath(destination));
+		//resources.Console.println("inStraights: " + inStraights(destination));
+		//resources.Console.println("freePath: " + freePath(destination));
 
 		return (
 			inStraights(destination) &&
@@ -47,9 +51,7 @@ public class Rook extends ChessPiece {
 	 * @return a list of all possible moves from this position
 	 */
 
-	public Set<Vector2> getPossibleDestinations(String caller) {
-		logActionPossibleDestinations(caller);
-
+	public Set<Vector2> getPossibleDestinations() {
 		possibleMoves.clear();
 		for (int variable = 0; variable < board.size(); variable++) {
 			//Straights

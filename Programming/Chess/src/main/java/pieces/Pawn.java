@@ -2,11 +2,13 @@ package pieces;
 
 import management.AbstractBoard;
 import resources.Alliance;
+import resources.Console;
 import resources.Piece;
 import resources.Vector2;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static resources.Alliance.BLACK;
@@ -27,12 +29,21 @@ public class Pawn extends ChessPiece {
 		super(position, alliance, board, false, Piece.PAWN, 1, hasMoved);
 		this.hasDoubleStepped = hasDoubleStepped;
 	}
+	public Pawn(Pawn other) {
+		super(other);
+		hasDoubleStepped = other.hasDoubleStepped;
+	}
 
-	public Pawn clonePiece() {
-        return new Pawn(position, alliance, board, hasMoved(), hasDoubleStepped);
-    }
+	@Override
+	public ChessPiece clonePiece() {
+		return new Pawn(this);
+	}
 
-
+	@Override
+	public void reset(List<Boolean> vals) {
+		reset(vals);
+		hasDoubleStepped = vals.get(1);
+	}
 
 	/**
 	 * 
@@ -52,9 +63,9 @@ public class Pawn extends ChessPiece {
 		boolean blackResult = this.alliance.equals(BLACK) && enPassant(blackEnpasant);
 		boolean whiteResult = this.alliance.equals(WHITE) && enPassant(whiteEnpasant);
 
-		System.out.println("Black result: " + blackResult);
+		//resources.Console.println("Black result: " + blackResult);
 
-		System.out.println("White result: " + whiteResult);
+		//resources.Console.println("White result: " + whiteResult);
 
 		return (
 				((blackResult ||
@@ -101,29 +112,43 @@ public class Pawn extends ChessPiece {
 		if(!hasDoubleStepped && (whiteNegative2 || blackPositive2))
 			hasDoubleStepped = true;
 
-
-
-
 		if(blackResult) {
 			board.performAttack(start, destination, blackEnpasant);
 		}
 		else if(whiteResult) {
-			System.out.println(whiteEnpasant);
+			Console.println(whiteEnpasant);
 			board.performAttack(start, destination, whiteEnpasant);
 		}
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> wip
 		return true;
 	}
 
+	public boolean hasDoubleStepped() {
+		return hasDoubleStepped;
+	}
+
+	public boolean withinBoard(Vector2 move)
+	{
+		int moveGetX = move.getX();
+		int moveGetY = move.getY();
+		return (moveGetX >= 0 && moveGetX <= 7 && moveGetY >= 0 && moveGetY <= 7);
+
+	}
 
 	public boolean whiteNegative(Vector2 move)
 	{
+		if(!withinBoard(move)) return false;
 		Vector2 white = new Vector2(this.position().getX(), this.position().getY() - 1);
 		return move.equals(white) && board.vacant(move);
 	}
 
 	public boolean whiteNegative2(Vector2 move)
 	{
+		if(!withinBoard(move)) return false;
 		if(hasMoved()) return false;
 
 		Vector2 white1 = new Vector2(this.position().getX(), this.position().getY() - 1);
@@ -133,12 +158,14 @@ public class Pawn extends ChessPiece {
 
 	public boolean blackPositive(Vector2 move)
 	{
+		if(!withinBoard(move)) return false;
 		Vector2 black = new Vector2(this.position().getX(), this.position().getY() + 1);
 		return move.equals(black) && board.vacant(move);
 	}
 
 	public boolean blackPositive2(Vector2 move)
 	{
+		if(!withinBoard(move)) return false;
 		if(hasMoved()) return false;
 
 		Vector2 black1 = new Vector2(this.position().getX(), this.position().getY() + 1);
@@ -148,6 +175,7 @@ public class Pawn extends ChessPiece {
 
 	public boolean whiteLDiag(Vector2 move)
 	{
+		if(!withinBoard(move)) return false;
 		Vector2 whiteLD = new Vector2(this.position().getX() - 1, this.position().getY() - 1);
 		if (!board.vacant(move)) {
 			ChessPiece enemy = (ChessPiece) board.getPiece(move);
@@ -160,6 +188,7 @@ public class Pawn extends ChessPiece {
 
 	public boolean whiteRDiag(Vector2 move)
 	{
+		if(!withinBoard(move)) return false;
 		Vector2 whiteRD = new Vector2(this.position().getX() + 1, this.position().getY() - 1);
 		if (!board.vacant(move)) {
 			ChessPiece enemy = (ChessPiece) board.getPiece(move);
@@ -172,6 +201,7 @@ public class Pawn extends ChessPiece {
 
 	public boolean blackLDiag(Vector2 move)
 	{
+		if(!withinBoard(move)) return false;
 		Vector2 blackLD = new Vector2(this.position().getX() - 1, this.position().getY() + 1);
 		if (!board.vacant(move)) {
 			ChessPiece enemy = (ChessPiece) board.getPiece(move);
@@ -184,6 +214,7 @@ public class Pawn extends ChessPiece {
 
 	public boolean blackRDiag(Vector2 move)
 	{
+		if(!withinBoard(move)) return false;
 		Vector2 blackRD = new Vector2(this.position().getX() + 1, this.position().getY() + 1);
 		if (!board.vacant(move)) {
 			ChessPiece enemy = (ChessPiece) board.getPiece(move);
@@ -196,6 +227,7 @@ public class Pawn extends ChessPiece {
 
 	public boolean noTurnBackWhite(Vector2 move)
 	{
+		if(!withinBoard(move)) return false;
 		Vector2 turnBackWhite1 = new Vector2(this.position.getX(), this.position.getY() + 1);
 		Vector2 turnBackWhite2 = new Vector2(this.position.getX() + 1, this.position.getY() + 1);
 		Vector2 turnBackWhite3 = new Vector2(this.position.getX() - 1, this.position.getY() + 1);
@@ -206,6 +238,7 @@ public class Pawn extends ChessPiece {
 
 	public boolean noTurnBackBlack(Vector2 move)
 	{
+		if(!withinBoard(move)) return false;
 		Vector2 turnBackBlack1 = new Vector2(this.position.getX(), this.position.getY() - 1);
 		Vector2 turnBackBlack2 = new Vector2(this.position.getX() + 1, this.position.getY() - 1);
 		Vector2 turnBackBlack3 = new Vector2(this.position.getX() - 1, this.position.getY() - 1);
@@ -214,9 +247,7 @@ public class Pawn extends ChessPiece {
 		return true;
 	}
 
-	public Set<Vector2> getPossibleDestinations(String caller) {
-		logActionPossibleDestinations(caller);
-
+	public Set<Vector2> getPossibleDestinations() {
 		Set<Vector2> possibleMoves = new HashSet<>();
 
 		int x = this.position.getX();
@@ -291,6 +322,7 @@ public class Pawn extends ChessPiece {
 
 	public boolean enPassant(Vector2 side)
 	{
+		if(!withinBoard(side)) return false;
 		if (!board.vacant(side))
 		{
 			if((this.alliance.equals(WHITE) && this.position.getY() == 3) || (this.alliance.equals(BLACK) && this.position.getY() == 4))
@@ -309,6 +341,7 @@ public class Pawn extends ChessPiece {
 
 	public boolean promotion(Vector2 move)
 	{
+		if(!withinBoard(move)) return false;
 		if(board.vacant(move))
 		{
 			if (this.position.getY() == 0 && this.alliance.equals(WHITE))
