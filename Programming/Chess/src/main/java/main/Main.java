@@ -140,7 +140,7 @@ public class Main extends Application {
         buttonPlayMedium.setText("PLAY: MEDIUM");
 
         Button randomBoardPlay = new Button();
-        randomBoardPlay.setText("Random Board");
+        randomBoardPlay.setText("PLAY: RANDOM BOARD");
 
         Button buttonPlayHard = new Button();
         buttonPlayHard.setText("PLAY: HARD");
@@ -218,6 +218,7 @@ public class Main extends Application {
      * Exits the program
      */
     public void onQuit() {
+        database.close();
         System.exit(0);
     }
 
