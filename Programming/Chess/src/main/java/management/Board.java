@@ -369,7 +369,7 @@ public class Board extends AbstractBoard {
         if (!insideBoard(start)) return advanceMove(false);
 
         // Save board state, before changes are made (Enables undo)
-        saveFile(new File(Main.logsDir, "log" + moveI() + ".txt"), true);
+        saveBoard(new File(Main.logsDir, "log" + moveI() + ".txt"), true);
 
         ChessPiece piece = getPiece(start);
 
@@ -541,7 +541,7 @@ public class Board extends AbstractBoard {
      * Saves the board's state to a text-file
      * @param file Name of the save (No path/file-extension)
      */
-	public void saveFile(File file, boolean deleteOnExit) {
+	public void saveBoard(File file, boolean deleteOnExit) {
         String path = file.getAbsolutePath();
         try {
             FileWriter save = new FileWriter(path);
@@ -549,6 +549,8 @@ public class Board extends AbstractBoard {
 
             Stack<MoveNode> gameLog = getGameLog();
             save.write(n + " 0 " + gameLog.size() + " " + moveI + "\n");
+            Vector2 lastPos = getLastPiece() == null ? new Vector2(-1, -1) : getLastPiece().position();
+            save.write(lastPos.getX() + " " + lastPos.getY() + "\n");
             for (int y = 0; y < n; y++) {
                 String line = "";
                 for (int x = 0; x < n; x++) {
@@ -590,14 +592,14 @@ public class Board extends AbstractBoard {
             e.printStackTrace();
         }
     }
-    public void saveFile(File file) {
-	    saveFile(file, false);
+    public void saveBoard(File file) {
+	    saveBoard(file, false);
     }
-    public void saveFile(String saveName, boolean deleteOnExit) {
-	    saveFile(new File(Main.savesDir, saveName + ".txt"), deleteOnExit);
+    public void saveBoard(String saveName, boolean deleteOnExit) {
+	    saveBoard(new File(Main.savesDir, saveName + ".txt"), deleteOnExit);
     }
-    public void saveFile(String saveName) {
-	    saveFile(saveName, false);
+    public void saveBoard(String saveName) {
+	    saveBoard(saveName, false);
     }
 
     /**

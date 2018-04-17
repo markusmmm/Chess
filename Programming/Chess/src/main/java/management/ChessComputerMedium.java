@@ -103,7 +103,6 @@ public class ChessComputerMedium extends ChessComputer {
             moves.add(pawnForward(x, y ,x , y + 1 * turn, chessB));
             moves.add(pawnAttack(x,y,x + 1, y + 1 * turn, chessB));
             moves.add(pawnAttack(x,y,x - 1, y + 1 * turn, chessB));
-
         }
         return moves;
     }

@@ -24,7 +24,7 @@ public interface IChessPiece {
 	 */
 	boolean move(Vector2 end);
 
-	void reset(List<Boolean> vals);
+	void loadData(List<Boolean> vals);
 
 	ChessPiece clonePiece();
 }

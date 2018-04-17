@@ -166,7 +166,6 @@ public class Main extends Application {
                 if (!username.toLowerCase().equals(player2.toLowerCase())) {
                     if (!database.userExists(player2))
                         database.addUser(player2);
-                    System.out.println("Player 2's username: " + player2);
                     createChessGame(username, player2, 0, BoardMode.DEFAULT, root);
                 } else System.out.println("You can't play against yourself!");
             });
