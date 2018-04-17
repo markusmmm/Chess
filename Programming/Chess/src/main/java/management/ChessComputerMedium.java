@@ -12,6 +12,8 @@ public class ChessComputerMedium extends ChessComputer {
     private final Alliance black = Alliance.BLACK;
     private final Alliance white = Alliance.WHITE;
     private Boolean[] stillMoving = new Boolean[4];
+    private ArrayList<Move> emptyMoveList = new ArrayList<>();
+    private Move emptyMove = new Move(new Vector2(0,0), new Vector2(0,0));
     private int size;
     private int store;
 
@@ -31,8 +33,8 @@ public class ChessComputerMedium extends ChessComputer {
             score = scoreMove(chessB.clone(), moveStorage.get(i), DEPTH, turn);
             moveChart.add(new MoveScore(score, moveStorage.get(i)));
         }
-
-        return Collections.max(moveChart).getMove();
+        printMoves(moveChart);
+        return Collections.min(moveChart).getMove();
     }
 
     private int scoreMove(int[][] chessB, Move move, int depth, int turn) {
@@ -45,8 +47,14 @@ public class ChessComputerMedium extends ChessComputer {
         for (int i = 0; i < moves.size(); i++) {
             score += scoreMove(chessB.clone(), moves.get(i),depth - 1, turn);
         }
-        return score;//noe + scoremove
+        return score;
     }
+    public void printMoves(ArrayList<MoveScore> m) {
+        for(MoveScore move: m) {
+            System.out.println(move.toString());
+        }
+    }
+
 
     private ArrayList<Move> allMovesOneSide(int[][] chessB, int turn) {
         ArrayList<Move> moves = new ArrayList<>();
@@ -73,7 +81,7 @@ public class ChessComputerMedium extends ChessComputer {
         else if (chessB[x][y] == 5 * turn) return rook(x,y, chessB);
         else if (chessB[x][y] == 2 * turn) return king(x,y, chessB);
         else if (chessB[x][y] == 9 * turn) return queen(x,y, chessB);
-        return null;
+        return emptyMoveList;
     }
 
     private ArrayList<Move> pawn(int x, int y, int[][] chessB, int turn) {
@@ -93,12 +101,12 @@ public class ChessComputerMedium extends ChessComputer {
         if(insideBoard(toX, toY) && chessB[toX][toY] != 0){
             return new Move(new Vector2(fromX, fromY), new Vector2(toX, toY));
         }
-        return null;
+        return emptyMove;
     }
 
     private Move pawnForward(int fromX, int fromY, int toX, int toY, int[][] chessB) {
         if(chessB[toX][toY] == 0) return new Move(new Vector2(fromX, fromY), new Vector2(toX, toY));
-        return null;
+        return emptyMove;
     }
 
     private ArrayList<Move> king(int x, int y, int[][] chessB) {
@@ -164,7 +172,7 @@ public class ChessComputerMedium extends ChessComputer {
         if(insideBoard(toX,toY) && chessB[toX][toY] == 0) {
             return new Move (new Vector2(fromX,fromY), new Vector2(toX, toY));
         } else stillMoving[bolIndex] = false;
-        return null;
+        return emptyMove;
     }
 
     private int PerformMove(int[][] chessB, Move move) {
@@ -223,7 +231,7 @@ public class ChessComputerMedium extends ChessComputer {
                 else if (chessB[x][y] == 9) System.out.print('q');  //Queen
                 else if (chessB[x][y] == -9) System.out.print('Q');
             }
-            Console.println();
+            System.out.println();
         }
     }
 }
