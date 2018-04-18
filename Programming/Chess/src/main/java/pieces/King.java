@@ -18,9 +18,9 @@ public class    King extends ChessPiece {
     /**
      *
      */
-    public King(Alliance alliance, AbstractBoard board, Boolean hasMoved) {
+    public King(Vector2 position, Alliance alliance, AbstractBoard board, Boolean hasMoved) {
 
-        super(alliance, board, false, Piece.KING, 2, hasMoved);
+        super(position, alliance, board, false, Piece.KING, 2, hasMoved);
 
     }
     public King(King other) {

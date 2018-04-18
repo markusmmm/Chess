@@ -12,8 +12,8 @@ import java.util.Set;
 
 public class Bishop extends ChessPiece {
 	private Set<Vector2> possibleMoves = new HashSet<>();
-	public Bishop(Alliance alliance, AbstractBoard board){
-		super(alliance, board, false, Piece.BISHOP, 3, false);
+	public Bishop(Vector2 position, Alliance alliance, AbstractBoard board){
+		super(position, alliance, board, false, Piece.BISHOP, 3, false);
 	}
 	public Bishop(Bishop other) {
 		super(other);

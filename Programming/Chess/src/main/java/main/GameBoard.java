@@ -44,8 +44,7 @@ public class GameBoard {
 
     private Tile[][] tiles;
     private Rectangle[][] squares;
-    private String username;
-    private int difficulty;
+    private String user1, user2;
     private BoardMode boardMode;
 
     private boolean firstClick;
@@ -58,17 +57,17 @@ public class GameBoard {
         if(boardMode == BoardMode.DEFAULT) {
             //this.board = new Board(SIZE, false, boardMode); TEMP TEST
             try {
-                boardVal = new Board(new File("default.txt"));
+                boardVal = new Board(new File("default" + Main.SAVE_EXTENSION));
             } catch (FileNotFoundException e) {
                 //e.printCaller();
                 //System.err.println("Game setup failed! exiting...");
                 //System.exit(1);
 
                 Console.printWarning("Save file 'default' not found. Attempting legacy generation...");
-                boardVal = new Board(SIZE, false, boardMode);
+                boardVal = new Board(SIZE, difficulty,false, boardMode);
             }
         } else if(boardMode == BoardMode.RANDOM) {
-            boardVal = new Board(SIZE, false, boardMode);
+            boardVal = new Board(SIZE, difficulty, false, boardMode);
         }
         board = boardVal;
 
@@ -79,8 +78,8 @@ public class GameBoard {
         this.grid = new GridPane();
         this.tiles = new Tile[SIZE][SIZE];
         this.squares = new Rectangle[SIZE][SIZE];
-        this.username = username;
-        this.difficulty = difficulty;
+        this.user1 = user1;
+        this.user2 = user2;
         this.firstClick = false;
         this.firstTile = null;
         this.container = new BorderPane();
@@ -100,6 +99,7 @@ public class GameBoard {
      * Creates a new chess computer, based on the given difficulty
      */
     private void setComputer() {
+        int difficulty = board.difficulty();
         if (difficulty == 1) computer = new ChessComputerEasy(board);
         else if (difficulty == 2) computer = new ChessComputerMedium(board);
         else if (difficulty == 3) computer = new ChessComputerHard(board);
@@ -194,13 +194,13 @@ public class GameBoard {
             main.mainMenu(player1.getUsername(), stage);
         });
         menuItemReset.setOnAction(e -> {
-            GameBoard newGameBoard = new GameBoard(player1.getUsername(), player2.getUsername(), difficulty, boardMode, main, stage, root);
+            GameBoard newGameBoard = new GameBoard(player1.getUsername(), player2.getUsername(), board.difficulty(), boardMode, main, stage, root);
             newGameBoard.createBoard();
             root.setCenter(newGameBoard.getContainer());
         });
-        menuItemLoad.setOnAction(e -> loadBoard());
-        menuItemUndo.setOnAction(e -> undoMove());
-        menuItemSave.setOnAction(e -> saveBoard());
+        menuItemLoad.setOnAction(e -> performLoad());
+        menuItemUndo.setOnAction(e -> performUndo());
+        menuItemSave.setOnAction(e -> performSave());
         menuItemQuit.setOnAction(e -> main.onQuit());
 
         menuFile.getItems().addAll(menuItemExit, menuItemReset, menuItemLoad, menuItemSave, menuItemUndo, menuItemQuit);
@@ -211,12 +211,12 @@ public class GameBoard {
         return menuBar;
     }
 
-    private void loadBoard() {
+    private void performLoad() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Chess Game File");
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Chess Game File", "*.txt"));
-        fileChooser.setInitialDirectory(Main.savesDir);
+                new FileChooser.ExtensionFilter("Chess Game File", "*" + Main.SAVE_EXTENSION));
+        fileChooser.setInitialDirectory(Main.SAVES_DIR);
         File selectedFile = fileChooser.showOpenDialog(stage);
 
         if(selectedFile != null) {
@@ -231,12 +231,12 @@ public class GameBoard {
             }
         }
     }
-    private void saveBoard() {
+    private void performSave() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Chess Game File");
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Chess Game File", "*.txt"));
-        fileChooser.setInitialDirectory(Main.savesDir);
+                new FileChooser.ExtensionFilter("Chess Game File", "*" + Main.SAVE_EXTENSION));
+        fileChooser.setInitialDirectory(Main.SAVES_DIR);
         File file = fileChooser.showSaveDialog(stage);
         if (file != null)
             board.saveBoard(file);
@@ -281,12 +281,12 @@ public class GameBoard {
         //resources.Console.println("After:" + temp.position());
     }
 
-    private void undoMove() {
+    private void performUndo() {
         int backStep = computer == null ? 1 : 2;
         int i = board.moveI() - backStep;
 
         if(i >= 0) {
-            File logFile = new File(Main.logsDir, "log" + i + ".txt");
+            File logFile = new File(Main.LOGS_DIR, "log" + i + Main.SAVE_EXTENSION);
             try {
                 board = new Board(logFile);
                 createBoard();
@@ -451,9 +451,4 @@ public class GameBoard {
     public BorderPane getContainer() {
         return container;
     }
-
-    public int getDifficulty() {
-        return difficulty;
-    }
-
 }
