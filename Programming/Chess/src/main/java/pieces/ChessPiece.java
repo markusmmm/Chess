@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Set;
 
 public abstract class ChessPiece implements IChessPiece {
-	private static IDManager idManager = new IDManager();
-
 	private final int id;
 	protected final Alliance alliance;
 	protected final Board board;
@@ -24,9 +22,9 @@ public abstract class ChessPiece implements IChessPiece {
      *
      */
     public ChessPiece(Alliance alliance, AbstractBoard board, boolean canJump, Piece piece, int value, boolean hasMoved) {
-    	id = idManager.nextID();
         this.alliance = alliance;
         this.board = (Board)board;
+    	id = board.idManager.nextID();
         this.canJump = canJump;
         this.piece = piece;
         this.value = value;

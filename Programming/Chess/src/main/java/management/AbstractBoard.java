@@ -1,6 +1,5 @@
 package management;
 
-import javafx.collections.transformation.SortedList;
 import main.Main;
 import pieces.*;
 import resources.*;
@@ -13,6 +12,8 @@ import java.util.*;
 import java.util.concurrent.Semaphore;
 
 public class AbstractBoard {
+    public final IDManager idManager = new IDManager();
+
     private Semaphore mutex = new Semaphore(1);
     protected int moveI = 0;
 
