@@ -6,7 +6,10 @@ import resources.Move;
 import resources.Piece;
 import resources.Vector2;
 
+import java.util.Scanner;
+
 public class ChessComputerHard extends ChessComputer {
+    private Scanner input;
     private Stockfish ai = new Stockfish();
     private final int THINK_TIME = 2500;
     private StringBuilder fen = new StringBuilder();
@@ -20,19 +23,56 @@ public class ChessComputerHard extends ChessComputer {
     @Override
     public Move getMove() {
         ai.sendCommand("ucinewgame");
-        ai.getBestMove(generateFen(),THINK_TIME);
-        //TODO ChessComputerHard.getMove
-        throw new UnsupportedOperationException();
+        return toMove(ai.getBestMove(generateFen(),THINK_TIME));
     }
 
+    private Move toMove(String bestMove) {
+        int[] in = new int[bestMove.length()];
+        for (int i = 0; i < bestMove.length(); i++) {
+            in[i] = toInt(bestMove.charAt(i));
+        }
+        return new Move(new Vector2(in[0], in[2]), new Vector2(in[3], in[4]));
+    }
+
+    /**
+     *
+     * @param c chess coordniate
+     * @return cartesian coordinate
+     */
+    private int toInt(char c) {
+        switch(c) {
+            case 'a': return 0;
+            case 'b': return 1;
+            case 'c': return 2;
+            case 'd': return 3;
+            case 'e': return 4;
+            case 'f': return 5;
+            case 'g': return 6;
+            case 'h': return 7;
+            case '1': return 0;
+            case '2': return 1;
+            case '3': return 2;
+            case '4': return 3;
+            case '5': return 4;
+            case '6': return 5;
+            case '7': return 6;
+            case '8': return 7;
+
+        }
+        return -1;
+    }
+
+    /**
+     *
+     * @return standard UCI FEN format for chess Engines
+     */
     private String generateFen() {
         fen.delete(0,fen.length());
-        translateBoard();
-
+        boardToFen();
         return fen.toString();
     }
 
-    private void translateBoard() {
+    private void boardToFen() {
         spacecounter = 0;
         for (int y = 0; y < board.size(); y++) {
             for (int x = 0; x < board.size(); x++) {
@@ -48,6 +88,9 @@ public class ChessComputerHard extends ChessComputer {
         }
     }
 
+    /**
+     * places the  number of spaces between pieces in FEN-string
+     */
     private void addSpace() {
         if(0 < spacecounter) {
             fen.append(spacecounter);
