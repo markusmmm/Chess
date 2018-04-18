@@ -22,8 +22,8 @@ public class Knight  extends ChessPiece {
 	/**
 	 *
 	 */
-	public Knight (Alliance alliance, AbstractBoard board){
-		super(alliance, board, true, Piece.KNIGHT, 3,false);
+	public Knight (Vector2 position, Alliance alliance, AbstractBoard board){
+		super(position, alliance, board, true, Piece.KNIGHT, 3,false);
 	}
 	public Knight(Knight other) {
 		super(other);

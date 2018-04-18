@@ -24,8 +24,8 @@ public class Pawn extends ChessPiece {
 	 */
 
 
-	public Pawn(Alliance alliance, AbstractBoard board, boolean hasMoved, boolean hasDoubleStepped) {
-		super(alliance, board, false, Piece.PAWN, 1, hasMoved);
+	public Pawn(Vector2 position, Alliance alliance, AbstractBoard board, boolean hasMoved, boolean hasDoubleStepped) {
+		super(position, alliance, board, false, Piece.PAWN, 1, hasMoved);
 		this.hasDoubleStepped = hasDoubleStepped;
 	}
 	public Pawn(Pawn other) {

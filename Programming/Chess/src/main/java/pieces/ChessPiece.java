@@ -2,14 +2,14 @@ package pieces;
 
 import management.AbstractBoard;
 import management.Board;
-import management.IDManager;
 import resources.*;
 
 import java.util.List;
-import java.util.Set;
 
 public abstract class ChessPiece implements IChessPiece {
-	private final int id;
+	private MediaHelper media = new MediaHelper();
+
+	private Vector2 position;
 	protected final Alliance alliance;
 	protected final Board board;
 	protected final boolean canJump;
@@ -21,18 +21,18 @@ public abstract class ChessPiece implements IChessPiece {
     /**
      *
      */
-    public ChessPiece(Alliance alliance, AbstractBoard board, boolean canJump, Piece piece, int value, boolean hasMoved) {
+    public ChessPiece(Vector2 position, Alliance alliance, AbstractBoard board, boolean canJump, Piece piece, int value, boolean hasMoved) {
+    	this.position = position;
         this.alliance = alliance;
         this.board = (Board)board;
-    	id = board.idManager.nextID();
         this.canJump = canJump;
         this.piece = piece;
         this.value = value;
         this.hasMoved = hasMoved;
     }
     protected ChessPiece(ChessPiece other) {
-    	id = other.id;
-    	alliance = other.alliance();
+    	position = other.position;
+    	alliance = other.alliance;
     	board = other.board;
     	canJump = other.canJump;
     	piece = other.piece();
@@ -40,7 +40,7 @@ public abstract class ChessPiece implements IChessPiece {
     	hasMoved = other.hasMoved;
 	}
 
-	public Vector2 position() { return board.getPosition(this); }
+	public Vector2 position() { return position; }
 	public Alliance alliance() { return alliance; }
 	public Piece piece() { return piece; }
 	public int getValue() { return value; }
@@ -89,7 +89,7 @@ public abstract class ChessPiece implements IChessPiece {
 		//resources.Console.println("Attempting to move " + alliance + " " + piece + " from " + position + " to " + move);
 		if (!legalMove(destination)) return false; // If the destination is unreachable, the move fails
 
-		MediaHelper media = new MediaHelper();
+		position = destination;
 		media.playSound("move.mp3");
 		hasMoved = true;
 
@@ -150,7 +150,7 @@ public abstract class ChessPiece implements IChessPiece {
 		if(!(o instanceof ChessPiece)) return false;
 		ChessPiece other = (ChessPiece)o;
 
-		return id == other.id;
+		return position == other.position;
 	}
 
     public ChessPiece clone() {
