@@ -67,11 +67,34 @@ public class Stockfish {
         StringBuffer buffer = new StringBuffer();
         try {
             Thread.sleep(waitTime);
-            while (true) {
-                String text = processReader.readLine();
+            sendCommand("isready");
+            boolean working = true;
+            String text = "";
+            while (working) {
+                if (text.equals("readyok")) {
+                    working = false;
+                }
+                text = processReader.readLine();
                 buffer.append(text + "\n");
-                if (text.contains("bestmove"))
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return buffer.toString();
+    }
+    public String getOutputBM(int waitTime) {
+        StringBuffer buffer = new StringBuffer();
+        try {
+            Thread.sleep(waitTime);
+            String text = "";
+            while (true) {
+
+                text = processReader.readLine();
+                buffer.append(text + "\n");
+                if (text.contains("bestmove")) {
                     break;
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -92,7 +115,7 @@ public class Stockfish {
     public String getBestMove(String fen, int waitTime) {
         sendCommand("position fen " + fen);
         sendCommand("go movetime " + waitTime);
-        return getOutput(waitTime).split("bestmove ")[1].split(" ")[0];
+        return getOutputBM(waitTime).split("bestmove ")[1].split(" ")[0];
     }
 
     /**
