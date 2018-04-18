@@ -1,13 +1,3 @@
-import management.Board;
-import org.junit.jupiter.api.Test;
-import pieces.IChessPiece;
-import resources.Piece;
-import resources.Vector2;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 public class BishopTest {
 
     /**public static void main(String[] args){

@@ -1,7 +1,7 @@
 package pieces;
 
 
-import management.Board;
+import management.AbstractBoard;
 import resources.Alliance;
 import resources.Piece;
 import resources.Vector2;
@@ -12,12 +12,17 @@ import java.util.Set;
 
 public class Bishop extends ChessPiece {
 	private Set<Vector2> possibleMoves = new HashSet<>();
-	public Bishop(Vector2 position, Alliance alliance, Board board){
-		super(position, alliance, board, false, Piece.BISHOP, 3);
+	public Bishop(Vector2 position, Alliance alliance, AbstractBoard board){
+		super(position, alliance, board, false, Piece.BISHOP, 3, false);
 	}
-    public Bishop clonePiece() {
-        return new Bishop(position, alliance, board);
-    }
+	public Bishop(Bishop other) {
+		super(other);
+	}
+
+	@Override
+	public ChessPiece clonePiece() {
+		return new Bishop(this);
+	}
 
 	/**
 	 *
@@ -25,11 +30,9 @@ public class Bishop extends ChessPiece {
 	 */
 
 
-	public Set<Vector2> getPossibleDestinations(String caller) {
-		logActionPossibleDestinations(caller);
-
+	public Set<Vector2> getPossibleDestinations() {
 		possibleMoves.clear();
-		for (int variable = 0; variable < board.getSize(); variable++) {
+		for (int variable = 0; variable < board.size(); variable++) {
 			//diagonals
 			evalMove(new Vector2(position.getX() + variable, position.getY() + variable));
 

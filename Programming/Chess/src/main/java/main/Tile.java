@@ -1,3 +1,5 @@
+package main;
+
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
@@ -6,6 +8,7 @@ import javafx.scene.shape.Rectangle;
 import management.Board;
 import pieces.IChessPiece;
 import resources.Alliance;
+import resources.Console;
 import resources.Vector2;
 
 public class Tile extends Rectangle {
@@ -25,12 +28,12 @@ public class Tile extends Rectangle {
 
         if(getPiece() == null) {
             setFill(Color.TRANSPARENT);
-            //System.out.println(" EMPTY");
+            //resources.Console.println(" EMPTY");
             return;
         }
 
         String pieceName = getPiece().piece().toString();
-        //System.out.println(pieceName);
+        //resources.Console.println(pieceName);
 
         String s = "";
         if (getPieceColor() == Alliance.WHITE)
@@ -39,7 +42,7 @@ public class Tile extends Rectangle {
             s += "b_";
         s += pieceName.toLowerCase();
 
-        Image image = new Image("images/pieces/" + s + ".png");
+        Image image = new Image("images/pieces/" + s + ".png", 64, 64, true, true);
         this.setFill(new ImagePattern(image));
     }
 
@@ -61,18 +64,18 @@ public class Tile extends Rectangle {
     public boolean tileClicked(MouseEvent e, Alliance alliance) {
         IChessPiece piece = getPiece();
 
-        System.out.println(pos + ": ");
+       // resources.Console.println(pos + ": ");
 
         if (piece == null) {
-            System.out.println("No piece");
+            Console.println("No piece");
             return false;
         }
         if (piece.alliance() != alliance) {
-            System.out.println("Not your alliance");
+            Console.println("Not your alliance");
             return false;
         }
 
-        System.out.println("legal piece");
+        Console.println("legal piece");
         return true;
     }
 }

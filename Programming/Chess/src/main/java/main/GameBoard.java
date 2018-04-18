@@ -1,9 +1,9 @@
+package main;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -11,25 +11,31 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import management.*;
 import pieces.ChessPiece;
 import pieces.IChessPiece;
-import resources.Alliance;
-import resources.Move;
-import resources.MoveNode;
-import resources.Vector2;
+import pieces.King;
+import resources.MediaHelper;
+import resources.*;
+import resources.Console;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Collections;
 import java.util.Set;
 import java.util.Stack;
 
 public class GameBoard {
+    MediaHelper media = new MediaHelper();
     private final int SIZE = 8;
-    private final Board board;
+    private Board board;
     private final ChessComputer computer;
 
+    private Main main;
     private Stage stage;
+    private BorderPane root;
     private GridPane grid;
     private BorderPane container;
     private ListView<MoveNode> moveLog;
@@ -40,13 +46,35 @@ public class GameBoard {
     private Rectangle[][] squares;
     private String username;
     private int difficulty;
+    private BoardMode boardMode;
 
     private boolean firstClick;
     private Tile firstTile;
 
-    public GameBoard(String username, int difficulty, Stage stage) {
-        this.board = new Board(SIZE, false);
+    public GameBoard(String username, int difficulty, BoardMode boardMode, Main main, Stage stage, BorderPane root) {
+        Board boardVal = null;
+
+        if(boardMode == BoardMode.DEFAULT) {
+            //this.board = new Board(SIZE, false, boardMode); TEMP TEST
+            try {
+                boardVal = new Board(new File("default.txt"));
+            } catch (FileNotFoundException e) {
+                //e.printCaller();
+                //System.err.println("Game setup failed! exiting...");
+                //System.exit(1);
+
+                Console.printWarning("Save file 'default' not found. Attempting legacy generation...");
+                boardVal = new Board(SIZE, false, boardMode);
+            }
+        } else if(boardMode == BoardMode.RANDOM) {
+            boardVal = new Board(SIZE, false, boardMode);
+        }
+        board = boardVal;
+
+        this.main = main;
         this.stage = stage;
+        this.boardMode = boardMode;
+        this.root = root;
         this.grid = new GridPane();
         this.tiles = new Tile[SIZE][SIZE];
         this.squares = new Rectangle[SIZE][SIZE];
@@ -63,6 +91,8 @@ public class GameBoard {
         else if (difficulty == 2) computer = new ChessComputerMedium(board);
         else if (difficulty == 3) computer = new ChessComputerHard(board);
         else computer = null;
+
+        Console.printSuccess("Game setup (Difficulty " + difficulty + ")");
     }
 
     /**
@@ -131,16 +161,106 @@ public class GameBoard {
         container.setRight(right);
         container.setBottom(statusFieldContainer);
 
+        root.setTop(generateGameMenuBar());
+        root.setCenter(container);
+
         drawBoard();
+    }
+
+    public MenuBar generateGameMenuBar() {
+        MenuBar menuBar = new MenuBar();
+        Menu menuFile = new Menu("File");
+        Menu menuHelp = new Menu("Help");
+
+        MenuItem menuItemExit = new MenuItem("Main Menu");
+        MenuItem menuItemReset = new MenuItem("Reset Game");
+        MenuItem menuItemLoad = new MenuItem("Load Game");
+        MenuItem menuItemSave = new MenuItem("Save Game");
+        MenuItem menuItemUndo = new MenuItem("Undo");
+        MenuItem menuItemQuit = new MenuItem("Quit");
+
+        menuItemExit.setOnAction(e -> {
+            main.mainMenu(username, stage);
+        });
+        menuItemReset.setOnAction(e -> {
+            GameBoard newGameBoard = new GameBoard(username, difficulty, boardMode, main, stage, root);
+            newGameBoard.createBoard();
+            root.setCenter(newGameBoard.getContainer());
+        });
+        menuItemLoad.setOnAction(e -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Open Chess Game File");
+            fileChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("Chess Game File", "*.txt"));
+            fileChooser.setInitialDirectory(Main.savesDir);
+            File selectedFile = fileChooser.showOpenDialog(stage);
+
+            if(selectedFile != null) {
+                try {
+                    board = new Board(selectedFile);
+                    createBoard();
+                    updateLogs();
+                } catch (FileNotFoundException e1) {
+                    Console.printError("Save file " + selectedFile.getName() + " does not exist");
+                    e1.printStackTrace();
+                }
+            }
+        });
+        menuItemUndo.setOnAction(e -> {
+            int backStep = computer == null ? 1 : 2;
+            int i = board.moveI() - backStep;
+
+            if(i >= 0) {
+                File logFile = new File(Main.logsDir, "log" + i + ".txt");
+                try {
+                    board = new Board(logFile);
+                    createBoard();
+                    updateLogs();
+                } catch (FileNotFoundException e1) {
+                    Console.printError("No log exists for turn " + i);
+                    e1.printStackTrace();
+                }
+            }
+        });
+        menuItemSave.setOnAction(e -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Open Chess Game File");
+            fileChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("Chess Game File", "*.txt"));
+            fileChooser.setInitialDirectory(Main.savesDir);
+            File file = fileChooser.showSaveDialog(stage);
+            if (file != null)
+                board.saveFile(file);
+        });
+        menuItemQuit.setOnAction(e -> main.onQuit());
+
+        menuFile.getItems().addAll(menuItemExit, menuItemReset, menuItemLoad, menuItemSave, menuItemUndo, menuItemQuit);
+        MenuItem menuItemAbout = new MenuItem("About");
+        menuHelp.getItems().add(menuItemAbout);
+
+        menuBar.getMenus().addAll(menuFile, menuHelp);
+        return menuBar;
     }
 
     private void attemptMove(Tile firstTile, Vector2 pos) {
         IChessPiece temp = board.getPiece(firstTile.getPos());
-        System.out.println("Before: " + temp.position());
+        if(!board.ready()) {
+            Console.println("Board not ready. Move failed");
+            return;
+        } else if(temp == null) {
+            Console.println("No piece at " + pos + ". Move failed");
+            return;
+        }
 
-        if (board.movePiece(firstTile.getPos(), pos)) {
+        //resources.Console.println("Before: " + temp.position());
+
+        boolean moveResult = board.movePiece(firstTile.getPos(), pos);
+       // resources.Console.println("Outer move result: " + moveResult);
+        if (moveResult) {
+            Console.println("Has computer: " + (computer != null));
             if (computer != null) {
                 Move move = computer.getMove();
+                Console.println("Computer attempting move " + move);
                 board.movePiece(move);
                 int row = move.start.getY();
                 int col = move.start.getX();
@@ -151,17 +271,20 @@ public class GameBoard {
             //firstTile.setFill(Color.TRANSPARENT);
             drawBoard();
             updateLogs();
-            System.out.println("Moving " + board.getPiece(firstTile.getPos()) +
-                    " from " + firstTile.getPos() + " to " + pos);
+            /*resources.Console.println("Moving " + board.getPiece(firstTile.getPos()) +
+                    " from " + firstTile.getPos() + " to " + pos);*/
         } else {
+            media.playSound("denied.mp3");
             drawBoard();
         }
 
-        System.out.println("After:" + temp.position());
+        //resources.Console.println("After:" + temp.position());
     }
 
     private boolean tileClick(MouseEvent e, Tile tile) {
         Vector2 pos = tile.getPos();
+        //if(!board.ready()) return false;
+
         Alliance alliance = board.getActivePlayer();
         IChessPiece piece = board.getPiece(pos);
 
@@ -186,11 +309,14 @@ public class GameBoard {
              * to the new location
              */
             IChessPiece firstPiece = board.getPiece(firstTile.getPos());
-            System.out.println(firstClick + " " + firstPiece);
+            Console.println(firstClick + " " + firstPiece);
             attemptMove(firstTile, pos);
 
             firstClick = false;
             firstTile = null;
+
+            if(gameOver())
+                return false;
 
         /*
          * checks if the tile clicked has a piece, and that the
@@ -201,13 +327,13 @@ public class GameBoard {
         } else {
             System.out.print(pos + ": ");
             if (piece == null) {
-                System.out.println("No piece");
+                Console.println("No piece");
                 return false;
             } else if (piece.alliance() != alliance) {
-                System.out.println("Not your alliance");
+                Console.println("Not your alliance");
                 return false;
             }
-            System.out.println(piece);
+            //resources.Console.println(piece);
 
             firstClick = true;
             firstTile = tile;
@@ -224,13 +350,16 @@ public class GameBoard {
         ObservableList<MoveNode> observableGameLog =
                 FXCollections.observableArrayList(gameLog);
         ObservableList<ChessPiece> observableInactivePieces =
-                FXCollections.observableArrayList(board.getInactivePieces());
+                FXCollections.observableArrayList(board.getCapturedPieces());
         moveLog.setItems(observableGameLog);
         capturedPieces.setItems(observableInactivePieces);
     }
 
     private void highlightSquares(Vector2 pos) {
-        Set<Vector2> list = board.getPiece(pos).getPossibleDestinations("GameBoard");
+        IChessPiece piece = board.getPiece(pos);
+        if(piece == null) return;
+
+        Set<Vector2> list = piece.getPossibleDestinations();
         for (Vector2 possibleDestination : list) {
             if (board.getPiece(possibleDestination) != null) {
                 squares[possibleDestination.getY()][possibleDestination.getX()].setFill(Color.RED);
@@ -270,11 +399,23 @@ public class GameBoard {
     /**
      * TODO: tell the user which player won the game, and update highscore
      */
-    public void gameOver() {
-        /* Changes back from GameBoard to main menu */
-        Scene scene = new Scene(new Main().mainMenu(username));
-        scene.getStylesheets().add("stylesheet.css");
-        stage.setScene(scene);
+    public boolean gameOver() {
+        King whiteKing = board.getKing(Alliance.WHITE),
+                blackKing = board.getKing(Alliance.BLACK);
+
+        if(whiteKing.checkmate())
+            Console.println("Game over\nBlack player won!");
+        else if(blackKing.checkmate())
+            Console.println("Game over\nWhite player won!");
+        else if(whiteKing.stalemate() || blackKing.stalemate())
+            Console.println("Game Over\nRemiss");
+        else {
+            return false;
+        }
+
+        MediaHelper media = new MediaHelper();
+        media.playSound("game_over.mp3");
+        return true;
     }
 
     public BorderPane getContainer() {

@@ -1,6 +1,6 @@
 package pieces;
 
-import management.Board;
+import management.AbstractBoard;
 import resources.Alliance;
 import resources.Piece;
 import resources.Vector2;
@@ -12,11 +12,16 @@ public class Queen extends ChessPiece {
 
     private Set<Vector2> possibleMoves = new HashSet<>();
 
-    public Queen(Vector2 position, Alliance alliance, Board board){
-		super(position, alliance, board, false, Piece.QUEEN, 9);
+    public Queen(Vector2 position, Alliance alliance, AbstractBoard board){
+		super(position, alliance, board, false, Piece.QUEEN, 9,false);
 	}
-    public Queen clonePiece() {
-        return new Queen(position, alliance, board);
+    public Queen(Queen other) {
+        super(other);
+    }
+
+    @Override
+    public ChessPiece clonePiece() {
+        return new Queen(this);
     }
 
 	/**
@@ -32,11 +37,9 @@ public class Queen extends ChessPiece {
         );
 	}
 
-	public Set<Vector2> getPossibleDestinations(String caller) {
-        logActionPossibleDestinations(caller);
-
+	public Set<Vector2> getPossibleDestinations() {
 	    possibleMoves.clear();
-        for (int variable = 0; variable < board.getSize(); variable++) {
+        for (int variable = 0; variable < board.size(); variable++) {
             //Straights
             evalMove(new Vector2(position.getX(), position.getY() + variable));
             evalMove(new Vector2(position.getX(), position.getY() - variable));
