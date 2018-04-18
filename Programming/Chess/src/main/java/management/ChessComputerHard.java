@@ -89,7 +89,9 @@ public class ChessComputerHard extends ChessComputer {
                 }
             }
             addSpace();
-            fen.append("/");
+            if(y < board.size() -1) {//removes a useless '/' at the end
+                fen.append("/");
+            }
         }
     }
 
