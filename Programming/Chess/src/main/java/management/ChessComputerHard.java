@@ -23,10 +23,10 @@ public class ChessComputerHard extends ChessComputer {
     @Override
     public Move getMove() {
         ai.sendCommand("ucinewgame");
-        return toMove(ai.getBestMove(generateFen(),THINK_TIME));
+        return readAI(ai.getBestMove(generateFen(),THINK_TIME));
     }
 
-    private Move toMove(String bestMove) {
+    private Move readAI(String bestMove) {
         int[] in = new int[bestMove.length()];
         for (int i = 0; i < bestMove.length(); i++) {
             in[i] = toInt(bestMove.charAt(i));
@@ -69,6 +69,10 @@ public class ChessComputerHard extends ChessComputer {
     private String generateFen() {
         fen.delete(0,fen.length());
         boardToFen();
+        fen.append(" " + activeColour());
+        fen.append(" " + castlingAvailability());
+        fen.append(" " + passantTarget());
+        fen.append(" " + moveNumber());
         return fen.toString();
     }
 
