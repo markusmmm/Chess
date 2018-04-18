@@ -34,7 +34,7 @@ public class AbstractBoard {
 
     protected Alliance activePlayer = Alliance.WHITE;
 
-    private Set<ChessPiece> pieces = new HashSet<>();
+    private HashMap<Vector2, ChessPiece> pieces = new HashMap<>();
     private Stack<Vector2> drawPositions = new Stack<>();
     private HashMap<Vector2, ChessPiece> suspendedPieces = new HashMap<>(); // Used to ignore pieces that are still on the board
     private HashSet<ChessPiece> capturedPieces = new HashSet<>();
@@ -225,6 +225,28 @@ public class AbstractBoard {
         return getKing(alliance) != null;
     }
 
+    public Vector2 getPosition(ChessPiece piece) {
+        try {
+            mutex.acquire();
+
+            Vector2 pos = null;
+            for(Vector2 p : pieces.keySet()) {
+                if(pieces.get(p).equals(piece)) {
+                    pos = p;
+                    break;
+                }
+            }
+
+            mutex.release();
+            return pos;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+
+            mutex.release();
+            return null;
+        }
+    }
+
     public Set<Vector2> getPositions() {
         try {
             mutex.acquire();
@@ -299,22 +321,22 @@ public class AbstractBoard {
     private ChessPiece createPiece(Vector2 pos, Piece type, Alliance alliance) {
         switch (type) {
             case BISHOP:
-                return new Bishop(pos, alliance, this);
+                return new Bishop(alliance, this);
             case KNIGHT:
-                return new Knight(pos, alliance, this);
+                return new Knight(alliance, this);
             case QUEEN:
-                return new Queen(pos, alliance, this);
+                return new Queen(alliance, this);
             case KING:
-                King king = new King(pos, alliance, this, false);
+                King king = new King(alliance, this, false);
                 if (whiteKing == null && alliance == Alliance.WHITE)
                     whiteKing = king;
                 else if(blackKing == null && alliance == Alliance.BLACK)
                     blackKing = king;
                 return king;
             case PAWN:
-                return new Pawn(pos, alliance, this, false, false);
+                return new Pawn(alliance, this, false, false);
             case ROOK:
-                return new Rook(pos, alliance, this, false);
+                return new Rook(alliance, this, false);
         }
         return null;
     }

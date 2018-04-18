@@ -15,8 +15,8 @@ public class Rook extends ChessPiece {
 	/**
 	 * @param position
 	 */
-	public Rook(Vector2 position, Alliance alliance, AbstractBoard board, boolean hasMoved) {
-		super(position, alliance, board, false, Piece.ROOK, 5,hasMoved);
+	public Rook(Alliance alliance, AbstractBoard board, boolean hasMoved) {
+		super(alliance, board, false, Piece.ROOK, 5,hasMoved);
 	}
 	public Rook(Rook other) {
 		super(other);
@@ -53,6 +53,8 @@ public class Rook extends ChessPiece {
 
 	public Set<Vector2> getPossibleDestinations() {
 		possibleMoves.clear();
+		Vector2 position = position();
+
 		for (int variable = 0; variable < board.size(); variable++) {
 			//Straights
 			evalMove(new Vector2(position.getX(), position.getY() + variable));

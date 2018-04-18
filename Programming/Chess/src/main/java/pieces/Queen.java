@@ -12,8 +12,8 @@ public class Queen extends ChessPiece {
 
     private Set<Vector2> possibleMoves = new HashSet<>();
 
-    public Queen(Vector2 position, Alliance alliance, AbstractBoard board){
-		super(position, alliance, board, false, Piece.QUEEN, 9,false);
+    public Queen(Alliance alliance, AbstractBoard board){
+		super(alliance, board, false, Piece.QUEEN, 9,false);
 	}
     public Queen(Queen other) {
         super(other);
@@ -39,6 +39,8 @@ public class Queen extends ChessPiece {
 
 	public Set<Vector2> getPossibleDestinations() {
 	    possibleMoves.clear();
+	    Vector2 position = position();
+
         for (int variable = 0; variable < board.size(); variable++) {
             //Straights
             evalMove(new Vector2(position.getX(), position.getY() + variable));

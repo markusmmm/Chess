@@ -2,15 +2,16 @@ package pieces;
 
 import management.AbstractBoard;
 import management.Board;
+import management.IDManager;
 import resources.*;
 
 import java.util.List;
 import java.util.Set;
 
-public abstract class ChessPiece implements IChessPiece, Comparable<ChessPiece> {
+public abstract class ChessPiece implements IChessPiece {
+	private static IDManager idManager = new IDManager();
 
-	protected Vector2 position;
-
+	private final int id;
 	protected final Alliance alliance;
 	protected final Board board;
 	protected final boolean canJump;
@@ -21,10 +22,9 @@ public abstract class ChessPiece implements IChessPiece, Comparable<ChessPiece> 
 
     /**
      *
-     * @param position The piece's initial position on the board
      */
-    public ChessPiece(Vector2 position, Alliance alliance, AbstractBoard board, boolean canJump, Piece piece, int value, boolean hasMoved) {
-        this.position = position;
+    public ChessPiece(Alliance alliance, AbstractBoard board, boolean canJump, Piece piece, int value, boolean hasMoved) {
+    	id = idManager.nextID();
         this.alliance = alliance;
         this.board = (Board)board;
         this.canJump = canJump;
@@ -33,16 +33,16 @@ public abstract class ChessPiece implements IChessPiece, Comparable<ChessPiece> 
         this.hasMoved = hasMoved;
     }
     protected ChessPiece(ChessPiece other) {
-    	position = other.position;
-    	alliance = other.alliance;
+    	id = other.id;
+    	alliance = other.alliance();
     	board = other.board;
     	canJump = other.canJump;
-    	piece = other.piece;
+    	piece = other.piece();
     	value = other.value;
     	hasMoved = other.hasMoved;
 	}
 
-	public Vector2 position() { return position; }
+	public Vector2 position() { return board.getPosition(this); }
 	public Alliance alliance() { return alliance; }
 	public Piece piece() { return piece; }
 	public int getValue() { return value; }
@@ -63,7 +63,7 @@ public abstract class ChessPiece implements IChessPiece, Comparable<ChessPiece> 
 		// Prevents attack on an allied piece
 		if(endPiece != null && endPiece.alliance().equals(alliance)) return false;
 
-		if(!board.insideBoard(position) || !board.insideBoard(destination)) return false;
+		if(!board.insideBoard(position()) || !board.insideBoard(destination)) return false;
 
 		if(!board.hasKing(alliance))
 			return true;	// Special-case check for boards where a king was never created
@@ -72,7 +72,7 @@ public abstract class ChessPiece implements IChessPiece, Comparable<ChessPiece> 
 		if(king == null) return false;
 
 		// Lastly, check if king is in check, and whether or not the move resolves it (SHOULD OCCUR LAST, FOR OPTIMIZATION)
-		return king.resolvesCheck(position, destination);
+		return king.resolvesCheck(position(), destination);
 	}
 
 	/**
@@ -85,15 +85,14 @@ public abstract class ChessPiece implements IChessPiece, Comparable<ChessPiece> 
 
 	/**
 	 * 
-	 * @param move
+	 * @param destination
 	 */
-	public boolean move(Vector2 move) {
+	public boolean move(Vector2 destination) {
 		//resources.Console.println("Attempting to move " + alliance + " " + piece + " from " + position + " to " + move);
-		if (!legalMove(move)) return false; // If the destination is unreachable, the move fails
+		if (!legalMove(destination)) return false; // If the destination is unreachable, the move fails
 
 		MediaHelper media = new MediaHelper();
 		media.playSound("move.mp3");
-		position = new Vector2(move.getX(), move.getY());
 		hasMoved = true;
 
 		//resources.Console.println("Move performed. New pos: " + position);
@@ -110,6 +109,8 @@ public abstract class ChessPiece implements IChessPiece, Comparable<ChessPiece> 
 	 * @return false if runs into another piece
 	 */
 	protected boolean freePath(Vector2 destination) {
+		Vector2 position = position();
+
 		Vector2 path = position;
 		int between = position.distance(destination) - 1;
 
@@ -128,25 +129,31 @@ public abstract class ChessPiece implements IChessPiece, Comparable<ChessPiece> 
 	 * logic is: if only x or y change, the piece move in a straight path
 	 */
 	protected boolean inStraights(Vector2 move) {
+		Vector2 position = position();
+
 		return (
-				( this.position.getX() == move.getX() && this.position.getY() != move.getY() )
+				( position.getX() == move.getX() && position.getY() != move.getY() )
 						||
-						( this.position.getX() != move.getX() && this.position.getY() == move.getY() )
+						( position.getX() != move.getX() && position.getY() == move.getY() )
 		);
 	}
 	protected boolean inDiagonals(Vector2 newPos) {
-		return Math.abs(this.position.getX() - newPos.getX()) == Math.abs(this.position.getY() - newPos.getY());
-	}
-
-	@Override
-	public int compareTo(ChessPiece other) {
-		return position.compareTo(other.position);
+		Vector2 position = position();
+		return Math.abs(position.getX() - newPos.getX()) == Math.abs(position.getY() - newPos.getY());
 	}
 
 	@Override
     public String toString() {
 	    return alliance + " " + piece;
     }
+
+    @Override
+	public boolean equals(Object o) {
+		if(!(o instanceof ChessPiece)) return false;
+		ChessPiece other = (ChessPiece)o;
+
+		return id == other.id;
+	}
 
     public ChessPiece clone() {
 		return clonePiece();
