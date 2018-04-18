@@ -22,20 +22,10 @@ public class StockfishTest {
             fail();
         }
     }
-
     @Test
-    public void printBoardTest() {
-        ai.drawBoard(fen);
-    }
-    @Test
-    public void startAFile(){
-        try {
-            Process p = Runtime.getRuntime().exec("start");
-            if(!p.isAlive()) {
-                fail();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void getBestMove(){
+        ai.startEngine();
+        ai.sendCommand("uci");
+        System.out.println(ai.getBestMove(fen, 3000));
     }
 }
