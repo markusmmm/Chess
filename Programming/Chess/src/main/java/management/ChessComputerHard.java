@@ -63,7 +63,7 @@ public class ChessComputerHard extends ChessComputer {
     }
 
     /**
-     *
+     * https://en.wikipedia.org/wiki/Forsyth-Edwards_Notation
      * @return standard UCI FEN format for chess Engines
      */
     private String generateFen() {
@@ -71,6 +71,7 @@ public class ChessComputerHard extends ChessComputer {
         boardToFen();
         fen.append(" " + activeColour());
         fen.append(" " + castlingAvailability());
+        fen.append(" 0");//50 moves rule ignored
         fen.append(" " + passantTarget());
         fen.append(" " + moveNumber());
         return fen.toString();
