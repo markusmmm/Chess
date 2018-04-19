@@ -62,7 +62,7 @@ public class ChessComputerMedium extends ChessComputer {
     }
     public void printMoves(ArrayList<MoveScore> m) {
         for(MoveScore move: m) {
-            System.out.println(move.toString());
+            Console.println(move.toString());
         }
     }
 
@@ -235,21 +235,21 @@ public class ChessComputerMedium extends ChessComputer {
     public void printChessb(int[][] chessB) {
         for (int y = 0; y < size; y++) {
             for (int x = 0; x < size; x++) {
-                if (chessB[x][y] == 0) System.out.print(' ');
-                else if (chessB[x][y] == 1) System.out.print('p');       //pawn
-                else if (chessB[x][y] == -1) System.out.print('P');
-                else if (chessB[x][y] == 3) System.out.print('h');  //Knight
-                else if (chessB[x][y] == -3) System.out.print('H');
-                else if (chessB[x][y] == 4) System.out.print('b');  //Bishop
-                else if (chessB[x][y] == -4) System.out.print('B');
-                else if (chessB[x][y] == 5) System.out.print('r');  //Rook
-                else if (chessB[x][y] == -5) System.out.print('R');
-                else if (chessB[x][y] == 2) System.out.print('k');  //King
-                else if (chessB[x][y] == -2) System.out.print('K');
-                else if (chessB[x][y] == 9) System.out.print('q');  //Queen
-                else if (chessB[x][y] == -9) System.out.print('Q');
+                if (chessB[x][y] == 0) Console.print(' ');
+                else if (chessB[x][y] == 1) Console.print('p');       //pawn
+                else if (chessB[x][y] == -1) Console.print('P');
+                else if (chessB[x][y] == 3) Console.print('h');  //Knight
+                else if (chessB[x][y] == -3) Console.print('H');
+                else if (chessB[x][y] == 4) Console.print('b');  //Bishop
+                else if (chessB[x][y] == -4) Console.print('B');
+                else if (chessB[x][y] == 5) Console.print('r');  //Rook
+                else if (chessB[x][y] == -5) Console.print('R');
+                else if (chessB[x][y] == 2) Console.print('k');  //King
+                else if (chessB[x][y] == -2) Console.print('K');
+                else if (chessB[x][y] == 9) Console.print('q');  //Queen
+                else if (chessB[x][y] == -9) Console.print('Q');
             }
-            System.out.println();
+            Console.println();
         }
     }
 }
