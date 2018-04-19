@@ -34,7 +34,7 @@ public class ChessComputerHard extends ChessComputer {
         System.out.println(aiAnswer);
         Move best = readAI(aiAnswer);
         System.out.println(best);
-        return best;
+        return resolveMove(best);
     }
 
     private Move readAI(String bestMove) {
