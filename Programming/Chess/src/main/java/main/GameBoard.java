@@ -91,7 +91,7 @@ public class GameBoard {
 
         if (difficulty == 1) computer = new ChessComputerEasy(board);
         else if (difficulty == 2) computer = new ChessComputerMedium(board);
-        //else if (difficulty == 3) computer = new ChessComputerHard(board);
+        else if (difficulty == 3) computer = new ChessComputerHard(board);
         else computer = null;
 
         this.player1 = new Player(user1, Alliance.WHITE);
