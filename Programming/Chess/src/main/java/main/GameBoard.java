@@ -167,7 +167,17 @@ public class GameBoard {
         capturedPieces.setPrefHeight(200);
         capturedPieces.setId("moveLog");
 
-        right.getChildren().addAll(labelMoveLog, moveLog, labelCapturedPieces, capturedPieces);
+        Button buttonHint = new Button();
+        buttonHint.setText("Hint");
+
+        buttonHint.setOnAction(e -> {
+            Move move = getHint(board.getActivePlayer());
+
+            squares[move.start.getY()][move.start.getX()].setFill(Color.CYAN);
+            squares[move.end.getY()][move.end.getX()].setFill(Color.LIMEGREEN);
+        });
+
+        right.getChildren().addAll(labelMoveLog, moveLog, labelCapturedPieces, capturedPieces, buttonHint);
 
         VBox statusFieldContainer = new VBox();
         statusFieldContainer.setAlignment(Pos.CENTER);
