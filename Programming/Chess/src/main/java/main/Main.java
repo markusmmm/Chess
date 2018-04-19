@@ -153,7 +153,7 @@ public class Main extends Application {
 
         Button buttonPlayHard = new Button();
         buttonPlayHard.setText("PLAY: HARD");
-        buttonPlayHard.setVisible(false);
+        // buttonPlayHard.setVisible(false);
 
         Button buttonHighScore = new Button();
         buttonHighScore.setText("HIGHSCORE");
@@ -185,9 +185,9 @@ public class Main extends Application {
         media.playSound("welcome.mp3");
         buttonQuit.setOnAction(e -> onQuit());
 
-        VBox buttonContainer = new VBox(10);
+        VBox buttonContainer = new VBox(5);
         buttonContainer.setAlignment(Pos.BASELINE_CENTER);
-        buttonContainer.getChildren().addAll(buttonPlayVersus, buttonPlayEasy, buttonPlayMedium, randomBoardPlay, buttonHighScore, buttonQuit);
+        buttonContainer.getChildren().addAll(buttonPlayVersus, buttonPlayEasy, buttonPlayMedium, buttonPlayHard, randomBoardPlay, buttonHighScore, buttonQuit);
 
         VBox mainContent = new VBox(0);
         mainContent.setAlignment(Pos.TOP_CENTER);
