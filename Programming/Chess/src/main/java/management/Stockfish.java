@@ -1,5 +1,6 @@
 package management;
 
+import main.Main;
 import org.apache.commons.io.FileUtils;
 
 
@@ -25,7 +26,7 @@ public class Stockfish {
      */
     public boolean startEngine() {
         try {
-            File dest = new File(System.getProperty("user.home"), "GitGud/stockfish");
+            File dest = new File(Main.SAVES_DIR, "stockfish");
             if (!dest.exists()) {
                 URL source = getClass().getResource("/" + getOS());
                 try {
