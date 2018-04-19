@@ -30,7 +30,7 @@ public class GameBoard {
     MediaHelper media = new MediaHelper();
     private final int SIZE = 8;
     private Board board;
-    private final ChessComputer computer;
+    private ChessComputer computer;
 
     private Main main;
     private Stage stage;
@@ -44,8 +44,7 @@ public class GameBoard {
 
     private Tile[][] tiles;
     private Rectangle[][] squares;
-    private String username;
-    private int difficulty;
+    private String user1, user2;
     private BoardMode boardMode;
 
     private boolean firstClick;
@@ -58,17 +57,17 @@ public class GameBoard {
         if(boardMode == BoardMode.DEFAULT) {
             //this.board = new Board(SIZE, false, boardMode); TEMP TEST
             try {
-                boardVal = new Board(new File("default.txt"));
+                boardVal = new Board(new File("default" + Main.SAVE_EXTENSION), difficulty);
             } catch (FileNotFoundException e) {
                 //e.printCaller();
                 //System.err.println("Game setup failed! exiting...");
                 //System.exit(1);
 
                 Console.printWarning("Save file 'default' not found. Attempting legacy generation...");
-                boardVal = new Board(SIZE, false, boardMode);
+                boardVal = new Board(SIZE, difficulty,false, boardMode);
             }
         } else if(boardMode == BoardMode.RANDOM) {
-            boardVal = new Board(SIZE, false, boardMode);
+            boardVal = new Board(SIZE, difficulty, false, boardMode);
         }
         board = boardVal;
 
@@ -79,8 +78,8 @@ public class GameBoard {
         this.grid = new GridPane();
         this.tiles = new Tile[SIZE][SIZE];
         this.squares = new Rectangle[SIZE][SIZE];
-        this.username = username;
-        this.difficulty = difficulty;
+        this.user1 = user1;
+        this.user2 = user2;
         this.firstClick = false;
         this.firstTile = null;
         this.container = new BorderPane();
@@ -89,15 +88,24 @@ public class GameBoard {
         this.gameStatus = new Text();
         this.database = new DatabaseController();
 
-        if (difficulty == 1) computer = new ChessComputerEasy(board);
-        else if (difficulty == 2) computer = new ChessComputerMedium(board);
-        //else if (difficulty == 3) computer = new ChessComputerHard(board);
-        else computer = null;
+        setComputer();
 
         this.player1 = new Player(user1, Alliance.WHITE);
         this.player2 = new Player(user2, Alliance.BLACK);
 
         Console.printSuccess("Game setup (Difficulty " + difficulty + ")");
+    }
+
+    /**
+     * Creates a new chess computer, based on the given difficulty
+     */
+    private void setComputer() {
+        int difficulty = board.difficulty();
+        Console.printNotice("Setting computer for difficulty " + difficulty);
+        if (difficulty == 1) computer = new ChessComputerEasy(board);
+        else if (difficulty == 2) computer = new ChessComputerMedium(board);
+        else if (difficulty == 3) computer = new ChessComputerHard(board);
+        else computer = null;
     }
 
     /**
@@ -188,55 +196,13 @@ public class GameBoard {
             main.mainMenu(player1.getUsername(), stage);
         });
         menuItemReset.setOnAction(e -> {
-            GameBoard newGameBoard = new GameBoard(player1.getUsername(), player2.getUsername(), difficulty, boardMode, main, stage, root);
+            GameBoard newGameBoard = new GameBoard(player1.getUsername(), player2.getUsername(), board.difficulty(), boardMode, main, stage, root);
             newGameBoard.createBoard();
             root.setCenter(newGameBoard.getContainer());
         });
-        menuItemLoad.setOnAction(e -> {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Open Chess Game File");
-            fileChooser.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("Chess Game File", "*.txt"));
-            fileChooser.setInitialDirectory(Main.savesDir);
-            File selectedFile = fileChooser.showOpenDialog(stage);
-
-            if(selectedFile != null) {
-                try {
-                    board = new Board(selectedFile);
-                    createBoard();
-                    updateLogs();
-                } catch (FileNotFoundException e1) {
-                    Console.printError("Save file " + selectedFile.getName() + " does not exist");
-                    e1.printStackTrace();
-                }
-            }
-        });
-        menuItemUndo.setOnAction(e -> {
-            int backStep = computer == null ? 1 : 2;
-            int i = board.moveI() - backStep;
-
-            if(i >= 0) {
-                File logFile = new File(Main.logsDir, "log" + i + ".txt");
-                try {
-                    board = new Board(logFile);
-                    createBoard();
-                    updateLogs();
-                } catch (FileNotFoundException e1) {
-                    Console.printError("No log exists for turn " + i);
-                    e1.printStackTrace();
-                }
-            }
-        });
-        menuItemSave.setOnAction(e -> {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Open Chess Game File");
-            fileChooser.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("Chess Game File", "*.txt"));
-            fileChooser.setInitialDirectory(Main.savesDir);
-            File file = fileChooser.showSaveDialog(stage);
-            if (file != null)
-                board.saveBoard(file);
-        });
+        menuItemLoad.setOnAction(e -> performLoad());
+        menuItemUndo.setOnAction(e -> performUndo());
+        menuItemSave.setOnAction(e -> performSave());
         menuItemQuit.setOnAction(e -> main.onQuit());
 
         menuFile.getItems().addAll(menuItemExit, menuItemReset, menuItemLoad, menuItemSave, menuItemUndo, menuItemQuit);
@@ -245,6 +211,37 @@ public class GameBoard {
 
         menuBar.getMenus().addAll(menuFile, menuHelp);
         return menuBar;
+    }
+
+    private void performLoad() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Chess Game File");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Chess Game File", "*" + Main.SAVE_EXTENSION));
+        fileChooser.setInitialDirectory(Main.SAVES_DIR);
+        File selectedFile = fileChooser.showOpenDialog(stage);
+
+        if(selectedFile != null) {
+            try {
+                board = new Board(selectedFile);
+                createBoard();
+                setComputer();
+                updateLogs();
+            } catch (FileNotFoundException e1) {
+                Console.printError("Save file " + selectedFile.getName() + " does not exist");
+                e1.printStackTrace();
+            }
+        }
+    }
+    private void performSave() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Chess Game File");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Chess Game File", "*" + Main.SAVE_EXTENSION));
+        fileChooser.setInitialDirectory(Main.SAVES_DIR);
+        File file = fileChooser.showSaveDialog(stage);
+        if (file != null)
+            board.saveBoard(file);
     }
 
     private void attemptMove(Tile firstTile, Vector2 pos) {
@@ -257,25 +254,12 @@ public class GameBoard {
             return;
         }
 
-        boolean pawnPromotion = false;
-
-        if(firstTile.getPiece() instanceof Pawn){
-            if((board.pawnPromotion((Pawn)firstTile.getPiece(), pos)))
-            {
-                Alliance alliance = firstTile.getPiece().alliance();
-                pawnPromotion(firstTile.getPos(), pos, alliance);
-                pawnPromotion = true;
-                media.playSound("move.mp3");
-
-
-            }
-        }
 
         //resources.Console.println("Before: " + temp.position());
 
         boolean moveResult = board.movePiece(firstTile.getPos(), pos);
        // resources.Console.println("Outer move result: " + moveResult);
-        if (moveResult || pawnPromotion) {
+        if (moveResult) {
             Console.println("Has computer: " + (computer != null));
             if (computer != null) {
                 Move move = computer.getMove();
@@ -300,8 +284,28 @@ public class GameBoard {
         //resources.Console.println("After:" + temp.position());
     }
 
+    private void performUndo() {
+        int backStep = computer == null ? 1 : 2;
+        int i = board.moveI() - backStep;
 
-    public void pawnPromotion(Vector2 piecePos, Vector2 end, Alliance alliance) {
+        if (i >= 0) {
+            File logFile = new File(Main.LOGS_DIR, "log" + i + Main.SAVE_EXTENSION);
+            try {
+                board = new Board(logFile);
+                createBoard();
+                setComputer();
+                updateLogs();
+            } catch (FileNotFoundException e1) {
+                Console.printError("No log exists for turn " + i);
+                e1.printStackTrace();
+            }
+        }
+    }
+
+    public GameBoard(){
+
+    }
+    public String pawnPromotion() {
 
 
         ArrayList<String> choices = new ArrayList<>();
@@ -318,33 +322,17 @@ public class GameBoard {
 
         Optional<String> result = dialog.showAndWait();
         if (result.isPresent()) {
-            board.removePiece(piecePos);
-            board.advanceMove(true);
-
-
             String s = result.get().toLowerCase();
 
-            switch (s.charAt(0)) {
-                case 'q':
-                    board.addPiece(end, Piece.QUEEN, alliance);
-                    break;
-                case 'b':
-                    board.addPiece(end, Piece.BISHOP, alliance);
-                    break;
-                case 'k':
-                    board.addPiece(end, Piece.KNIGHT, alliance);
-                    break;
-                case 'r':
-                    board.addPiece(end, Piece.ROOK, alliance);
-                    break;
+            return s;
 
-            }
-        }else {
-            board.removePiece(piecePos);
-            board.advanceMove(true);
-            board.addPiece(end, Piece.QUEEN, alliance);
+        } else {
+            return "queen";
         }
     }
+
+
+
 
     private boolean tileClick(MouseEvent e, Tile tile) {
         Vector2 pos = tile.getPos();
@@ -483,7 +471,7 @@ public class GameBoard {
             return false;
         }
 
-        if (difficulty == 0) {
+        if (board.difficulty() == 0) {
             if (blackKing.checkmate()) {
                 database.updateScore(player1.getUsername(), (player1.getScore() + 3));
             } else if (whiteKing.checkmate()) {
@@ -493,15 +481,15 @@ public class GameBoard {
                 database.updateScore(player2.getUsername(), (player2.getScore() + 1));
             }
         } else {
-            if (difficulty == 1) {
+            if (board.difficulty() == 1) {
                 if (blackKing.checkmate()) {
                     database.updateScore(player1.getUsername(), (player1.getScore() + 3));
                 }
-            } else if (difficulty == 2) {
+            } else if (board.difficulty() == 2) {
                 if (blackKing.checkmate()) {
                     database.updateScore(player1.getUsername(), (player1.getScore() + 6));
                 }
-            } else if (difficulty == 3) {
+            } else if (board.difficulty() == 3) {
                 if (blackKing.checkmate()) {
                     database.updateScore(player1.getUsername(), (player1.getScore() + 9));
                 }
@@ -521,9 +509,4 @@ public class GameBoard {
     public BorderPane getContainer() {
         return container;
     }
-
-    public int getDifficulty() {
-        return difficulty;
-    }
-
 }

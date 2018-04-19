@@ -18,14 +18,20 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import management.DatabaseController;
+import resources.Console;
 import org.bson.Document;
 import resources.MediaHelper;
 import resources.BoardMode;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Scanner;
 
 
 public class Main extends Application {
@@ -38,10 +44,12 @@ public class Main extends Application {
     private MenuBar menuBar = generateMenuBar();
     private DatabaseController database = new DatabaseController();
 
-    public static final File savesDir = new File(System.getProperty("user.home"), "GitGud/");
-    public static final File logsDir = new File(savesDir, ".logs/");
+    public static final File SAVES_DIR = new File(System.getProperty("user.home"), "GitGud/");
+    public static final File LOGS_DIR = new File(SAVES_DIR, ".logs/");
+    public static final File CORE_DIR = new File("core/");
 
     public static final String DATA_SEPARATOR = "====";
+    public static final String SAVE_EXTENSION = ".txt";
 
     public void start(Stage primaryStage) throws Exception {
         directorySetup();
@@ -56,11 +64,51 @@ public class Main extends Application {
     }
 
     private void directorySetup() {
-        if (!savesDir.exists()) {
-            savesDir.mkdirs();
+        if (!SAVES_DIR.exists()) {
+            SAVES_DIR.mkdirs();
         }
-        if(!logsDir.exists())
-            logsDir.mkdirs();
+        if(!LOGS_DIR.exists())
+            LOGS_DIR.mkdirs();
+
+        if(CORE_DIR.exists()) {
+            File[] coreFiles = CORE_DIR.listFiles();
+            if(coreFiles == null) return;
+
+            for(File coreFile : coreFiles) {
+                String fileName = coreFile.getName();
+
+                File destFile = new File(SAVES_DIR, fileName);
+                if(!destFile.exists()) {
+                    try {
+                        destFile.createNewFile();
+                    } catch (IOException e) {
+                        Console.printWarning("Couldn't copy core file " + fileName + " to saves directory");
+                        //e.printStackTrace();
+                        continue;
+                    }
+                }
+
+                try {
+                    FileWriter writer = new FileWriter(destFile);
+                    writer.write(""); // Clear file
+                    Scanner reader = new Scanner(coreFile);
+
+                    while(reader.hasNextLine()) {
+                        writer.append(reader.nextLine() + "\n");
+                    }
+                    writer.close();
+                } catch (IOException e) {
+                    Console.printWarning("Couldn't copy core file " + fileName + " to saves directory");
+                    //e.printStackTrace();
+                    continue;
+                }
+            }
+            Console.printSuccess("All core files copied to save dir");
+        } else {
+            Console.printNotice("No core found");
+        }
+
+        Console.printSuccess("All directories setup successfully");
     }
 
     /**
@@ -207,7 +255,7 @@ public class Main extends Application {
         labelWelcome.setTextAlignment(TextAlignment.CENTER);
         labelWelcome.setId("title");
 
-        List<Document> documents = (List<Document>) database.db.getCollection("users")
+        List<Document> documents = database.db.getCollection("users")
                 .find().sort(new Document("score", -1)).into(new ArrayList<Document>());
 
         ArrayList<String> scoreList = new ArrayList<>();

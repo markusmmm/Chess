@@ -1,6 +1,7 @@
 package resources;
 
 import main.GameBoard;
+import management.ChessComputerMedium;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -11,7 +12,7 @@ public class Console {
     private static final boolean DO_PRINT = true;
 
     private static Set<Class> ignoredCallers = new HashSet<>(Arrays.asList(
-            //GameBoard.class
+            ChessComputerMedium.class
     ));
 
     private static final String ANSI_RESET = "\u001B[0m";
@@ -104,7 +105,7 @@ public class Console {
             System.out.println("\t" + e);
     }
 
-    private static StackTraceElement getCaller() {
+    public static StackTraceElement getCaller() {
         return Thread.currentThread().getStackTrace()[4];
     }
 }

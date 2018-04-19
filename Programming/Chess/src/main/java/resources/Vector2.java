@@ -1,6 +1,6 @@
 package resources;
 
-public class Vector2 {
+public class Vector2 implements Comparable<Vector2> {
 	private final int x, y;
 
 	public Vector2 (int x, int y) {
@@ -69,6 +69,15 @@ public class Vector2 {
 
         return x == v.x && y == v.y;
     }
+
+    @Override
+	public int compareTo(Vector2 v) {
+    	if(y == v.y) {
+			if (x == y) return 0;
+			return x - v.x;
+		}
+		return y - v.y;
+	}
 
     @Override
     public String toString() {

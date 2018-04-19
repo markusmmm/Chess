@@ -1,9 +1,7 @@
 package management;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
+import java.net.URL;
 
 /**
  * A simple and efficient client to run Stockfish from Java
@@ -17,17 +15,17 @@ public class Stockfish {
     private BufferedReader processReader;
     private OutputStreamWriter processWriter;
 
-    private static final String PATH = "engine/stockfish_9_x32.exe";//    "\"c:/program files/windows/notepad.exe\"");
-
     /**
      * Starts Stockfish engine as a process and initializes it
      *
-     * @param None
      * @return True on success. False otherwise
      */
     public boolean startEngine() {
         try {
-            engineProcess = Runtime.getRuntime().exec(PATH);
+            File targetFile = new File(getOS());
+            URL url = Thread.currentThread().getContextClassLoader().getResource(getOS());
+            System.out.println(url.getPath());
+            engineProcess = Runtime.getRuntime().exec(url.getPath());
             processReader = new BufferedReader(new InputStreamReader(
                     engineProcess.getInputStream()));
             processWriter = new OutputStreamWriter(
@@ -37,6 +35,13 @@ public class Stockfish {
             return false;
         }
         return true;
+    }
+
+    private String getOS() {
+        if(System.getProperty("os.name").equals("Mac OS X")) {
+            return "engine/stockfish-9-64";
+        }
+        return "engine/stockfish_9_x32.exe";
     }
 
     /**
