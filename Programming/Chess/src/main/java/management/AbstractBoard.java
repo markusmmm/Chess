@@ -13,8 +13,6 @@ public class AbstractBoard {
     private Semaphore mutex = new Semaphore(1);
     protected int moveI = 0;
 
-    private King blackKing, whiteKing;
-
     private static final Piece[] defaultBoard = new Piece[]{
             Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK,
             Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN,
@@ -69,9 +67,6 @@ public class AbstractBoard {
     }
 
     public void sync(AbstractBoard other) {
-        blackKing = (King)other.blackKing.clonePiece();
-        whiteKing = (King)other.whiteKing.clonePiece();
-
         moveI = other.moveI;
 
         size = other.size;
@@ -288,11 +283,23 @@ public class AbstractBoard {
      * @return The king on this board with the given alliance
      */
     public King getKing(Alliance alliance) {
-        if(alliance == Alliance.WHITE)
-            return whiteKing;
-        else if(alliance == Alliance.BLACK)
-            return blackKing;
+        try {
+            mutex.acquire();
 
+            for(ChessPiece p : pieces.values()) {
+                if(p instanceof King && p.alliance().equals(alliance)) {
+                    mutex.release();
+                    return (King)p;
+                }
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+
+            mutex.release();
+            return null;
+        }
+
+        mutex.release();
         return null;
     }
 
@@ -380,12 +387,7 @@ public class AbstractBoard {
             case QUEEN:
                 return new Queen(pos, alliance, this);
             case KING:
-                King king = new King(pos, alliance, this, false);
-                if (whiteKing == null && alliance == Alliance.WHITE)
-                    whiteKing = king;
-                else if(blackKing == null && alliance == Alliance.BLACK)
-                    blackKing = king;
-                return king;
+                return new King(pos, alliance, this, false);
             case PAWN:
                 return new Pawn(pos, alliance, this, false, false);
             case ROOK:

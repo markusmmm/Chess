@@ -11,7 +11,7 @@ public abstract class ChessPiece implements IChessPiece {
 
 	private Vector2 position;
 	protected final Alliance alliance;
-	protected final Board board;
+	protected Board board;
 	protected final boolean canJump;
 	protected final Piece piece;
 	protected final int value;
@@ -85,7 +85,9 @@ public abstract class ChessPiece implements IChessPiece {
 	 * 
 	 * @param destination
 	 */
-	public boolean move(Vector2 destination) {
+	public boolean move(Vector2 destination, Board board) {
+		this.board = board;
+
 		//resources.Console.println("Attempting to move " + alliance + " " + piece + " from " + position + " to " + move);
 		if (!legalMove(destination)) return false; // If the destination is unreachable, the move fails
 

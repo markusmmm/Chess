@@ -440,6 +440,8 @@ public class Board extends AbstractBoard {
 
                 media.playSound("move.mp3");
 
+                if(!end.equals(piece.position()))
+                    Console.printError("Position in " + piece + " was not updated internally!");
             }
         }
 
@@ -497,7 +499,7 @@ public class Board extends AbstractBoard {
 
         }
 
-        boolean moveSuccessful = piece.move(end);
+        boolean moveSuccessful = piece.move(end, this);
 
         if (!moveSuccessful) {
             return advanceMove(false);

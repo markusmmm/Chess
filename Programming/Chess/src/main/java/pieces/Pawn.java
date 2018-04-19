@@ -1,6 +1,7 @@
 package pieces;
 
 import management.AbstractBoard;
+import management.Board;
 import resources.Alliance;
 import resources.Console;
 import resources.Piece;
@@ -77,7 +78,8 @@ public class Pawn extends ChessPiece {
 
 
 	@Override
-	public boolean move(Vector2 destination) {
+	public boolean move(Vector2 destination, Board board) {
+		this.board = board;
 
 		Vector2 start = position();
 		Vector2 blackEnpasant = new Vector2(destination.getX() , destination.getY() - 1);
@@ -89,7 +91,7 @@ public class Pawn extends ChessPiece {
 		boolean blackResult = this.alliance.equals(BLACK) && enPassant(blackEnpasant);
 		boolean whiteResult = this.alliance.equals(WHITE) && enPassant(whiteEnpasant);
 
-		if(!super.move(destination)) return false;
+		if(!super.move(destination, board)) return false;
 
 		if(!hasDoubleStepped && (whiteNegative2 || blackPositive2))
 			hasDoubleStepped = true;
