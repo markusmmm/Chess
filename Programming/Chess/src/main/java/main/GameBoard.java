@@ -256,6 +256,7 @@ public class GameBoard {
 
         boolean pawnPromotion = false;
 
+        /*
         if(firstTile.getPiece() instanceof Pawn){
             if((board.pawnPromotion((Pawn)firstTile.getPiece(), pos)))
             {
@@ -267,6 +268,7 @@ public class GameBoard {
 
             }
         }
+        */
 
         //resources.Console.println("Before: " + temp.position());
 
@@ -315,7 +317,10 @@ public class GameBoard {
         }
     }
 
-    public void pawnPromotion(Vector2 piecePos, Vector2 end, Alliance alliance) {
+    public GameBoard(){
+
+    }
+    public String pawnPromotion(Vector2 piecePos, Vector2 end, Alliance alliance) {
 
 
         ArrayList<String> choices = new ArrayList<>();
@@ -332,32 +337,17 @@ public class GameBoard {
 
         Optional<String> result = dialog.showAndWait();
         if (result.isPresent()) {
-            board.removePiece(piecePos);
-
             String s = result.get().toLowerCase();
 
-            switch (s.charAt(0)) {
-                case 'q':
-                    board.addPiece(end, Piece.QUEEN, alliance);
-                    break;
-                case 'b':
-                    board.addPiece(end, Piece.BISHOP, alliance);
-                    break;
-                case 'k':
-                    board.addPiece(end, Piece.KNIGHT, alliance);
-                    break;
-                case 'r':
-                    board.addPiece(end, Piece.ROOK, alliance);
-                    break;
+            return s;
 
-            }
-        }else {
-            board.removePiece(piecePos);
-            board.addPiece(end, Piece.QUEEN, alliance);
+        } else {
+            return "queen";
         }
-
-        board.saveLog();
     }
+
+
+
 
     private boolean tileClick(MouseEvent e, Tile tile) {
         Vector2 pos = tile.getPos();
