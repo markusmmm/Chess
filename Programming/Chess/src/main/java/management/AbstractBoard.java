@@ -53,6 +53,7 @@ public class AbstractBoard {
 
         generateClock(useClock);
 
+        this.difficulty = difficulty;
     }
 
     protected AbstractBoard(String saveName) throws FileNotFoundException {
@@ -61,6 +62,10 @@ public class AbstractBoard {
     }
     protected AbstractBoard(File file) throws FileNotFoundException {
         loadBoard(file);
+    }
+    protected AbstractBoard(File file, int difficulty) throws FileNotFoundException {
+        loadBoard(file);
+        this.difficulty = difficulty;
     }
 
     public void sync(AbstractBoard other) {

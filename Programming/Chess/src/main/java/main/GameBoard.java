@@ -17,15 +17,14 @@ import management.*;
 import pieces.ChessPiece;
 import pieces.IChessPiece;
 import pieces.King;
+import pieces.Pawn;
 import resources.MediaHelper;
 import resources.*;
 import resources.Console;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Collections;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 
 public class GameBoard {
     MediaHelper media = new MediaHelper();
@@ -41,6 +40,7 @@ public class GameBoard {
     private ListView<MoveNode> moveLog;
     private ListView<ChessPiece> capturedPieces;
     private Text gameStatus;
+    private DatabaseController database;
 
     private Tile[][] tiles;
     private Rectangle[][] squares;
@@ -57,7 +57,7 @@ public class GameBoard {
         if(boardMode == BoardMode.DEFAULT) {
             //this.board = new Board(SIZE, false, boardMode); TEMP TEST
             try {
-                boardVal = new Board(new File("default" + Main.SAVE_EXTENSION));
+                boardVal = new Board(new File("default" + Main.SAVE_EXTENSION), difficulty);
             } catch (FileNotFoundException e) {
                 //e.printCaller();
                 //System.err.println("Game setup failed! exiting...");
@@ -86,6 +86,7 @@ public class GameBoard {
         this.moveLog = new ListView<>();
         this.capturedPieces = new ListView<>();
         this.gameStatus = new Text();
+        this.database = new DatabaseController();
 
         setComputer();
 
@@ -100,6 +101,7 @@ public class GameBoard {
      */
     private void setComputer() {
         int difficulty = board.difficulty();
+        Console.printNotice("Setting computer for difficulty " + difficulty);
         if (difficulty == 1) computer = new ChessComputerEasy(board);
         else if (difficulty == 2) computer = new ChessComputerMedium(board);
         else if (difficulty == 3) computer = new ChessComputerHard(board);
@@ -252,11 +254,25 @@ public class GameBoard {
             return;
         }
 
+        boolean pawnPromotion = false;
+
+        if(firstTile.getPiece() instanceof Pawn){
+            if((board.pawnPromotion((Pawn)firstTile.getPiece(), pos)))
+            {
+                Alliance alliance = firstTile.getPiece().alliance();
+                pawnPromotion(firstTile.getPos(), pos, alliance);
+                pawnPromotion = true;
+                media.playSound("move.mp3");
+
+
+            }
+        }
+
         //resources.Console.println("Before: " + temp.position());
 
         boolean moveResult = board.movePiece(firstTile.getPos(), pos);
        // resources.Console.println("Outer move result: " + moveResult);
-        if (moveResult) {
+        if (moveResult || pawnPromotion) {
             Console.println("Has computer: " + (computer != null));
             if (computer != null) {
                 Move move = computer.getMove();
@@ -285,7 +301,7 @@ public class GameBoard {
         int backStep = computer == null ? 1 : 2;
         int i = board.moveI() - backStep;
 
-        if(i >= 0) {
+        if (i >= 0) {
             File logFile = new File(Main.LOGS_DIR, "log" + i + Main.SAVE_EXTENSION);
             try {
                 board = new Board(logFile);
@@ -296,6 +312,51 @@ public class GameBoard {
                 Console.printError("No log exists for turn " + i);
                 e1.printStackTrace();
             }
+        }
+    }
+
+    public void pawnPromotion(Vector2 piecePos, Vector2 end, Alliance alliance) {
+
+
+        ArrayList<String> choices = new ArrayList<>();
+        choices.add("QUEEN");
+        choices.add("BISHOP");
+        choices.add("KNIGHT");
+        choices.add("ROOK");
+
+        ChoiceDialog<String> dialog = new ChoiceDialog<>("QUEEN", choices);
+
+
+        dialog.setHeaderText("Promote your pawn");
+        dialog.setContentText("Choose your piece:");
+
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()) {
+            board.removePiece(piecePos);
+            board.advanceMove(true);
+
+
+            String s = result.get().toLowerCase();
+
+            switch (s.charAt(0)) {
+                case 'q':
+                    board.addPiece(end, Piece.QUEEN, alliance);
+                    break;
+                case 'b':
+                    board.addPiece(end, Piece.BISHOP, alliance);
+                    break;
+                case 'k':
+                    board.addPiece(end, Piece.KNIGHT, alliance);
+                    break;
+                case 'r':
+                    board.addPiece(end, Piece.ROOK, alliance);
+                    break;
+
+            }
+        }else {
+            board.removePiece(piecePos);
+            board.advanceMove(true);
+            board.addPiece(end, Piece.QUEEN, alliance);
         }
     }
 
@@ -416,10 +477,7 @@ public class GameBoard {
             System.out.print("\n");
         }
     }
-
-    /**
-     * TODO: tell the user which player won the game, and update highscore
-     */
+    
     public boolean gameOver() {
         King whiteKing = board.getKing(Alliance.WHITE),
                 blackKing = board.getKing(Alliance.BLACK);
@@ -438,6 +496,32 @@ public class GameBoard {
         } else {
             return false;
         }
+
+        if (board.difficulty() == 0) {
+            if (blackKing.checkmate()) {
+                database.updateScore(player1.getUsername(), (player1.getScore() + 3));
+            } else if (whiteKing.checkmate()) {
+                database.updateScore(player2.getUsername(), (player2.getScore() + 3));
+            } else if(whiteKing.stalemate() || blackKing.stalemate()) {
+                database.updateScore(player1.getUsername(), (player1.getScore() + 1));
+                database.updateScore(player2.getUsername(), (player2.getScore() + 1));
+            }
+        } else {
+            if (board.difficulty() == 1) {
+                if (blackKing.checkmate()) {
+                    database.updateScore(player1.getUsername(), (player1.getScore() + 3));
+                }
+            } else if (board.difficulty() == 2) {
+                if (blackKing.checkmate()) {
+                    database.updateScore(player1.getUsername(), (player1.getScore() + 6));
+                }
+            } else if (board.difficulty() == 3) {
+                if (blackKing.checkmate()) {
+                    database.updateScore(player1.getUsername(), (player1.getScore() + 9));
+                }
+            }
+        }
+
         alert.setTitle("Game Over");
         alert.setHeaderText(null);
         alert.setGraphic(null);

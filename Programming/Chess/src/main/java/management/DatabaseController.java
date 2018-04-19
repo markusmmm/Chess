@@ -40,8 +40,6 @@ public class DatabaseController {
     public static void main(String[] args) throws UnknownHostException {
         DatabaseController database = new DatabaseController();
         MongoCollection<Document> collection = database.db.getCollection("users");
-        System.out.println(database.userExists("magnus"));
-        System.out.println(database.getScore("Magnus"));
 
 
         /*Document document = new Document("name", "Magnus")

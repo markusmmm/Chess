@@ -52,6 +52,7 @@ public class ChessComputerMedium extends ChessComputer {
         int score;
         ArrayList<Move> moves = new ArrayList<>();
         score = PerformMove(chessB, move);
+        printChessb(chessB);
         moves = allMovesOneSide(chessB,turn * -1);
 
         for (int i = 0; i < moves.size(); i++) {
