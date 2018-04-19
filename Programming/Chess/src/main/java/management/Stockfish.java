@@ -1,5 +1,7 @@
 package management;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.*;
 import java.net.URL;
 
@@ -22,10 +24,17 @@ public class Stockfish {
      */
     public boolean startEngine() {
         try {
-            File targetFile = new File(getOS());
-            URL url = Thread.currentThread().getContextClassLoader().getResource(getOS());
-            System.out.println(url.getPath());
-            engineProcess = Runtime.getRuntime().exec(url.getPath());
+            File dest = new File(System.getProperty("user.home"), "GitGud/stockfish");
+            if (!dest.exists()) {
+                URL source = getClass().getResource("/" + getOS());
+                try {
+                    FileUtils.copyURLToFile(source, dest);
+                    dest.setExecutable(true);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            engineProcess = Runtime.getRuntime().exec(dest.getAbsolutePath());
             processReader = new BufferedReader(new InputStreamReader(
                     engineProcess.getInputStream()));
             processWriter = new OutputStreamWriter(
