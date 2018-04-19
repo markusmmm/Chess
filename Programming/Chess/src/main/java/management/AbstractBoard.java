@@ -1,7 +1,9 @@
 package management;
 
+import main.Main;
 import pieces.*;
 import resources.*;
+import resources.Console;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,9 +13,9 @@ import java.util.concurrent.Semaphore;
 
 public class AbstractBoard {
     private Semaphore mutex = new Semaphore(1);
+    protected int moveI = 0;
 
-    private boolean hasWhiteKing, hasBlackKing;
-
+    private King blackKing, whiteKing;
 
     private static final Piece[] defaultBoard = new Piece[]{
             Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK,
@@ -24,7 +26,7 @@ public class AbstractBoard {
             Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK
     };
 
-    private final int size;
+    private int size;
     private Player player1, player2;
     private ChessClock clock = null;
     private ChessPiece lastPiece = null;
@@ -39,23 +41,7 @@ public class AbstractBoard {
     private Stack<MoveNode> gameLog = new Stack<>();
 
     protected AbstractBoard(AbstractBoard other) {
-        hasBlackKing = other.hasBlackKing;
-        hasWhiteKing = other.hasWhiteKing;
-
-        size = other.size;
-        player1 = other.player1;
-        player2 = other.player2;
-
-        if (clock != null) clock = other.clock.clone();
-        if (lastPiece != null) lastPiece = other.lastPiece.clonePiece();
-
-        activePlayer = other.activePlayer;
-        pieces = (HashMap<Vector2, ChessPiece>) other.pieces.clone();
-        drawPositions = (Stack<Vector2>) other.drawPositions.clone();
-        suspendedPieces = (HashMap<Vector2, ChessPiece>) other.suspendedPieces.clone();
-        capturedPieces = (HashSet<ChessPiece>) other.capturedPieces.clone();
-
-        gameLog = (Stack<MoveNode>) other.gameLog.clone();
+        sync(other);
     }
 
 
@@ -69,32 +55,120 @@ public class AbstractBoard {
 
     }
 
-    protected AbstractBoard(String fileName) throws FileNotFoundException {
-        fileName += ".txt";
+    protected AbstractBoard(String saveName) throws FileNotFoundException {
+        File file = new File(Main.savesDir, saveName + ".txt");
+        loadBoard(file);
+    }
+    protected AbstractBoard(File file) throws FileNotFoundException {
+        loadBoard(file);
+    }
 
-        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-        InputStream is = classloader.getResourceAsStream(fileName);
-        Scanner file = new Scanner(is);
-        size = file.nextInt();
-        generateClock(file.nextInt() != 0);
+    public void sync(AbstractBoard other) {
+        blackKing = (King)other.blackKing.clonePiece();
+        whiteKing = (King)other.whiteKing.clonePiece();
 
-        System.out.println("Size read from file: " + size);
+        moveI = other.moveI;
 
+        size = other.size;
+        player1 = other.player1;
+        player2 = other.player2;
+
+        if (other.clock != null) clock = other.clock.clone();
+        if (other.lastPiece != null) lastPiece = other.lastPiece.clonePiece();
+
+        activePlayer = other.activePlayer;
+        pieces = (HashMap<Vector2, ChessPiece>) other.pieces.clone();
+        drawPositions = (Stack<Vector2>) other.drawPositions.clone();
+        suspendedPieces = (HashMap<Vector2, ChessPiece>) other.suspendedPieces.clone();
+        capturedPieces = (HashSet<ChessPiece>) other.capturedPieces.clone();
+
+        gameLog = (Stack<MoveNode>) other.gameLog.clone();
+    }
+
+    public int moveI() {
+        return moveI;
+    }
+
+    private void loadBoard(File file) throws FileNotFoundException {
+        Scanner reader;
+        if (file.getName().equals("default.txt")) {
+            InputStream is = Thread.currentThread().getContextClassLoader()
+                    .getResourceAsStream("default.txt");
+            reader = new Scanner(is);
+        } else {
+            reader = new Scanner(file);
+        }
+
+        Console.printNotice("Attempting to load board from save " + file.getAbsolutePath());
+
+        // Load board data
+        size = reader.nextInt();
+        generateClock(reader.nextInt() != 0);
+        int logSize = reader.nextInt();
+        moveI = reader.nextInt();
+        activePlayer = moveI % 2 == 0 ? Alliance.WHITE : Alliance.BLACK;
+
+        int lastX = reader.nextInt(),
+        lastY = reader.nextInt();
+
+        // Load pieces on board
         for (int y = 0; y < size; y++) {
-            String line = file.next();
+            String line = reader.next();
             for (int x = 0; x < size; x++) {
                 char c = line.charAt(x);
 
                 Vector2 pos = new Vector2(x, y);
-                Piece type = PieceManager.toPiece(c);
-                Alliance alliance = Character.isLowerCase(c) ? Alliance.BLACK : Alliance.WHITE;
-
-                //System.out.println("Setting piece at " + pos);
-                addPiece(pos, type, alliance);
+                addPiece(pos, PieceManager.toPiece(c));
             }
         }
 
-        file.close();
+        lastPiece = getPiece(new Vector2(lastX, lastY));
+
+        // Load gameLog
+        for(int i = 0; i < logSize; i++) {
+            String p = reader.next();
+            int x0 = reader.nextInt(), y0 = reader.nextInt();
+            int x1 = reader.nextInt(), y1 = reader.nextInt();
+            String v = reader.next();
+
+            PieceNode piece = PieceManager.toPiece(p.charAt(0)),
+                    victim = PieceManager.toPiece(v.charAt(0));
+            MoveNode node = new MoveNode(piece, new Vector2(x0, y0), new Vector2(x1, y1), victim);
+            gameLog.push(node);
+        }
+
+        // Load piece data
+        if(reader.hasNextLine()) reader.nextLine();
+        if(reader.hasNextLine()) {
+            String line = reader.nextLine();
+            Console.printNotice("Data separator: " + line);
+            if (line.equals(Main.DATA_SEPARATOR)) {
+                while (reader.hasNextInt()) {
+                    int x = reader.nextInt(),
+                            y = reader.nextInt();
+                    Vector2 pos = new Vector2(x, y);
+
+                    List<Boolean> vals = new ArrayList<>();
+                    boolean hasMoved = reader.nextInt() == 1;
+                    vals.add(hasMoved);
+
+                    ChessPiece piece = getPiece(pos);
+                    if (piece instanceof Pawn) {
+                        boolean hasDoubleStepped = reader.nextInt() == 1;
+                        vals.add(hasDoubleStepped);
+                    }
+                    piece.loadData(vals);
+                    //Console.printNotice("Loading piece " + piece + "\nsource.hasMoved: " + vals.get(0) + ", target.hasMoved: " + piece.hasMoved());
+
+                    removePiece(pos);
+                    putPiece(pos, piece);
+                }
+            }
+        }
+
+        reader.close();
+
+        Console.printSuccess("Board successfully loaded from file " + file.getName());
     }
 
     protected static Piece randomPiece() {
@@ -132,6 +206,24 @@ public class AbstractBoard {
         return activePlayer;
     }
 
+    /**
+     *
+     * @param alliance The alliance of the king to find
+     * @return The king on this board with the given alliance
+     */
+    public King getKing(Alliance alliance) {
+        if(alliance == Alliance.WHITE)
+            return whiteKing;
+        else if(alliance == Alliance.BLACK)
+            return blackKing;
+
+        return null;
+    }
+
+    public boolean hasKing(Alliance alliance) {
+        return getKing(alliance) != null;
+    }
+
     public Set<Vector2> getPositions() {
         try {
             mutex.acquire();
@@ -154,20 +246,20 @@ public class AbstractBoard {
     public Stack<Vector2> clearDrawPieces() {
         try {
             mutex.acquire();
-            //System.out.println("Mutex acquired by clearDrawPieces");
+            //resources.Console.println("Mutex acquired by clearDrawPieces");
 
             Stack<Vector2> result = (Stack<Vector2>) drawPositions.clone();
             drawPositions.clear();
 
             mutex.release();
-            //System.out.println("Mutex released");
+            //resources.Console.println("Mutex released");
             return result;
         } catch (InterruptedException e) {
             System.err.println("clearDrawPieces was interrupted");
             e.printStackTrace();
 
             mutex.release();
-            //System.out.println("Mutex released");
+            //resources.Console.println("Mutex released");
             return null;
         }
 
@@ -176,12 +268,12 @@ public class AbstractBoard {
     public ChessPiece addPiece(Vector2 pos, Piece type, Alliance alliance) {
         try {
             mutex.acquire();
-            //System.out.println("Mutex acquired by addPiece");
+            //resources.Console.println("Mutex acquired by addPiece");
 
             ChessPiece piece = createPiece(pos, type, alliance);
             if (piece == null) {
                 mutex.release();
-                //System.out.println("Mutex released");
+                //resources.Console.println("Mutex released");
                 return null;
             }
 
@@ -189,17 +281,18 @@ public class AbstractBoard {
             drawPositions.push(pos);
 
             mutex.release();
-            //System.out.println("Mutex released");
+            //resources.Console.println("Mutex released");
             return piece;
         } catch (InterruptedException e) {
             e.printStackTrace();
 
             mutex.release();
-            //System.out.println("Mutex released");
+            //resources.Console.println("Mutex released");
             return null;
         }
-
-
+    }
+    public ChessPiece addPiece(Vector2 pos, PieceNode node) {
+        return addPiece(pos, node.piece, node.alliance);
     }
 
     private ChessPiece createPiece(Vector2 pos, Piece type, Alliance alliance) {
@@ -211,11 +304,12 @@ public class AbstractBoard {
             case QUEEN:
                 return new Queen(pos, alliance, this);
             case KING:
-                if (alliance == Alliance.WHITE)
-                    hasWhiteKing = true;
-                else
-                    hasBlackKing = true;
-                return new King(pos, alliance, this, false);
+                King king = new King(pos, alliance, this, false);
+                if (whiteKing == null && alliance == Alliance.WHITE)
+                    whiteKing = king;
+                else if(blackKing == null && alliance == Alliance.BLACK)
+                    blackKing = king;
+                return king;
             case PAWN:
                 return new Pawn(pos, alliance, this, false, false);
             case ROOK:
@@ -224,19 +318,49 @@ public class AbstractBoard {
         return null;
     }
 
-    public boolean hasKing(Alliance alliance) {
-        return alliance == Alliance.WHITE ? hasWhiteKing : hasBlackKing;
+    public boolean forceMovePiece(Vector2 start, Vector2 end) {
+        if(!(pieces.containsKey(start) && insideBoard(end))) return false;
+
+        try {
+            mutex.acquire();
+
+            pieces.remove(end);
+
+            ChessPiece piece = pieces.get(start).clonePiece();
+            pieces.remove(start);
+            pieces.put(end, piece);
+
+            mutex.release();
+            return true;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+
+            mutex.release();
+            return false;
+        }
+    }
+
+    public boolean undoMove() {
+        try {
+            loadBoard(new File(Main.logsDir, "log" + (moveI()-1) + ".txt"));
+            return true;
+        } catch (FileNotFoundException e) {
+            Console.printNotice("Can't undo further");
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
     public boolean transformPiece(Vector2 pos, Piece newType) {
         try {
             mutex.acquire();
-            //System.out.println("Mutex acquired by transformPiece");
+            //resources.Console.println("Mutex acquired by transformPiece");
 
             ChessPiece piece = pieces.get(pos);
             if (piece == null) {
                 mutex.release();
-                //System.out.println("Mutex released");
+                //resources.Console.println("Mutex released");
                 return false;
             }
 
@@ -248,13 +372,13 @@ public class AbstractBoard {
             drawPositions.push(pos);
 
             mutex.release();
-            //System.out.println("Mutex released");
+            //resources.Console.println("Mutex released");
             return true;
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
             mutex.release();
-            //System.out.println("Mutex released");
+            //resources.Console.println("Mutex released");
             return false;
         }
     }
@@ -262,7 +386,7 @@ public class AbstractBoard {
     public void suspendPieces(Vector2... positions) {
         try {
             mutex.acquire();
-            //System.out.println("Mutex acquired by suspendPieces");
+            //resources.Console.println("Mutex acquired by suspendPieces");
 
             for (Vector2 pos : positions) {
                 if (!pieces.containsKey(pos)) continue;
@@ -273,14 +397,14 @@ public class AbstractBoard {
             e.printStackTrace();
         } finally {
             mutex.release();
-            //System.out.println("Mutex released");
+            //resources.Console.println("Mutex released");
         }
     }
 
     public void releasePieces(Vector2... positions) {
         try {
             mutex.acquire();
-            //System.out.println("Mutex acquired by releasePieces");
+            //resources.Console.println("Mutex acquired by releasePieces");
 
             for (Vector2 pos : positions) {
                 if (!suspendedPieces.containsKey(pos)) continue;
@@ -292,7 +416,7 @@ public class AbstractBoard {
             e.printStackTrace();
         } finally {
             mutex.release();
-            //System.out.println("Mutex released");
+            //resources.Console.println("Mutex released");
         }
     }
 
@@ -311,11 +435,11 @@ public class AbstractBoard {
 
         try {
             mutex.acquire();
-            ////System.out.println("Mutex acquired by getPiece");
+            ////resources.Console.println("Mutex acquired by getPiece");
 
             ChessPiece piece = pieces.get(pos).clonePiece();
             mutex.release();
-            ////System.out.println("Mutex released");
+            ////resources.Console.println("Mutex released");
             return piece;
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -323,13 +447,11 @@ public class AbstractBoard {
             mutex.release();
             return null;
         }
-
-
     }
 
-    public void putPiece(Vector2 pos, ChessPiece piece) {
+    protected void putPiece(Vector2 pos, ChessPiece piece) {
         try {
-            //System.out.println("Attempting to put " + piece + " at " + pos);
+            //resources.Console.println("Attempting to put " + piece + " at " + pos);
             mutex.acquire();
 
             pieces.put(pos, piece.clone());
@@ -337,7 +459,7 @@ public class AbstractBoard {
             e.printStackTrace();
         } finally {
             mutex.release();
-            //System.out.println("Mutex released");
+            //resources.Console.println("Mutex released");
         }
 
     }
@@ -349,7 +471,7 @@ public class AbstractBoard {
     protected void capturePiece(ChessPiece piece) {
         try {
             mutex.acquire();
-            //System.out.println("Mutex acquired by capturePiece");
+            //resources.Console.println("Mutex acquired by capturePiece");
 
             capturedPieces.add(piece);
 
@@ -357,14 +479,14 @@ public class AbstractBoard {
             e.printStackTrace();
         } finally {
             mutex.release();
-            //System.out.println("Mutex released");
+            //resources.Console.println("Mutex released");
         }
     }
 
     public void addDrawPos(Vector2... positions) {
         try {
             mutex.acquire();
-            //System.out.println("Mutex acquired by addDrawPos");
+            //resources.Console.println("Mutex acquired by addDrawPos");
 
             for (Vector2 pos : positions)
                 drawPositions.add(pos);
@@ -373,14 +495,14 @@ public class AbstractBoard {
             e.printStackTrace();
         } finally {
             mutex.release();
-            //System.out.println("Mutex released");
+            //resources.Console.println("Mutex released");
         }
     }
 
     protected void logMove(MoveNode node) {
         try {
             mutex.acquire();
-            //System.out.println("Mutex acquired by logMove");
+            //resources.Console.println("Mutex acquired by logMove");
 
             gameLog.push(node);
 
@@ -388,7 +510,7 @@ public class AbstractBoard {
             e.printStackTrace();
         } finally {
             mutex.release();
-            //System.out.println("Mutex released");
+            //resources.Console.println("Mutex released");
         }
     }
 
@@ -396,7 +518,7 @@ public class AbstractBoard {
      * @return the piece that was last successfully moved
      */
     public IChessPiece getLastPiece() {
-        return lastPiece.clonePiece();
+        return lastPiece == null ? null : lastPiece.clonePiece();
     }
 
     public HashSet<ChessPiece> getCapturedPieces() {
@@ -407,7 +529,7 @@ public class AbstractBoard {
         if (!pieces.containsKey(pos)) return false;
         try {
             mutex.acquire();
-            //System.out.println("Mutex acquired by removePiece");
+            //resources.Console.println("Mutex acquired by removePiece");
 
             ChessPiece piece = pieces.get(pos);
             pieces.remove(pos);
@@ -415,7 +537,7 @@ public class AbstractBoard {
             drawPositions.push(pos);
 
             mutex.release();
-            //System.out.println("Mutex released");
+            //resources.Console.println("Mutex released");
             return true;
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -427,7 +549,7 @@ public class AbstractBoard {
     public void removePieces(Vector2... positions) {
         try {
             mutex.acquire();
-            //System.out.println("Mutex acquired by removePieces");
+            //resources.Console.println("Mutex acquired by removePieces");
 
             for (Vector2 pos : positions) {
                 if (!pieces.containsKey(pos)) continue;
@@ -439,7 +561,7 @@ public class AbstractBoard {
             }
 
             mutex.release();
-            //System.out.println("Mutex released");
+            //resources.Console.println("Mutex released");
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {

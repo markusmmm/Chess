@@ -1,3 +1,5 @@
+package main;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
@@ -15,14 +17,14 @@ import management.*;
 import pieces.ChessPiece;
 import pieces.IChessPiece;
 import pieces.King;
+import pieces.Pawn;
 import resources.MediaHelper;
 import resources.*;
+import resources.Console;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Collections;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 
 public class GameBoard {
     MediaHelper media = new MediaHelper();
@@ -30,6 +32,7 @@ public class GameBoard {
     private Board board;
     private final ChessComputer computer;
 
+    private Main main;
     private Stage stage;
     private BorderPane root;
     private GridPane grid;
@@ -37,6 +40,7 @@ public class GameBoard {
     private ListView<MoveNode> moveLog;
     private ListView<ChessPiece> capturedPieces;
     private Text gameStatus;
+    private DatabaseController database;
 
     private Tile[][] tiles;
     private Rectangle[][] squares;
@@ -46,29 +50,29 @@ public class GameBoard {
 
     private boolean firstClick;
     private Tile firstTile;
+    private Player player1, player2;
 
-    private File savesDir = new File(System.getProperty("user.home"), "GitGud/");
-
-    public GameBoard(String username, int difficulty, BoardMode boardMode, Stage stage, BorderPane root) {
+    public GameBoard(String user1, String user2, int difficulty, BoardMode boardMode, Main main, Stage stage, BorderPane root) {
         Board boardVal = null;
 
         if(boardMode == BoardMode.DEFAULT) {
             //this.board = new Board(SIZE, false, boardMode); TEMP TEST
             try {
-                boardVal = new Board("default");
+                boardVal = new Board(new File("default.txt"));
             } catch (FileNotFoundException e) {
-                //e.printStackTrace();
+                //e.printCaller();
                 //System.err.println("Game setup failed! exiting...");
                 //System.exit(1);
 
                 Console.printWarning("Save file 'default' not found. Attempting legacy generation...");
                 boardVal = new Board(SIZE, false, boardMode);
             }
-        } else {
+        } else if(boardMode == BoardMode.RANDOM) {
             boardVal = new Board(SIZE, false, boardMode);
         }
         board = boardVal;
 
+        this.main = main;
         this.stage = stage;
         this.boardMode = boardMode;
         this.root = root;
@@ -83,17 +87,17 @@ public class GameBoard {
         this.moveLog = new ListView<>();
         this.capturedPieces = new ListView<>();
         this.gameStatus = new Text();
+        this.database = new DatabaseController();
 
         if (difficulty == 1) computer = new ChessComputerEasy(board);
         else if (difficulty == 2) computer = new ChessComputerMedium(board);
-        else if (difficulty == 3) computer = new ChessComputerHard(board);
+        //else if (difficulty == 3) computer = new ChessComputerHard(board);
         else computer = null;
 
-        if (!savesDir.exists()) {
-            savesDir.mkdirs();
-        }
+        this.player1 = new Player(user1, Alliance.WHITE);
+        this.player2 = new Player(user2, Alliance.BLACK);
 
-        Console.printSuccess("Game setup");
+        Console.printSuccess("Game setup (Difficulty " + difficulty + ")");
     }
 
     /**
@@ -177,13 +181,14 @@ public class GameBoard {
         MenuItem menuItemReset = new MenuItem("Reset Game");
         MenuItem menuItemLoad = new MenuItem("Load Game");
         MenuItem menuItemSave = new MenuItem("Save Game");
+        MenuItem menuItemUndo = new MenuItem("Undo");
         MenuItem menuItemQuit = new MenuItem("Quit");
 
         menuItemExit.setOnAction(e -> {
-            new Main().mainMenu(username, stage);
+            main.mainMenu(player1.getUsername(), stage);
         });
         menuItemReset.setOnAction(e -> {
-            GameBoard newGameBoard = new GameBoard(username, difficulty, boardMode, stage, root);
+            GameBoard newGameBoard = new GameBoard(player1.getUsername(), player2.getUsername(), difficulty, boardMode, main, stage, root);
             newGameBoard.createBoard();
             root.setCenter(newGameBoard.getContainer());
         });
@@ -192,22 +197,49 @@ public class GameBoard {
             fileChooser.setTitle("Open Chess Game File");
             fileChooser.getExtensionFilters().addAll(
                     new FileChooser.ExtensionFilter("Chess Game File", "*.txt"));
-            fileChooser.setInitialDirectory(savesDir);
+            fileChooser.setInitialDirectory(Main.savesDir);
             File selectedFile = fileChooser.showOpenDialog(stage);
+
+            if(selectedFile != null) {
+                try {
+                    board = new Board(selectedFile);
+                    createBoard();
+                    updateLogs();
+                } catch (FileNotFoundException e1) {
+                    Console.printError("Save file " + selectedFile.getName() + " does not exist");
+                    e1.printStackTrace();
+                }
+            }
+        });
+        menuItemUndo.setOnAction(e -> {
+            int backStep = computer == null ? 1 : 2;
+            int i = board.moveI() - backStep;
+
+            if(i >= 0) {
+                File logFile = new File(Main.logsDir, "log" + i + ".txt");
+                try {
+                    board = new Board(logFile);
+                    createBoard();
+                    updateLogs();
+                } catch (FileNotFoundException e1) {
+                    Console.printError("No log exists for turn " + i);
+                    e1.printStackTrace();
+                }
+            }
         });
         menuItemSave.setOnAction(e -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Open Chess Game File");
             fileChooser.getExtensionFilters().addAll(
                     new FileChooser.ExtensionFilter("Chess Game File", "*.txt"));
-            fileChooser.setInitialDirectory(savesDir);
+            fileChooser.setInitialDirectory(Main.savesDir);
             File file = fileChooser.showSaveDialog(stage);
             if (file != null)
-                board.saveFile(fileChooser.showSaveDialog(stage));
+                board.saveBoard(file);
         });
-        menuItemQuit.setOnAction(e -> System.exit(0));
+        menuItemQuit.setOnAction(e -> main.onQuit());
 
-        menuFile.getItems().addAll(menuItemExit, menuItemReset, menuItemLoad, menuItemSave, menuItemQuit);
+        menuFile.getItems().addAll(menuItemExit, menuItemReset, menuItemLoad, menuItemSave, menuItemUndo, menuItemQuit);
         MenuItem menuItemAbout = new MenuItem("About");
         menuHelp.getItems().add(menuItemAbout);
 
@@ -218,24 +250,36 @@ public class GameBoard {
     private void attemptMove(Tile firstTile, Vector2 pos) {
         IChessPiece temp = board.getPiece(firstTile.getPos());
         if(!board.ready()) {
-            System.out.println("Board not ready. Move failed");
+            Console.println("Board not ready. Move failed");
             return;
         } else if(temp == null) {
-            System.out.println("No piece at " + pos + ". Move failed");
+            Console.println("No piece at " + pos + ". Move failed");
             return;
         }
 
-        //System.out.println("Before: " + temp.position());
+        boolean pawnPromotion = false;
+
+        if(firstTile.getPiece() instanceof Pawn){
+            if((board.pawnPromotion((Pawn)firstTile.getPiece(), pos)))
+            {
+                Alliance alliance = firstTile.getPiece().alliance();
+                pawnPromotion(firstTile.getPos(), pos, alliance);
+                pawnPromotion = true;
+                media.playSound("move.mp3");
+
+
+            }
+        }
+
+        //resources.Console.println("Before: " + temp.position());
 
         boolean moveResult = board.movePiece(firstTile.getPos(), pos);
-       // System.out.println("Outer move result: " + moveResult);
-        if (moveResult) {
-            if(board.getKing(Alliance.WHITE).checkmate())
-
-               // System.out.println("Has computer: " + computer != null);
+       // resources.Console.println("Outer move result: " + moveResult);
+        if (moveResult || pawnPromotion) {
+            Console.println("Has computer: " + (computer != null));
             if (computer != null) {
                 Move move = computer.getMove();
-               // System.out.println("Computer attempting move " + move);
+                Console.println("Computer attempting move " + move);
                 board.movePiece(move);
                 int row = move.start.getY();
                 int col = move.start.getX();
@@ -246,14 +290,60 @@ public class GameBoard {
             //firstTile.setFill(Color.TRANSPARENT);
             drawBoard();
             updateLogs();
-            /*System.out.println("Moving " + board.getPiece(firstTile.getPos()) +
+            /*resources.Console.println("Moving " + board.getPiece(firstTile.getPos()) +
                     " from " + firstTile.getPos() + " to " + pos);*/
         } else {
             media.playSound("denied.mp3");
             drawBoard();
         }
 
-        //System.out.println("After:" + temp.position());
+        //resources.Console.println("After:" + temp.position());
+    }
+
+
+    public void pawnPromotion(Vector2 piecePos, Vector2 end, Alliance alliance) {
+
+
+        ArrayList<String> choices = new ArrayList<>();
+        choices.add("QUEEN");
+        choices.add("BISHOP");
+        choices.add("KNIGHT");
+        choices.add("ROOK");
+
+        ChoiceDialog<String> dialog = new ChoiceDialog<>("QUEEN", choices);
+
+
+        dialog.setHeaderText("Promote your pawn");
+        dialog.setContentText("Choose your piece:");
+
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()) {
+            board.removePiece(piecePos);
+            board.advanceMove(true);
+
+
+            String s = result.get().toLowerCase();
+
+            switch (s.charAt(0)) {
+                case 'q':
+                    board.addPiece(end, Piece.QUEEN, alliance);
+                    break;
+                case 'b':
+                    board.addPiece(end, Piece.BISHOP, alliance);
+                    break;
+                case 'k':
+                    board.addPiece(end, Piece.KNIGHT, alliance);
+                    break;
+                case 'r':
+                    board.addPiece(end, Piece.ROOK, alliance);
+                    break;
+
+            }
+        }else {
+            board.removePiece(piecePos);
+            board.advanceMove(true);
+            board.addPiece(end, Piece.QUEEN, alliance);
+        }
     }
 
     private boolean tileClick(MouseEvent e, Tile tile) {
@@ -284,7 +374,7 @@ public class GameBoard {
              * to the new location
              */
             IChessPiece firstPiece = board.getPiece(firstTile.getPos());
-            System.out.println(firstClick + " " + firstPiece);
+            Console.println(firstClick + " " + firstPiece);
             attemptMove(firstTile, pos);
 
             firstClick = false;
@@ -302,13 +392,13 @@ public class GameBoard {
         } else {
             System.out.print(pos + ": ");
             if (piece == null) {
-                System.out.println("No piece");
+                Console.println("No piece");
                 return false;
             } else if (piece.alliance() != alliance) {
-                System.out.println("Not your alliance");
+                Console.println("Not your alliance");
                 return false;
             }
-            //System.out.println(piece);
+            //resources.Console.println(piece);
 
             firstClick = true;
             firstTile = tile;
@@ -359,7 +449,10 @@ public class GameBoard {
                 }
             }
         }
-        gameStatus.setText("It's " + board.getActivePlayer().toString() + " player's turn.");
+        String player;
+        if (board.getActivePlayer() == Alliance.WHITE) player = player1.getUsername();
+        else player = player2.getUsername();
+        gameStatus.setText("It's " + player + " turn.");
     }
 
     public void printTiles() {
@@ -370,35 +463,63 @@ public class GameBoard {
             System.out.print("\n");
         }
     }
-
-    /**
-     * TODO: tell the user which player won the game, and update highscore
-     */
+    
     public boolean gameOver() {
         King whiteKing = board.getKing(Alliance.WHITE),
                 blackKing = board.getKing(Alliance.BLACK);
 
-        if(whiteKing.checkmate())
-            System.out.println("Game over\nBlack player won!");
-        else if(blackKing.checkmate())
-            System.out.println("Game over\nWhite player won!");
-        else if(whiteKing.stalemate() || blackKing.stalemate())
-            System.out.println("Game Over\nRemiss");
-        else {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+
+        if(whiteKing.checkmate()) {
+            Console.println("Game over\nBlack player won!");
+            alert.setContentText(player2.getUsername() + " won!");
+        } else if(blackKing.checkmate()) {
+            Console.println("Game over\nWhite player won!");
+            alert.setContentText(player1.getUsername() + " won!");
+        } else if(whiteKing.stalemate() || blackKing.stalemate()) {
+            Console.println("Game Over\nRemiss");
+            alert.setContentText("Remiss!");
+        } else {
             return false;
         }
 
+        if (difficulty == 0) {
+            if (blackKing.checkmate()) {
+                database.updateScore(player1.getUsername(), (player1.getScore() + 3));
+            } else if (whiteKing.checkmate()) {
+                database.updateScore(player2.getUsername(), (player2.getScore() + 3));
+            } else if(whiteKing.stalemate() || blackKing.stalemate()) {
+                database.updateScore(player1.getUsername(), (player1.getScore() + 1));
+                database.updateScore(player2.getUsername(), (player2.getScore() + 1));
+            }
+        } else {
+            if (difficulty == 1) {
+                if (blackKing.checkmate()) {
+                    database.updateScore(player1.getUsername(), (player1.getScore() + 3));
+                }
+            } else if (difficulty == 2) {
+                if (blackKing.checkmate()) {
+                    database.updateScore(player1.getUsername(), (player1.getScore() + 6));
+                }
+            } else if (difficulty == 3) {
+                if (blackKing.checkmate()) {
+                    database.updateScore(player1.getUsername(), (player1.getScore() + 9));
+                }
+            }
+        }
+
+        alert.setTitle("Game Over");
+        alert.setHeaderText(null);
+        alert.setGraphic(null);
         MediaHelper media = new MediaHelper();
         media.playSound("game_over.mp3");
+        alert.showAndWait();
+        main.mainMenu(player1.getUsername(), stage);
         return true;
     }
 
     public BorderPane getContainer() {
         return container;
-    }
-
-    public String getUsername() {
-        return username;
     }
 
     public int getDifficulty() {

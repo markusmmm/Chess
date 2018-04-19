@@ -2,6 +2,7 @@ import management.Board;
 import management.ChessComputerMedium;
 import org.junit.Before;
 import org.junit.Test;
+import resources.Move;
 
 import java.io.FileNotFoundException;
 
@@ -19,7 +20,8 @@ public class MediumAI {
         minmax = new ChessComputerMedium(chessB);
     }
     @Test
-    public void startTestf() {
+    public void startTest() {
         chessB.movePiece(minmax.getMove());
+        minmax.getMove();
     }
 }

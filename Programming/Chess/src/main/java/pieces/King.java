@@ -2,10 +2,7 @@ package pieces;
 
 import management.AbstractBoard;
 import management.Board;
-import management.ChessRanking;
-import resources.Alliance;
-import resources.Piece;
-import resources.Vector2;
+import resources.*;
 
 import java.util.*;
 
@@ -26,9 +23,13 @@ public class    King extends ChessPiece {
         super(position, alliance, board, false, Piece.KING, 2, hasMoved);
 
     }
+    public King(King other) {
+        super(other);
+    }
 
-    public King clonePiece() {
-        return new King(position, alliance, board, hasMoved());
+    @Override
+    public ChessPiece clonePiece() {
+        return new King(this);
     }
 
     @Override
@@ -65,8 +66,7 @@ public class    King extends ChessPiece {
         );
     }
 
-    public Set<Vector2> getPossibleDestinations(String caller) {
-        logActionPossibleDestinations(caller);
+    public Set<Vector2> getPossibleDestinations() {
 
         Set<Vector2> possibleMoves = new HashSet<>();
 
@@ -87,7 +87,7 @@ public class    King extends ChessPiece {
         boolean checked = false;
         board.suspendPieces(position);
 
-        HashMap<Vector2, IChessPiece> hostilePieces = board.getPieces(otherAlliance());
+        HashMap<Vector2, ChessPiece> hostilePieces = board.getPieces(otherAlliance());
         for(IChessPiece hostile : hostilePieces.values()) {
             if(hostile.getPossibleDestinations().contains(destination)) {
                 checked = true;
@@ -104,31 +104,38 @@ public class    King extends ChessPiece {
 
     private boolean movesIntoCheck(Vector2 end) {
         board.suspendPieces(position);
+        board.suspendPieces(end);
 
         boolean setsCheck = inCheck(end);
 
         board.releasePieces(position);
+        board.releasePieces(end);
 
         return setsCheck;
     }
 
     /**
-     * Determines if the attempted
-     * @param start
-     * @param end
-     * @return
+     * Determines if the attempted move puts the king in check
+     * @param start Start position of the attempted move
+     * @param end End position of the attempted move
+     * @return Whether or not the move successfully protects the king
      */
     public boolean resolvesCheck(Vector2 start, Vector2 end) {
-        Board dummyBoard = board.clone();
+        //resources.Console.printNotice("\nSimulating move " + new Move(start, end));
+        //resources.Console.printCaller();
 
         if(start.equals(position))
             return movesIntoCheck(end);
 
-        ChessPiece dummyPiece = dummyBoard.getPiece(start);
-        dummyBoard.removePiece(start);
-        dummyBoard.putPiece(end, dummyPiece);
+        Board tempBoard = board.clone();
+        ChessPiece piece = board.getPiece(start);
 
-        return !dummyBoard.getKing(alliance).inCheck();
+        board.forceMovePiece(start, end);
+        boolean checked = inCheck();
+
+        board.sync(tempBoard);
+
+        return !checked;
     }
 
     public boolean checkmate() {

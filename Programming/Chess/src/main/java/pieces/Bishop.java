@@ -15,9 +15,14 @@ public class Bishop extends ChessPiece {
 	public Bishop(Vector2 position, Alliance alliance, AbstractBoard board){
 		super(position, alliance, board, false, Piece.BISHOP, 3, false);
 	}
-    public Bishop clonePiece() {
-        return new Bishop(position, alliance, board);
-    }
+	public Bishop(Bishop other) {
+		super(other);
+	}
+
+	@Override
+	public ChessPiece clonePiece() {
+		return new Bishop(this);
+	}
 
 	/**
 	 *
@@ -25,9 +30,7 @@ public class Bishop extends ChessPiece {
 	 */
 
 
-	public Set<Vector2> getPossibleDestinations(String caller) {
-		logActionPossibleDestinations(caller);
-
+	public Set<Vector2> getPossibleDestinations() {
 		possibleMoves.clear();
 		for (int variable = 0; variable < board.size(); variable++) {
 			//diagonals

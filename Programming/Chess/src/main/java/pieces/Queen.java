@@ -15,8 +15,13 @@ public class Queen extends ChessPiece {
     public Queen(Vector2 position, Alliance alliance, AbstractBoard board){
 		super(position, alliance, board, false, Piece.QUEEN, 9,false);
 	}
-    public Queen clonePiece() {
-        return new Queen(position, alliance, board);
+    public Queen(Queen other) {
+        super(other);
+    }
+
+    @Override
+    public ChessPiece clonePiece() {
+        return new Queen(this);
     }
 
 	/**
@@ -32,9 +37,7 @@ public class Queen extends ChessPiece {
         );
 	}
 
-	public Set<Vector2> getPossibleDestinations(String caller) {
-        logActionPossibleDestinations(caller);
-
+	public Set<Vector2> getPossibleDestinations() {
 	    possibleMoves.clear();
         for (int variable = 0; variable < board.size(); variable++) {
             //Straights

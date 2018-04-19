@@ -4,6 +4,7 @@ import management.AbstractBoard;
 import management.Board;
 import resources.*;
 
+import java.util.List;
 import java.util.Set;
 
 public abstract class ChessPiece implements IChessPiece {
@@ -11,9 +12,9 @@ public abstract class ChessPiece implements IChessPiece {
 	protected Vector2 position;
 
 	protected final Alliance alliance;
+	protected final Board board;
 	protected final boolean canJump;
 	protected final Piece piece;
-	protected final Board board;
 	protected final int value;
 
 	private boolean hasMoved;
@@ -30,8 +31,16 @@ public abstract class ChessPiece implements IChessPiece {
         this.piece = piece;
         this.value = value;
         this.hasMoved = hasMoved;
-
     }
+    protected ChessPiece(ChessPiece other) {
+    	position = other.position;
+    	alliance = other.alliance;
+    	board = other.board;
+    	canJump = other.canJump;
+    	piece = other.piece;
+    	value = other.value;
+    	hasMoved = other.hasMoved;
+	}
 
 	public Vector2 position() { return position; }
 	public Alliance alliance() { return alliance; }
@@ -49,7 +58,7 @@ public abstract class ChessPiece implements IChessPiece {
 	 * @return Whether or not the move can be performed
 	 */
 	protected boolean legalMove(Vector2 destination) {
-		//System.out.println("(ChessPiece) Board is live: " + board.isLive());
+		//resources.Console.println("(ChessPiece) Board is live: " + board.isLive());
 		IChessPiece endPiece = board.getPiece(destination);
 		// Prevents attack on an allied piece
 		if(endPiece != null && endPiece.alliance().equals(alliance)) return false;
@@ -79,7 +88,7 @@ public abstract class ChessPiece implements IChessPiece {
 	 * @param move
 	 */
 	public boolean move(Vector2 move) {
-		//System.out.println("Attempting to move " + alliance + " " + piece + " from " + position + " to " + move);
+		//resources.Console.println("Attempting to move " + alliance + " " + piece + " from " + position + " to " + move);
 		if (!legalMove(move)) return false; // If the destination is unreachable, the move fails
 
 		MediaHelper media = new MediaHelper();
@@ -87,8 +96,12 @@ public abstract class ChessPiece implements IChessPiece {
 		position = new Vector2(move.getX(), move.getY());
 		hasMoved = true;
 
-		//System.out.println("Move performed. New pos: " + position);
+		//resources.Console.println("Move performed. New pos: " + position);
 		return true;
+	}
+
+	public void loadData(List<Boolean> vals) {
+		hasMoved = vals.get(0);
 	}
 
 	/**
@@ -125,22 +138,12 @@ public abstract class ChessPiece implements IChessPiece {
 		return Math.abs(this.position.getX() - newPos.getX()) == Math.abs(this.position.getY() - newPos.getY());
 	}
 
-	public Set<Vector2> getPossibleDestinations() {
-		return getPossibleDestinations("Anonymous");
-	}
-
-	protected void logActionPossibleDestinations(String caller) {
-		//System.out.println(caller + " is checking possible destinations for " + toString());
-	}
-
 	@Override
     public String toString() {
 	    return alliance + " " + piece;
-
     }
 
-
-
-    @Override
-	public ChessPiece clone() { return clonePiece(); }
+    public ChessPiece clone() {
+		return clonePiece();
+	}
 }

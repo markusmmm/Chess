@@ -7,9 +7,18 @@ public class Move {
         this.start = start;
         this.end = end;
     }
+    
+    public Vector2 getStart(){
+    	return this.start;
+    }
+    
+    public Vector2 getEnd(){
+    	return this.end;
+    }
+    ///kommentar
 
-    /*@Override
+    @Override
     public String toString() {
-        return start + "->" + end;
-    }*/
+        return start + " -> " + end;
+    }
 }

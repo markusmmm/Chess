@@ -1,9 +1,10 @@
-8 0
-rnbqkbnr
+8 0 0 0
+-1 -1
+eeeeeeee
 pppppppp
 eeeeeeee
 eeeeeeee
 eeeeeeee
 eeeeeeee
 PPPPPPPP
-RNBQKBNR
+eeeeeeee
