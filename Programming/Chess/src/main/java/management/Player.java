@@ -14,15 +14,23 @@ public class Player {
      * @param alliance
      */
     public Player(String username, Alliance alliance) {
-        // TODO - implement Player.Player
-        throw new UnsupportedOperationException();
+        this.username = username;
+        this.alliance = alliance;
+        DatabaseController database = new DatabaseController();
+        this.score = database.getScore(username);
+        database.close();
     }
 
 	public String getUsername() {
-		return this.username;
+		return username;
 	}
 
-	public Alliance getAlliance() { return alliance; }
+	public Alliance getAlliance() {
+        return alliance;
+    }
 
-	public int getScore() { return score; }
+	public int getScore() {
+        return score;
+    }
+
 }

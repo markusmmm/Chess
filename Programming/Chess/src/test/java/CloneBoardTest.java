@@ -11,7 +11,7 @@ public class CloneBoardTest {
     BoardMode boardMode = BoardMode.DEFAULT;
     @Test
     public void CloneCantChangeOrgTest() {
-        Board org = new Board(8,false,boardMode);
+        Board org = new Board(8,0,false,boardMode);
         Board clone = org.clone();
 
         Vector2 start = new Vector2(0,1);
@@ -24,7 +24,7 @@ public class CloneBoardTest {
     }
     @Test
     public void CloneOrgAgainResets() {
-        Board org = new Board(8,false,boardMode);
+        Board org = new Board(8,0,false,boardMode);
         Board clone = org.clone();
 
         Vector2 start = new Vector2(0,1);
