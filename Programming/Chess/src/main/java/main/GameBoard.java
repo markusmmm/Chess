@@ -41,6 +41,7 @@ public class GameBoard {
     private ListView<MoveNode> moveLog;
     private ListView<ChessPiece> capturedPieces;
     private Text gameStatus;
+    private DatabaseController database;
 
     private Tile[][] tiles;
     private Rectangle[][] squares;
@@ -87,6 +88,7 @@ public class GameBoard {
         this.moveLog = new ListView<>();
         this.capturedPieces = new ListView<>();
         this.gameStatus = new Text();
+        this.database = new DatabaseController();
 
         if (difficulty == 1) computer = new ChessComputerEasy(board);
         else if (difficulty == 2) computer = new ChessComputerMedium(board);
@@ -402,10 +404,7 @@ public class GameBoard {
             System.out.print("\n");
         }
     }
-
-    /**
-     * TODO: tell the user which player won the game, and update highscore
-     */
+    
     public boolean gameOver() {
         King whiteKing = board.getKing(Alliance.WHITE),
                 blackKing = board.getKing(Alliance.BLACK);
@@ -424,6 +423,32 @@ public class GameBoard {
         } else {
             return false;
         }
+
+        if (difficulty == 0) {
+            if (blackKing.checkmate()) {
+                database.updateScore(player1.getUsername(), (player1.getScore() + 3));
+            } else if (whiteKing.checkmate()) {
+                database.updateScore(player2.getUsername(), (player2.getScore() + 3));
+            } else if(whiteKing.stalemate() || blackKing.stalemate()) {
+                database.updateScore(player1.getUsername(), (player1.getScore() + 1));
+                database.updateScore(player2.getUsername(), (player2.getScore() + 1));
+            }
+        } else {
+            if (difficulty == 1) {
+                if (blackKing.checkmate()) {
+                    database.updateScore(player1.getUsername(), (player1.getScore() + 3));
+                }
+            } else if (difficulty == 2) {
+                if (blackKing.checkmate()) {
+                    database.updateScore(player1.getUsername(), (player1.getScore() + 6));
+                }
+            } else if (difficulty == 3) {
+                if (blackKing.checkmate()) {
+                    database.updateScore(player1.getUsername(), (player1.getScore() + 9));
+                }
+            }
+        }
+
         alert.setTitle("Game Over");
         alert.setHeaderText(null);
         alert.setGraphic(null);

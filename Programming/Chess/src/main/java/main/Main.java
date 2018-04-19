@@ -247,7 +247,7 @@ public class Main extends Application {
      *
      * @return menubar
      */
-    public MenuBar generateMenuBar() {
+    private MenuBar generateMenuBar() {
         MenuBar menuBar = new MenuBar();
         Menu menuFile = new Menu("File");
         Menu menuHelp = new Menu("Help");
