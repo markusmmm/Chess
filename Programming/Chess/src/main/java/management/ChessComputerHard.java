@@ -1,4 +1,4 @@
-/*package management;
+package management;
 
 import pieces.ChessPiece;
 import resources.Alliance;
@@ -40,7 +40,7 @@ public class ChessComputerHard extends ChessComputer {
      * @param c chess coordniate
      * @return cartesian coordinate
      */
- /*   private int toInt(char c) {
+    private int toInt(char c) {
         switch(c) {
             case 'a': return 0;
             case 'b': return 1;
@@ -67,7 +67,7 @@ public class ChessComputerHard extends ChessComputer {
      * https://en.wikipedia.org/wiki/Forsyth-Edwards_Notation
      * @return standard UCI FEN format for chess Engines
      */
- /*   private String generateFen() {
+    private String generateFen() {
         fen.delete(0,fen.length());
         boardToFen();
         fen.append(" " + activeColour() + " ");
@@ -123,19 +123,19 @@ public class ChessComputerHard extends ChessComputer {
                 fen.append("/");
             }
         }
-    }*/
+    }
 
     /**
      * places the  number of spaces between pieces in FEN-string
      */
-/*    private void addSpace() {
+    private void addSpace() {
         if(0 < spacecounter) {
             fen.append(spacecounter);
         }
         spacecounter = 0;
     }
-*/
-  /*  private String translatePiece(ChessPiece piece) {
+
+    private String translatePiece(ChessPiece piece) {
         String translated = "";
         if(piece.piece() == Piece.PAWN && piece.alliance() == Alliance.WHITE) translated = "P";
         else if (piece.piece() == Piece.ROOK && piece.alliance() == Alliance.WHITE) translated = "R";
@@ -153,4 +153,3 @@ public class ChessComputerHard extends ChessComputer {
         return translated;
     }
 }
-*/
