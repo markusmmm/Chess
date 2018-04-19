@@ -48,9 +48,11 @@ public class Main extends Application {
     public static final File SAVES_DIR = new File(System.getProperty("user.home"), "GitGud/");
     public static final File LOGS_DIR = new File(SAVES_DIR, ".logs/");
     public static final File CORE_DIR = new File("core/");
+    public static final File TESTS_DIR = new File("tests/");
 
     public static final String DATA_SEPARATOR = "====";
     public static final String SAVE_EXTENSION = ".txt";
+    public static final String TEST_EXTENSION = ".txt";
 
     public void start(Stage primaryStage) throws Exception {
         directorySetup();
