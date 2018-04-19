@@ -38,8 +38,8 @@ public class Stockfish {
     }
 
     private String getOS() {
-        if(System.getProperty("os.name").equals("w")) {
-            return "";
+        if(System.getProperty("os.name").equals("Mac OS X")) {
+            return "engine/stockfish-9-64";
         }
         return "engine/stockfish_9_x32.exe";
     }
