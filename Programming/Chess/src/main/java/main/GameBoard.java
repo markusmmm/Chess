@@ -254,27 +254,12 @@ public class GameBoard {
             return;
         }
 
-        boolean pawnPromotion = false;
-
-        /*
-        if(firstTile.getPiece() instanceof Pawn){
-            if((board.pawnPromotion((Pawn)firstTile.getPiece(), pos)))
-            {
-                Alliance alliance = firstTile.getPiece().alliance();
-                pawnPromotion(firstTile.getPos(), pos, alliance);
-                pawnPromotion = true;
-                media.playSound("move.mp3");
-
-
-            }
-        }
-        */
 
         //resources.Console.println("Before: " + temp.position());
 
         boolean moveResult = board.movePiece(firstTile.getPos(), pos);
        // resources.Console.println("Outer move result: " + moveResult);
-        if (moveResult || pawnPromotion) {
+        if (moveResult) {
             Console.println("Has computer: " + (computer != null));
             if (computer != null) {
                 Move move = computer.getMove();
@@ -320,7 +305,7 @@ public class GameBoard {
     public GameBoard(){
 
     }
-    public String pawnPromotion(Vector2 piecePos, Vector2 end, Alliance alliance) {
+    public String pawnPromotion() {
 
 
         ArrayList<String> choices = new ArrayList<>();

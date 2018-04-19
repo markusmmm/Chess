@@ -407,28 +407,37 @@ public class Board extends AbstractBoard {
                 GameBoard gameBoard = new GameBoard();
                 Alliance alliance = piece.alliance();
 
-                String c = gameBoard.pawnPromotion(piece.position() , end, alliance);
+                String c = gameBoard.pawnPromotion();
 
                 switch (c.charAt(0)) {
                     case 'q':
                         removePiece(start);
                         addPiece(end, Piece.QUEEN, alliance);
+                        logMove(new MoveNode(piece, start, end, (ChessPiece) getPiece(end)));
+
                         return advanceMove(true);
                     case 'b':
                         removePiece(start);
                         addPiece(end, Piece.BISHOP, alliance);
+                        logMove(new MoveNode(piece, start, end, (ChessPiece) getPiece(end)));
+
                         return advanceMove(true);
                     case 'k':
                         removePiece(start);
                         addPiece(end, Piece.KNIGHT, alliance);
+                        logMove(new MoveNode(piece, start, end, (ChessPiece) getPiece(end)));
+
                         return advanceMove(true);
                     case 'r':
                         removePiece(start);
                         addPiece(end, Piece.ROOK, alliance);
+                        logMove(new MoveNode(piece, start, end, (ChessPiece) getPiece(end)));
+
                         return advanceMove(true);
 
 
                 }
+
                 media.playSound("move.mp3");
 
             }
