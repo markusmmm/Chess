@@ -11,7 +11,7 @@ public class PawnTest
     @Test
     public void movePawnForward()
     {
-        Board board = new Board(8);
+        Board board = new Board(8, 0);
 
         Vector2 posPawn0 = new Vector2(0, 6);
         Vector2 posPawn1 = new Vector2(1, 6);
