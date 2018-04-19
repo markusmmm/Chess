@@ -93,6 +93,14 @@ public class    King extends ChessPiece {
 
         HashMap<Vector2, ChessPiece> hostilePieces = board.getPieces(otherAlliance());
         for(IChessPiece hostile : hostilePieces.values()) {
+            if(hostile instanceof Pawn) {
+                if(((Pawn) hostile).getPossibleAttacks().contains(destination)) {
+                    checked = true;
+                    break;
+                }
+                continue;
+            }
+
             if(hostile.getPossibleDestinations().contains(destination)) {
                 checked = true;
                 break;
