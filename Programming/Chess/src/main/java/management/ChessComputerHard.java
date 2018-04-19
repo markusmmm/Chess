@@ -23,6 +23,7 @@ public class ChessComputerHard extends ChessComputer {
     @Override
     public Move getMove() {
         ai.sendCommand("ucinewgame");
+        System.out.println(generateFen());
         return readAI(ai.getBestMove(generateFen(),THINK_TIME));
     }
 
@@ -31,7 +32,7 @@ public class ChessComputerHard extends ChessComputer {
         for (int i = 0; i < bestMove.length(); i++) {
             in[i] = toInt(bestMove.charAt(i));
         }
-        return new Move(new Vector2(in[0], in[2]), new Vector2(in[3], in[4]));
+        return new Move(new Vector2(in[0], in[1]), new Vector2(in[2], in[3]));
     }
 
     /**
@@ -69,12 +70,41 @@ public class ChessComputerHard extends ChessComputer {
  /*   private String generateFen() {
         fen.delete(0,fen.length());
         boardToFen();
-        fen.append(" " + activeColour());
-        fen.append(" " + castlingAvailability());
+        fen.append(" " + activeColour() + " ");
+        castlingAvailability();
+        fen.append(" -");//passant
         fen.append(" 0");//50 moves rule ignored
-        fen.append(" " + passantTarget());
-        fen.append(" " + moveNumber());
+        fen.append(" " + 1);//amount of moves
         return fen.toString();
+    }
+
+    private void castlingAvailability() {
+        Vector2 blackKing = new Vector2(3,0);
+        Vector2 blackKRook = new Vector2(0,0);
+        Vector2 blackQRook = new Vector2(7,0);
+        Vector2 whiteKing = new Vector2(3,7);
+        Vector2 whiteKRook = new Vector2(0,7);
+        Vector2 whiteQRook = new Vector2(7,7);
+        castling(whiteKing,whiteKRook,"K");
+        castling(whiteKing,whiteQRook,"Q");
+        castling(blackKing,blackKRook,"k");
+        castling(blackKing,blackQRook,"q");
+    }
+
+    private void castling(Vector2 whiteKing, Vector2 whiteKRook, String castlingValue) {
+        if(hasMoved(whiteKing) || hasMoved(whiteKRook)) fen.append("-");
+        else fen.append(castlingValue);
+    }
+
+    private boolean hasMoved(Vector2 pos) {
+        ChessPiece piece = board.getPiece(pos);
+        if(piece == null) return true;
+        return !piece.hasMoved();
+    }
+
+    private String activeColour() {
+        if(alliance() == Alliance.WHITE) return "w";
+        return "b";
     }
 
     private void boardToFen() {
@@ -107,13 +137,19 @@ public class ChessComputerHard extends ChessComputer {
 */
   /*  private String translatePiece(ChessPiece piece) {
         String translated = "";
-        if(piece.piece() == Piece.PAWN) translated = "p";
-        else if (piece.piece() == Piece.ROOK) translated = "r";
-        else if (piece.piece() == Piece.BISHOP) translated = "b";
-        else if (piece.piece() == Piece.KNIGHT) translated = "n";
-        else if (piece.piece() == Piece.KING) translated = "k";
-        else if (piece.piece() == Piece.QUEEN) translated = "q";
-        if(piece.alliance() == Alliance.WHITE) translated.toUpperCase();
+        if(piece.piece() == Piece.PAWN && piece.alliance() == Alliance.WHITE) translated = "P";
+        else if (piece.piece() == Piece.ROOK && piece.alliance() == Alliance.WHITE) translated = "R";
+        else if (piece.piece() == Piece.BISHOP && piece.alliance() == Alliance.WHITE) translated = "B";
+        else if (piece.piece() == Piece.KNIGHT && piece.alliance() == Alliance.WHITE) translated = "N";
+        else if (piece.piece() == Piece.KING && piece.alliance() == Alliance.WHITE) translated = "K";
+        else if (piece.piece() == Piece.QUEEN && piece.alliance() == Alliance.WHITE) translated = "Q";
+        else if(piece.piece() == Piece.PAWN && piece.alliance() == Alliance.BLACK) translated = "p";
+        else if (piece.piece() == Piece.ROOK && piece.alliance() == Alliance.BLACK) translated = "r";
+        else if (piece.piece() == Piece.BISHOP && piece.alliance() == Alliance.BLACK) translated = "b";
+        else if (piece.piece() == Piece.KNIGHT && piece.alliance() == Alliance.BLACK) translated = "n";
+        else if (piece.piece() == Piece.KING && piece.alliance() == Alliance.BLACK) translated = "k";
+        else if (piece.piece() == Piece.QUEEN && piece.alliance() == Alliance.BLACK) translated = "q";
+        //if (piece.alliance() == Alliance.BLACK) translated.toLowerCase();//fuck you java!!!!!
         return translated;
     }
 }
