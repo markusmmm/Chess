@@ -16,7 +16,7 @@ public class    King extends ChessPiece {
     ));
 
     /**
-     * @param position
+     *
      */
     public King(Vector2 position, Alliance alliance, AbstractBoard board, Boolean hasMoved) {
 
@@ -39,6 +39,8 @@ public class    King extends ChessPiece {
 
     @Override
     public boolean legalMove(Vector2 destination) {
+        Vector2 position = position();
+
         //IMPORTANT! King can NOT call super.legalMove, as the king demands a custom alliance check (when performing castling),
         //and does not need to perform the inCheck-call that occurs from within super
 
@@ -71,7 +73,7 @@ public class    King extends ChessPiece {
         Set<Vector2> possibleMoves = new HashSet<>();
 
         for(Vector2 move : moves) {
-            Vector2 endPos = position.add(move);
+            Vector2 endPos = position().add(move);
 
             if(legalMove(endPos))
                 possibleMoves.add(endPos);
@@ -83,6 +85,8 @@ public class    King extends ChessPiece {
     public boolean inCheck(Vector2 destination) {
         if(!board.getActivePlayer().equals(alliance))
             return false;
+
+        Vector2 position = position();
 
         boolean checked = false;
         board.suspendPieces(position);
@@ -99,10 +103,12 @@ public class    King extends ChessPiece {
         return checked;
     }
     public boolean inCheck() {
-        return inCheck(position);
+        return inCheck(position());
     }
 
     private boolean movesIntoCheck(Vector2 end) {
+        Vector2 position = position();
+
         board.suspendPieces(position);
         board.suspendPieces(end);
 
@@ -124,7 +130,7 @@ public class    King extends ChessPiece {
         //resources.Console.printNotice("\nSimulating move " + new Move(start, end));
         //resources.Console.printCaller();
 
-        if(start.equals(position))
+        if(start.equals(position()))
             return movesIntoCheck(end);
 
         Board tempBoard = board.clone();
@@ -156,15 +162,17 @@ public class    King extends ChessPiece {
 
         if(rook.hasMoved()) return false;
 
-        int x = this.position.getX();
-        int y = this.position.getY();
+        Vector2 position = position();
+
+        int x = position.getX();
+        int y = position.getY();
 
         int rookX = pos.getX();
         int rookY = pos.getY();
 
         int diff = x - rookX;
 
-        if(!((Rook) rook).freePath(this.position)) return false;
+        if(!((Rook) rook).freePath(position)) return false;
 
         //queen side
         if(diff > 0){

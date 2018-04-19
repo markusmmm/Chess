@@ -9,8 +9,6 @@ import resources.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.*;
 
 public class Board extends AbstractBoard {
@@ -37,9 +35,10 @@ public class Board extends AbstractBoard {
      * Creates a new square board
      * @param size The board's dimensions (One size parameter ensures a square board)
      */
-    public Board(int size) {
-        super(size, false);
+    public Board(int size, int difficulty) {
+        super(size, difficulty,false);
     }
+    //public Board(int size) { super(size, 0, false); }
 
     /**
      * Creates a new square board
@@ -47,8 +46,8 @@ public class Board extends AbstractBoard {
      * @param useClock Whether or not the game should be timed
      * @param mode How the board's initial state should be generated
      */
-    public Board(int size, boolean useClock, BoardMode mode) {
-        super(size, useClock);
+    public Board(int size, int difficulty, boolean useClock, BoardMode mode) {
+        super(size, difficulty, useClock);
 
         if (mode == BoardMode.DEFAULT) {
             int p = 0;
@@ -91,6 +90,15 @@ public class Board extends AbstractBoard {
      */
     public Board(File file) throws FileNotFoundException {
         super(file);
+    }
+    /**
+     * Loads this board's content from a given file
+     * @param file The file to be loaded
+     * @param difficulty Game difficulty
+     * @throws FileNotFoundException
+     */
+    public Board(File file, int difficulty) throws FileNotFoundException {
+        super(file, difficulty);
     }
 
     /**
@@ -307,20 +315,6 @@ public class Board extends AbstractBoard {
 
         return temp;
     }
-    public HashMap<Vector2, ChessPiece> getPieces() {
-        HashMap<Vector2, ChessPiece> temp = new HashMap<>();
-
-        for(Vector2 pos : getPositions()) {
-            ChessPiece piece = getPiece(pos);
-            if (piece == null) continue;
-
-            if (insideBoard(pos)) {
-                temp.put(pos, piece);
-            }
-        }
-
-        return temp;
-    }
 
     public Set<Move> getAllPossibleMoves(Alliance alliance) {
         Set<Move> moves = new HashSet<>();
@@ -393,7 +387,9 @@ public class Board extends AbstractBoard {
         if (!insideBoard(start)) return advanceMove(false);
 
         // Save board state, before changes are made (Enables undo)
-        saveBoard(new File(Main.logsDir, "log" + moveI() + ".txt"), true);
+        File logFile = new File(Main.LOGS_DIR, "log" + moveI() + Main.SAVE_EXTENSION);
+        saveBoard(logFile);
+        logFile.deleteOnExit();
 
         ChessPiece piece = getPiece(start);
 
@@ -500,7 +496,6 @@ public class Board extends AbstractBoard {
     public boolean movePiece(Move move) {
         //return movePiece(move.start, move.end);
     	return movePiece(move.getStart(),move.getEnd());
-    	//kommentar
     }
 
     /**
@@ -529,71 +524,6 @@ public class Board extends AbstractBoard {
 
         removePiece(victim);
         logMove(node);
-    }
-
-    /**
-     * Saves the board's state to a text-file
-     * @param file Name of the save (No path/file-extension)
-     */
-	public void saveBoard(File file, boolean deleteOnExit) {
-        String path = file.getAbsolutePath();
-        try {
-            FileWriter save = new FileWriter(path);
-            int n = size();
-
-            Stack<MoveNode> gameLog = getGameLog();
-            save.write(n + " 0 " + gameLog.size() + " " + moveI + "\n");
-            Vector2 lastPos = getLastPiece() == null ? new Vector2(-1, -1) : getLastPiece().position();
-            save.write(lastPos.getX() + " " + lastPos.getY() + "\n");
-            for (int y = 0; y < n; y++) {
-                String line = "";
-                for (int x = 0; x < n; x++) {
-                    ChessPiece p = getPiece(new Vector2(x, y));
-                    char s = 'e';
-                    if (p != null)
-                        s = PieceManager.toSymbol(p);
-
-                    line += s;
-                }
-                save.write(line + "\n");
-            }
-
-            for(MoveNode node : gameLog) {
-                int x0 = node.start.getX(), y0 = node.start.getY(),
-                        x1 = node.end.getX(), y1 = node.end.getY();
-                save.write(PieceManager.toSymbol(node.piece) + " " + x0 + " " + y0 + " " + x1 + " " + y1 + " " + PieceManager.toSymbol(node.victimPiece) + "\n");
-            }
-
-            // Save internal data for each piece on board
-            save.write(Main.DATA_SEPARATOR + "\n");
-            HashMap<Vector2, ChessPiece> pieces = getPieces();
-            for(Vector2 pos : pieces.keySet()) {
-                ChessPiece piece = pieces.get(pos);
-                save.write(pos.getX() + " " + pos.getY() + " " + (piece.hasMoved() ? 1 : 0));
-
-                if(piece instanceof Pawn)
-                    save.write(" " + ( ((Pawn)piece).hasDoubleStepped() ? 1 : 0));
-
-                save.write("\n");
-            }
-
-            save.close();
-            Console.printSuccess("Board saved to " + path);
-
-            if(deleteOnExit)
-                new File(path).deleteOnExit();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    public void saveBoard(File file) {
-	    saveBoard(file, false);
-    }
-    public void saveBoard(String saveName, boolean deleteOnExit) {
-	    saveBoard(new File(Main.savesDir, saveName + ".txt"), deleteOnExit);
-    }
-    public void saveBoard(String saveName) {
-	    saveBoard(saveName, false);
     }
 
     /**

@@ -24,7 +24,11 @@ public class ChessComputerHard extends ChessComputer {
     public Move getMove() {
         ai.sendCommand("ucinewgame");
         System.out.println(generateFen());
-        return readAI(ai.getBestMove(generateFen(),THINK_TIME));
+        String aiAnswer = ai.getBestMove(generateFen(),THINK_TIME);
+        System.out.println(aiAnswer);
+        Move best = readAI(aiAnswer);
+        System.out.println(best);
+        return best;
     }
 
     private Move readAI(String bestMove) {
@@ -50,18 +54,18 @@ public class ChessComputerHard extends ChessComputer {
             case 'f': return 5;
             case 'g': return 6;
             case 'h': return 7;
-            case '1': return 0;
-            case '2': return 1;
-            case '3': return 2;
-            case '4': return 3;
-            case '5': return 4;
-            case '6': return 5;
-            case '7': return 6;
-            case '8': return 7;
+            case '1': return 7;
+            case '2': return 6;
+            case '3': return 5;
+            case '4': return 4;
+            case '5': return 3;
+            case '6': return 2;
+            case '7': return 1;
+            case '8': return 0;
 
         }
         return -1;
-    }*/
+    }
 
     /**
      * https://en.wikipedia.org/wiki/Forsyth-Edwards_Notation

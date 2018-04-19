@@ -5,9 +5,7 @@ import pieces.*;
 import resources.*;
 import resources.Console;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
@@ -27,11 +25,13 @@ public class AbstractBoard {
     };
 
     private int size;
+    private int difficulty;
     private Player player1, player2;
     private ChessClock clock = null;
     private ChessPiece lastPiece = null;
 
     protected Alliance activePlayer = Alliance.WHITE;
+
 
     private HashMap<Vector2, ChessPiece> pieces = new HashMap<>();
     private Stack<Vector2> drawPositions = new Stack<>();
@@ -45,7 +45,7 @@ public class AbstractBoard {
     }
 
 
-    protected AbstractBoard(int size, boolean useClock) {
+    protected AbstractBoard(int size, int difficulty, boolean useClock) {
 
         if (size < 2) throw new IllegalArgumentException("The board size must be at least 2");
 
@@ -53,14 +53,19 @@ public class AbstractBoard {
 
         generateClock(useClock);
 
+        this.difficulty = difficulty;
     }
 
     protected AbstractBoard(String saveName) throws FileNotFoundException {
-        File file = new File(Main.savesDir, saveName + ".txt");
+        File file = new File(Main.SAVES_DIR, saveName + Main.SAVE_EXTENSION);
         loadBoard(file);
     }
     protected AbstractBoard(File file) throws FileNotFoundException {
         loadBoard(file);
+    }
+    protected AbstractBoard(File file, int difficulty) throws FileNotFoundException {
+        loadBoard(file);
+        this.difficulty = difficulty;
     }
 
     public void sync(AbstractBoard other) {
@@ -83,17 +88,21 @@ public class AbstractBoard {
         capturedPieces = (HashSet<ChessPiece>) other.capturedPieces.clone();
 
         gameLog = (Stack<MoveNode>) other.gameLog.clone();
+
+        difficulty = other.difficulty;
     }
 
     public int moveI() {
         return moveI;
     }
 
+    public int difficulty() { return difficulty; }
+
     private void loadBoard(File file) throws FileNotFoundException {
         Scanner reader;
-        if (file.getName().equals("default.txt")) {
+        if (file.getName().equals("default" + Main.SAVE_EXTENSION)) {
             InputStream is = Thread.currentThread().getContextClassLoader()
-                    .getResourceAsStream("default.txt");
+                    .getResourceAsStream("default" + Main.SAVE_EXTENSION);
             reader = new Scanner(is);
         } else {
             reader = new Scanner(file);
@@ -103,6 +112,9 @@ public class AbstractBoard {
 
         // Load board data
         size = reader.nextInt();
+        int diff = reader.nextInt();
+        if(diff >= 0 && diff <= 3)
+            difficulty = diff;
         generateClock(reader.nextInt() != 0);
         int logSize = reader.nextInt();
         moveI = reader.nextInt();
@@ -169,6 +181,62 @@ public class AbstractBoard {
         reader.close();
 
         Console.printSuccess("Board successfully loaded from file " + file.getName());
+    }
+
+    /**
+     * Saves the board's state to a text-file
+     * @param file Name of the save (No path/file-extension)
+     */
+    public void saveBoard(File file) {
+        String path = file.getAbsolutePath();
+        try {
+            FileWriter save = new FileWriter(path);
+            int n = size();
+
+            Stack<MoveNode> gameLog = getGameLog();
+            save.write(n + " " + difficulty + " 0 " + gameLog.size() + " " + moveI + "\n");
+            Vector2 lastPos = getLastPiece() == null ? new Vector2(-1, -1) : getLastPiece().position();
+            save.write(lastPos.getX() + " " + lastPos.getY() + "\n");
+            for (int y = 0; y < n; y++) {
+                String line = "";
+                for (int x = 0; x < n; x++) {
+                    ChessPiece p = getPiece(new Vector2(x, y));
+                    char s = 'e';
+                    if (p != null)
+                        s = PieceManager.toSymbol(p);
+
+                    line += s;
+                }
+                save.write(line + "\n");
+            }
+
+            for(MoveNode node : gameLog) {
+                int x0 = node.start.getX(), y0 = node.start.getY(),
+                        x1 = node.end.getX(), y1 = node.end.getY();
+                save.write(PieceManager.toSymbol(node.piece) + " " + x0 + " " + y0 + " " + x1 + " " + y1 + " " + PieceManager.toSymbol(node.victimPiece) + "\n");
+            }
+
+            // Save internal data for each piece on board
+            save.write(Main.DATA_SEPARATOR + "\n");
+            HashMap<Vector2, ChessPiece> pieces = getPieces();
+            for(Vector2 pos : pieces.keySet()) {
+                ChessPiece piece = pieces.get(pos);
+                save.write(pos.getX() + " " + pos.getY() + " " + (piece.hasMoved() ? 1 : 0));
+
+                if(piece instanceof Pawn)
+                    save.write(" " + ( ((Pawn)piece).hasDoubleStepped() ? 1 : 0));
+
+                save.write("\n");
+            }
+
+            save.close();
+            Console.printSuccess("Board saved to " + path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void saveBoard(String saveName) {
+        saveBoard(new File(Main.SAVES_DIR, saveName + Main.SAVE_EXTENSION));
     }
 
     protected static Piece randomPiece() {
@@ -340,18 +408,6 @@ public class AbstractBoard {
         }
     }
 
-    public boolean undoMove() {
-        try {
-            loadBoard(new File(Main.logsDir, "log" + (moveI()-1) + ".txt"));
-            return true;
-        } catch (FileNotFoundException e) {
-            Console.printNotice("Can't undo further");
-            e.printStackTrace();
-        }
-
-        return false;
-    }
-
     public boolean transformPiece(Vector2 pos, Piece newType) {
         try {
             mutex.acquire();
@@ -441,6 +497,21 @@ public class AbstractBoard {
             mutex.release();
             ////resources.Console.println("Mutex released");
             return piece;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+
+            mutex.release();
+            return null;
+        }
+    }
+
+    public HashMap<Vector2, ChessPiece> getPieces() {
+        try {
+            mutex.acquire();
+            HashMap<Vector2, ChessPiece> temp = (HashMap<Vector2, ChessPiece>)pieces.clone();
+
+            mutex.release();
+            return temp;
         } catch (InterruptedException e) {
             e.printStackTrace();
 

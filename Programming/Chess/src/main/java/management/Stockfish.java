@@ -17,8 +17,6 @@ public class Stockfish {
     private BufferedReader processReader;
     private OutputStreamWriter processWriter;
 
-    private static final String PATH = "engine/stockfish_9_x32.exe";//    "\"c:/program files/windows/notepad.exe\"");
-
     /**
      * Starts Stockfish engine as a process and initializes it
      *
@@ -27,7 +25,7 @@ public class Stockfish {
      */
     public boolean startEngine() {
         try {
-            engineProcess = Runtime.getRuntime().exec(PATH);
+            engineProcess = Runtime.getRuntime().exec(getOS());
             processReader = new BufferedReader(new InputStreamReader(
                     engineProcess.getInputStream()));
             processWriter = new OutputStreamWriter(
@@ -37,6 +35,13 @@ public class Stockfish {
             return false;
         }
         return true;
+    }
+
+    private String getOS() {
+        if(System.getProperty("os.name").equals("Mac OS X")) {
+            return "engine/stockfish-9-64";
+        }
+        return "engine/stockfish_9_x32.exe";
     }
 
     /**
