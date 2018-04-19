@@ -239,13 +239,6 @@ public class AbstractBoard {
         saveBoard(new File(Main.SAVES_DIR, saveName + Main.SAVE_EXTENSION));
     }
 
-    public void saveLog() {
-        // Save board state, before changes are made (Enables undo)
-        File logFile = new File(Main.LOGS_DIR, "log" + moveI() + Main.SAVE_EXTENSION);
-        saveBoard(logFile);
-        logFile.deleteOnExit();
-    }
-
     protected static Piece randomPiece() {
         int pick = new Random().nextInt(Piece.values().length);
         return Piece.values()[pick];
