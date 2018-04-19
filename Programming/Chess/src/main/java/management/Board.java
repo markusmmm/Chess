@@ -404,36 +404,6 @@ public class Board extends AbstractBoard {
             return advanceMove(false); // Checks if the active player owns the piece that is being moved
         }
 
-        // pawn promotion
-        if (piece instanceof Pawn) {
-            Vector2 piecePos = piece.position();
-            int x = piecePos.getX();
-            int y = piecePos.getY();
-            if(((Pawn) piece).legalMove(end)) {
-                if (y == 1 && piece.alliance() == Alliance.WHITE && end.getY() == 0) {
-
-                    removePiece(piecePos);
-
-
-                    addPiece(end, Piece.QUEEN,Alliance.WHITE);
-
-                    return advanceMove(true);
-
-                }
-
-                if (y == 6 && piece.alliance() == Alliance.BLACK && end.getY() == 7) {
-                    removePiece(piecePos);
-
-
-                    addPiece(end, Piece.QUEEN,Alliance.BLACK);
-
-
-                    return advanceMove(true);
-                }
-            }
-
-        }
-
         //castling
         if (piece instanceof King) {
             int kingSideRookX = end.getX() + 1;

@@ -255,11 +255,16 @@ public class GameBoard {
             return;
         }
 
+        boolean pawnPromotion = false;
+
         if(firstTile.getPiece() instanceof Pawn){
             if((board.pawnPromotion((Pawn)firstTile.getPiece(), pos)))
             {
                 Alliance alliance = firstTile.getPiece().alliance();
                 pawnPromotion(firstTile.getPos(), pos, alliance);
+                pawnPromotion = true;
+                media.playSound("move.mp3");
+
 
             }
         }
@@ -268,7 +273,7 @@ public class GameBoard {
 
         boolean moveResult = board.movePiece(firstTile.getPos(), pos);
        // resources.Console.println("Outer move result: " + moveResult);
-        if (moveResult) {
+        if (moveResult || pawnPromotion) {
             Console.println("Has computer: " + (computer != null));
             if (computer != null) {
                 Move move = computer.getMove();
