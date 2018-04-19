@@ -1,255 +1,159 @@
 package management;
 
-import pieces.*;
-import resources.*;
+import pieces.ChessPiece;
+import resources.Alliance;
+import resources.Move;
+import resources.Piece;
+import resources.Vector2;
 
-import java.util.*;
+import java.util.Scanner;
 
 public class ChessComputerMedium extends ChessComputer {
-
-    private final int DEPTH = 3;
-    private Alliance enemy;
-    private final Alliance black = Alliance.BLACK;
-    private final Alliance white = Alliance.WHITE;
-    private Boolean[] stillMoving = new Boolean[4];
-    private ArrayList<Move> emptyMoveList = new ArrayList<>();
-    private Move emptyMove = new Move(new Vector2(0,0), new Vector2(0,0));
-    private int size;
-    private int store;
-
-
+    private Scanner input;
+    private Stockfish ai = new Stockfish();
+    private final int THINK_TIME = 500;
+    private StringBuilder fen = new StringBuilder();
+    private int spacecounter = 0;
     public ChessComputerMedium(Board board) {
         super(board);
-        size = board.size();
+        ai.startEngine();
+        ai.sendCommand("uci");
     }
 
+    @Override
     public Move getMove() {
-        int turn = 1;
-        int score;
-        int[][] chessB = translateBoard();
-        printChessb(chessB);
-        ArrayList<Move> moveStorage = allMovesOneSide(chessB, turn);
-        ArrayList<MoveScore> moveChart = new ArrayList<>();
-        for (int i = 0; i < moveStorage.size(); i++) {
-            if(nonEmptyMove(moveStorage, i)){
-                score = scoreMove(chessB.clone(), moveStorage.get(i), DEPTH, turn);
-                moveChart.add(new MoveScore(score, moveStorage.get(i)));
-            }
-        }
-        printMoves(moveChart);
-        printChessb(chessB);
-        return Collections.max(moveChart).getMove();
+        ai.sendCommand("ucinewgame");
+        System.out.println(generateFen());
+        String aiAnswer = ai.getBestMove(generateFen(),THINK_TIME);
+        System.out.println(aiAnswer);
+        Move best = readAI(aiAnswer);
+        System.out.println(best);
+        return best;
     }
 
-    private boolean nonEmptyMove(ArrayList<Move> moveStorage, int i) {
-        Vector2 start = moveStorage.get(i).start;
-        Vector2 end = moveStorage.get(i).end;
-        return start.getX() != 0 && start.getY() != 0 && end.getX() != 0 && end.getX() != 0;
-    }
-
-    private int scoreMove(int[][] chessB, Move move, int depth, int turn) {
-        if(depth <= 0) return 0;
-        int score;
-        ArrayList<Move> moves = new ArrayList<>();
-        score = PerformMove(chessB, move);
-        printChessb(chessB);
-        moves = allMovesOneSide(chessB,turn * -1);
-
-        for (int i = 0; i < moves.size(); i++) {
-            score += scoreMove(chessB.clone(), moves.get(i),depth - 1, turn);
+    private Move readAI(String bestMove) {
+        int[] in = new int[bestMove.length()];
+        for (int i = 0; i < bestMove.length(); i++) {
+            in[i] = toInt(bestMove.charAt(i));
         }
-        return score;
-    }
-    public void printMoves(ArrayList<MoveScore> m) {
-        for(MoveScore move: m) {
-            Console.println(move.toString());
-        }
-    }
-
-
-    private ArrayList<Move> allMovesOneSide(int[][] chessB, int turn) {
-        ArrayList<Move> moves = new ArrayList<>();
-        for (int y = 0; y < size; y++) {
-            for (int x = 0; x < size; x++) {
-                moves.addAll(genMovesPiece(x,y, chessB, turn));
-            }
-        }
-        return moves;
+        return new Move(new Vector2(in[0], in[1]), new Vector2(in[2], in[3]));
     }
 
     /**
-     * ads positions to moveStorage. needs to be cleared between boards
-     * @param x
-     * @param y
-     * @param chessB
-     * @param turn
-     * @return
+     *
+     * @param c chess coordinate
+     * @return cartesian coordinate
      */
-    private ArrayList<Move> genMovesPiece(int x, int y, int[][] chessB, int turn) {
-        if(chessB[x][y] == 1 * turn) return pawn(x,y, chessB, turn);
-        else if (chessB[x][y] == 3 * turn) return knight(x,y, chessB);
-        else if (chessB[x][y] == 4 * turn) return bishop(x,y, chessB);
-        else if (chessB[x][y] == 5 * turn) return rook(x,y, chessB);
-        else if (chessB[x][y] == 2 * turn) return king(x,y, chessB);
-        else if (chessB[x][y] == 9 * turn) return queen(x,y, chessB);
-        return emptyMoveList;
-    }
+    private int toInt(char c) {
+        switch(c) {
+            case 'a': return 0;
+            case 'b': return 1;
+            case 'c': return 2;
+            case 'd': return 3;
+            case 'e': return 4;
+            case 'f': return 5;
+            case 'g': return 6;
+            case 'h': return 7;
+            case '1': return 7;
+            case '2': return 6;
+            case '3': return 5;
+            case '4': return 4;
+            case '5': return 3;
+            case '6': return 2;
+            case '7': return 1;
+            case '8': return 0;
 
-    private ArrayList<Move> pawn(int x, int y, int[][] chessB, int turn) {
-        int pawnMoveLength = 1;
-        if(y == 6 || y == 1) pawnMoveLength = 2;
-        ArrayList<Move> moves = new ArrayList<>();
-        for (int i = 0; i < pawnMoveLength; i++) {
-            moves.add(pawnForward(x, y ,x , y + 1 * turn, chessB));
-            moves.add(pawnAttack(x,y,x + 1, y + 1 * turn, chessB));
-            moves.add(pawnAttack(x,y,x - 1, y + 1 * turn, chessB));
         }
-        return moves;
-    }
-
-    private Move pawnAttack(int fromX, int fromY, int toX, int toY, int[][] chessB) {
-        if(insideBoard(toX, toY) && chessB[toX][toY] != 0 && notOwn(fromX, fromY, toX,toY, chessB)){
-            return new Move(new Vector2(fromX, fromY), new Vector2(toX, toY));
-        }
-        return emptyMove;
-    }
-
-    private boolean notOwn(int fromX, int fromY, int toX, int toY, int[][] chessB) {
-        if (chessB[fromX][fromY] == 0) return true;
-        else if(chessB[fromX][fromY] < 0 && chessB[toX][toY] < 0) return false;
-        else if(chessB[fromX][fromY] > 0 && chessB[toX][toY] > 0) return false;
-        return true;
-    }
-
-    private Move pawnForward(int fromX, int fromY, int toX, int toY, int[][] chessB) {
-        if(insideBoard(toX,toY) && chessB[toX][toY] == 0) return new Move(new Vector2(fromX, fromY), new Vector2(toX, toY));
-        return emptyMove;
-    }
-
-    private ArrayList<Move> king(int x, int y, int[][] chessB) {
-        return new ArrayList<Move>();
-    }
-
-    private ArrayList<Move> knight(int x, int y, int[][] chessB) {
-        return new ArrayList<Move>();
-    }
-
-    private ArrayList<Move> queen(int x, int y, int[][] chessB) {
-        ArrayList<Move> moves = new ArrayList<>();
-        moves.addAll(diagonals(x,y, chessB));
-        moves.addAll(straights(x,y,chessB));
-        return  moves;
-    }
-    private ArrayList<Move> rook(int x, int y, int[][] chessB) {
-        return straights(x,y, chessB);
-    }
-    private ArrayList<Move> bishop(int x, int y, int[][] chessB) {
-        return diagonals(x,y, chessB);
-    }
-
-    private ArrayList<Move> diagonals(int x, int y, int[][] chessB) {
-        ArrayList<Move> moves = new ArrayList<>();
-        activateMoves();
-        while (movesLeft()) {
-            if(stillMoving[0]) moves.add(evalPathMove(x, y,--x, ++y, chessB, 0));
-            if(stillMoving[1]) moves.add(evalPathMove(x, y,--x, ++y, chessB, 1));
-            if(stillMoving[2]) moves.add(evalPathMove(x, y,--x, --y, chessB, 2));
-            if(stillMoving[3]) moves.add(evalPathMove(x, y,++x, --y, chessB, 3));
-        }
-        return moves;
-    }
-    private ArrayList<Move> straights(int x, int y, int[][] chessB) {
-        ArrayList<Move> moves = new ArrayList<>();
-        activateMoves();
-        while (movesLeft()) {
-            if(stillMoving[0]) moves.add(evalPathMove(x, y,x, ++y, chessB, 0));
-            if(stillMoving[1]) moves.add(evalPathMove(x, y,x, --y, chessB, 1));
-            if(stillMoving[2]) moves.add(evalPathMove(x, y,--x, y, chessB, 2));
-            if(stillMoving[3]) moves.add(evalPathMove(x, y,++x, y, chessB, 3));
-        }
-        return moves;
+        return -1;
     }
 
     /**
-     * sets all booleans in stillMoving to true
+     * https://en.wikipedia.org/wiki/Forsyth-Edwards_Notation
+     * @return standard UCI FEN format for chess Engines
      */
-    private void activateMoves() {
-        for (int i = 0; i < stillMoving.length; i++) {
-            stillMoving[i] = true;
-        }
+    private String generateFen() {
+        fen.delete(0,fen.length());
+        boardToFen();
+        fen.append(" " + activeColour() + " ");
+        castlingAvailability();
+        fen.append(" -");//passant
+        fen.append(" 0");//50 moves rule ignored
+        fen.append(" " + 1);//amount of moves
+        return fen.toString();
     }
 
-    private boolean movesLeft() {
-        for (int i = 0; i < stillMoving.length; i++) {
-            if(stillMoving[i]) return true;
-        }
-        return false;
-    }
-    private Move evalPathMove(int fromX, int fromY, int toX, int  toY, int[][] chessB, int bolIndex) {
-        if(insideBoard(toX,toY) && chessB[toX][toY] == 0) {
-            return new Move (new Vector2(fromX,fromY), new Vector2(toX, toY));
-        } else stillMoving[bolIndex] = false;
-        return emptyMove;
-    }
-
-    private int PerformMove(int[][] chessB, Move move) {
-        store = chessB[move.end.getX()][move.end.getY()];
-        chessB[move.end.getX()][move.end.getY()] = chessB[move.start.getX()][move.start.getY()];
-        chessB[move.start.getX()][move.start.getY()] = 0;
-        return store;//store is the killed piece's value
+    private void castlingAvailability() {
+        Vector2 blackKing = new Vector2(3,0);
+        Vector2 blackKRook = new Vector2(0,0);
+        Vector2 blackQRook = new Vector2(7,0);
+        Vector2 whiteKing = new Vector2(3,7);
+        Vector2 whiteKRook = new Vector2(0,7);
+        Vector2 whiteQRook = new Vector2(7,7);
+        castling(whiteKing,whiteKRook,"K");
+        castling(whiteKing,whiteQRook,"Q");
+        castling(blackKing,blackKRook,"k");
+        castling(blackKing,blackQRook,"q");
     }
 
-    private boolean insideBoard(int x, int y) {
-        return (0 <= x && x < size &&
-        0 <= y && y < size);
+    private void castling(Vector2 whiteKing, Vector2 whiteKRook, String castlingValue) {
+        if(hasMoved(whiteKing) || hasMoved(whiteKRook)) fen.append("-");
+        else fen.append(castlingValue);
     }
 
-    private int[][] translateBoard() {
-        int[][] chessB = new int[size][size];
-        ChessPiece selectedPiece;
-        Vector2 position;
-        Alliance color;
+    private boolean hasMoved(Vector2 pos) {
+        ChessPiece piece = board.getPiece(pos);
+        if(piece == null) return true;
+        return !piece.hasMoved();
+    }
 
-        for (int y = 0; y < size; y++) {
-            for (int x = 0; x < size; x++) {
-                position = new Vector2(x,y);
-                selectedPiece = (ChessPiece) board.getPiece(position);
-                if(selectedPiece == null) continue;
-                color = selectedPiece.alliance();
-                if (selectedPiece instanceof Pawn && color == black) chessB[x][y] = 1;
-                else if (selectedPiece instanceof Pawn && color == white) chessB[x][y] = -1;
-                else if (selectedPiece instanceof Knight && color == black) chessB[x][y] = 3;
-                else if (selectedPiece instanceof Knight && color == white) chessB[x][y] = -3;
-                else if (selectedPiece instanceof Bishop && color == black) chessB[x][y] = 4;
-                else if (selectedPiece instanceof Bishop && color == white) chessB[x][y] = -4;
-                else if (selectedPiece instanceof Rook && color == black) chessB[x][y] = 5;
-                else if (selectedPiece instanceof Rook && color == white) chessB[x][y] = -5;
-                else if (selectedPiece instanceof King && color == black) chessB[x][y] = 2;
-                else if (selectedPiece instanceof King && color == white) chessB[x][y] = -2;
-                else if (selectedPiece instanceof Queen && color == black) chessB[x][y] = 9;
-                else if (selectedPiece instanceof Queen && color == white) chessB[x][y] = -9;
+    private String activeColour() {
+        if(alliance() == Alliance.WHITE) return "w";
+        return "b";
+    }
+
+    private void boardToFen() {
+        spacecounter = 0;
+        for (int y = 0; y < board.size(); y++) {
+            for (int x = 0; x < board.size(); x++) {
+                if(board.getPiece(new Vector2(x,y)) == null) {
+                    spacecounter++;
+                } else {
+                    addSpace();
+                    fen.append(translatePiece(board.getPiece(new Vector2(x,y))));
+                }
+            }
+            addSpace();
+            if(y < board.size() -1) {//removes a useless '/' at the end
+                fen.append("/");
             }
         }
-        return chessB;
     }
-    public void printChessb(int[][] chessB) {
-        for (int y = 0; y < size; y++) {
-            for (int x = 0; x < size; x++) {
-                if (chessB[x][y] == 0) Console.print(' ');
-                else if (chessB[x][y] == 1) Console.print('p');       //pawn
-                else if (chessB[x][y] == -1) Console.print('P');
-                else if (chessB[x][y] == 3) Console.print('h');  //Knight
-                else if (chessB[x][y] == -3) Console.print('H');
-                else if (chessB[x][y] == 4) Console.print('b');  //Bishop
-                else if (chessB[x][y] == -4) Console.print('B');
-                else if (chessB[x][y] == 5) Console.print('r');  //Rook
-                else if (chessB[x][y] == -5) Console.print('R');
-                else if (chessB[x][y] == 2) Console.print('k');  //King
-                else if (chessB[x][y] == -2) Console.print('K');
-                else if (chessB[x][y] == 9) Console.print('q');  //Queen
-                else if (chessB[x][y] == -9) Console.print('Q');
-            }
-            Console.println();
+
+    /**
+     * places the  number of spaces between pieces in FEN-string
+     */
+    private void addSpace() {
+        if(0 < spacecounter) {
+            fen.append(spacecounter);
         }
+        spacecounter = 0;
+    }
+
+    private String translatePiece(ChessPiece piece) {
+        String translated = "";
+        if(piece.piece() == Piece.PAWN && piece.alliance() == Alliance.WHITE) translated = "P";
+        else if (piece.piece() == Piece.ROOK && piece.alliance() == Alliance.WHITE) translated = "R";
+        else if (piece.piece() == Piece.BISHOP && piece.alliance() == Alliance.WHITE) translated = "B";
+        else if (piece.piece() == Piece.KNIGHT && piece.alliance() == Alliance.WHITE) translated = "N";
+        else if (piece.piece() == Piece.KING && piece.alliance() == Alliance.WHITE) translated = "K";
+        else if (piece.piece() == Piece.QUEEN && piece.alliance() == Alliance.WHITE) translated = "Q";
+        else if(piece.piece() == Piece.PAWN && piece.alliance() == Alliance.BLACK) translated = "p";
+        else if (piece.piece() == Piece.ROOK && piece.alliance() == Alliance.BLACK) translated = "r";
+        else if (piece.piece() == Piece.BISHOP && piece.alliance() == Alliance.BLACK) translated = "b";
+        else if (piece.piece() == Piece.KNIGHT && piece.alliance() == Alliance.BLACK) translated = "n";
+        else if (piece.piece() == Piece.KING && piece.alliance() == Alliance.BLACK) translated = "k";
+        else if (piece.piece() == Piece.QUEEN && piece.alliance() == Alliance.BLACK) translated = "q";
+        //if (piece.alliance() == Alliance.BLACK) translated.toLowerCase();//fuck you java!!!!!
+        return translated;
     }
 }
