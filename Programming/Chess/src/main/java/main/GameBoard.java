@@ -39,7 +39,7 @@ public class GameBoard {
     private GridPane grid;
     private BorderPane container;
     private ListView<MoveNode> moveLog;
-    private ListView<ChessPiece> capturedPieces;
+    private ListView<PieceNode> capturedPieces;
     private Text gameStatus;
     private DatabaseController database;
 
@@ -427,7 +427,7 @@ public class GameBoard {
         Collections.reverse(gameLog);
         ObservableList<MoveNode> observableGameLog =
                 FXCollections.observableArrayList(gameLog);
-        ObservableList<ChessPiece> observableInactivePieces =
+        ObservableList<PieceNode> observableInactivePieces =
                 FXCollections.observableArrayList(board.getCapturedPieces());
         moveLog.setItems(observableGameLog);
         capturedPieces.setItems(observableInactivePieces);
