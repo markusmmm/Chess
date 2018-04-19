@@ -14,8 +14,14 @@ public class ChessComputerHard extends ChessComputer {
     private final int THINK_TIME = 2500;
     private StringBuilder fen = new StringBuilder();
     private int spacecounter = 0;
+
     public ChessComputerHard(Board board) {
         super(board);
+        ai.startEngine();
+        ai.sendCommand("uci");
+    }
+    public ChessComputerHard(Board board, Alliance alliance) {
+        super(board, alliance);
         ai.startEngine();
         ai.sendCommand("uci");
     }

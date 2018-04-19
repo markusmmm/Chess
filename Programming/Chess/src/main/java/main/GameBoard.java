@@ -31,6 +31,7 @@ public class GameBoard {
     private final int SIZE = 8;
     private Board board;
     private ChessComputer computer;
+    private ChessComputer whiteHelper, blackHelper;
 
     private Main main;
     private Stage stage;
@@ -106,6 +107,9 @@ public class GameBoard {
         else if (difficulty == 2) computer = new ChessComputerMedium(board);
         else if (difficulty == 3) computer = new ChessComputerHard(board);
         else computer = null;
+
+        whiteHelper = new ChessComputerHard(board, Alliance.WHITE);
+        blackHelper = new ChessComputerHard(board, Alliance.BLACK);
     }
 
     /**
@@ -282,6 +286,15 @@ public class GameBoard {
         }
 
         //resources.Console.println("After:" + temp.position());
+    }
+
+    public Move getHint(Alliance alliance) {
+        if(alliance == Alliance.BLACK)
+            return blackHelper.getMove();
+        else if(alliance == Alliance.WHITE)
+            return whiteHelper.getMove();
+
+        return null;
     }
 
     private void performUndo() {
