@@ -1,5 +1,6 @@
 package management;
 
+import main.GameBoard;
 import main.Main;
 import pieces.ChessPiece;
 import pieces.IChessPiece;
@@ -358,6 +359,7 @@ public class Board extends AbstractBoard {
 
     public boolean pawnPromotion(ChessPiece piece, Vector2 end){
 
+
         if (piece instanceof Pawn) {
             Vector2 piecePos = piece.position();
             int x = piecePos.getX();
@@ -386,10 +388,7 @@ public class Board extends AbstractBoard {
     public boolean movePiece(Vector2 start, Vector2 end) {
         if (!insideBoard(start)) return advanceMove(false);
 
-        // Save board state, before changes are made (Enables undo)
-        File logFile = new File(Main.LOGS_DIR, "log" + moveI() + Main.SAVE_EXTENSION);
-        saveBoard(logFile);
-        logFile.deleteOnExit();
+        saveLog();
 
         ChessPiece piece = getPiece(start);
 
@@ -398,6 +397,41 @@ public class Board extends AbstractBoard {
         }
         if (!piece.alliance().equals(activePlayer)) {
             return advanceMove(false); // Checks if the active player owns the piece that is being moved
+        }
+
+
+        if(piece instanceof Pawn){
+            if((pawnPromotion((Pawn)piece, end)))
+            {
+
+                GameBoard gameBoard = new GameBoard();
+                Alliance alliance = piece.alliance();
+
+                String c = gameBoard.pawnPromotion(piece.position() , end, alliance);
+
+                switch (c.charAt(0)) {
+                    case 'q':
+                        removePiece(start);
+                        addPiece(end, Piece.QUEEN, alliance);
+                        return advanceMove(true);
+                    case 'b':
+                        removePiece(start);
+                        addPiece(end, Piece.BISHOP, alliance);
+                        return advanceMove(true);
+                    case 'k':
+                        removePiece(start);
+                        addPiece(end, Piece.KNIGHT, alliance);
+                        return advanceMove(true);
+                    case 'r':
+                        removePiece(start);
+                        addPiece(end, Piece.ROOK, alliance);
+                        return advanceMove(true);
+
+
+                }
+                media.playSound("move.mp3");
+
+            }
         }
 
         //castling
@@ -503,7 +537,7 @@ public class Board extends AbstractBoard {
      * @param state Whether or not the move should be advanced
      * @return 'state'
      */
-    public boolean advanceMove(boolean state) {
+    private boolean advanceMove(boolean state) {
         if (state) {
             activePlayer = activePlayer.equals(Alliance.WHITE) ? Alliance.BLACK : Alliance.WHITE;
             moveI++;
