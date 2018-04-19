@@ -403,18 +403,6 @@ public class AbstractBoard {
         }
     }
 
-    public boolean undoMove() {
-        try {
-            loadBoard(new File(Main.LOGS_DIR, "log" + (moveI()-1) + Main.SAVE_EXTENSION));
-            return true;
-        } catch (FileNotFoundException e) {
-            Console.printNotice("Can't undo further");
-            e.printStackTrace();
-        }
-
-        return false;
-    }
-
     public boolean transformPiece(Vector2 pos, Piece newType) {
         try {
             mutex.acquire();
