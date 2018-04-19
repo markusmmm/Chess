@@ -333,8 +333,6 @@ public class GameBoard {
         Optional<String> result = dialog.showAndWait();
         if (result.isPresent()) {
             board.removePiece(piecePos);
-            board.advanceMove(true);
-
 
             String s = result.get().toLowerCase();
 
@@ -355,9 +353,10 @@ public class GameBoard {
             }
         }else {
             board.removePiece(piecePos);
-            board.advanceMove(true);
             board.addPiece(end, Piece.QUEEN, alliance);
         }
+
+        board.saveLog();
     }
 
     private boolean tileClick(MouseEvent e, Tile tile) {

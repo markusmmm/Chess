@@ -20,7 +20,6 @@ public class Stockfish {
     /**
      * Starts Stockfish engine as a process and initializes it
      *
-     * @param None
      * @return True on success. False otherwise
      */
     public boolean startEngine() {

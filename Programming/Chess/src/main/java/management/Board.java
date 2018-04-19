@@ -386,10 +386,7 @@ public class Board extends AbstractBoard {
     public boolean movePiece(Vector2 start, Vector2 end) {
         if (!insideBoard(start)) return advanceMove(false);
 
-        // Save board state, before changes are made (Enables undo)
-        File logFile = new File(Main.LOGS_DIR, "log" + moveI() + Main.SAVE_EXTENSION);
-        saveBoard(logFile);
-        logFile.deleteOnExit();
+        saveLog();
 
         ChessPiece piece = getPiece(start);
 
@@ -503,7 +500,7 @@ public class Board extends AbstractBoard {
      * @param state Whether or not the move should be advanced
      * @return 'state'
      */
-    public boolean advanceMove(boolean state) {
+    private boolean advanceMove(boolean state) {
         if (state) {
             activePlayer = activePlayer.equals(Alliance.WHITE) ? Alliance.BLACK : Alliance.WHITE;
             moveI++;
