@@ -276,6 +276,8 @@ public class GameBoard {
         if (moveResult) {
             Console.println("Has computer: " + (computer != null));
             if (computer != null) {
+                drawBoard();
+
                 Move move = computer.getMove();
                 Console.println("Computer attempting move " + move);
                 board.movePiece(move);
@@ -286,14 +288,14 @@ public class GameBoard {
             }
 
             //firstTile.setFill(Color.TRANSPARENT);
-            drawBoard();
-            updateLogs();
             /*resources.Console.println("Moving " + board.getPiece(firstTile.getPos()) +
                     " from " + firstTile.getPos() + " to " + pos);*/
         } else {
             media.playSound("denied.mp3");
-            drawBoard();
         }
+
+        drawBoard();
+        updateLogs();
 
         //resources.Console.println("After:" + temp.position());
     }
