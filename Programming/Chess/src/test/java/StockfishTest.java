@@ -1,4 +1,5 @@
 import management.Stockfish;
+import org.apache.commons.lang3.time.StopWatch;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,8 +25,12 @@ public class StockfishTest {
     }
     @Test
     public void getBestMove(){
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
         ai.startEngine();
         ai.sendCommand("uci");
-        System.out.println(ai.getBestMove(fen, 3000));
+        System.out.println("Best move: " + ai.getBestMove(fen, 2500));
+        stopWatch.stop();
+        System.out.println("Time used: " + stopWatch.getTime());
     }
 }
