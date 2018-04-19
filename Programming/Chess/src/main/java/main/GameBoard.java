@@ -17,15 +17,14 @@ import management.*;
 import pieces.ChessPiece;
 import pieces.IChessPiece;
 import pieces.King;
+import pieces.Pawn;
 import resources.MediaHelper;
 import resources.*;
 import resources.Console;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Collections;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 
 public class GameBoard {
     MediaHelper media = new MediaHelper();
@@ -90,7 +89,7 @@ public class GameBoard {
 
         if (difficulty == 1) computer = new ChessComputerEasy(board);
         else if (difficulty == 2) computer = new ChessComputerMedium(board);
-        else if (difficulty == 3) computer = new ChessComputerHard(board);
+        //else if (difficulty == 3) computer = new ChessComputerHard(board);
         else computer = null;
 
         this.player1 = new Player(user1, Alliance.WHITE);
@@ -256,6 +255,15 @@ public class GameBoard {
             return;
         }
 
+        if(firstTile.getPiece() instanceof Pawn){
+            if((board.pawnPromotion((Pawn)firstTile.getPiece(), pos)))
+            {
+                Alliance alliance = firstTile.getPiece().alliance();
+                pawnPromotion(firstTile.getPos(), pos, alliance);
+
+            }
+        }
+
         //resources.Console.println("Before: " + temp.position());
 
         boolean moveResult = board.movePiece(firstTile.getPos(), pos);
@@ -283,6 +291,52 @@ public class GameBoard {
         }
 
         //resources.Console.println("After:" + temp.position());
+    }
+
+
+    public void pawnPromotion(Vector2 piecePos, Vector2 end, Alliance alliance) {
+
+
+        ArrayList<String> choices = new ArrayList<>();
+        choices.add("QUEEN");
+        choices.add("BISHOP");
+        choices.add("KNIGHT");
+        choices.add("ROOK");
+
+        ChoiceDialog<String> dialog = new ChoiceDialog<>("QUEEN", choices);
+
+
+        dialog.setHeaderText("Promote your pawn");
+        dialog.setContentText("Choose your piece:");
+
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()) {
+            board.removePiece(piecePos);
+            board.advanceMove(true);
+
+
+            String s = result.get().toLowerCase();
+
+            switch (s.charAt(0)) {
+                case 'q':
+                    board.addPiece(end, Piece.QUEEN, alliance);
+                    break;
+                case 'b':
+                    board.addPiece(end, Piece.BISHOP, alliance);
+                    break;
+                case 'k':
+                    board.addPiece(end, Piece.KNIGHT, alliance);
+                    break;
+                case 'r':
+                    board.addPiece(end, Piece.ROOK, alliance);
+                    break;
+
+            }
+        }else {
+            board.removePiece(piecePos);
+            board.advanceMove(true);
+            board.addPiece(end, Piece.QUEEN, alliance);
+        }
     }
 
     private boolean tileClick(MouseEvent e, Tile tile) {
