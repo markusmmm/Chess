@@ -24,7 +24,11 @@ public class ChessComputerHard extends ChessComputer {
     public Move getMove() {
         ai.sendCommand("ucinewgame");
         System.out.println(generateFen());
-        return readAI(ai.getBestMove(generateFen(),THINK_TIME));
+        String aiAnswer = ai.getBestMove(generateFen(),THINK_TIME);
+        System.out.println(aiAnswer);
+        Move best = readAI(aiAnswer);
+        System.out.println(best);
+        return best;
     }
 
     private Move readAI(String bestMove) {
@@ -61,7 +65,7 @@ public class ChessComputerHard extends ChessComputer {
 
         }
         return -1;
-    }*/
+    }
 
     /**
      * https://en.wikipedia.org/wiki/Forsyth-Edwards_Notation
