@@ -5,26 +5,24 @@ import management.Board;
 import resources.*;
 
 import java.util.List;
-import java.util.Set;
 
 public abstract class ChessPiece implements IChessPiece {
+	private MediaHelper media = new MediaHelper();
 
-	protected Vector2 position;
-
+	private Vector2 position;
 	protected final Alliance alliance;
+	protected Board board;
 	protected final boolean canJump;
 	protected final Piece piece;
-	protected final Board board;
 	protected final int value;
 
 	private boolean hasMoved;
 
     /**
      *
-     * @param position The piece's initial position on the board
      */
     public ChessPiece(Vector2 position, Alliance alliance, AbstractBoard board, boolean canJump, Piece piece, int value, boolean hasMoved) {
-        this.position = position;
+    	this.position = position;
         this.alliance = alliance;
         this.board = (Board)board;
         this.canJump = canJump;
@@ -37,7 +35,7 @@ public abstract class ChessPiece implements IChessPiece {
     	alliance = other.alliance;
     	board = other.board;
     	canJump = other.canJump;
-    	piece = other.piece;
+    	piece = other.piece();
     	value = other.value;
     	hasMoved = other.hasMoved;
 	}
@@ -63,7 +61,7 @@ public abstract class ChessPiece implements IChessPiece {
 		// Prevents attack on an allied piece
 		if(endPiece != null && endPiece.alliance().equals(alliance)) return false;
 
-		if(!board.insideBoard(position) || !board.insideBoard(destination)) return false;
+		if(!board.insideBoard(position()) || !board.insideBoard(destination)) return false;
 
 		if(!board.hasKing(alliance))
 			return true;	// Special-case check for boards where a king was never created
@@ -72,7 +70,7 @@ public abstract class ChessPiece implements IChessPiece {
 		if(king == null) return false;
 
 		// Lastly, check if king is in check, and whether or not the move resolves it (SHOULD OCCUR LAST, FOR OPTIMIZATION)
-		return king.resolvesCheck(position, destination);
+		return king.resolvesCheck(position(), destination);
 	}
 
 	/**
@@ -85,22 +83,23 @@ public abstract class ChessPiece implements IChessPiece {
 
 	/**
 	 * 
-	 * @param move
+	 * @param destination
 	 */
-	public boolean move(Vector2 move) {
-		//resources.Console.println("Attempting to move " + alliance + " " + piece + " from " + position + " to " + move);
-		if (!legalMove(move)) return false; // If the destination is unreachable, the move fails
+	public boolean move(Vector2 destination, Board board) {
+		this.board = board;
 
-		MediaHelper media = new MediaHelper();
+		//resources.Console.println("Attempting to move " + alliance + " " + piece + " from " + position + " to " + move);
+		if (!legalMove(destination)) return false; // If the destination is unreachable, the move fails
+
+		position = destination;
 		media.playSound("move.mp3");
-		position = new Vector2(move.getX(), move.getY());
 		hasMoved = true;
 
 		//resources.Console.println("Move performed. New pos: " + position);
 		return true;
 	}
 
-	public void reset(List<Boolean> vals) {
+	public void loadData(List<Boolean> vals) {
 		hasMoved = vals.get(0);
 	}
 
@@ -110,6 +109,8 @@ public abstract class ChessPiece implements IChessPiece {
 	 * @return false if runs into another piece
 	 */
 	protected boolean freePath(Vector2 destination) {
+		Vector2 position = position();
+
 		Vector2 path = position;
 		int between = position.distance(destination) - 1;
 
@@ -128,20 +129,31 @@ public abstract class ChessPiece implements IChessPiece {
 	 * logic is: if only x or y change, the piece move in a straight path
 	 */
 	protected boolean inStraights(Vector2 move) {
+		Vector2 position = position();
+
 		return (
-				( this.position.getX() == move.getX() && this.position.getY() != move.getY() )
+				( position.getX() == move.getX() && position.getY() != move.getY() )
 						||
-						( this.position.getX() != move.getX() && this.position.getY() == move.getY() )
+						( position.getX() != move.getX() && position.getY() == move.getY() )
 		);
 	}
 	protected boolean inDiagonals(Vector2 newPos) {
-		return Math.abs(this.position.getX() - newPos.getX()) == Math.abs(this.position.getY() - newPos.getY());
+		Vector2 position = position();
+		return Math.abs(position.getX() - newPos.getX()) == Math.abs(position.getY() - newPos.getY());
 	}
 
 	@Override
     public String toString() {
 	    return alliance + " " + piece;
     }
+
+    @Override
+	public boolean equals(Object o) {
+		if(!(o instanceof ChessPiece)) return false;
+		ChessPiece other = (ChessPiece)o;
+
+		return position == other.position;
+	}
 
     public ChessPiece clone() {
 		return clonePiece();

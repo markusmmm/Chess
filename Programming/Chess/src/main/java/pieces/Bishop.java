@@ -31,6 +31,8 @@ public class Bishop extends ChessPiece {
 
 
 	public Set<Vector2> getPossibleDestinations() {
+		Vector2 position = position();
+
 		possibleMoves.clear();
 		for (int variable = 0; variable < board.size(); variable++) {
 			//diagonals

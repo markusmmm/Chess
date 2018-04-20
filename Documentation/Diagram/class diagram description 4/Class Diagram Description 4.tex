@@ -1,0 +1,22 @@
+%%This is a very basic article template.
+%%There is just one section and two subsections.
+\documentclass{article}
+
+\begin{document}
+
+\title{Description of Classes}
+\section{GitGud}
+
+\subsection{19.04.2018}
+The main class is the class that starts the application, the Chess game.
+The board class is the ”controller” of our program. First and foremost it creates a standard, 8*8, chess board with white and black pieces put in the right coordinates. 
+Board keeps track of which alliance turn it is, and which piece that was moved last. Board also executes the moves, based on users input. 
+The users input is retrieved by GameBoard, based on which tile the user clicks on. The GameBoard prints out a message for every move, captured piece, or for when you won, lost or came to a remis.
+Along with the MediaHelper, GameBoard plays a sound for when you make an action in the game, wether it be moving a piece, losing or winning a game, or just logging in.
+Board uses this input to move pieces, but ﬁrst board has to check that this move is legal. Every chess piece has deﬁned rules on how to behave within their own classes. 
+We have named these methods legalMove, which decides if a piece can move to a given destination. 
+Every piece also has a method which returns all possible destinations as a list of vectors
+In management package we have classes that choose how the game will play you based on which difficulty you choose.
+
+
+\end{document}

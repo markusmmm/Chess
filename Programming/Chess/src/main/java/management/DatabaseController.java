@@ -5,6 +5,7 @@ import com.mongodb.MongoClientURI;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.result.DeleteResult;
 import org.bson.Document;
 
 import java.net.UnknownHostException;
@@ -37,12 +38,17 @@ public class DatabaseController {
     }
 
     public static void main(String[] args) throws UnknownHostException {
-        DatabaseController databaseController = new DatabaseController();
-        MongoCollection<Document> collection = databaseController.db.getCollection("users");
-        Document document = new Document("name", "Magnus")
+        DatabaseController database = new DatabaseController();
+        MongoCollection<Document> collection = database.db.getCollection("users");
+
+
+        /*Document document = new Document("name", "Magnus")
                 .append("score", 10000);
         collection.insertOne(document);
-        databaseController.close();
+        databaseController.close();*/
+
+        /* Deletes all users with score set to 0 */
+        // collection.deleteMany(new Document("score", 0));
     }
 
     /**
@@ -51,11 +57,13 @@ public class DatabaseController {
      * @return true (user exists)/false (user does not exist)
      */
     public boolean userExists(String username) {
-        long count = db.getCollection("users")
+        /*long count = db.getCollection("users")
                 .count(new Document("name",
                         new Document("$regex", username)
                         .append("$options", "i")
-                ));
+                ));*/
+        long count = db.getCollection("users")
+                .count(new Document("name", username.toLowerCase()));
         if (count > 0)
             return true;
         return false;
@@ -68,9 +76,13 @@ public class DatabaseController {
      */
     public int getScore(String username) {
         if (userExists(username)) {
-            FindIterable<Document> it = db.getCollection("users")
+            /*FindIterable<Document> it = db.getCollection("users")
                     .find(new Document("name", new Document("$regex", username)
                             .append("$options", "i")));
+
+            return (int) it.first().get("score");*/
+            FindIterable<Document> it = db.getCollection("users")
+                    .find(new Document("name", username.toLowerCase()));
             return (int) it.first().get("score");
         }
         return 0;
@@ -82,7 +94,7 @@ public class DatabaseController {
      */
     public void addUser(String username) {
         if (!userExists(username)) {
-            db.getCollection("users").insertOne(new Document("name", username).append("score", 0));
+            db.getCollection("users").insertOne(new Document("name", username.toLowerCase()).append("score", 0));
         }
     }
 
@@ -95,9 +107,7 @@ public class DatabaseController {
         if (userExists(username)) {
             Document newDoc = new Document();
             newDoc.append("$set", new Document().append("score", newScore));
-
-            Document searchQuery = new Document().append("name",
-                    new Document("$regex", username).append("$options", "i"));
+            Document searchQuery = new Document().append("name", username.toLowerCase());
             db.getCollection("users").updateOne(searchQuery, newDoc);
         }
     }

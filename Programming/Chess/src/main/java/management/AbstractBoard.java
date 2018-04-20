@@ -4,19 +4,14 @@ import main.Main;
 import pieces.*;
 import resources.*;
 import resources.Console;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
 public class AbstractBoard {
     private Semaphore mutex = new Semaphore(1);
     protected int moveI = 0;
-
-    private boolean hasWhiteKing, hasBlackKing;
 
     private static final Piece[] defaultBoard = new Piece[]{
             Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK,
@@ -28,43 +23,27 @@ public class AbstractBoard {
     };
 
     private int size;
+    private int difficulty;
     private Player player1, player2;
     private ChessClock clock = null;
     private ChessPiece lastPiece = null;
 
     protected Alliance activePlayer = Alliance.WHITE;
 
+
     private HashMap<Vector2, ChessPiece> pieces = new HashMap<>();
     private Stack<Vector2> drawPositions = new Stack<>();
     private HashMap<Vector2, ChessPiece> suspendedPieces = new HashMap<>(); // Used to ignore pieces that are still on the board
-    private HashSet<ChessPiece> capturedPieces = new HashSet<>();
+    private HashSet<PieceNode> capturedPieces = new HashSet<>();
 
     private Stack<MoveNode> gameLog = new Stack<>();
 
     protected AbstractBoard(AbstractBoard other) {
-        hasBlackKing = other.hasBlackKing;
-        hasWhiteKing = other.hasWhiteKing;
-
-        moveI = other.moveI;
-
-        size = other.size;
-        player1 = other.player1;
-        player2 = other.player2;
-
-        if (clock != null) clock = other.clock.clone();
-        if (lastPiece != null) lastPiece = other.lastPiece.clonePiece();
-
-        activePlayer = other.activePlayer;
-        pieces = (HashMap<Vector2, ChessPiece>) other.pieces.clone();
-        drawPositions = (Stack<Vector2>) other.drawPositions.clone();
-        suspendedPieces = (HashMap<Vector2, ChessPiece>) other.suspendedPieces.clone();
-        capturedPieces = (HashSet<ChessPiece>) other.capturedPieces.clone();
-
-        gameLog = (Stack<MoveNode>) other.gameLog.clone();
+        sync(other);
     }
 
 
-    protected AbstractBoard(int size, boolean useClock) {
+    protected AbstractBoard(int size, int difficulty, boolean useClock) {
 
         if (size < 2) throw new IllegalArgumentException("The board size must be at least 2");
 
@@ -72,25 +51,53 @@ public class AbstractBoard {
 
         generateClock(useClock);
 
+        this.difficulty = difficulty;
     }
 
     protected AbstractBoard(String saveName) throws FileNotFoundException {
-        File file = new File(Main.savesDir, saveName + ".txt");
+        File file = new File(Main.SAVES_DIR, saveName + Main.SAVE_EXTENSION);
         loadBoard(file);
     }
     protected AbstractBoard(File file) throws FileNotFoundException {
         loadBoard(file);
+    }
+    protected AbstractBoard(File file, int difficulty) throws FileNotFoundException {
+        loadBoard(file);
+        this.difficulty = difficulty;
+    }
+
+    public void sync(AbstractBoard other) {
+        moveI = other.moveI;
+
+        size = other.size;
+        player1 = other.player1;
+        player2 = other.player2;
+
+        if (other.clock != null) clock = other.clock.clone();
+        if (other.lastPiece != null) lastPiece = other.lastPiece.clonePiece();
+
+        activePlayer = other.activePlayer;
+        pieces = (HashMap<Vector2, ChessPiece>) other.pieces.clone();
+        drawPositions = (Stack<Vector2>) other.drawPositions.clone();
+        suspendedPieces = (HashMap<Vector2, ChessPiece>) other.suspendedPieces.clone();
+        capturedPieces = other.getCapturedPieces();
+
+        gameLog = (Stack<MoveNode>) other.gameLog.clone();
+
+        difficulty = other.difficulty;
     }
 
     public int moveI() {
         return moveI;
     }
 
+    public int difficulty() { return difficulty; }
+
     private void loadBoard(File file) throws FileNotFoundException {
         Scanner reader;
-        if (file.getName().equals("default.txt")) {
+        if (file.getName().equals("default" + Main.SAVE_EXTENSION)) {
             InputStream is = Thread.currentThread().getContextClassLoader()
-                    .getResourceAsStream("default.txt");
+                    .getResourceAsStream("default" + Main.SAVE_EXTENSION);
             reader = new Scanner(is);
         } else {
             reader = new Scanner(file);
@@ -98,11 +105,18 @@ public class AbstractBoard {
 
         Console.printNotice("Attempting to load board from save " + file.getAbsolutePath());
 
+        // Load board data
         size = reader.nextInt();
+        int diff = reader.nextInt();
+        if(diff >= 0 && diff <= 3)
+            difficulty = diff;
         generateClock(reader.nextInt() != 0);
         int logSize = reader.nextInt();
         moveI = reader.nextInt();
         activePlayer = moveI % 2 == 0 ? Alliance.WHITE : Alliance.BLACK;
+
+        int lastX = reader.nextInt(),
+        lastY = reader.nextInt();
 
         // Load pieces on board
         for (int y = 0; y < size; y++) {
@@ -115,6 +129,8 @@ public class AbstractBoard {
             }
         }
 
+        lastPiece = getPiece(new Vector2(lastX, lastY));
+
         // Load gameLog
         for(int i = 0; i < logSize; i++) {
             String p = reader.next();
@@ -123,33 +139,142 @@ public class AbstractBoard {
             String v = reader.next();
 
             PieceNode piece = PieceManager.toPiece(p.charAt(0)),
-                      victim = PieceManager.toPiece(v.charAt(0));
+                    victim = PieceManager.toPiece(v.charAt(0));
             MoveNode node = new MoveNode(piece, new Vector2(x0, y0), new Vector2(x1, y1), victim);
             gameLog.push(node);
         }
 
-        if(reader.hasNextLine() && reader.nextLine().equals(Main.DATA_SEPARATOR)) {
-            while(reader.hasNextLine()) {
-                int x = reader.nextInt(),
-                        y = reader.nextInt();
-                Vector2 pos = new Vector2(x, y);
+        String nextData = "";
+        // Jump to next line
+        if(reader.hasNextLine())
+            reader.nextLine();
+        if(reader.hasNextLine()) {
+            nextData = reader.nextLine();
+        }
 
-                List<Boolean> vals = new ArrayList<>();
-                boolean hasMoved = reader.nextInt() == 1;
-                vals.add(hasMoved);
+        // Load capturedPieces
+        // If the save file doesn't contain capturedPieces, this operation will instead behave as a primer before loading piece data
+        if(!nextData.equals(Main.DATA_SEPARATOR)) {
+            for (int i = 0; i < nextData.length(); i++) {
+                char c = nextData.charAt(i);
 
-                ChessPiece piece = getPiece(pos);
-                if(piece instanceof Pawn) {
-                    boolean hasDoubleStepped = reader.nextInt() == 1;
-                    vals.add(hasDoubleStepped);
+                capturedPieces.add(PieceManager.toPiece(c));
+            }
+        }
+
+        // Load piece data
+        while(reader.hasNextLine()) {
+            if (nextData.equals(Main.DATA_SEPARATOR)) {
+                Console.printNotice("Loading piece data...");
+
+                // Data separator found. Read all data
+                while (reader.hasNextInt()) {
+                    int x = reader.nextInt(),
+                            y = reader.nextInt();
+                    Vector2 pos = new Vector2(x, y);
+
+                    List<Boolean> vals = new ArrayList<>();
+                    boolean hasMoved = reader.nextInt() == 1;
+                    vals.add(hasMoved);
+
+                    ChessPiece piece = getPiece(pos);
+                    if (piece instanceof Pawn) {
+                        boolean hasDoubleStepped = reader.nextInt() == 1;
+                        vals.add(hasDoubleStepped);
+                    }
+                    piece.loadData(vals);
+                    //Console.printNotice("Loading piece " + piece + "\nsource.hasMoved: " + vals.get(0) + ", target.hasMoved: " + piece.hasMoved());
+
+                    removePiece(pos);
+                    putPiece(pos, piece);
                 }
 
-                piece.reset(vals);
+                // All data loaded. Break the outer loop
+                break;
+            } else {
+                nextData = reader.nextLine();
             }
         }
 
         reader.close();
+
+        Console.printSuccess("Board successfully loaded from file " + file.getName());
     }
+
+    /**
+     * Saves the board's state to a text-file
+     * @param file Name of the save (No path/file-extension)
+     */
+    public void saveBoard(File file) {
+        String path = file.getAbsolutePath();
+        try {
+            FileWriter save = new FileWriter(path);
+            int n = size();
+
+            Stack<MoveNode> gameLog = getGameLog();
+
+            // Save board data
+            save.write(n + " " + difficulty + " 0 " + gameLog.size() + " " + moveI + "\n");
+            Vector2 lastPos = getLastPiece() == null ? new Vector2(-1, -1) : getLastPiece().position();
+            save.write(lastPos.getX() + " " + lastPos.getY() + "\n");
+            for (int y = 0; y < n; y++) {
+                String line = "";
+                for (int x = 0; x < n; x++) {
+                    ChessPiece p = getPiece(new Vector2(x, y));
+                    char s = 'e';
+                    if (p != null)
+                        s = PieceManager.toSymbol(p);
+
+                    line += s;
+                }
+                save.write(line + "\n");
+            }
+
+            // Save gameLog
+            for(MoveNode node : gameLog) {
+                int x0 = node.start.getX(), y0 = node.start.getY(),
+                        x1 = node.end.getX(), y1 = node.end.getY();
+                save.write(PieceManager.toSymbol(node.piece) + " " + x0 + " " + y0 + " " + x1 + " " + y1 + " " + PieceManager.toSymbol(node.victimPiece) + "\n");
+            }
+
+            // Save capturedPieces
+            for(PieceNode p : capturedPieces) {
+                save.write(PieceManager.toSymbol(p));
+            }
+            Console.printNotice(capturedPieces.size() + " captured pieces saved");
+
+            save.write("\n");
+
+            // Save internal data for each piece on board
+            save.write(Main.DATA_SEPARATOR + "\n");
+            HashMap<Vector2, ChessPiece> pieces = getPieces();
+            for(Vector2 pos : pieces.keySet()) {
+                ChessPiece piece = pieces.get(pos);
+                save.write(pos.getX() + " " + pos.getY() + " " + (piece.hasMoved() ? 1 : 0));
+
+                if(piece instanceof Pawn)
+                    save.write(" " + ( ((Pawn)piece).hasDoubleStepped() ? 1 : 0));
+
+                save.write("\n");
+            }
+
+            save.close();
+            Console.printSuccess("Board saved to " + path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void saveBoard(String saveName) {
+        saveBoard(new File(Main.SAVES_DIR, saveName + Main.SAVE_EXTENSION));
+    }
+
+    public void saveLog() {
+        // Save board state, before changes are made (Enables undo)
+        File logFile = new File(Main.LOGS_DIR, "log" + moveI() + Main.SAVE_EXTENSION);
+        saveBoard(logFile);
+        logFile.deleteOnExit();
+    }
+
 
     protected static Piece randomPiece() {
         int pick = new Random().nextInt(Piece.values().length);
@@ -184,6 +309,36 @@ public class AbstractBoard {
 
     public Alliance getActivePlayer() {
         return activePlayer;
+    }
+
+    /**
+     *
+     * @param alliance The alliance of the king to find
+     * @return The king on this board with the given alliance
+     */
+    public King getKing(Alliance alliance) {
+        try {
+            mutex.acquire();
+
+            for(ChessPiece p : pieces.values()) {
+                if(p instanceof King && p.alliance().equals(alliance)) {
+                    mutex.release();
+                    return (King)p;
+                }
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+
+            mutex.release();
+            return null;
+        }
+
+        mutex.release();
+        return null;
+    }
+
+    public boolean hasKing(Alliance alliance) {
+        return getKing(alliance) != null;
     }
 
     public Set<Vector2> getPositions() {
@@ -266,10 +421,6 @@ public class AbstractBoard {
             case QUEEN:
                 return new Queen(pos, alliance, this);
             case KING:
-                if (alliance == Alliance.WHITE)
-                    hasWhiteKing = true;
-                else
-                    hasBlackKing = true;
                 return new King(pos, alliance, this, false);
             case PAWN:
                 return new Pawn(pos, alliance, this, false, false);
@@ -287,7 +438,7 @@ public class AbstractBoard {
 
             pieces.remove(end);
 
-            ChessPiece piece = pieces.get(start);
+            ChessPiece piece = pieces.get(start).clonePiece();
             pieces.remove(start);
             pieces.put(end, piece);
 
@@ -299,22 +450,6 @@ public class AbstractBoard {
             mutex.release();
             return false;
         }
-    }
-
-    public boolean undoMove() {
-        try {
-            loadBoard(new File(Main.logsDir, "log" + (moveI()-1) + ".txt"));
-            return true;
-        } catch (FileNotFoundException e) {
-            Console.printNotice("Can't undo further");
-            e.printStackTrace();
-        }
-
-        return false;
-    }
-
-    public boolean hasKing(Alliance alliance) {
-        return alliance == Alliance.WHITE ? hasWhiteKing : hasBlackKing;
     }
 
     public boolean transformPiece(Vector2 pos, Piece newType) {
@@ -412,8 +547,21 @@ public class AbstractBoard {
             mutex.release();
             return null;
         }
+    }
 
+    public HashMap<Vector2, ChessPiece> getPieces() {
+        try {
+            mutex.acquire();
+            HashMap<Vector2, ChessPiece> temp = (HashMap<Vector2, ChessPiece>)pieces.clone();
 
+            mutex.release();
+            return temp;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+
+            mutex.release();
+            return null;
+        }
     }
 
     protected void putPiece(Vector2 pos, ChessPiece piece) {
@@ -440,7 +588,8 @@ public class AbstractBoard {
             mutex.acquire();
             //resources.Console.println("Mutex acquired by capturePiece");
 
-            capturedPieces.add(piece);
+            Console.printNotice("Captured piece " + piece);
+            capturedPieces.add(new PieceNode(piece.piece(), piece.alliance()));
 
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -485,11 +634,11 @@ public class AbstractBoard {
      * @return the piece that was last successfully moved
      */
     public IChessPiece getLastPiece() {
-        return lastPiece.clonePiece();
+        return lastPiece == null ? null : lastPiece.clonePiece();
     }
 
-    public HashSet<ChessPiece> getCapturedPieces() {
-        return (HashSet<ChessPiece>) capturedPieces.clone();
+    public HashSet<PieceNode> getCapturedPieces() {
+        return (HashSet<PieceNode>) capturedPieces.clone();
     }
 
     public boolean removePiece(Vector2 pos) {

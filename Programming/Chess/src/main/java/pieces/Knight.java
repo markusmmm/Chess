@@ -20,8 +20,7 @@ public class Knight  extends ChessPiece {
 	private final int value = 3;
 
 	/**
-	 * 
-	 * @param position
+	 *
 	 */
 	public Knight (Vector2 position, Alliance alliance, AbstractBoard board){
 		super(position, alliance, board, true, Piece.KNIGHT, 3,false);
@@ -47,7 +46,7 @@ public class Knight  extends ChessPiece {
 	public boolean legalMove(Vector2 destination) {
 		if(!super.legalMove(destination)) return false;
 
-		Vector2 delta = destination.subtract(position);
+		Vector2 delta = destination.subtract(position());
 		return moves.contains(delta);
 	}
 
@@ -55,7 +54,7 @@ public class Knight  extends ChessPiece {
 		Set<Vector2> possibleDestinations = new HashSet<>();
 
 		for (Vector2 move : moves) {
-			Vector2 endPos = position.add(move);
+			Vector2 endPos = position().add(move);
 			if(legalMove(endPos))
 				possibleDestinations.add(endPos);
 		}
