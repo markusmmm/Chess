@@ -1,21 +1,17 @@
 import management.Board;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import pieces.Pawn;
 import resources.Alliance;
+import resources.Console;
 import resources.Piece;
 import resources.Vector2;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 
 public class PawnTest
 {
     @Test
     public void movePawnForward()
     {
-        Piece[] testBoard = new Piece[]{};
-        Board board = new Board(8, false, testBoard);
+        Board board = new Board(8, 0);
 
         Vector2 posPawn0 = new Vector2(0, 6);
         Vector2 posPawn1 = new Vector2(1, 6);
@@ -106,10 +102,10 @@ public class PawnTest
         Pawn testWhitePawn = (Pawn) board.getPiece(pawnIWantToMove);
         Vector2 amountOfYTilesIWantToMove = new Vector2(0, -1);
 
-        System.out.println("Position before moving" + testWhitePawn.position());
+        Console.println("Position before moving" + testWhitePawn.position());
         board.movePiece(testWhitePawn.position(), testWhitePawn.position().add(amountOfYTilesIWantToMove));
-        System.out.println("Position after moving" + testWhitePawn.position());
-        System.out.println();
+        Console.println("Position after moving" + testWhitePawn.position());
+        Console.println();
 
         assert(testWhitePawn != null);
     }

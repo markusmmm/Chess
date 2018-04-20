@@ -1,5 +1,6 @@
 package pieces;
 
+import management.AbstractBoard;
 import management.Board;
 import resources.Alliance;
 import resources.Piece;
@@ -19,15 +20,19 @@ public class Knight  extends ChessPiece {
 	private final int value = 3;
 
 	/**
-	 * 
-	 * @param position
+	 *
 	 */
-	public Knight (Vector2 position, Alliance alliance, Board board){
-		super(position, alliance, board, true, Piece.KNIGHT, 3);
+	public Knight (Vector2 position, Alliance alliance, AbstractBoard board){
+		super(position, alliance, board, true, Piece.KNIGHT, 3,false);
 	}
-    public Knight clonePiece() {
-        return new Knight(position, alliance, board);
-    }
+	public Knight(Knight other) {
+		super(other);
+	}
+
+	@Override
+	public ChessPiece clonePiece() {
+		return new Knight(this);
+	}
 
 	@Override
 	public int getValue() {
@@ -41,17 +46,15 @@ public class Knight  extends ChessPiece {
 	public boolean legalMove(Vector2 destination) {
 		if(!super.legalMove(destination)) return false;
 
-		Vector2 delta = destination.subtract(position);
+		Vector2 delta = destination.subtract(position());
 		return moves.contains(delta);
 	}
 
-	public Set<Vector2> getPossibleDestinations(String caller) {
-		logActionPossibleDestinations(caller);
-
+	public Set<Vector2> getPossibleDestinations() {
 		Set<Vector2> possibleDestinations = new HashSet<>();
 
 		for (Vector2 move : moves) {
-			Vector2 endPos = position.add(move);
+			Vector2 endPos = position().add(move);
 			if(legalMove(endPos))
 				possibleDestinations.add(endPos);
 		}

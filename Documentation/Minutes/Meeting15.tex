@@ -1,0 +1,55 @@
+\documentclass[letterpaper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\title{Meeting 15}
+\date{10~April 2018}
+
+\begin{document}
+\maketitle
+\section*{Attendance}
+\subsection*{Present}
+\begin{list}{}{}
+	\item Viet
+	\item Jan
+	\item Magnus
+	\item Mikael
+	\item Tom
+	\item Markus
+	\item Anne Lise
+	\item Aleksander
+\end{list}
+
+\newpage
+\section*{Highlights of the meeting}
+\begin{itemize}
+<<<<<<< HEAD
+	\item Licensing of code
+	\item Managed to identify ConurrentModificationException problem
+=======
+	\item
+>>>>>>> fileReading
+\end{itemize}
+
+\section*{To do}
+\begin{itemize}
+<<<<<<< HEAD
+	\item Get rid of ConcurrentModificationException
+	\item Find new database solution
+\end{itemize}
+
+\section*{Notes taken under meeting}
+Looked at feedback\\
+Had to add licensing for code we wrote. MIT licensing seemed to fit our purpose well, so we went with it\\
+Had to fix sequence diagram. Markus redid it and re-explained for the rest of the team\\
+Mikael started to suspect that several methods were trying to edit the same hash key at the same time, which turned out to be true. Started making a mutex to solve this problem.\\
+After messing around abit with Heroku, turns out it did not fit our perpose, so Magnus started to look at other solutions\\
+Pawn promotion needs to take care of user input somehow. Need graphical pop up so player can choose what piece to transform the pawn to.
+=======
+	\item
+\end{itemize}
+
+\section*{Notes taken under meeting}
+
+
+
+>>>>>>> fileReading
+\end{document}

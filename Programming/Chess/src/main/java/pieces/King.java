@@ -1,29 +1,35 @@
 package pieces;
 
+import management.AbstractBoard;
 import management.Board;
-import resources.Alliance;
-import resources.Piece;
-import resources.Vector2;
+import resources.*;
 
 import java.util.*;
 
-public class King extends ChessPiece {
+public class    King extends ChessPiece {
     private final int value = 2;
     private Set<Vector2> moves = new HashSet<>(Arrays.asList(
-        new Vector2(-1, -1), new Vector2( 0, -1), new Vector2( 1, -1),
-        new Vector2(-1,  0),                           new Vector2( 1,  0),
-        new Vector2(-1,  1), new Vector2( 0,  1), new Vector2( 1,  1)
+            new Vector2(-1, -1), new Vector2( 0, -1), new Vector2( 1, -1),
+            new Vector2(-1,  0), new Vector2( 1,  0), new Vector2(-1,  1),
+            new Vector2( 0,  1), new Vector2( 1,  1),
+            new Vector2( -2,  0), new Vector2( 2,  0)
     ));
 
     /**
-     * @param position
+     *
      */
-    public King(Vector2 position, Alliance alliance, Board board) {
-        super(position, alliance, board, false, Piece.KING, 2);
+    public King(Vector2 position, Alliance alliance, AbstractBoard board, Boolean hasMoved) {
+
+        super(position, alliance, board, false, Piece.KING, 2, hasMoved);
+
+    }
+    public King(King other) {
+        super(other);
     }
 
-    public King clonePiece() {
-        return new King(position, alliance, board);
+    @Override
+    public ChessPiece clonePiece() {
+        return new King(this);
     }
 
     @Override
@@ -33,12 +39,22 @@ public class King extends ChessPiece {
 
     @Override
     public boolean legalMove(Vector2 destination) {
+        Vector2 position = position();
+
         //IMPORTANT! King can NOT call super.legalMove, as the king demands a custom alliance check (when performing castling),
         //and does not need to perform the inCheck-call that occurs from within super
 
         if(!(board.insideBoard(position) && board.insideBoard(destination))) return false;
 
         IChessPiece endPiece = board.getPiece(destination);
+        int kingSideRookX = destination.getX()+1;
+        int queenSideRookX = destination.getX()-2;
+
+        if (castling(new Vector2(kingSideRookX,destination.getY())) || castling(new Vector2(queenSideRookX, destination.getY()))){
+
+            return true;
+        }
+
         if(endPiece != null && endPiece.alliance().equals(alliance)) return false; // Temporary fix, until castling has been integrated
 
         // Ensures that the king can't be moved into check
@@ -46,19 +62,18 @@ public class King extends ChessPiece {
         if(movesIntoCheck(destination)) return false;
 
         return (
-            (inDiagonals(destination) || inStraights(destination)) &&
-            position.distance(destination) == 1 &&
-            freePath(destination)
+                (inDiagonals(destination) || inStraights(destination)) &&
+                        position.distance(destination) == 1 &&
+                        freePath(destination)
         );
     }
 
-    public Set<Vector2> getPossibleDestinations(String caller) {
-        logActionPossibleDestinations(caller);
+    public Set<Vector2> getPossibleDestinations() {
 
         Set<Vector2> possibleMoves = new HashSet<>();
 
         for(Vector2 move : moves) {
-            Vector2 endPos = position.add(move);
+            Vector2 endPos = position().add(move);
 
             if(legalMove(endPos))
                 possibleMoves.add(endPos);
@@ -68,75 +83,73 @@ public class King extends ChessPiece {
     }
 
     public boolean inCheck(Vector2 destination) {
-        // The inactive player's king can NOT be in check (Impossible state)
-        if(!board.getActivePlayer().equals(alliance)) return false;
+        if(!board.getActivePlayer().equals(alliance))
+            return false;
 
-        // NEVER USE 'board.getUsablePieces' WITHIN THIS METHOD
-        HashMap<Vector2, IChessPiece> hostilePieces = board.getPieces(otherAlliance());
+        Vector2 position = position();
 
-        for(Vector2 key : hostilePieces.keySet()) {
-            IChessPiece piece = hostilePieces.get(key);
+        boolean checked = false;
+        board.suspendPieces(position);
 
-            // Custom handling for king, as the default implementation causes an infinite circular call
-            if(piece instanceof King) {
-                King hostileKing = (King) piece;
-                if(destination.distance(hostileKing.position()) == 1)
-                    return true;
+        HashMap<Vector2, ChessPiece> hostilePieces = board.getPieces(otherAlliance());
+        for(IChessPiece hostile : hostilePieces.values()) {
+            if(hostile instanceof Pawn) {
+                if(((Pawn) hostile).getPossibleAttacks().contains(destination)) {
+                    checked = true;
+                    break;
+                }
+                continue;
             }
-            else if(piece instanceof Pawn) {
-                Pawn hostilePawn = (Pawn) piece;
-                if(hostilePawn.getPossibleAttacks().contains(destination))
-                    return true;
-            }
-            else {
-                if (piece.getPossibleDestinations(toString()).contains(destination))
-                    return true;
+
+            if(hostile.getPossibleDestinations().contains(destination)) {
+                checked = true;
+                break;
             }
         }
 
-        return false;
+        board.releasePieces(position);
+        return checked;
     }
     public boolean inCheck() {
-        return inCheck(position);
+        return inCheck(position());
     }
 
     private boolean movesIntoCheck(Vector2 end) {
-        board.suspendPiece(position);
+        Vector2 position = position();
+
+        board.suspendPieces(position);
+        board.suspendPieces(end);
 
         boolean setsCheck = inCheck(end);
 
-        board.releasePiece(position);
+        board.releasePieces(position);
+        board.releasePieces(end);
 
         return setsCheck;
     }
 
+    /**
+     * Determines if the attempted move puts the king in check
+     * @param start Start position of the attempted move
+     * @param end End position of the attempted move
+     * @return Whether or not the move successfully protects the king
+     */
     public boolean resolvesCheck(Vector2 start, Vector2 end) {
-        // TODO Add alliance check (A hostile piece cannot resolve check)
+        //resources.Console.printNotice("\nSimulating move " + new Move(start, end));
+        //resources.Console.printCaller();
 
-        if(start.equals(position))
-            return !movesIntoCheck(end);
-        
-        if(!inCheck()) return true;
+        if(start.equals(position()))
+            return movesIntoCheck(end);
 
-        Set<Vector2> endangered = new HashSet<>();
-        Set<Vector2> destinations = new HashSet<>();
+        Board tempBoard = board.clone();
+        ChessPiece piece = board.getPiece(start);
 
-        for (Vector2 move : moves)
-            destinations.add(position.add(move));
+        board.forceMovePiece(start, end);
+        boolean checked = inCheck();
 
-        board.suspendPiece(position);
+        board.sync(tempBoard);
 
-        for (Vector2 destination : destinations) {
-            if (inCheck(destination)) {
-                endangered.add(destination);
-            }
-        }
-
-        endangered.remove(end);
-
-        board.releasePiece(position);
-
-        return endangered.size() == 0;
+        return !checked;
     }
 
     public boolean checkmate() {
@@ -146,62 +159,50 @@ public class King extends ChessPiece {
         return !inCheck() && board.getUsablePieces(alliance).size() == 0;
     }
 
-    /**
-     * @param rook
-     */
-    public void castling(Vector2 rook) {
-        if (hasMoved()) {
-            System.out.println("The king has been moved");
-            return;
-        }
-        if (rook == null) {
-            System.out.println("There is no rook to castle!");
-            return;
-        }
+    public boolean castling(Vector2 pos){
+        if(board.getKing(this.alliance).hasMoved()) return false;
 
-        boolean queenSide = rook.getY() < 4;
-        boolean kingSide = rook.getY() > 4;
+        if(inCheck()) return false;
 
-        IChessPiece piece = board.getPiece(rook);
+        IChessPiece rook = board.getPiece(pos);
 
-        if (piece.hasMoved()) {
-            System.out.println("The rook has already been moved");
-            return;
-        }
-        if (!freePath(rook)) {
-            System.out.println("The path is not clear to perform castling");
-            return;
-        }
+        if(!(rook instanceof Rook)) return false;
 
-        if (rook.getX() < 4) {
-            if (queenSide) {
-                Vector2 rooksEnd = new Vector2(0, 3);
-                Vector2 kingsEnd = new Vector2(0, 2);
-                board.movePiece(position, kingsEnd);
-                board.movePiece(rook, rooksEnd);
+        if(rook.hasMoved()) return false;
+
+        Vector2 position = position();
+
+        int x = position.getX();
+        int y = position.getY();
+
+        int rookX = pos.getX();
+        int rookY = pos.getY();
+
+        int diff = x - rookX;
+
+        if(!((Rook) rook).freePath(position)) return false;
+
+        //queen side
+        if(diff > 0){
+
+            Vector2 pos1 = new Vector2(x-1,y);
+            Vector2 pos2 = new Vector2(x-2,y);
+            if(!inCheck(pos1) && !inCheck(pos2)){
+                return true;
+
             }
-            if (kingSide) {
-                Vector2 rooksEnd = new Vector2(0, 2);
-                Vector2 kingsEnd = new Vector2(0, 6);
-                board.movePiece(position, kingsEnd);
-                board.movePiece(rook, rooksEnd);
-            }
+            //kingside
         } else {
-            if (queenSide) {
-                Vector2 rooksEnd = new Vector2(7, 3);
-                Vector2 kingsEnd = new Vector2(7, 2);
-                board.movePiece(position, kingsEnd);
-                board.movePiece(rook, rooksEnd);
+            Vector2 pos1 = new Vector2(x+1,y);
+            Vector2 pos2 = new Vector2(x+2,y);
+            if(!inCheck(pos1) && !inCheck(pos2)){
+                return true;
             }
-            if (kingSide) {
-                Vector2 rooksEnd = new Vector2(7, 2);
-                Vector2 kingsEnd = new Vector2(7, 6);
-                board.movePiece(position, kingsEnd);
-                board.movePiece(rook, rooksEnd);
-            }
-        }
 
+        }
+        return false;
 
     }
+
 
 }
