@@ -1,0 +1,50 @@
+\documentclass[letterpaper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\title{Meeting 14}
+\date{06~April 2018}
+
+\begin{document}
+\maketitle
+\section*{Attendance}
+\subsection*{Present}
+\begin{list}{}{}
+	\item Viet
+	\item Jan
+	\item Tom
+	\item Markus
+	\item Anne Lise
+	\item Magnus
+\end{list}
+
+\subsection*{Valid absence}
+\begin{list}{}{}
+	\item Aleksander
+	\item Mikael
+\end{list}
+
+\newpage
+\section*{Highlights of the meeting}
+\begin{itemize}
+	\item Discussion in plenary about how to solve the ConcurrentModificationException
+	\item Looking at possible solutions for castling and pawn promotion
+\end{itemize}
+
+\section*{To do}
+\begin{itemize}
+	\item Priority is to fix ConcurrentModificationException
+	\item Magnus is to get a database setup ready and going
+	\item Viet look into pawn promotion
+	\item Anne Lise look into castling
+	\item Aleksander look into possible sounds we could have for the application
+\end{itemize}
+
+\section*{Notes taken under meeting}
+Current progress so far:\\
+- ConurrentModificationException does not happen anymore, but not possible to move any pieces\\
+Check and check mate not really working properly either. Problem lies in the king checking of the possible moves of all enemy pieces so the player cannot put the king in check.\\\\
+Also need to start looking at castling and pawn promotion\\
+Jan is appointed to test writer, working on tests to find faults in code\\
+Markus started implementing ranking\\\\
+Magnus and Viet looking into database stuff\\
+- Heroku looked promising
+\end{document}

@@ -34,7 +34,7 @@ public class AbstractBoard {
     private HashMap<Vector2, ChessPiece> pieces = new HashMap<>();
     private Stack<Vector2> drawPositions = new Stack<>();
     private HashMap<Vector2, ChessPiece> suspendedPieces = new HashMap<>(); // Used to ignore pieces that are still on the board
-    private HashSet<ChessPiece> capturedPieces = new HashSet<>();
+    private HashSet<PieceNode> capturedPieces = new HashSet<>();
 
     private Stack<MoveNode> gameLog = new Stack<>();
 
@@ -80,7 +80,7 @@ public class AbstractBoard {
         pieces = (HashMap<Vector2, ChessPiece>) other.pieces.clone();
         drawPositions = (Stack<Vector2>) other.drawPositions.clone();
         suspendedPieces = (HashMap<Vector2, ChessPiece>) other.suspendedPieces.clone();
-        capturedPieces = (HashSet<ChessPiece>) other.capturedPieces.clone();
+        capturedPieces = other.getCapturedPieces();
 
         gameLog = (Stack<MoveNode>) other.gameLog.clone();
 
@@ -144,12 +144,30 @@ public class AbstractBoard {
             gameLog.push(node);
         }
 
-        // Load piece data
-        if(reader.hasNextLine()) reader.nextLine();
+        String nextData = "";
+        // Jump to next line
+        if(reader.hasNextLine())
+            reader.nextLine();
         if(reader.hasNextLine()) {
-            String line = reader.nextLine();
-            Console.printNotice("Data separator: " + line);
-            if (line.equals(Main.DATA_SEPARATOR)) {
+            nextData = reader.nextLine();
+        }
+
+        // Load capturedPieces
+        // If the save file doesn't contain capturedPieces, this operation will instead behave as a primer before loading piece data
+        if(!nextData.equals(Main.DATA_SEPARATOR)) {
+            for (int i = 0; i < nextData.length(); i++) {
+                char c = nextData.charAt(i);
+
+                capturedPieces.add(PieceManager.toPiece(c));
+            }
+        }
+
+        // Load piece data
+        while(reader.hasNextLine()) {
+            if (nextData.equals(Main.DATA_SEPARATOR)) {
+                Console.printNotice("Loading piece data...");
+
+                // Data separator found. Read all data
                 while (reader.hasNextInt()) {
                     int x = reader.nextInt(),
                             y = reader.nextInt();
@@ -170,6 +188,11 @@ public class AbstractBoard {
                     removePiece(pos);
                     putPiece(pos, piece);
                 }
+
+                // All data loaded. Break the outer loop
+                break;
+            } else {
+                nextData = reader.nextLine();
             }
         }
 
@@ -189,6 +212,8 @@ public class AbstractBoard {
             int n = size();
 
             Stack<MoveNode> gameLog = getGameLog();
+
+            // Save board data
             save.write(n + " " + difficulty + " 0 " + gameLog.size() + " " + moveI + "\n");
             Vector2 lastPos = getLastPiece() == null ? new Vector2(-1, -1) : getLastPiece().position();
             save.write(lastPos.getX() + " " + lastPos.getY() + "\n");
@@ -205,11 +230,20 @@ public class AbstractBoard {
                 save.write(line + "\n");
             }
 
+            // Save gameLog
             for(MoveNode node : gameLog) {
                 int x0 = node.start.getX(), y0 = node.start.getY(),
                         x1 = node.end.getX(), y1 = node.end.getY();
                 save.write(PieceManager.toSymbol(node.piece) + " " + x0 + " " + y0 + " " + x1 + " " + y1 + " " + PieceManager.toSymbol(node.victimPiece) + "\n");
             }
+
+            // Save capturedPieces
+            for(PieceNode p : capturedPieces) {
+                save.write(PieceManager.toSymbol(p));
+            }
+            Console.printNotice(capturedPieces.size() + " captured pieces saved");
+
+            save.write("\n");
 
             // Save internal data for each piece on board
             save.write(Main.DATA_SEPARATOR + "\n");
@@ -554,7 +588,8 @@ public class AbstractBoard {
             mutex.acquire();
             //resources.Console.println("Mutex acquired by capturePiece");
 
-            capturedPieces.add(piece);
+            Console.printNotice("Captured piece " + piece);
+            capturedPieces.add(new PieceNode(piece.piece(), piece.alliance()));
 
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -602,8 +637,8 @@ public class AbstractBoard {
         return lastPiece == null ? null : lastPiece.clonePiece();
     }
 
-    public HashSet<ChessPiece> getCapturedPieces() {
-        return (HashSet<ChessPiece>) capturedPieces.clone();
+    public HashSet<PieceNode> getCapturedPieces() {
+        return (HashSet<PieceNode>) capturedPieces.clone();
     }
 
     public boolean removePiece(Vector2 pos) {

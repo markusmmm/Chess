@@ -18,20 +18,21 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import management.DatabaseController;
-import resources.Console;
+import management.HighscoreController;
 import org.bson.Document;
-import resources.MediaHelper;
 import resources.BoardMode;
+import resources.Console;
+import resources.Highscore;
+import resources.MediaHelper;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
+
 
 
 public class Main extends Application {
@@ -47,9 +48,11 @@ public class Main extends Application {
     public static final File SAVES_DIR = new File(System.getProperty("user.home"), "GitGud/");
     public static final File LOGS_DIR = new File(SAVES_DIR, ".logs/");
     public static final File CORE_DIR = new File("core/");
+    public static final File TESTS_DIR = new File("tests/");
 
     public static final String DATA_SEPARATOR = "====";
     public static final String SAVE_EXTENSION = ".txt";
+    public static final String TEST_EXTENSION = ".txt";
 
     public void start(Stage primaryStage) throws Exception {
         directorySetup();
@@ -149,11 +152,13 @@ public class Main extends Application {
         loginContainer.setMaxWidth(240);
         loginContainer.getChildren().addAll(labelUsername, textUsername);
 
+
         VBox container = new VBox(10);
         container.setAlignment(Pos.CENTER);
         container.getChildren().addAll(bootDecal, loginContainer, loginButton, errorField);
         container.setPrefSize(WIDTH, HEIGHT);
         return container;
+
     }
 
     private void handleLogin(String username, Text errorField) {
@@ -230,6 +235,7 @@ public class Main extends Application {
         buttonPlayHard.setOnAction(e -> createChessGame(username, "AI: Hard", 3, BoardMode.DEFAULT, root));
         randomBoardPlay.setOnAction(e -> createChessGame(username, "AI: Easy", 1, BoardMode.RANDOM, root));
         buttonHighScore.setOnAction(e -> highscore(username, stage));
+        
         media.playSound("welcome.mp3");
         buttonQuit.setOnAction(e -> onQuit());
 
@@ -274,6 +280,16 @@ public class Main extends Application {
 
         container.getChildren().addAll(labelWelcome, list, buttonBack);
         root.setCenter(container);
+    }
+
+    /**
+     * TODO: implement a popup with a scoreboard containing scores from a HighscoreController
+     */
+    private void highScorePopup() {
+        HighscoreController highscoreController = new HighscoreController();
+        for (Highscore score : highscoreController.getHighscores()) {
+            System.out.println(score);
+        }
     }
 
     /**

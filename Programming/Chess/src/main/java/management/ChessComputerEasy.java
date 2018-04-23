@@ -1,6 +1,7 @@
 package management;
 
 import pieces.IChessPiece;
+import pieces.Pawn;
 import resources.Move;
 import resources.Vector2;
 
@@ -22,6 +23,13 @@ public class ChessComputerEasy extends ChessComputer {
         for(Vector2 key : pieces.keySet()) {
             IChessPiece piece = pieces.get(key);
             Set<Vector2> destinations = piece.getPossibleDestinations();
+
+            if(piece instanceof Pawn) {
+                for(Vector2 destination : ((Pawn) piece).getPossibleAttacks()) {
+                    Move attack = new Move(piece.position(), destination);
+                    attacks.add(attack);
+                }
+            }
 
             for(Vector2 destination : destinations) {
                 IChessPiece endPiece = board.getPiece(destination);

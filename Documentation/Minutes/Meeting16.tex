@@ -1,0 +1,43 @@
+\documentclass[letterpaper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\title{Meeting 16}
+\date{12~April 2018}
+
+\begin{document}
+\maketitle
+\section*{Attendance}
+\subsection*{Present}
+\begin{list}{}{}
+	\item Viet
+	\item Jan
+	\item Markus
+	\item Tom
+	\item Magnus
+	\item Anne Lise
+	\item Mikael
+	\item Aleksander
+\end{list}
+
+\newpage
+\section*{Highlights of the meeting}
+\begin{itemize}
+	\item Identifying and discussion of new problems regarding king, check and checkmate
+	\item Setting up new database from different provider
+	\item Started working on pawn promotion in plenary
+\end{itemize}
+
+\section*{To do}
+\begin{itemize}
+	\item Find solution for problems related to king
+	\item Finish pawn promotion and castling
+	\item Get working high score solution
+\end{itemize}
+
+\section*{Notes taken under meeting}
+Current progress:\\
+- ConcurrentModificationException not appearing anymore, but check and check mate still not working properly\\
+- Two outcomes when king is in check; application either crashing, or when playing against AI, the player has to move the AI's king out of check\\
+- Need to identify which classes are needed for pawn promotion\\
+- Castling still untouched, need to have started on that before end of meeting\\
+- Trying to setup MongoDB database for highscores\\
+\end{document}
