@@ -24,7 +24,7 @@ public abstract class ChessPiece implements IChessPiece {
     public ChessPiece(Vector2 position, Alliance alliance, AbstractBoard board, boolean canJump, Piece piece, int value, boolean hasMoved) {
     	this.position = position;
         this.alliance = alliance;
-        this.board = (Board)board;
+        setBoard(board);
         this.canJump = canJump;
         this.piece = piece;
         this.value = value;
@@ -33,7 +33,7 @@ public abstract class ChessPiece implements IChessPiece {
     protected ChessPiece(ChessPiece other) {
     	position = other.position;
     	alliance = other.alliance;
-    	board = other.board;
+		setBoard(other.board);
     	canJump = other.canJump;
     	piece = other.piece();
     	value = other.value;
@@ -47,6 +47,10 @@ public abstract class ChessPiece implements IChessPiece {
 
 	public Alliance otherAlliance() {
     	return alliance.equals(Alliance.BLACK) ? Alliance.WHITE : Alliance.BLACK;
+	}
+
+	public void setBoard(AbstractBoard board) {
+    	this.board = board == null ? null : (Board)board;
 	}
 
 	/**
@@ -86,7 +90,7 @@ public abstract class ChessPiece implements IChessPiece {
 	 * @param destination
 	 */
 	public boolean move(Vector2 destination, Board board) {
-		this.board = board;
+		//setBoard(board);
 
 		//resources.Console.println("Attempting to move " + alliance + " " + piece + " from " + position + " to " + move);
 		if (!legalMove(destination)) return false; // If the destination is unreachable, the move fails

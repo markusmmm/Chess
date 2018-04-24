@@ -33,24 +33,22 @@ public class AbstractBoard {
 
     private HashMap<Vector2, ChessPiece> pieces = new HashMap<>();
     private Stack<Vector2> drawPositions = new Stack<>();
-    private HashMap<Vector2, ChessPiece> suspendedPieces = new HashMap<>(); // Used to ignore pieces that are still on the board
+    private HashMap<Vector2, ChessPiece> suspendedPieces = new HashMap<>(); // Is used to ignore pieces that are still on the board
     private HashSet<PieceNode> capturedPieces = new HashSet<>();
 
     private Stack<MoveNode> gameLog = new Stack<>();
+
+    private RuleManager ruleManager = null;
 
     protected AbstractBoard(AbstractBoard other) {
         sync(other);
     }
 
-
     protected AbstractBoard(int size, int difficulty, boolean useClock) {
-
         if (size < 2) throw new IllegalArgumentException("The board size must be at least 2");
 
         this.size = size;
-
         generateClock(useClock);
-
         this.difficulty = difficulty;
     }
 
@@ -64,6 +62,12 @@ public class AbstractBoard {
     protected AbstractBoard(File file, int difficulty) throws FileNotFoundException {
         loadBoard(file);
         this.difficulty = difficulty;
+    }
+
+    public void setRuleManager(RuleManager ruleManager) {
+        this.ruleManager = ruleManager;
+        if(ruleManager != null)
+            this.ruleManager.setBoard(this);
     }
 
     public void sync(AbstractBoard other) {
@@ -85,6 +89,14 @@ public class AbstractBoard {
         gameLog = (Stack<MoveNode>) other.gameLog.clone();
 
         difficulty = other.difficulty;
+
+        if(ruleManager != null)
+            ruleManager.setBoard(this);
+
+        for(ChessPiece piece : pieces.values()) {
+            if(piece == null) continue;
+            piece.setBoard(this);
+        }
     }
 
     public int moveI() {
@@ -305,6 +317,9 @@ public class AbstractBoard {
     public boolean insideBoard(Vector2 pos) {
         return pos.getX() >= 0 && pos.getX() < size &&
                 pos.getY() >= 0 && pos.getY() < size;
+    }
+    public boolean insideBoard(Move move) {
+        return insideBoard(move.start) && insideBoard(move.end);
     }
 
     public Alliance getActivePlayer() {

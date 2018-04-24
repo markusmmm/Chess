@@ -1,8 +1,6 @@
 package resources;
 
-public enum Alliance {
-    WHITE,
-    BLACK,
+public enum Requirement {
     ANY,
     SAME,
     OTHER,
