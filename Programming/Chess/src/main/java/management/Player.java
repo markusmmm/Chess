@@ -7,7 +7,7 @@ public class Player {
 	private String username;
 	private Alliance alliance;
 	private int score;
-	private static int puzzlesCompleted = 1;
+	private static int puzzlesCompleted = 0;
 
     /**
      *
