@@ -15,6 +15,7 @@ public class ChessPuzzles {
     private int sizeOfDirectory;
 
 
+
     public ChessPuzzles() {
         fileUtils = new FileUtils();
         file = new File(path);
@@ -23,6 +24,15 @@ public class ChessPuzzles {
 
 
 
+    }
+
+
+    public String getFile(int i){
+
+        String fileString = files[i].toString();
+        fileString = fileString.substring(0,fileString.lastIndexOf('.'));
+
+        return fileString;
     }
 
     public void printFiles(){

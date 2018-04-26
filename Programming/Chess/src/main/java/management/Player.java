@@ -7,6 +7,7 @@ public class Player {
 	private String username;
 	private Alliance alliance;
 	private int score;
+	private int puzzlesCompleted = 0;
 
     /**
      *
@@ -27,6 +28,14 @@ public class Player {
 
 	public Alliance getAlliance() {
         return alliance;
+    }
+
+    public int getPuzzlesCompleted(){
+        return puzzlesCompleted;
+    }
+
+    public void completedPuzzle(){
+        puzzlesCompleted = puzzlesCompleted+1;
     }
 
 	public int getScore() {

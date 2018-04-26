@@ -54,17 +54,32 @@ public class GameBoard {
     private Tile firstTile;
     private Player player1, player2;
     private ChessPuzzles chessPuzzles;
+    private int numberOfPuzzlesCompleted;
+    private int numberOfPuzzles;
 
     public GameBoard(String user1, String user2, int difficulty, BoardMode boardMode, Main main, Stage stage, BorderPane root) {
         Board boardVal = null;
 
+        this.player1 = new Player(user1, Alliance.WHITE);
+        this.player2 = new Player(user2, Alliance.BLACK);
+
+        this.numberOfPuzzlesCompleted = player1.getPuzzlesCompleted();
+
         if(boardMode == BoardMode.CHESSPUZZLES){
             chessPuzzles = new ChessPuzzles();
+            this.numberOfPuzzles = chessPuzzles.getSizeOfDirectory();
+
             String path = chessPuzzles.getRandomFile();
+
+            if(!(numberOfPuzzlesCompleted > numberOfPuzzles)) {
+                 path = chessPuzzles.getFile(numberOfPuzzlesCompleted);
+            }
+
+
             Console.print("Attempting to open path " + path);
 
             try {
-                boardVal = new Board(new File("src/main/resources/chesspuzzles/threeMoves" + Main.SAVE_EXTENSION), difficulty);
+                boardVal = new Board(new File(path + Main.SAVE_EXTENSION), difficulty);
             } catch (FileNotFoundException e) {
                 //e.printCaller();
                 //System.err.println("Game setup failed! exiting...");
@@ -111,8 +126,7 @@ public class GameBoard {
 
         setComputer();
 
-        this.player1 = new Player(user1, Alliance.WHITE);
-        this.player2 = new Player(user2, Alliance.BLACK);
+
 
         Console.printSuccess("Game setup (Difficulty " + difficulty + ")");
     }
@@ -304,6 +318,8 @@ public class GameBoard {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == buttonTypeOne){
 
+
+
             GameBoard newGameBoard = new GameBoard(player1.getUsername(), player2.getUsername(), board.difficulty(), boardMode, main, stage, root);
             newGameBoard.createBoard();
             root.setCenter(newGameBoard.getContainer());
@@ -314,6 +330,56 @@ public class GameBoard {
         } else {
                 main.mainMenu(player1.getUsername(), stage);
         }
+    }
+
+    public void puzzleCompleted(){
+
+        int numberOfpuzzles = chessPuzzles.getSizeOfDirectory();
+        int puzzlesCompleted = player1.getPuzzlesCompleted();
+
+        if(numberOfpuzzles > puzzlesCompleted) {
+
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+
+            alert.setHeaderText("You have completed the puzzle!");
+            alert.setContentText("Do you want to continue?");
+
+            ButtonType buttonTypeOne = new ButtonType("Continue to next puzzle");
+            ButtonType buttonTypeTwo = new ButtonType("Restart this puzzle");
+            ButtonType buttonTypeThree = new ButtonType("Resturn to main menu");
+
+            alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo);
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == buttonTypeOne) {
+
+                GameBoard newGameBoard = new GameBoard(player1.getUsername(), player2.getUsername(), board.difficulty(), boardMode, main, stage, root);
+                newGameBoard.createBoard();
+                root.setCenter(newGameBoard.getContainer());
+
+            } else if (result.get() == buttonTypeTwo) {
+                GameBoard newGameBoard = new GameBoard(player1.getUsername(), player2.getUsername(), board.difficulty(), boardMode, main, stage, root);
+                newGameBoard.createBoard();
+                root.setCenter(newGameBoard.getContainer());
+
+            } else {
+                main.mainMenu(player1.getUsername(), stage);
+            }
+        }else{
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setHeaderText("CONGRATULATIONS!");
+            alert.setContentText("You have completed all of the puzzles");
+
+            Optional<ButtonType> result = alert.showAndWait();
+
+            if(result.get() == ButtonType.OK){
+                main.mainMenu(player1.getUsername(), stage);
+
+            }
+
+            main.mainMenu(player1.getUsername(), stage);
+        }
+
     }
 
     private void attemptMove(Tile firstTile, Vector2 pos) {

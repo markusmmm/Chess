@@ -25,6 +25,6 @@ public class chessPuzzlesTest {
     @Test
     public void testSizeOfDircetory(){
         int i =  puzzles.getSizeOfDirectory();
-        Assert.assertEquals(2,i);
+        Assert.assertEquals(5,i);
     }
 }
