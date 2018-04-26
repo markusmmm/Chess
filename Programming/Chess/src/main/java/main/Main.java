@@ -237,7 +237,7 @@ public class Main extends Application {
         buttonPlayMedium.setOnAction(e -> createChessGame(username, "AI: Medium", 2, BoardMode.DEFAULT, root));
         buttonPlayHard.setOnAction(e -> createChessGame(username, "AI: Hard", 3, BoardMode.DEFAULT, root));
         randomBoardPlay.setOnAction(e -> createChessGame(username, "AI: Easy", 1, BoardMode.RANDOM, root));
-        playChessPuzzles.setOnAction(e -> createChessGame(username, "AI: Hard", 3, BoardMode.CHESSPUZZLES, root));
+        playChessPuzzles.setOnAction(e -> createChessGame(username, "AI: Medium", 2, BoardMode.CHESSPUZZLES, root));
         buttonHighScore.setOnAction(e -> highscore(username, stage));
         
         media.playSound("welcome.mp3");

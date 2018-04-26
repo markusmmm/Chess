@@ -11,6 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import management.*;
@@ -22,6 +23,7 @@ import resources.MediaHelper;
 import resources.*;
 import resources.Console;
 
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
@@ -51,12 +53,18 @@ public class GameBoard {
     private boolean firstClick;
     private Tile firstTile;
     private Player player1, player2;
+    private ChessPuzzles chessPuzzles;
 
     public GameBoard(String user1, String user2, int difficulty, BoardMode boardMode, Main main, Stage stage, BorderPane root) {
         Board boardVal = null;
+
         if(boardMode == BoardMode.CHESSPUZZLES){
+            chessPuzzles = new ChessPuzzles();
+            String path = chessPuzzles.getRandomFile();
+            Console.print("Attempting to open path " + path);
+
             try {
-                boardVal = new Board(new File("src/main/resources/chesspuzzles/checkmateinthree" + Main.SAVE_EXTENSION), difficulty);
+                boardVal = new Board(new File("src/main/resources/chesspuzzles/threeMoves" + Main.SAVE_EXTENSION), difficulty);
             } catch (FileNotFoundException e) {
                 //e.printCaller();
                 //System.err.println("Game setup failed! exiting...");
@@ -99,6 +107,7 @@ public class GameBoard {
         this.capturedPieces = new ListView<>();
         this.gameStatus = new Text();
         this.database = new DatabaseController();
+
 
         setComputer();
 
@@ -178,17 +187,26 @@ public class GameBoard {
         capturedPieces.setPrefHeight(200);
         capturedPieces.setId("moveLog");
 
-        Button buttonHint = new Button();
-        buttonHint.setText("Hint");
 
-        buttonHint.setOnAction(e -> {
-            Move move = getHint(board.getActivePlayer());
 
-            squares[move.start.getY()][move.start.getX()].setFill(Color.CYAN);
-            squares[move.end.getY()][move.end.getX()].setFill(Color.LIMEGREEN);
-        });
+        if(boardMode != BoardMode.CHESSPUZZLES) {
 
-        right.getChildren().addAll(labelMoveLog, moveLog, labelCapturedPieces, capturedPieces, buttonHint);
+            Button buttonHint = new Button();
+            buttonHint.setText("Hint");
+            buttonHint.setOnAction(e -> {
+                Move move = getHint(board.getActivePlayer());
+
+
+                squares[move.start.getY()][move.start.getX()].setFill(Color.CYAN);
+                squares[move.end.getY()][move.end.getX()].setFill(Color.LIMEGREEN);
+
+
+            });
+
+            right.getChildren().addAll(labelMoveLog, moveLog, labelCapturedPieces, capturedPieces, buttonHint);
+
+        }
+
 
         VBox statusFieldContainer = new VBox();
         statusFieldContainer.setAlignment(Pos.CENTER);
@@ -238,6 +256,8 @@ public class GameBoard {
         return menuBar;
     }
 
+
+
     private void performLoad() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Chess Game File");
@@ -269,6 +289,33 @@ public class GameBoard {
             board.saveBoard(file);
     }
 
+    public void chessPuzzlePopup(){
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+
+        alert.setHeaderText("You have made the wrong move!");
+        alert.setContentText("Do you wish to restart?");
+
+        ButtonType buttonTypeOne = new ButtonType("Restart the game");
+        ButtonType buttonTypeTwo = new ButtonType("Main menu");
+
+        alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == buttonTypeOne){
+
+            GameBoard newGameBoard = new GameBoard(player1.getUsername(), player2.getUsername(), board.difficulty(), boardMode, main, stage, root);
+            newGameBoard.createBoard();
+            root.setCenter(newGameBoard.getContainer());
+
+        } else if (result.get() == buttonTypeTwo) {
+                main.mainMenu(player1.getUsername(), stage);
+
+        } else {
+                main.mainMenu(player1.getUsername(), stage);
+        }
+    }
+
     private void attemptMove(Tile firstTile, Vector2 pos) {
         IChessPiece temp = board.getPiece(firstTile.getPos());
         if(!board.ready()) {
@@ -279,6 +326,18 @@ public class GameBoard {
             return;
         }
 
+        if(boardMode == BoardMode.CHESSPUZZLES){
+
+            Move move = getHint(board.getActivePlayer());
+
+            Vector2 correctMoveEnd = move.getEnd();
+            Vector2 correctMoveStart = move.getStart();
+
+            if(!(correctMoveEnd.equals(pos) && correctMoveStart.equals(firstTile.getPos()))){
+                chessPuzzlePopup();
+            }
+
+        }
 
         //resources.Console.println("Before: " + temp.position());
 
@@ -476,7 +535,12 @@ public class GameBoard {
         String player;
         if (board.getActivePlayer() == Alliance.WHITE) player = player1.getUsername();
         else player = player2.getUsername();
-        gameStatus.setText("It's " + player + " turn.");
+
+        if(!(boardMode == BoardMode.CHESSPUZZLES)) {
+            gameStatus.setText("It's " + player + " turn.");
+        } else {
+            gameStatus.setText("Playing as white. Get checkmate in 3 moves.");
+        }
     }
 
     public void printTiles() {

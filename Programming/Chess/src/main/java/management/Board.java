@@ -14,6 +14,7 @@ import java.util.*;
 
 public class Board extends AbstractBoard {
     MediaHelper media = new MediaHelper();
+    private BoardMode mode = null;
 
     private static final Piece[] defaultBoard = new Piece[]{
             Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK,
@@ -100,6 +101,10 @@ public class Board extends AbstractBoard {
      */
     public Board(File file, int difficulty) throws FileNotFoundException {
         super(file, difficulty);
+    }
+
+    public void setBoardMode (BoardMode mode){
+        this.mode = mode;
     }
 
     /**
@@ -392,12 +397,14 @@ public class Board extends AbstractBoard {
 
         ChessPiece piece = getPiece(start);
 
+
         if (piece == null) {
             return advanceMove(false); // Check if a piece exists at the given position
         }
         if (!piece.alliance().equals(activePlayer)) {
             return advanceMove(false); // Checks if the active player owns the piece that is being moved
         }
+
 
 
         if(piece instanceof Pawn){
