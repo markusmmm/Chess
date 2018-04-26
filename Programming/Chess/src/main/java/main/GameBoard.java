@@ -318,8 +318,6 @@ public class GameBoard {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == buttonTypeOne){
 
-
-
             GameBoard newGameBoard = new GameBoard(player1.getUsername(), player2.getUsername(), board.difficulty(), boardMode, main, stage, root);
             newGameBoard.createBoard();
             root.setCenter(newGameBoard.getContainer());
@@ -336,33 +334,46 @@ public class GameBoard {
 
         int numberOfpuzzles = chessPuzzles.getSizeOfDirectory();
         int puzzlesCompleted = player1.getPuzzlesCompleted();
+        String path = chessPuzzles.getFile(puzzlesCompleted);
+
+        System.out.println(path);
+
 
         if(numberOfpuzzles > puzzlesCompleted) {
 
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
 
-            alert.setHeaderText("You have completed the puzzle!");
+            alert.setHeaderText("You have completed the puzzle! " + (puzzlesCompleted) + " / " + numberOfpuzzles + " completed");
             alert.setContentText("Do you want to continue?");
 
-            ButtonType buttonTypeOne = new ButtonType("Continue to next puzzle");
+            ButtonType buttonTypeOne = new ButtonType("Next puzzle");
             ButtonType buttonTypeTwo = new ButtonType("Restart this puzzle");
-            ButtonType buttonTypeThree = new ButtonType("Resturn to main menu");
+            ButtonType buttonTypeThree = new ButtonType("Main Menu");
 
-            alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo);
+            alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo, buttonTypeThree);
 
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == buttonTypeOne) {
 
-                GameBoard newGameBoard = new GameBoard(player1.getUsername(), player2.getUsername(), board.difficulty(), boardMode, main, stage, root);
-                newGameBoard.createBoard();
-                root.setCenter(newGameBoard.getContainer());
+                try {
+                    board = new Board(new File(path + Main.SAVE_EXTENSION));
+
+                    createBoard();
+                    setComputer();
+                    updateLogs();
+
+                } catch (FileNotFoundException e1) {
+
+                    main.mainMenu(player1.getUsername(), stage);
+
+                }
 
             } else if (result.get() == buttonTypeTwo) {
                 GameBoard newGameBoard = new GameBoard(player1.getUsername(), player2.getUsername(), board.difficulty(), boardMode, main, stage, root);
                 newGameBoard.createBoard();
                 root.setCenter(newGameBoard.getContainer());
 
-            } else {
+            } else if (result.get() == buttonTypeThree){
                 main.mainMenu(player1.getUsername(), stage);
             }
         }else{
@@ -621,6 +632,13 @@ public class GameBoard {
     public boolean gameOver() {
         King whiteKing = board.getKing(Alliance.WHITE),
                 blackKing = board.getKing(Alliance.BLACK);
+        if(boardMode == BoardMode.CHESSPUZZLES){
+            if(blackKing.checkmate()){
+                player1.completedPuzzle();
+                puzzleCompleted();
+                return true;
+            }
+        }
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
 
