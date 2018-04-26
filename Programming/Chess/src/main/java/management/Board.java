@@ -1,7 +1,6 @@
 package management;
 
 import main.GameBoard;
-import main.Main;
 import pieces.ChessPiece;
 import pieces.IChessPiece;
 import pieces.King;
@@ -47,10 +46,10 @@ public class Board extends AbstractBoard {
      * @param useClock Whether or not the game should be timed
      * @param mode How the board's initial state should be generated
      */
-    public Board(int size, int difficulty, boolean useClock, BoardMode mode) {
+    public Board(int size, int difficulty, boolean useClock, GameMode mode) {
         super(size, difficulty, useClock);
 
-        if (mode == BoardMode.DEFAULT) {
+        if (mode == GameMode.DEFAULT) {
             int p = 0;
 
             for (Piece type : defaultBoard) {
@@ -70,9 +69,13 @@ public class Board extends AbstractBoard {
 
                 p++;
             }
-        } else if (mode == BoardMode.RANDOM) {
+        } else if (mode == GameMode.RANDOM) {
             generateRandomBoard();
+        } else if (mode != GameMode.EMPTY) {
+            setRuleSet(GameManager.getGameRules(mode));
         }
+
+        Console.printSuccess("Board setup (Mode: " + mode + ")");
     }
 
     /**
@@ -98,8 +101,14 @@ public class Board extends AbstractBoard {
      * @param difficulty Game difficulty
      * @throws FileNotFoundException
      */
-    public Board(File file, int difficulty) throws FileNotFoundException {
+    public Board(File file, int difficulty, GameMode mode) throws FileNotFoundException {
         super(file, difficulty);
+
+        if (mode != GameMode.EMPTY) {
+            setRuleSet(GameManager.getGameRules(mode));
+        }
+
+        Console.printSuccess("Board setup (Mode: " + mode + ")");
     }
 
     /**
@@ -540,7 +549,7 @@ public class Board extends AbstractBoard {
      */
     public boolean movePiece(Move move) {
         //return movePiece(move.start, move.end);
-    	return movePiece(move.getStart(),move.getEnd());
+    	return movePiece(move.start,move.end);
     }
 
     /**

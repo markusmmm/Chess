@@ -11,15 +11,6 @@ public class Move {
         start = new Vector2(x0, y0);
         end = new Vector2(x1, y1);
     }
-    
-    public Vector2 getStart(){
-    	return this.start;
-    }
-    
-    public Vector2 getEnd(){
-    	return this.end;
-    }
-    ///kommentar
 
     @Override
     public String toString() {

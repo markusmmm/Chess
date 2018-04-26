@@ -20,7 +20,7 @@ import javafx.stage.StageStyle;
 import management.DatabaseController;
 import management.HighscoreController;
 import org.bson.Document;
-import resources.BoardMode;
+import resources.GameMode;
 import resources.Console;
 import resources.Highscore;
 import resources.MediaHelper;
@@ -201,12 +201,15 @@ public class Main extends Application {
         Button buttonPlayMedium = new Button();
         buttonPlayMedium.setText("PLAY: MEDIUM");
 
-        Button randomBoardPlay = new Button();
-        randomBoardPlay.setText("PLAY: RANDOM BOARD");
-
         Button buttonPlayHard = new Button();
         buttonPlayHard.setText("PLAY: HARD");
         // buttonPlayHard.setVisible(false);
+
+        Button buttonPlayRandom = new Button();
+        buttonPlayRandom.setText("PLAY: RANDOM BOARD");
+
+        Button buttonPlayShadam = new Button();
+        buttonPlayShadam.setText("PLAY: SHADAM");
 
         Button buttonHighScore = new Button();
         buttonHighScore.setText("HIGHSCORE");
@@ -214,26 +217,12 @@ public class Main extends Application {
         Button buttonQuit = new Button();
         buttonQuit.setText("QUIT");
 
-        buttonPlayVersus.setOnAction(e -> {
-            TextInputDialog dialog = new TextInputDialog();
-            dialog.initStyle(StageStyle.UTILITY);
-            dialog.setTitle("Enter the second players username");
-            dialog.setHeaderText(null);
-            dialog.setGraphic(null);
-            dialog.setContentText("Enter the second players username:");
-            Optional<String> result = dialog.showAndWait();
-            result.ifPresent(player2 -> {
-                if (!username.toLowerCase().equals(player2.toLowerCase())) {
-                    if (!database.userExists(player2))
-                        database.addUser(player2);
-                    createChessGame(username, player2, 0, BoardMode.DEFAULT, root);
-                } else System.out.println("You can't play against yourself!");
-            });
-        });
-        buttonPlayEasy.setOnAction(e -> createChessGame(username, "AI: Easy", 1, BoardMode.DEFAULT, root));
-        buttonPlayMedium.setOnAction(e -> createChessGame(username, "AI: Medium", 2, BoardMode.DEFAULT, root));
-        buttonPlayHard.setOnAction(e -> createChessGame(username, "AI: Hard", 3, BoardMode.DEFAULT, root));
-        randomBoardPlay.setOnAction(e -> createChessGame(username, "AI: Easy", 1, BoardMode.RANDOM, root));
+        buttonPlayVersus.setOnAction(e -> setupVersus(username, GameMode.DEFAULT));
+        buttonPlayEasy.setOnAction(e -> createChessGame(username, "AI: Easy", 1, GameMode.DEFAULT, root));
+        buttonPlayMedium.setOnAction(e -> createChessGame(username, "AI: Medium", 2, GameMode.DEFAULT, root));
+        buttonPlayHard.setOnAction(e -> createChessGame(username, "AI: Hard", 3, GameMode.DEFAULT, root));
+        buttonPlayRandom.setOnAction(e -> createChessGame(username, "AI: Easy", 1, GameMode.RANDOM, root));
+        buttonPlayShadam.setOnAction(e -> setupVersus(username, GameMode.SHADAM));
         buttonHighScore.setOnAction(e -> highscore(username, stage));
         
         media.playSound("welcome.mp3");
@@ -241,7 +230,7 @@ public class Main extends Application {
 
         VBox buttonContainer = new VBox(5);
         buttonContainer.setAlignment(Pos.BASELINE_CENTER);
-        buttonContainer.getChildren().addAll(buttonPlayVersus, buttonPlayEasy, buttonPlayMedium, buttonPlayHard, randomBoardPlay, buttonHighScore, buttonQuit);
+        buttonContainer.getChildren().addAll(buttonPlayVersus, buttonPlayEasy, buttonPlayMedium, buttonPlayHard, buttonPlayRandom, buttonPlayShadam, buttonHighScore, buttonQuit);
 
         VBox mainContent = new VBox(0);
         mainContent.setAlignment(Pos.TOP_CENTER);
@@ -250,6 +239,23 @@ public class Main extends Application {
 
         root.setTop(menuBar);
         root.setCenter(mainContent);
+    }
+
+    private void setupVersus(String username, GameMode gameMode) {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.initStyle(StageStyle.UTILITY);
+        dialog.setTitle("Enter the second players username");
+        dialog.setHeaderText(null);
+        dialog.setGraphic(null);
+        dialog.setContentText("Enter the second players username:");
+        Optional<String> result = dialog.showAndWait();
+        result.ifPresent(player2 -> {
+            if (!username.toLowerCase().equals(player2.toLowerCase())) {
+                if (!database.userExists(player2))
+                    database.addUser(player2);
+                createChessGame(username, player2, 0, gameMode, root);
+            } else System.out.println("You can't play against yourself!");
+        });
     }
 
     public void highscore(String username, Stage stage) {
@@ -297,8 +303,8 @@ public class Main extends Application {
      *
      * @return chessGame
      */
-    private void createChessGame(String player1, String player2, int difficulty, BoardMode boardMode, BorderPane root) {
-        GameBoard gameBoard = new GameBoard(player1, player2, difficulty, boardMode, this, stage, root);
+    private void createChessGame(String player1, String player2, int difficulty, GameMode gameMode, BorderPane root) {
+        GameBoard gameBoard = new GameBoard(player1, player2, difficulty, gameMode, this, stage, root);
         gameBoard.createBoard();
         root.setCenter(gameBoard.getContainer());
         root.setTop(gameBoard.generateGameMenuBar());

@@ -84,6 +84,9 @@ public abstract class ChessPiece implements IChessPiece {
 		return hasMoved;
 	}
 
+	public boolean followsRules(Vector2 destination) {
+		return board.checkRules(new Move(position, destination));
+	}
 
 	/**
 	 * 

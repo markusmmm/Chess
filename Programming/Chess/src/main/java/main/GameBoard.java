@@ -14,10 +14,8 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import management.*;
-import pieces.ChessPiece;
 import pieces.IChessPiece;
 import pieces.King;
-import pieces.Pawn;
 import resources.MediaHelper;
 import resources.*;
 import resources.Console;
@@ -46,35 +44,35 @@ public class GameBoard {
     private Tile[][] tiles;
     private Rectangle[][] squares;
     private String user1, user2;
-    private BoardMode boardMode;
+    private GameMode gameMode;
 
     private boolean firstClick;
     private Tile firstTile;
     private Player player1, player2;
 
-    public GameBoard(String user1, String user2, int difficulty, BoardMode boardMode, Main main, Stage stage, BorderPane root) {
+    public GameBoard(String user1, String user2, int difficulty, GameMode gameMode, Main main, Stage stage, BorderPane root) {
         Board boardVal = null;
 
-        if(boardMode == BoardMode.DEFAULT) {
-            //this.board = new Board(SIZE, false, boardMode); TEMP TEST
+        if(gameMode != GameMode.EMPTY && gameMode != GameMode.RANDOM) {
+            //this.board = new Board(SIZE, false, gameMode); TEMP TEST
             try {
-                boardVal = new Board(new File("default" + Main.SAVE_EXTENSION), difficulty);
+                boardVal = new Board(new File("default" + Main.SAVE_EXTENSION), difficulty, gameMode);
             } catch (FileNotFoundException e) {
                 //e.printCaller();
                 //System.err.println("Game setup failed! exiting...");
                 //System.exit(1);
 
                 Console.printWarning("Save file 'default' not found. Attempting legacy generation...");
-                boardVal = new Board(SIZE, difficulty,false, boardMode);
+                boardVal = new Board(SIZE, difficulty,false, gameMode);
             }
-        } else if(boardMode == BoardMode.RANDOM) {
-            boardVal = new Board(SIZE, difficulty, false, boardMode);
+        } else {
+            boardVal = new Board(SIZE, difficulty, false, gameMode);
         }
         board = boardVal;
 
         this.main = main;
         this.stage = stage;
-        this.boardMode = boardMode;
+        this.gameMode = gameMode;
         this.root = root;
         this.grid = new GridPane();
         this.tiles = new Tile[SIZE][SIZE];
@@ -210,7 +208,7 @@ public class GameBoard {
             main.mainMenu(player1.getUsername(), stage);
         });
         menuItemReset.setOnAction(e -> {
-            GameBoard newGameBoard = new GameBoard(player1.getUsername(), player2.getUsername(), board.difficulty(), boardMode, main, stage, root);
+            GameBoard newGameBoard = new GameBoard(player1.getUsername(), player2.getUsername(), board.difficulty(), gameMode, main, stage, root);
             newGameBoard.createBoard();
             root.setCenter(newGameBoard.getContainer());
         });

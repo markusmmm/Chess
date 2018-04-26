@@ -1,7 +1,8 @@
 package resources;
 
-public enum BoardMode {
+public enum GameMode {
     DEFAULT,
     RANDOM,
+    SHADAM,
     EMPTY
 }

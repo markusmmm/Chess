@@ -4,5 +4,6 @@ public enum Requirement {
     ANY,
     SAME,
     OTHER,
-    NONE
+    NONE,
+    NULL
 }

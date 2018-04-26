@@ -38,7 +38,7 @@ public class AbstractBoard {
 
     private Stack<MoveNode> gameLog = new Stack<>();
 
-    private RuleManager ruleManager = null;
+    private RuleSet ruleSet = new RuleSet();
 
     protected AbstractBoard(AbstractBoard other) {
         sync(other);
@@ -64,12 +64,6 @@ public class AbstractBoard {
         this.difficulty = difficulty;
     }
 
-    public void setRuleManager(RuleManager ruleManager) {
-        this.ruleManager = ruleManager;
-        if(ruleManager != null)
-            this.ruleManager.setBoard(this);
-    }
-
     public void sync(AbstractBoard other) {
         moveI = other.moveI;
 
@@ -88,10 +82,12 @@ public class AbstractBoard {
 
         gameLog = (Stack<MoveNode>) other.gameLog.clone();
 
+        ruleSet = other.ruleSet.clone();
+
         difficulty = other.difficulty;
 
-        if(ruleManager != null)
-            ruleManager.setBoard(this);
+        if(ruleSet != null)
+            ruleSet.setBoard(this);
 
         for(ChessPiece piece : pieces.values()) {
             if(piece == null) continue;
@@ -211,6 +207,16 @@ public class AbstractBoard {
         reader.close();
 
         Console.printSuccess("Board successfully loaded from file " + file.getName());
+    }
+
+    protected void setRuleSet(RuleSet ruleSet) {
+        this.ruleSet = ruleSet;
+        this.ruleSet.setBoard(this);
+
+        Console.printNotice("Added to board: " + ruleSet);
+    }
+    public boolean checkRules(Move move) {
+        return ruleSet.evaluate(move);
     }
 
     /**
@@ -446,14 +452,18 @@ public class AbstractBoard {
     }
 
     public boolean forceMovePiece(Vector2 start, Vector2 end) {
-        if(!(pieces.containsKey(start) && insideBoard(end))) return false;
+        if(!(insideBoard(start) && insideBoard(end) && pieces.containsKey(start))) return false;
+        if(start.equals(end)) return false;
 
         try {
             mutex.acquire();
 
             pieces.remove(end);
 
-            ChessPiece piece = pieces.get(start).clonePiece();
+            ChessPiece piece = pieces.get(start);
+            if(piece == null) return false;
+            piece = piece.clonePiece();
+
             pieces.remove(start);
             pieces.put(end, piece);
 

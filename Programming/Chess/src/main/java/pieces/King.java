@@ -61,11 +61,14 @@ public class    King extends ChessPiece {
         // Ignored if king is not on live board
         if(movesIntoCheck(destination)) return false;
 
-        return (
+        if (
                 (inDiagonals(destination) || inStraights(destination)) &&
                         position.distance(destination) == 1 &&
                         freePath(destination)
-        );
+        ) {
+            return true;
+        }
+        return followsRules(destination);
     }
 
     public Set<Vector2> getPossibleDestinations() {

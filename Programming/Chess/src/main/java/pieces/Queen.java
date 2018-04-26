@@ -31,10 +31,13 @@ public class Queen extends ChessPiece {
 	public boolean legalMove(Vector2 destination) {
         if(!super.legalMove(destination)) return false;
 
-		return (
+		if (
             (inDiagonals(destination) || inStraights(destination)) &&
             freePath(destination)
-        );
+        ) {
+		    return true;
+        }
+        return followsRules(destination);
 	}
 
 	public Set<Vector2> getPossibleDestinations() {

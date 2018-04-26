@@ -67,13 +67,16 @@ public class Pawn extends ChessPiece {
 
 		//resources.Console.println("White result: " + whiteResult);
 
-		return (
+		if (
 				((blackResult ||
 						(whiteResult)))  ||
 						(((whiteNegative2(destination)  || whiteNegative(destination) ||  whiteLDiag(destination) || whiteRDiag(destination)) && this.alliance.equals(WHITE)) ||
 			((blackPositive2(destination) || blackPositive(destination) || blackLDiag(destination) || blackRDiag(destination)) && this.alliance.equals(BLACK))) &&
 			((noTurnBackBlack(destination) && this.alliance.equals(BLACK)) || (noTurnBackWhite(destination) && this.alliance.equals(WHITE)))
-		);
+		) {
+			return true;
+		}
+		return followsRules(destination);
 	}
 
 

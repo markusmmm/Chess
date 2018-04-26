@@ -41,10 +41,13 @@ public class Rook extends ChessPiece {
 		//resources.Console.println("inStraights: " + inStraights(destination));
 		//resources.Console.println("freePath: " + freePath(destination));
 
-		return (
+		if (
 			inStraights(destination) &&
 			freePath(destination)
-		);
+		) {
+			return true;
+		}
+		return followsRules(destination);
 	}
 
 	/**
