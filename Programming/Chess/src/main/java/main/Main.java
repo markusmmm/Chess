@@ -208,6 +208,9 @@ public class Main extends Application {
         buttonPlayHard.setText("PLAY: HARD");
         // buttonPlayHard.setVisible(false);
 
+        Button playChessPuzzles = new Button();
+        playChessPuzzles.setText("PLAY: Chess Puzzles");
+
         Button buttonHighScore = new Button();
         buttonHighScore.setText("HIGHSCORE");
 
@@ -234,6 +237,7 @@ public class Main extends Application {
         buttonPlayMedium.setOnAction(e -> createChessGame(username, "AI: Medium", 2, BoardMode.DEFAULT, root));
         buttonPlayHard.setOnAction(e -> createChessGame(username, "AI: Hard", 3, BoardMode.DEFAULT, root));
         randomBoardPlay.setOnAction(e -> createChessGame(username, "AI: Easy", 1, BoardMode.RANDOM, root));
+        playChessPuzzles.setOnAction(e -> createChessGame(username, "AI: Hard", 3, BoardMode.CHESSPUZZLES, root));
         buttonHighScore.setOnAction(e -> highscore(username, stage));
         
         media.playSound("welcome.mp3");
@@ -241,7 +245,7 @@ public class Main extends Application {
 
         VBox buttonContainer = new VBox(5);
         buttonContainer.setAlignment(Pos.BASELINE_CENTER);
-        buttonContainer.getChildren().addAll(buttonPlayVersus, buttonPlayEasy, buttonPlayMedium, buttonPlayHard, randomBoardPlay, buttonHighScore, buttonQuit);
+        buttonContainer.getChildren().addAll(buttonPlayVersus, buttonPlayEasy, buttonPlayMedium, buttonPlayHard, randomBoardPlay, playChessPuzzles, buttonHighScore, buttonQuit);
 
         VBox mainContent = new VBox(0);
         mainContent.setAlignment(Pos.TOP_CENTER);
@@ -298,6 +302,7 @@ public class Main extends Application {
      * @return chessGame
      */
     private void createChessGame(String player1, String player2, int difficulty, BoardMode boardMode, BorderPane root) {
+        System.out.println(boardMode);
         GameBoard gameBoard = new GameBoard(player1, player2, difficulty, boardMode, this, stage, root);
         gameBoard.createBoard();
         root.setCenter(gameBoard.getContainer());

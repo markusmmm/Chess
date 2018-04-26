@@ -54,8 +54,19 @@ public class GameBoard {
 
     public GameBoard(String user1, String user2, int difficulty, BoardMode boardMode, Main main, Stage stage, BorderPane root) {
         Board boardVal = null;
+        if(boardMode == BoardMode.CHESSPUZZLES){
+            try {
+                boardVal = new Board(new File("src/main/resources/chesspuzzles/checkmateinthree" + Main.SAVE_EXTENSION), difficulty);
+            } catch (FileNotFoundException e) {
+                //e.printCaller();
+                //System.err.println("Game setup failed! exiting...");
+                //System.exit(1);
 
-        if(boardMode == BoardMode.DEFAULT) {
+                Console.printWarning("Save file 'default' not found. Attempting legacy generation...");
+                boardVal = new Board(SIZE, difficulty,false, boardMode);
+            }
+        }
+        else if(boardMode == BoardMode.DEFAULT) {
             //this.board = new Board(SIZE, false, boardMode); TEMP TEST
             try {
                 boardVal = new Board(new File("default" + Main.SAVE_EXTENSION), difficulty);
