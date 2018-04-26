@@ -163,6 +163,14 @@ public class GameBoard {
         labelCapturedPieces.setText("Captured pieces:");
         labelCapturedPieces.setId("rightColumnTitle");
 
+        Label labelClock = new Label();
+        ChessClock clock = board.getClock();
+
+        if (clock != null) {
+            labelClock.setPrefWidth(rightColumnSize);
+            labelClock.setText(clock.toString());
+        }
+
         capturedPieces.setPrefWidth(rightColumnSize);
         capturedPieces.setPrefHeight(200);
         capturedPieces.setId("moveLog");
@@ -177,7 +185,10 @@ public class GameBoard {
             squares[move.end.getY()][move.end.getX()].setFill(Color.LIMEGREEN);
         });
 
-        right.getChildren().addAll(labelMoveLog, moveLog, labelCapturedPieces, capturedPieces, buttonHint);
+        if(clock == null)
+            right.getChildren().addAll(labelMoveLog, moveLog, labelCapturedPieces, capturedPieces, buttonHint);
+        else
+            right.getChildren().addAll(labelMoveLog, moveLog, labelCapturedPieces, labelClock, capturedPieces, buttonHint);
 
         VBox statusFieldContainer = new VBox();
         statusFieldContainer.setAlignment(Pos.CENTER);

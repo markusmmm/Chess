@@ -80,13 +80,13 @@ public abstract class ChessPiece implements IChessPiece {
 		return hasMoved;
 	}
 
-
 	/**
 	 * 
 	 * @param destination
 	 */
 	public boolean move(Vector2 destination, Board board) {
 		this.board = board;
+		if(board.getClock() != null && board.getClock().timeLeft(alliance.ordinal()) <= 0);
 
 		//resources.Console.println("Attempting to move " + alliance + " " + piece + " from " + position + " to " + move);
 		if (!legalMove(destination)) return false; // If the destination is unreachable, the move fails

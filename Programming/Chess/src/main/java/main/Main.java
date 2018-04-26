@@ -61,6 +61,9 @@ public class Main extends Application {
         stage.setTitle("Chess");
         stage.setResizable(false);
         stage.show();
+
+        MediaHelper media = new MediaHelper();
+        media.playSound("chess_theme.mp3");
     }
 
     private void directorySetup() {

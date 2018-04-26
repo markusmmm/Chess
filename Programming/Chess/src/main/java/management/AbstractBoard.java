@@ -25,7 +25,7 @@ public class AbstractBoard {
     private int size;
     private int difficulty;
     private Player player1, player2;
-    private ChessClock clock = null;
+    protected ChessClock clock = null;
     private ChessPiece lastPiece = null;
 
     protected Alliance activePlayer = Alliance.WHITE;
@@ -92,6 +92,8 @@ public class AbstractBoard {
     }
 
     public int difficulty() { return difficulty; }
+
+    public ChessClock getClock() { return clock == null ? null : clock.clone(); }
 
     private void loadBoard(File file) throws FileNotFoundException {
         Scanner reader;
@@ -249,7 +251,7 @@ public class AbstractBoard {
 
     private void generateClock(boolean doGenerate) {
         if (!doGenerate) return;
-        clock = new ChessClock(2, 900, 12, -1);
+        clock = new ChessClock(2, 300, 5);
     }
 
     public boolean ready() {

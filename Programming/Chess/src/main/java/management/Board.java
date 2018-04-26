@@ -550,6 +550,9 @@ public class Board extends AbstractBoard {
      */
     private boolean advanceMove(boolean state) {
         if (state) {
+            if(clock != null && !clock.endTurn(moveI % 2))
+                return false;
+
             activePlayer = activePlayer.equals(Alliance.WHITE) ? Alliance.BLACK : Alliance.WHITE;
             moveI++;
         }
