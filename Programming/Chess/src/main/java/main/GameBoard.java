@@ -334,12 +334,8 @@ public class GameBoard {
 
         int numberOfpuzzles = chessPuzzles.getSizeOfDirectory();
         int puzzlesCompleted = player1.getPuzzlesCompleted();
-        String path = chessPuzzles.getFile(puzzlesCompleted);
-
-        System.out.println(path);
-
-
         if(numberOfpuzzles > puzzlesCompleted) {
+            String path = chessPuzzles.getFile(puzzlesCompleted);
 
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
 
