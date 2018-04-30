@@ -434,7 +434,8 @@ public class GameBoard {
             /*resources.Console.println("Moving " + board.getPiece(firstTile.getPos()) +
                     " from " + firstTile.getPos() + " to " + pos);*/
         } else {
-            media.playSound("denied.mp3");
+            media.playSound("denied.mp3").play();
+
         }
 
         drawBoard();
@@ -680,7 +681,7 @@ public class GameBoard {
         alert.setHeaderText(null);
         alert.setGraphic(null);
         MediaHelper media = new MediaHelper();
-        media.playSound("game_over.mp3");
+        media.playSound("game_over.mp3").play();
         alert.showAndWait();
         main.mainMenu(player1.getUsername(), stage);
         return true;

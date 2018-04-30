@@ -92,7 +92,7 @@ public abstract class ChessPiece implements IChessPiece {
 		if (!legalMove(destination)) return false; // If the destination is unreachable, the move fails
 
 		position = destination;
-		media.playSound("move.mp3");
+		media.playSound("move.mp3").play();
 		hasMoved = true;
 
 		//resources.Console.println("Move performed. New pos: " + position);

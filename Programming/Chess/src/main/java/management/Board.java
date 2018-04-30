@@ -1,5 +1,6 @@
 package management;
 
+import javafx.scene.media.MediaPlayer;
 import main.GameBoard;
 import main.Main;
 import pieces.ChessPiece;
@@ -445,7 +446,9 @@ public class Board extends AbstractBoard {
 
                 }
 
-                media.playSound("move.mp3");
+
+                MediaPlayer np = media.playSound("move.mp3");
+                np.play();
 
                 if(!end.equals(piece.position()))
                     Console.printError("Position in " + piece + " was not updated internally!");
@@ -473,7 +476,7 @@ public class Board extends AbstractBoard {
 
                 addPiece(new Vector2(kingSideRookX - 2, end.getY()), pieceType, alliance);
                 addPiece(new Vector2(kingSideRookX - 1, end.getY()), Piece.KING, alliance);
-                media.playSound("move.mp3");
+                media.playSound("move.mp3").play();
 
                 logMove(new MoveNode(piece, start, end, (ChessPiece) getPiece(end)));
 
@@ -497,7 +500,8 @@ public class Board extends AbstractBoard {
 
                 addPiece(new Vector2(queenSideRookX + 3, end.getY()), pieceType, alliance);
                 addPiece(new Vector2(queenSideRookX + 2, end.getY()), Piece.KING, alliance);
-                media.playSound("move.mp3");
+                media.playSound("move.mp3").play();
+
 
                 logMove(new MoveNode(piece, start, end, getPiece(end)));
 

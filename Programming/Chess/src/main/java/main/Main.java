@@ -10,6 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
@@ -40,6 +41,7 @@ public class Main extends Application {
     static final int WIDTH = 720;
     static final int HEIGHT = 500;
     MediaHelper media = new MediaHelper();
+    MediaPlayer mp = media.playSound("chess_theme.mp3");
     private Stage stage;
     private BorderPane root = new BorderPane();
     private MenuBar menuBar = generateMenuBar();
@@ -239,8 +241,9 @@ public class Main extends Application {
         randomBoardPlay.setOnAction(e -> createChessGame(username, "AI: Easy", 1, BoardMode.RANDOM, root));
         playChessPuzzles.setOnAction(e -> createChessGame(username, "AI: Medium", 2, BoardMode.CHESSPUZZLES, root));
         buttonHighScore.setOnAction(e -> highscore(username, stage));
-        
-        media.playSound("welcome.mp3");
+
+        mp.play();
+
         buttonQuit.setOnAction(e -> onQuit());
 
         VBox buttonContainer = new VBox(5);
@@ -302,12 +305,14 @@ public class Main extends Application {
      * @return chessGame
      */
     private void createChessGame(String player1, String player2, int difficulty, BoardMode boardMode, BorderPane root) {
+        mp.stop();
         System.out.println(boardMode);
         GameBoard gameBoard = new GameBoard(player1, player2, difficulty, boardMode, this, stage, root);
         gameBoard.createBoard();
         root.setCenter(gameBoard.getContainer());
         root.setTop(gameBoard.generateGameMenuBar());
-        media.playSound("startup.mp3");
+        MediaPlayer nmp =media.playSound("startup.mp3");
+        nmp.play();
         //return gameBoard.getContainer();
     }
 

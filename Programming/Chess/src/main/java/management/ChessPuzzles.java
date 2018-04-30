@@ -15,28 +15,26 @@ public class ChessPuzzles {
     private int sizeOfDirectory;
 
 
-
     public ChessPuzzles() {
         fileUtils = new FileUtils();
         file = new File(path);
         files = file.listFiles();
-        sizeOfDirectory =  getFile(path);
-
+        sizeOfDirectory = getFile(path);
 
 
     }
 
 
-    public String getFile(int i){
+    public String getFile(int i) {
 
         String fileString = files[i].toString();
-        fileString = fileString.substring(0,fileString.lastIndexOf('.'));
+        fileString = fileString.substring(0, fileString.lastIndexOf('.'));
 
         return fileString;
     }
 
-    public void printFiles(){
-        for(int i = 0; i < files.length; i++){
+    public void printFiles() {
+        for (int i = 0; i < files.length; i++) {
             System.out.println(files[i]);
         }
     }
@@ -54,28 +52,24 @@ public class ChessPuzzles {
                     getFile(file.getAbsolutePath());
                 }
             }
-            return count;
+        return count;
     }
 
 
-    public int getSizeOfDirectory(){
+    public int getSizeOfDirectory() {
 
         return sizeOfDirectory;
     }
 
-    public String getRandomFile(){
+    public String getRandomFile() {
         Random r = new Random();
-        int i = r.nextInt(sizeOfDirectory+1);
+        int i = r.nextInt(sizeOfDirectory + 1);
 
         String fileString = files[i].toString();
-        fileString = fileString.substring(0,fileString.lastIndexOf('.'));
+        fileString = fileString.substring(0, fileString.lastIndexOf('.'));
 
         return fileString;
     }
-
-
-
-
 
 
 }
