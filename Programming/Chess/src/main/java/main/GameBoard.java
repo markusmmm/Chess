@@ -352,7 +352,7 @@ public class GameBoard {
             if (result.get() == buttonTypeOne) {
 
                 try {
-                    board = new Board(new File(path + Main.SAVE_EXTENSION));
+                    board = new Board(new File(path + Main.SAVE_EXTENSION),board.difficulty());
 
                     createBoard();
                     setComputer();
