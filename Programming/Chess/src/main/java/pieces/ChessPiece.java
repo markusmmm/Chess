@@ -18,9 +18,6 @@ public abstract class ChessPiece implements IChessPiece {
 
 	private boolean hasMoved;
 
-    /**
-     *
-     */
     public ChessPiece(Vector2 position, Alliance alliance, AbstractBoard board, boolean canJump, Piece piece, int value, boolean hasMoved) {
     	this.position = position;
         this.alliance = alliance;

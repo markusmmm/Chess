@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Knight  extends ChessPiece {
+public class Knight extends ChessPiece {
 
 	Set<Vector2> moves = new HashSet<>(Arrays.asList(
 			new Vector2( 2, 1), new Vector2( 1, 2),
