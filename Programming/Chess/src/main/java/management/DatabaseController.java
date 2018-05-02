@@ -59,9 +59,9 @@ public class DatabaseController {
 
         // database.createOnlineGame("magnus", "tom");
 
-        Document gameData = database.getGame("5ae9f3e9e33da16d580fe644");
+        /*Document gameData = database.getGame("5ae9f3e9e33da16d580fe644");
         String chessData = (String) gameData.get("chessData");
-        System.out.println(chessData);
+        System.out.println(chessData);*/
 
 
         /* Deletes all users with score set to 0 */
@@ -132,7 +132,7 @@ public class DatabaseController {
     public List<Document> checkForGameInvites(String username) {
         if (userExists(username)) {
             List<Document> gameInvites = new ArrayList<>();
-            db.getCollection("gameInvite").find(new Document("player2", username.toLowerCase())).into(gameInvites);
+            db.getCollection("gameInvite").find(new Document("player2", username.toLowerCase()).append("inviteAccepted", null)).into(gameInvites);
             return gameInvites;
         }
         return null;
@@ -152,6 +152,14 @@ public class DatabaseController {
         Document query = new Document("completed", false).append("player1", player1)
                 .append("player2", player2).append("gameData", defaultChess);
         db.getCollection("games").insertOne(query);
+    }
+
+    public void handleGameInvite(ObjectId id, boolean accepted, String player1, String player2) {
+        Document newDoc = new Document();
+        newDoc.append("$set", new Document().append("inviteAccepted", accepted));
+        Document searchQuery = new Document().append("_id", id);
+        db.getCollection("gameInvite").updateOne(searchQuery, newDoc);
+        createOnlineGame(player1, player2);
     }
 
     public Document getGame(String id) {

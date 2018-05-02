@@ -21,6 +21,7 @@ import javafx.stage.StageStyle;
 import management.DatabaseController;
 import org.apache.commons.io.FileUtils;
 import org.bson.Document;
+import org.bson.types.ObjectId;
 import resources.BoardMode;
 import resources.Console;
 import resources.MediaHelper;
@@ -278,7 +279,9 @@ public class Main extends Application {
                     if (invites.size() > 0) {
                         run = false;
                         for (int i = 0; i < invites.size(); i++) {
+                            ObjectId id = (ObjectId) invites.get(i).get("_id");
                             String player1 = (String) invites.get(i).get("player1");
+                            String player2 = (String) invites.get(i).get("player2");
                             Platform.runLater(new Runnable() {
                                 @Override
                                 public void run() {
@@ -287,10 +290,10 @@ public class Main extends Application {
                                     alert.setHeaderText(player1 + " has invited you to a game of chess!");
                                     alert.setContentText("Do you want to accept?");
                                     Optional<ButtonType> result = alert.showAndWait();
-                                    if (result.get() == ButtonType.OK){
-                                        System.out.println(username + " accepted the invite.");
+                                    if (result.get() == ButtonType.OK) {
+                                        database.handleGameInvite(id, true, player1, player2);
                                     } else {
-                                        System.out.println(username + " declined the invite.");
+                                        database.handleGameInvite(id, false, player1, player2);
                                     }
                                 }
                             });
