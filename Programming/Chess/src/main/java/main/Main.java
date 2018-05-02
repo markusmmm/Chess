@@ -1,6 +1,7 @@
 package main;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
@@ -18,16 +19,16 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import management.DatabaseController;
-import resources.Console;
+import org.apache.commons.io.FileUtils;
 import org.bson.Document;
-import resources.MediaHelper;
 import resources.BoardMode;
+import resources.Console;
+import resources.MediaHelper;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -46,6 +47,7 @@ public class Main extends Application {
 
     public static final File SAVES_DIR = new File(System.getProperty("user.home"), "GitGud/");
     public static final File LOGS_DIR = new File(SAVES_DIR, ".logs/");
+    public static final File ONLINE_GAME_DIR = new File(SAVES_DIR, ".online/");
     public static final File CORE_DIR = new File("core/");
 
     public static final String DATA_SEPARATOR = "====";
@@ -60,6 +62,7 @@ public class Main extends Application {
         stage.setScene(scene);
         stage.setTitle("Chess");
         stage.setResizable(false);
+        stage.setOnHidden(e -> onQuit());
         stage.show();
     }
 
@@ -69,6 +72,8 @@ public class Main extends Application {
         }
         if(!LOGS_DIR.exists())
             LOGS_DIR.mkdirs();
+        if(!ONLINE_GAME_DIR.exists())
+            ONLINE_GAME_DIR.mkdirs();
 
         if(CORE_DIR.exists()) {
             File[] coreFiles = CORE_DIR.listFiles();
@@ -203,6 +208,9 @@ public class Main extends Application {
         buttonPlayHard.setText("PLAY: HARD");
         // buttonPlayHard.setVisible(false);
 
+        Button buttonPlayOnline = new Button();
+        buttonPlayOnline.setText("PLAY: ONLINE");
+
         Button buttonHighScore = new Button();
         buttonHighScore.setText("HIGHSCORE");
 
@@ -230,12 +238,29 @@ public class Main extends Application {
         buttonPlayHard.setOnAction(e -> createChessGame(username, "AI: Hard", 3, BoardMode.DEFAULT, root));
         randomBoardPlay.setOnAction(e -> createChessGame(username, "AI: Easy", 1, BoardMode.RANDOM, root));
         buttonHighScore.setOnAction(e -> highscore(username, stage));
+        buttonPlayOnline.setOnAction(e -> {
+            Document game = database.getGame("5ae9f3e9e33da16d580fe644");
+            String player1 = (String) game.get("player1");
+            String player2 = (String) game.get("player2");
+            String gameData = (String) game.get("gameData");
+            try {
+                File gameFile = new File(ONLINE_GAME_DIR, "5ae9f3e9e33da16d580fe644.txt");
+                FileUtils.writeStringToFile(gameFile, gameData, StandardCharsets.UTF_8);
+                GameBoard gameBoard = new GameBoard(player1, player2, 0, BoardMode.DEFAULT, this, stage, root);
+                gameBoard.createBoard();
+                gameBoard.performLoad(gameFile);
+                root.setCenter(gameBoard.getContainer());
+                root.setTop(gameBoard.generateGameMenuBar());
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        });
         media.playSound("welcome.mp3");
         buttonQuit.setOnAction(e -> onQuit());
 
         VBox buttonContainer = new VBox(5);
         buttonContainer.setAlignment(Pos.BASELINE_CENTER);
-        buttonContainer.getChildren().addAll(buttonPlayVersus, buttonPlayEasy, buttonPlayMedium, buttonPlayHard, randomBoardPlay, buttonHighScore, buttonQuit);
+        buttonContainer.getChildren().addAll(buttonPlayVersus, buttonPlayEasy, buttonPlayMedium, buttonPlayHard, buttonPlayOnline, buttonHighScore, buttonQuit);
 
         VBox mainContent = new VBox(0);
         mainContent.setAlignment(Pos.TOP_CENTER);
@@ -244,6 +269,38 @@ public class Main extends Application {
 
         root.setTop(menuBar);
         root.setCenter(mainContent);
+
+        Thread databaseChecker = new Thread(() -> {
+            boolean run = true;
+            try {
+                while (run) {
+                    List<Document> invites = database.checkForGameInvites(username);
+                    if (invites.size() > 0) {
+                        run = false;
+                        for (int i = 0; i < invites.size(); i++) {
+                            String player1 = (String) invites.get(i).get("player1");
+                            Platform.runLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                                    alert.setTitle("Game Invite");
+                                    alert.setHeaderText(player1 + " has invited you to a game of chess!");
+                                    alert.setContentText("Do you want to accept?");
+                                    Optional<ButtonType> result = alert.showAndWait();
+                                    if (result.get() == ButtonType.OK){
+                                        System.out.println(username + " accepted the invite.");
+                                    } else {
+                                        System.out.println(username + " declined the invite.");
+                                    }
+                                }
+                            });
+                        }
+                    }
+                }
+            } catch(Exception e) { System.out.println(e); }
+        });
+        databaseChecker.start();
+
     }
 
     public void highscore(String username, Stage stage) {

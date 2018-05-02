@@ -234,19 +234,23 @@ public class GameBoard {
                 new FileChooser.ExtensionFilter("Chess Game File", "*" + Main.SAVE_EXTENSION));
         fileChooser.setInitialDirectory(Main.SAVES_DIR);
         File selectedFile = fileChooser.showOpenDialog(stage);
+        performLoad(selectedFile);
+    }
 
-        if(selectedFile != null) {
+    public void performLoad(File file) {
+        if(file != null) {
             try {
-                board = new Board(selectedFile);
+                board = new Board(file);
                 createBoard();
                 setComputer();
                 updateLogs();
             } catch (FileNotFoundException e1) {
-                Console.printError("Save file " + selectedFile.getName() + " does not exist");
+                Console.printError("Save file " + file.getName() + " does not exist");
                 e1.printStackTrace();
             }
         }
     }
+
     private void performSave() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Chess Game File");

@@ -2,13 +2,17 @@ package management;
 
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
+import com.mongodb.QueryBuilder;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.result.DeleteResult;
 import org.bson.Document;
+import org.bson.types.ObjectId;
 
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -47,8 +51,21 @@ public class DatabaseController {
         collection.insertOne(document);
         databaseController.close();*/
 
+        /*List<Document> invites = database.checkForGameInvites("magnus");
+        System.out.println(invites.size());
+        String player1 = (String) invites.get(0).get("player1");
+        String player2 = (String) invites.get(0).get("player2");
+        System.out.println(player1 + " has challenged " + player2 + " to a game of chess.");*/
+
+        // database.createOnlineGame("magnus", "tom");
+
+        Document gameData = database.getGame("5ae9f3e9e33da16d580fe644");
+        String chessData = (String) gameData.get("chessData");
+        System.out.println(chessData);
+
+
         /* Deletes all users with score set to 0 */
-        // collection.deleteMany(new Document("score", 0));
+        //collection.deleteMany(new Document("score", 0));
     }
 
     /**
@@ -110,6 +127,37 @@ public class DatabaseController {
             Document searchQuery = new Document().append("name", username.toLowerCase());
             db.getCollection("users").updateOne(searchQuery, newDoc);
         }
+    }
+
+    public List<Document> checkForGameInvites(String username) {
+        if (userExists(username)) {
+            List<Document> gameInvites = new ArrayList<>();
+            db.getCollection("gameInvite").find(new Document("player2", username.toLowerCase())).into(gameInvites);
+            return gameInvites;
+        }
+        return null;
+    }
+
+    public void createOnlineGame(String player1, String player2) {
+        String defaultChess = "8 -1 0 0 0\n" +
+                "-1 -1\n" +
+                "rnbqkbnr\n" +
+                "pppppppp\n" +
+                "eeeeeeee\n" +
+                "eeeeeeee\n" +
+                "eeeeeeee\n" +
+                "eeeeeeee\n" +
+                "PPPPPPPP\n" +
+                "RNBQKBNR";
+        Document query = new Document("completed", false).append("player1", player1)
+                .append("player2", player2).append("gameData", defaultChess);
+        db.getCollection("games").insertOne(query);
+    }
+
+    public Document getGame(String id) {
+        Document query = new Document("_id", new ObjectId(id));
+        return db.getCollection("games").find(query).first();
+
     }
 
     /**
