@@ -26,7 +26,10 @@ public class Pawn extends ChessPiece {
 
 
 	public Pawn(Vector2 position, Alliance alliance, AbstractBoard board, boolean hasMoved, boolean hasDoubleStepped) {
-		super(position, alliance, board, false, Piece.PAWN, 1, hasMoved);
+		super(position, alliance,
+                new HashSet<>(Arrays.asList(new Vector2(0, alliance == Alliance.BLACK ? 1 : -1)))
+                , MoveType.STEP, board, false, Piece.PAWN, 1, hasMoved);
+
 		this.hasDoubleStepped = hasDoubleStepped;
 	}
 	public Pawn(Pawn other) {
@@ -232,6 +235,7 @@ public class Pawn extends ChessPiece {
 		return true;
 	}
 
+	@Override
 	public Set<Vector2> getPossibleDestinations() {
 		Set<Vector2> possibleMoves = new HashSet<>();
 

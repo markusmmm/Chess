@@ -437,6 +437,7 @@ public class GameBoard {
         IChessPiece piece = board.getPiece(pos);
         if(piece == null) return;
 
+        Console.printNotice("Highlighting " + pos);
         Set<Vector2> list = piece.getPossibleDestinations();
         for (Vector2 possibleDestination : list) {
             if (board.getPiece(possibleDestination) != null) {
@@ -480,6 +481,11 @@ public class GameBoard {
     public boolean gameOver() {
         King whiteKing = board.getKing(Alliance.WHITE),
                 blackKing = board.getKing(Alliance.BLACK);
+
+        if(whiteKing == null || blackKing == null) {
+            Console.printWarning("Non-conventional game setup (one or more kings missing). Game-over check not supported");
+            return false;
+        }
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
 

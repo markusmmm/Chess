@@ -4,35 +4,110 @@ import management.AbstractBoard;
 import management.Board;
 import resources.*;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public abstract class ChessPiece implements IChessPiece {
+    public enum MoveType { STEP, LINE }
+
+    public class MoveEvaluator {
+        private HashSet<Vector2> possibleDestinations;
+
+        protected MoveEvaluator() {
+            possibleDestinations = new HashSet<>();
+        }
+
+        protected boolean evaluate(Vector2 move) {
+            Vector2 destination = position.add(move);
+
+            if(legalMove(destination)) {
+                possibleDestinations.add(destination);
+                return true;
+            }
+            return false;
+        }
+
+        /**
+         * Evaluates one step in each given directions
+         * @param moves Move directions to evaluate
+         */
+        protected void evaluate(HashSet<Vector2> moves) {
+            moves = (HashSet<Vector2>)moves.clone();
+
+            for(Vector2 dir : moves)
+                evaluate(dir);
+        }
+
+        /**
+         * Evaluates multiple directions in parallel, until all directions fail
+         * @param dirs Directions to evaluate (Set of unit vectors)
+         */
+        protected void evaluateContinuous(HashSet<Vector2> dirs) {
+            dirs = (HashSet<Vector2>)dirs.clone();
+            if(dirs.size() == 0)
+                //Console.printWarning("Evaluation begun, but " + clonePiece() + " has no moves");
+
+            for (int variable = 1; variable < board.size(); variable++) {
+                if (dirs.size() == 0) return;
+
+                Set<Vector2> terminatedDirs = new HashSet<>();
+                for (Vector2 d : dirs) {
+                    Vector2 move = d.mult(variable);
+                    if (!evaluate(move) && !canJump) {
+                        // Obstacle reached. If the piece can't jump, no further evaluation is needed in direction d
+                        terminatedDirs.add(d);
+                    }
+                }
+                dirs.removeAll(terminatedDirs);
+            }
+        }
+
+        protected Set<Vector2> getResult() {
+            return (HashSet<Vector2>)possibleDestinations.clone();
+        }
+    }
+
 	private MediaHelper media = new MediaHelper();
 
 	private Vector2 position;
 	protected final Alliance alliance;
+
+	protected final HashSet<Vector2> moves;
+	protected final MoveType moveType;
+
 	protected Board board;
+
 	protected final boolean canJump;
 	protected final Piece piece;
 	protected final int value;
 
-	private boolean hasMoved;
+	private boolean hasMoved = false;
 
     /**
      *
      */
-    public ChessPiece(Vector2 position, Alliance alliance, AbstractBoard board, boolean canJump, Piece piece, int value, boolean hasMoved) {
+    protected ChessPiece(Vector2 position, Alliance alliance, HashSet<Vector2> moves, MoveType moveType, AbstractBoard board, boolean canJump, Piece piece, int value, boolean hasMoved) {
     	this.position = position;
         this.alliance = alliance;
+
+        this.moves = moves;
+        this.moveType = moveType;
+
         this.board = (Board)board;
         this.canJump = canJump;
         this.piece = piece;
         this.value = value;
+
         this.hasMoved = hasMoved;
     }
     protected ChessPiece(ChessPiece other) {
     	position = other.position;
     	alliance = other.alliance;
+
+        moves = (HashSet<Vector2>)other.moves.clone();
+    	moveType = other.moveType;
+
     	board = other.board;
     	canJump = other.canJump;
     	piece = other.piece();
@@ -49,13 +124,21 @@ public abstract class ChessPiece implements IChessPiece {
     	return alliance.equals(Alliance.BLACK) ? Alliance.WHITE : Alliance.BLACK;
 	}
 
+	public Board getBoard() {
+    	return board.clone();
+	}
+
+	public Set<Vector2> getMoves() {
+        return (HashSet<Vector2>)(moves).clone();
+    }
+
 	/**
 	 * Checks if the piece can go to the given destination
 	 * super.legalMove checks if the destination is within the board's boundaries, and if the piece at the given destination is hostile
 	 * @param destination
 	 * @return Whether or not the move can be performed
 	 */
-	protected boolean legalMove(Vector2 destination) {
+	public boolean legalMove(Vector2 destination) {
 		//resources.Console.println("(ChessPiece) Board is live: " + board.isLive());
 		IChessPiece endPiece = board.getPiece(destination);
 		// Prevents attack on an allied piece
@@ -72,6 +155,23 @@ public abstract class ChessPiece implements IChessPiece {
 		// Lastly, check if king is in check, and whether or not the move resolves it (SHOULD OCCUR LAST, FOR OPTIMIZATION)
 		return king.resolvesCheck(position(), destination);
 	}
+
+    public Set<Vector2> getPossibleDestinations() {
+	    if(this instanceof Rook) {
+	        Console.printNotice("Checking " + moves.size() + "available moves");
+        }
+
+        MoveEvaluator evaluator = new MoveEvaluator();
+        if(moveType == MoveType.LINE)
+            evaluator.evaluateContinuous(moves);
+        else
+            evaluator.evaluate(moves);
+
+        Set<Vector2> result = evaluator.getResult();
+        Console.printNotice("Approved moves: " + result.size());
+
+        return result;
+    }
 
 	/**
 	 * @return Whether or not the piece has been moved during the game

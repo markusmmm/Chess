@@ -2,34 +2,24 @@ package pieces;
 
 import management.AbstractBoard;
 import resources.Alliance;
+import resources.Console;
 import resources.Piece;
 import resources.Vector2;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class Rook extends ChessPiece {
-	private final int value = 5;
-	private Set<Vector2> possibleMoves = new HashSet<>();
-
 	/**
 	 * @param position
 	 */
 	public Rook(Vector2 position, Alliance alliance, AbstractBoard board, boolean hasMoved) {
-		super(position, alliance, board, false, Piece.ROOK, 5,hasMoved);
+		super(position, alliance, Vector2.STRAIGHT, MoveType.LINE, board, false, Piece.ROOK, 5, hasMoved);
 	}
 	public Rook(Rook other) {
-		super(other);
+	    super(other);
 	}
 
 	@Override
 	public ChessPiece clonePiece() {
 		return new Rook(this);
-	}
-
-	@Override
-	public int getValue() {
-		return value;
 	}
 
 	/**
@@ -38,33 +28,19 @@ public class Rook extends ChessPiece {
 	public boolean legalMove(Vector2 destination) {
 		if(!super.legalMove(destination)) return false;
 
-		//resources.Console.println("inStraights: " + inStraights(destination));
-		//resources.Console.println("freePath: " + freePath(destination));
+		Vector2 delta = destination.sub(position());
+		//Console.printNotice(this + " (" + moveType + ", " + moves.size() + ") begun move check.");
+		//Console.printNotice("Position: " + position() + ", destination: " + destination + ", delta: " + delta);
 
-		return (
-			inStraights(destination) &&
-			freePath(destination)
-		);
-	}
+		if(moveType == MoveType.STEP)
+		    return moves.contains(delta);
+		else if(moveType == MoveType.LINE)
+		    for(Vector2 move : moves) {
+                Console.printNotice(this + " checking " + move + ", " + delta);
+                if (move.isParallelTo(delta))
+                    return true;
+            }
 
-	/**
-	 * @return a list of all possible moves from this position
-	 */
-
-	public Set<Vector2> getPossibleDestinations() {
-		possibleMoves.clear();
-		Vector2 position = position();
-
-		for (int variable = 0; variable < board.size(); variable++) {
-			//Straights
-			evalMove(new Vector2(position.getX(), position.getY() + variable));
-			evalMove(new Vector2(position.getX(), position.getY() - variable));
-			evalMove(new Vector2(position.getX() + variable, position.getY()));
-			evalMove(new Vector2(position.getX() - variable, position.getY()));
-		}
-		return possibleMoves;
-	}
-	private void evalMove(Vector2 vector) {
-		if(legalMove(vector)) possibleMoves.add(vector);
+        return false;
 	}
 }

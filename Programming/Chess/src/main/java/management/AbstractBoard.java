@@ -77,7 +77,10 @@ public class AbstractBoard {
         if (other.lastPiece != null) lastPiece = other.lastPiece.clonePiece();
 
         activePlayer = other.activePlayer;
+
         pieces = (HashMap<Vector2, ChessPiece>) other.pieces.clone();
+
+
         drawPositions = (Stack<Vector2>) other.drawPositions.clone();
         suspendedPieces = (HashMap<Vector2, ChessPiece>) other.suspendedPieces.clone();
         capturedPieces = other.getCapturedPieces();
@@ -415,11 +418,11 @@ public class AbstractBoard {
     private ChessPiece createPiece(Vector2 pos, Piece type, Alliance alliance) {
         switch (type) {
             case BISHOP:
-                return new Bishop(pos, alliance, this);
+                return new Bishop(pos, alliance, this, false);
             case KNIGHT:
-                return new Knight(pos, alliance, this);
+                return new Knight(pos, alliance, this, false);
             case QUEEN:
-                return new Queen(pos, alliance, this);
+                return new Queen(pos, alliance, this, false);
             case KING:
                 return new King(pos, alliance, this, false);
             case PAWN:

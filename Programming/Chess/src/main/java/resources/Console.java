@@ -104,6 +104,9 @@ public class Console {
         for(StackTraceElement e : stackTraceElements)
             System.out.print("\t" + e + "\n");
     }
+    public static void printFirstCaller() {
+        printCaller(4);
+    }
 
     public static StackTraceElement getCaller() {
         return Thread.currentThread().getStackTrace()[4];
