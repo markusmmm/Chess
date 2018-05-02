@@ -4,9 +4,11 @@ import management.AbstractBoard;
 import management.Board;
 import resources.*;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 
 public abstract class ChessPiece implements IChessPiece {
     public enum MoveType { STEP, LINE }
@@ -45,10 +47,11 @@ public abstract class ChessPiece implements IChessPiece {
          */
         protected void evaluateContinuous(HashSet<Vector2> dirs) {
             dirs = (HashSet<Vector2>)dirs.clone();
-            if(dirs.size() == 0)
-                //Console.printWarning("Evaluation begun, but " + clonePiece() + " has no moves");
+            if(dirs.size() == 0) {
+				Console.printWarning("Evaluation begun, but " + clonePiece() + " has no moves");
+			}
 
-            for (int variable = 1; variable < board.size(); variable++) {
+            for (int variable = 1; variable < board.size() - 1; variable++) {
                 if (dirs.size() == 0) return;
 
                 Set<Vector2> terminatedDirs = new HashSet<>();
@@ -57,6 +60,7 @@ public abstract class ChessPiece implements IChessPiece {
                     if (!evaluate(move) && !canJump) {
                         // Obstacle reached. If the piece can't jump, no further evaluation is needed in direction d
                         terminatedDirs.add(d);
+                        Console.printError("Direction " + d + " terminated");
                     }
                 }
                 dirs.removeAll(terminatedDirs);
@@ -139,7 +143,6 @@ public abstract class ChessPiece implements IChessPiece {
 	 * @return Whether or not the move can be performed
 	 */
 	public boolean legalMove(Vector2 destination) {
-		//resources.Console.println("(ChessPiece) Board is live: " + board.isLive());
 		IChessPiece endPiece = board.getPiece(destination);
 		// Prevents attack on an allied piece
 		if(endPiece != null && endPiece.alliance().equals(alliance)) return false;
@@ -157,9 +160,7 @@ public abstract class ChessPiece implements IChessPiece {
 	}
 
     public Set<Vector2> getPossibleDestinations() {
-	    if(this instanceof Rook) {
-	        Console.printNotice("Checking " + moves.size() + "available moves");
-        }
+		Console.printNotice("Evaluating possible destinations for " + this);
 
         MoveEvaluator evaluator = new MoveEvaluator();
         if(moveType == MoveType.LINE)
@@ -168,7 +169,6 @@ public abstract class ChessPiece implements IChessPiece {
             evaluator.evaluate(moves);
 
         Set<Vector2> result = evaluator.getResult();
-        Console.printNotice("Approved moves: " + result.size());
 
         return result;
     }

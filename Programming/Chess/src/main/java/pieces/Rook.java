@@ -26,21 +26,30 @@ public class Rook extends ChessPiece {
 	 * @param destination
 	 */
 	public boolean legalMove(Vector2 destination) {
-		if(!super.legalMove(destination)) return false;
-
 		Vector2 delta = destination.sub(position());
-		//Console.printNotice(this + " (" + moveType + ", " + moves.size() + ") begun move check.");
-		//Console.printNotice("Position: " + position() + ", destination: " + destination + ", delta: " + delta);
+		Console.printNotice(this + " checking move " + position() + " -> " + destination + "\tdelta: " + delta);
 
-		if(moveType == MoveType.STEP)
-		    return moves.contains(delta);
-		else if(moveType == MoveType.LINE)
-		    for(Vector2 move : moves) {
-                Console.printNotice(this + " checking " + move + ", " + delta);
-                if (move.isParallelTo(delta))
-                    return true;
-            }
+		if(super.legalMove(destination)) {
 
+			//Console.printNotice(this + " (" + moveType + ", " + moves.size() + ") begun move check.");
+			//Console.printNotice("Position: " + position() + ", destination: " + destination + ", delta: " + delta);
+
+			if (moveType == MoveType.STEP) {
+				boolean result = moves.contains(delta);
+				if(result) Console.printSuccess("Move success");
+				return result;
+			}
+			else if (moveType == MoveType.LINE)
+				for (Vector2 move : moves) {
+					Console.printNotice("\tChecking move " + move);
+					if (move.isParallelTo(delta)) {
+						Console.printSuccess("Move success");
+						return true;
+					}
+				}
+		}
+
+		Console.printError("Move failure");
         return false;
 	}
 }

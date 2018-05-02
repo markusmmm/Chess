@@ -440,11 +440,8 @@ public class GameBoard {
         Console.printNotice("Highlighting " + pos);
         Set<Vector2> list = piece.getPossibleDestinations();
         for (Vector2 possibleDestination : list) {
-            if (board.getPiece(possibleDestination) != null) {
-                squares[possibleDestination.getY()][possibleDestination.getX()].setFill(Color.RED);
-            } else {
-                squares[possibleDestination.getY()][possibleDestination.getX()].setFill(Color.YELLOW);
-            }
+            Color squareColor = board.getPiece(possibleDestination) == null ? Color.YELLOW : Color.RED;
+            squares[possibleDestination.getY()][possibleDestination.getX()].setFill(squareColor);
         }
     }
 
