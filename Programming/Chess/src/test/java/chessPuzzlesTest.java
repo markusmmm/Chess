@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.FileNotFoundException;
+import java.lang.reflect.Array;
 
 public class chessPuzzlesTest {
 
@@ -17,8 +18,10 @@ public class chessPuzzlesTest {
     public void setup() {
        path = "src/main/resources/chesspuzzles/checkmateinthree/";
        puzzles = new ChessPuzzles();
+
        puzzles.printFiles();
-       System.out.println(puzzles.getRandomFile());
+
+
 
 
     }

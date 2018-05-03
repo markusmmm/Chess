@@ -64,18 +64,21 @@ public class GameBoard {
         this.player2 = new Player(user2, Alliance.BLACK);
         this.database = new DatabaseController();
 
+
         this.numberOfPuzzlesCompleted = database.getPuzzlesCompleted(user1);
-        System.out.println(numberOfPuzzlesCompleted);
         player1.setPuzzlesCompleted(numberOfPuzzlesCompleted);
 
         if(boardMode == BoardMode.CHESSPUZZLES){
             chessPuzzles = new ChessPuzzles();
             this.numberOfPuzzles = chessPuzzles.getSizeOfDirectory();
 
-            String path = chessPuzzles.getRandomFile();
+            String path;
 
-            if(!(numberOfPuzzlesCompleted > numberOfPuzzles)) {
+            if(numberOfPuzzlesCompleted < numberOfPuzzles) {
                  path = chessPuzzles.getFile(numberOfPuzzlesCompleted);
+            } else {
+                completedAllPuzzles();
+                path = chessPuzzles.getRandomFile();
             }
 
 
@@ -306,6 +309,20 @@ public class GameBoard {
             board.saveBoard(file);
     }
 
+    public void completedAllPuzzles(){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setHeaderText("You havec already completed all of the puzzlds");
+        alert.setContentText("Starting a random puzzle");
+
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if(result.get() == ButtonType.OK){
+            return;
+
+        }
+        return;
+
+    }
     public void chessPuzzlePopup(){
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);

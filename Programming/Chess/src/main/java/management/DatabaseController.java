@@ -97,7 +97,10 @@ public class DatabaseController {
             return (int) it.first().get("score");*/
             FindIterable<Document> it = db.getCollection("users")
                     .find(new Document("name", username.toLowerCase()));
-            return (int) it.first().get("completedPuzzles");
+            if(it.first().get("completedPuzzles") == null){
+                return 0;
+            } else
+                return (int) it.first().get("completedPuzzles");
         }
         return 0;
     }

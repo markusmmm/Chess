@@ -3,6 +3,8 @@ package management;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class ChessPuzzles {
@@ -13,29 +15,43 @@ public class ChessPuzzles {
     private final FileUtils fileUtils;
     private File file;
     private int sizeOfDirectory;
+    ArrayList<File> textFiles = new ArrayList<>();
 
 
     public ChessPuzzles() {
         fileUtils = new FileUtils();
         file = new File(path);
         files = file.listFiles();
-        sizeOfDirectory = getFile(path);
+
+        removeDsStore();
+        sizeOfDirectory = textFiles.size();
 
 
+    }
+
+    public void removeDsStore(){
+        for (int i = 0; i < files.length; i++) {
+
+            if (files[i].toString().equals("src/main/resources/chesspuzzles/.DS_Store")) {
+                continue;
+            } else {
+                textFiles.add(files[i]);
+            }
+        }
     }
 
 
     public String getFile(int i) {
 
-        String fileString = files[i].toString();
+        String fileString = textFiles.get(i).toString();
         fileString = fileString.substring(0, fileString.lastIndexOf('.'));
 
         return fileString;
     }
 
     public void printFiles() {
-        for (int i = 0; i < files.length; i++) {
-            System.out.println(files[i]);
+        for (int i = 0; i < textFiles.size(); i++) {
+            System.out.println(textFiles.get(i));
         }
     }
 
@@ -65,7 +81,7 @@ public class ChessPuzzles {
         Random r = new Random();
         int i = r.nextInt(sizeOfDirectory + 1);
 
-        String fileString = files[i].toString();
+        String fileString = textFiles.get(i).toString();
         fileString = fileString.substring(0, fileString.lastIndexOf('.'));
 
         return fileString;
