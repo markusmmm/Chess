@@ -471,9 +471,7 @@ public class GameBoard {
      */
     public void drawPieces() {
         for (Vector2 pos : board.clearDrawPieces()) {
-            int col = pos.getX();
-            int row = pos.getY();
-            tiles[row][col].drawPiece();
+            tiles[pos.getY()][pos.getX()].drawPiece();
         }
     }
 
