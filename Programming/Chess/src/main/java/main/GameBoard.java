@@ -14,10 +14,8 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import management.*;
-import pieces.ChessPiece;
 import pieces.IChessPiece;
 import pieces.King;
-import pieces.Pawn;
 import resources.MediaHelper;
 import resources.*;
 import resources.Console;
@@ -39,7 +37,7 @@ public class GameBoard {
     private GridPane grid;
     private BorderPane container;
     private ListView<MoveNode> moveLog;
-    private ListView<ChessPiece> capturedPieces;
+    private ListView<PieceNode> capturedPieces;
     private Text gameStatus;
     private DatabaseController database;
 
@@ -438,7 +436,7 @@ public class GameBoard {
         Collections.reverse(gameLog);
         ObservableList<MoveNode> observableGameLog =
                 FXCollections.observableArrayList(gameLog);
-        ObservableList<ChessPiece> observableInactivePieces =
+        ObservableList<PieceNode> observableInactivePieces =
                 FXCollections.observableArrayList(board.getCapturedPieces());
         moveLog.setItems(observableGameLog);
         capturedPieces.setItems(observableInactivePieces);
@@ -448,13 +446,11 @@ public class GameBoard {
         IChessPiece piece = board.getPiece(pos);
         if(piece == null) return;
 
+        Console.printNotice("Highlighting " + pos);
         Set<Vector2> list = piece.getPossibleDestinations();
         for (Vector2 possibleDestination : list) {
-            if (board.getPiece(possibleDestination) != null) {
-                squares[possibleDestination.getY()][possibleDestination.getX()].setFill(Color.RED);
-            } else {
-                squares[possibleDestination.getY()][possibleDestination.getX()].setFill(Color.YELLOW);
-            }
+            Color squareColor = board.getPiece(possibleDestination) == null ? Color.YELLOW : Color.RED;
+            squares[possibleDestination.getY()][possibleDestination.getX()].setFill(squareColor);
         }
     }
 
@@ -491,6 +487,11 @@ public class GameBoard {
     public boolean gameOver() {
         King whiteKing = board.getKing(Alliance.WHITE),
                 blackKing = board.getKing(Alliance.BLACK);
+
+        if(whiteKing == null || blackKing == null) {
+            Console.printWarning("Non-conventional game setup (one or more kings missing). Game-over check not supported");
+            return false;
+        }
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
 

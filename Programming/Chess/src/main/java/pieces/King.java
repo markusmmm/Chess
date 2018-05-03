@@ -6,35 +6,22 @@ import resources.*;
 
 import java.util.*;
 
-public class    King extends ChessPiece {
-    private final int value = 2;
-    private Set<Vector2> moves = new HashSet<>(Arrays.asList(
-            new Vector2(-1, -1), new Vector2( 0, -1), new Vector2( 1, -1),
-            new Vector2(-1,  0), new Vector2( 1,  0), new Vector2(-1,  1),
-            new Vector2( 0,  1), new Vector2( 1,  1),
-            new Vector2( -2,  0), new Vector2( 2,  0)
-    ));
-
+public class King extends AbstractChessPiece {
     /**
      *
      */
-    public King(Vector2 position, Alliance alliance, AbstractBoard board, Boolean hasMoved) {
-
-        super(position, alliance, board, false, Piece.KING, 2, hasMoved);
-
+    public King(Vector2 position, Alliance alliance, AbstractBoard board, boolean hasMoved) {
+        super(position, alliance,
+                vectorTools.addAll(Vector2.UNIT, new Vector2(2,0), new Vector2(-2,0)),
+                MoveType.STEP, board, false, Piece.KING, 2, hasMoved);
     }
     public King(King other) {
         super(other);
     }
 
     @Override
-    public ChessPiece clonePiece() {
+    public AbstractChessPiece clonePiece() {
         return new King(this);
-    }
-
-    @Override
-    public int getValue() {
-        return value;
     }
 
     @Override
@@ -42,7 +29,7 @@ public class    King extends ChessPiece {
         Vector2 position = position();
 
         //IMPORTANT! King can NOT call super.legalMove, as the king demands a custom alliance check (when performing castling),
-        //and does not need to perform the inCheck-call that occurs from within super
+        //and CAN'T perform the inCheck-call that occurs from within super (will create an infinite recursion call)
 
         if(!(board.insideBoard(position) && board.insideBoard(destination))) return false;
 
@@ -68,19 +55,6 @@ public class    King extends ChessPiece {
         );
     }
 
-    public Set<Vector2> getPossibleDestinations() {
-
-        Set<Vector2> possibleMoves = new HashSet<>();
-
-        for(Vector2 move : moves) {
-            Vector2 endPos = position().add(move);
-
-            if(legalMove(endPos))
-                possibleMoves.add(endPos);
-        }
-
-        return possibleMoves;
-    }
 
     public boolean inCheck(Vector2 destination) {
         if(!board.getActivePlayer().equals(alliance))
@@ -91,7 +65,7 @@ public class    King extends ChessPiece {
         boolean checked = false;
         board.suspendPieces(position);
 
-        HashMap<Vector2, ChessPiece> hostilePieces = board.getPieces(otherAlliance());
+        HashMap<Vector2, AbstractChessPiece> hostilePieces = board.getPieces(otherAlliance());
         for(IChessPiece hostile : hostilePieces.values()) {
             if(hostile instanceof Pawn) {
                 if(((Pawn) hostile).getPossibleAttacks().contains(destination)) {
@@ -142,7 +116,7 @@ public class    King extends ChessPiece {
             return movesIntoCheck(end);
 
         Board tempBoard = board.clone();
-        ChessPiece piece = board.getPiece(start);
+        AbstractChessPiece piece = board.getPiece(start);
 
         board.forceMovePiece(start, end);
         boolean checked = inCheck();

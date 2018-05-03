@@ -1,0 +1,60 @@
+\documentclass[letterpaper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\title{Meeting 13}
+\date{05~April 2018}
+
+\begin{document}
+\maketitle
+\section*{Attendance}
+\subsection*{Present}
+\begin{list}{}{}
+	\item Viet
+	\item Jan
+	\item Aleksander
+	\item Markus
+	\item Tom
+	\item Anne Lise
+	\item Magnus
+	\item Mikael
+\end{list}
+
+\newpage
+\section*{Highlights of the meeting}
+\begin{itemize}
+	\item Summary of last assignment
+	\item Planning poker
+	\item Identifying missed milestones from last assignment that needs to be completed ASAP
+	\item Starting to chop up ranking and database requirement into smaller tasks
+\end{itemize}
+
+\section*{To do}
+\begin{itemize}
+	\item Mikael fixing concurrentModificationException
+	\item Everyone write general description of methods they have written (commenting/JavaDoc)
+\end{itemize}
+
+\section*{Notes taken under meeting}
+We are going to use planning poker to identify size of requirements\\
+We will divide the requirements into smaller tasks accordingly\\
+Master branch will be our hand in branch\\
+wip branch will be our release branch\\
+Each member make a new branch from wip whenever working on a new feature\\\\
+Planning poker results:\\
+- Implement AI: 9\\
+- Sound effects and/or animations: 2\\
+- Ranking (database): 7\\
+- Offer best move advice for novices (after AI): 9\\ 
+- Start chess game in random state: 5\\
+- Implement tests: 7\\
+- Double login (local multiplayer): 3
+- Javadoc: 1\\\\
+Things we have to get done from last assignmet:\\
+- Castling\\
+- Pawn promotion\\
+Also need to fix getUsablePieces, it causes ConcurrentModificationException\\
+Fix easy and medium AI\\\\
+Cutting up ranking:\\
+Starting rank score is 1000\\
+Computing of ranking and database setup separate\\
+Computing of ELO-rating: https://metinmediamath.wordpress.com/2013/11/27/how-to-calculate-the-elo-rating-including-example/\\
+\end{document}

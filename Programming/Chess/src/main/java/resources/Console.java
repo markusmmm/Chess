@@ -2,6 +2,8 @@ package resources;
 
 import main.GameBoard;
 import management.ChessComputerMedium;
+import pieces.AbstractChessPiece;
+import pieces.ChessPiece;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -13,6 +15,8 @@ public class Console {
 
     private static Set<Class> ignoredCallers = new HashSet<>(Arrays.asList(
             ChessComputerMedium.class
+            , AbstractChessPiece.class
+            , ChessPiece.class
     ));
 
     private static final String ANSI_RESET = "\u001B[0m";
@@ -54,7 +58,7 @@ public class Console {
     }
     public static void println(String msg) {
         if(!doPrint()) return;
-        System.out.println(ANSI_WHITE + msg + ANSI_RESET);
+        System.out.print(ANSI_WHITE + msg + ANSI_RESET + "\n");
     }
     public static void println(Object obj) {
         print(obj.toString());
@@ -66,28 +70,28 @@ public class Console {
 
     public static void printNotice(String msg) {
         if(!doPrint()) return;
-        System.out.println(ANSI_CYAN + msg + ANSI_RESET);
+        System.out.print(ANSI_CYAN + msg + ANSI_RESET  + "\n");
     }
     public static void printNotice(Object obj) {
         print(obj.toString());
     }
     public static void printSuccess(String msg) {
         if(!doPrint()) return;
-        System.out.println(ANSI_GREEN + msg + ANSI_RESET);
+        System.out.print(ANSI_GREEN + msg + ANSI_RESET + "\n");
     }
     public static void printSuccess(Object obj) {
         print(obj.toString());
     }
     public static void printWarning(String msg) {
         if(!doPrint()) return;
-        System.out.println(ANSI_YELLOW + msg + ANSI_RESET);
+        System.out.print(ANSI_YELLOW + msg + ANSI_RESET + "\n");
     }
     public static void printWarning(Object obj) {
         print(obj.toString());
     }
     public static void printError(String msg) {
         if(!doPrint()) return;
-        System.out.println(ANSI_RED + msg + ANSI_RESET);
+        System.out.print(ANSI_RED + msg + ANSI_RESET + "\n");
     }
     public static void printError(Object obj) {
         print(obj.toString());
@@ -96,13 +100,16 @@ public class Console {
     public static void printCaller(int i) {
         if(!doPrint()) return;
         StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-        System.out.println("\t" + stackTraceElements[i]);
+        System.out.print("\t" + stackTraceElements[i] + "\n");
     }
     public static void printCaller() {
         if(!doPrint()) return;
         StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
         for(StackTraceElement e : stackTraceElements)
-            System.out.println("\t" + e);
+            System.out.print("\t" + e + "\n");
+    }
+    public static void printFirstCaller() {
+        printCaller(4);
     }
 
     public static StackTraceElement getCaller() {

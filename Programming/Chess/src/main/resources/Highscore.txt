@@ -1,3 +1,0 @@
-Magnus:2304
-Player2:1826
-Player3:1337
