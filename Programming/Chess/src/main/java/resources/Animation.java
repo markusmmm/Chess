@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * play images from a folder as an animation:
  * The animation takes place on a Tile-Object in the array grid,
  * assigned by cartesian coordinates
- * 
+ *
  * @author: Jan Olav Berg
  */
 public class Animation {
