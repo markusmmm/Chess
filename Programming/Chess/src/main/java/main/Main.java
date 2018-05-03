@@ -18,6 +18,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Duration;
 import management.DatabaseController;
 import management.HighscoreController;
 import org.bson.Document;
@@ -35,11 +36,11 @@ import java.util.Optional;
 import java.util.Scanner;
 
 
-
 public class Main extends Application {
 
     static final int WIDTH = 720;
     static final int HEIGHT = 500;
+    private int mCounter = 0;
     MediaHelper media = new MediaHelper();
     MediaPlayer mp = media.playSound("chess_theme.mp3");
     private Stage stage;
@@ -72,18 +73,18 @@ public class Main extends Application {
         if (!SAVES_DIR.exists()) {
             SAVES_DIR.mkdirs();
         }
-        if(!LOGS_DIR.exists())
+        if (!LOGS_DIR.exists())
             LOGS_DIR.mkdirs();
 
-        if(CORE_DIR.exists()) {
+        if (CORE_DIR.exists()) {
             File[] coreFiles = CORE_DIR.listFiles();
-            if(coreFiles == null) return;
+            if (coreFiles == null) return;
 
-            for(File coreFile : coreFiles) {
+            for (File coreFile : coreFiles) {
                 String fileName = coreFile.getName();
 
                 File destFile = new File(SAVES_DIR, fileName);
-                if(!destFile.exists()) {
+                if (!destFile.exists()) {
                     try {
                         destFile.createNewFile();
                     } catch (IOException e) {
@@ -98,7 +99,7 @@ public class Main extends Application {
                     writer.write(""); // Clear file
                     Scanner reader = new Scanner(coreFile);
 
-                    while(reader.hasNextLine()) {
+                    while (reader.hasNextLine()) {
                         writer.append(reader.nextLine() + "\n");
                     }
                     writer.close();
@@ -244,6 +245,8 @@ public class Main extends Application {
         buttonHighScore.setOnAction(e -> highscore(username, stage));
 
         mp.play();
+        mp.setCycleCount(-1);
+
 
         buttonQuit.setOnAction(e -> onQuit());
 
@@ -255,6 +258,7 @@ public class Main extends Application {
         mainContent.setAlignment(Pos.TOP_CENTER);
         mainContent.setPrefSize(WIDTH, HEIGHT);
         mainContent.getChildren().addAll(labelWelcome, buttonContainer);
+
 
         root.setTop(menuBar);
         root.setCenter(mainContent);
@@ -312,7 +316,7 @@ public class Main extends Application {
         gameBoard.createBoard();
         root.setCenter(gameBoard.getContainer());
         root.setTop(gameBoard.generateGameMenuBar());
-        MediaPlayer nmp =media.playSound("startup.mp3");
+        MediaPlayer nmp = media.playSound("startup.mp3");
         nmp.play();
         //return gameBoard.getContainer();
     }
@@ -333,6 +337,20 @@ public class Main extends Application {
 
         MenuItem menuItemAbout = new MenuItem("About");
         menuHelp.getItems().add(menuItemAbout);
+
+        MenuItem menuMute = new MenuItem("Mute");
+        menuMute.setOnAction(e -> {
+                    if (mCounter == 0) {
+                        mp.setMute(true);
+                        mCounter++;
+                        System.out.println(mCounter);
+                    } else if (mCounter == 1) {
+                       mp.setMute(false);
+                        mCounter--;
+                    }
+                }
+        );
+                menuHelp.getItems().add(menuMute);
 
         menuBar.getMenus().addAll(menuFile, menuHelp);
         return menuBar;
