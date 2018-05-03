@@ -34,9 +34,11 @@ public class Player {
         return puzzlesCompleted;
     }
 
-    public void completedPuzzle(){
-        puzzlesCompleted = puzzlesCompleted+1;
+
+    public void setPuzzlesCompleted(int n){
+        this.puzzlesCompleted = n;
     }
+
 
 	public int getScore() {
         return score;

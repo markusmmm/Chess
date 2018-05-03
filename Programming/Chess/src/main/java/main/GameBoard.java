@@ -62,8 +62,9 @@ public class GameBoard {
 
         this.player1 = new Player(user1, Alliance.WHITE);
         this.player2 = new Player(user2, Alliance.BLACK);
+        this.database = new DatabaseController();
 
-        this.numberOfPuzzlesCompleted = player1.getPuzzlesCompleted();
+        this.numberOfPuzzlesCompleted = database.getPuzzlesCompleted(user1);
 
         if(boardMode == BoardMode.CHESSPUZZLES){
             chessPuzzles = new ChessPuzzles();
@@ -121,7 +122,7 @@ public class GameBoard {
         this.moveLog = new ListView<>();
         this.capturedPieces = new ListView<>();
         this.gameStatus = new Text();
-        this.database = new DatabaseController();
+
 
 
         setComputer();
@@ -631,7 +632,7 @@ public class GameBoard {
                 blackKing = board.getKing(Alliance.BLACK);
         if(boardMode == BoardMode.CHESSPUZZLES){
             if(blackKing.checkmate()){
-                player1.completedPuzzle();
+                database.updatePuzzlesCompleted(player1.getUsername(),player1.getPuzzlesCompleted()+1);
                 puzzleCompleted();
                 return true;
             }

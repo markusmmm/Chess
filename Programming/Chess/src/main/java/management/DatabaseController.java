@@ -88,15 +88,41 @@ public class DatabaseController {
         return 0;
     }
 
+    public int getPuzzlesCompleted(String username) {
+        if (userExists(username)) {
+            /*FindIterable<Document> it = db.getCollection("users")
+                    .find(new Document("name", new Document("$regex", username)
+                            .append("$options", "i")));
+
+            return (int) it.first().get("score");*/
+            FindIterable<Document> it = db.getCollection("users")
+                    .find(new Document("name", username.toLowerCase()));
+            return (int) it.first().get("completedPuzzles");
+        }
+        return 0;
+    }
+
+
+
     /**
      * Adds the user to the database
      * @param username
      */
     public void addUser(String username) {
         if (!userExists(username)) {
-            db.getCollection("users").insertOne(new Document("name", username.toLowerCase()).append("score", 0));
+            db.getCollection("users").insertOne(new Document("name", username.toLowerCase()).append("score", 0).append("completedPuzzles",0));
         }
     }
+
+    public void createPuzzlesCompleted(String username) {
+        if (userExists(username)) {
+            Document newDoc = new Document();
+            newDoc.append("$set", new Document().append("completedPuzzles", 0));
+            Document searchQuery = new Document().append("name", username.toLowerCase());
+            db.getCollection("users").updateOne(searchQuery, newDoc);
+        }
+    }
+
 
     /**
      * Updates the score of the user
@@ -107,6 +133,21 @@ public class DatabaseController {
         if (userExists(username)) {
             Document newDoc = new Document();
             newDoc.append("$set", new Document().append("score", newScore));
+            Document searchQuery = new Document().append("name", username.toLowerCase());
+            db.getCollection("users").updateOne(searchQuery, newDoc);
+        }
+    }
+
+    /**
+     * Updates the number of puzzles completed of the user
+     * @param username
+     * @param newScore
+     */
+
+    public void updatePuzzlesCompleted(String username, int newScore) {
+        if (userExists(username)) {
+            Document newDoc = new Document();
+            newDoc.append("$set", new Document().append("completedPuzzles", newScore));
             Document searchQuery = new Document().append("name", username.toLowerCase());
             db.getCollection("users").updateOne(searchQuery, newDoc);
         }
