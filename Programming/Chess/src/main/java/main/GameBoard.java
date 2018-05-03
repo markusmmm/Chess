@@ -65,6 +65,7 @@ public class GameBoard {
         this.database = new DatabaseController();
 
         this.numberOfPuzzlesCompleted = database.getPuzzlesCompleted(user1);
+        player1.setPuzzlesCompleted(numberOfPuzzlesCompleted);
 
         if(boardMode == BoardMode.CHESSPUZZLES){
             chessPuzzles = new ChessPuzzles();
