@@ -39,7 +39,7 @@ public class RulesTest {
                 boolean expected = test.expectedResult;
                 boolean actual = board.movePiece(test.move);
 
-                Console.println("\nTesting relativeMovement " + test.move + " in " + test.testFile.getName() + "\n\tExpected result: " + expected + "\n\tActual result: " + actual);
+                Console.println("\nTesting move " + test.move + " in " + test.testFile.getName() + "\n\tExpected result: " + expected + "\n\tActual result: " + actual);
                 assertTrue(actual == expected);
             } catch (FileNotFoundException e) {
                 //e.printStackTrace();

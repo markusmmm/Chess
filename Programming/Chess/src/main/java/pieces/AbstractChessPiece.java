@@ -144,11 +144,11 @@ public abstract class AbstractChessPiece implements IChessPiece {
 	 * Checks if the piece can go to the given destination
 	 * super.legalMove checks if the destination is within the board's boundaries, and if the piece at the given destination is hostile
 	 * @param destination
-	 * @return Whether or not the relativeMovement can be performed
+	 * @return Whether or not the move can be performed
 	 */
 	public boolean legalMove(Vector2 destination) {
 		IChessPiece endPiece = board.getPiece(destination);
-		// Prevents relativeAttack on an allied piece
+		// Prevents attack on an allied piece
 		if(endPiece != null && endPiece.alliance().equals(alliance)) return false;
 
 		if(!board.insideBoard(position()) || !board.insideBoard(destination)) return false;
@@ -159,7 +159,7 @@ public abstract class AbstractChessPiece implements IChessPiece {
 		King king = board.getKing(alliance);
 		if(king == null) return false;
 
-		// Lastly, check if king is in check, and whether or not the relativeMovement resolves it (SHOULD OCCUR LAST, FOR OPTIMIZATION)
+		// Lastly, check if king is in check, and whether or not the move resolves it (SHOULD OCCUR LAST, FOR OPTIMIZATION)
 		return king.resolvesCheck(position(), destination);
 	}
 
@@ -183,6 +183,7 @@ public abstract class AbstractChessPiece implements IChessPiece {
 		return hasMoved;
 	}
 
+
 	/**
 	 * 
 	 * @param destination
@@ -190,11 +191,11 @@ public abstract class AbstractChessPiece implements IChessPiece {
 	public boolean move(Vector2 destination, Board board) {
 		this.board = board;
 
-		//resources.Console.println("Attempting to relativeMovement " + alliance + " " + piece + " from " + position + " to " + relativeMovement);
-		if (!legalMove(destination)) return false; // If the destination is unreachable, the relativeMovement fails
+		//resources.Console.println("Attempting to move " + alliance + " " + piece + " from " + position + " to " + move);
+		if (!legalMove(destination)) return false; // If the destination is unreachable, the move fails
 
 		position = destination;
-		media.playSound("relativeMovement.mp3");
+		media.playSound("move.mp3");
 		hasMoved = true;
 
 		//resources.Console.println("Move performed. New pos: " + position);
@@ -228,7 +229,7 @@ public abstract class AbstractChessPiece implements IChessPiece {
 	 * @return if piece is placed in the lines:
 	 * up, down, left, right
 	 *
-	 * logic is: if only x or y change, the piece relativeMovement in a straight path
+	 * logic is: if only x or y change, the piece move in a straight path
 	 */
 	protected boolean inStraights(Vector2 move) {
 		Vector2 position = position();

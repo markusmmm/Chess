@@ -270,14 +270,14 @@ public class GameBoard {
         //resources.Console.println("Before: " + temp.position());
 
         boolean moveResult = board.movePiece(firstTile.getPos(), pos);
-       // resources.Console.println("Outer relativeMovement result: " + moveResult);
+       // resources.Console.println("Outer move result: " + moveResult);
         if (moveResult) {
             Console.println("Has computer: " + (computer != null));
             if (computer != null) {
                 drawBoard();
 
                 Move move = computer.getMove();
-                Console.println("Computer attempting relativeMovement " + move);
+                Console.println("Computer attempting move " + move);
                 board.movePiece(move);
                 int row = move.start.getY();
                 int col = move.start.getX();
@@ -381,7 +381,7 @@ public class GameBoard {
                 }
             }
             /*
-             * if not, attempt to relativeMovement the pre-selected piece
+             * if not, attempt to move the pre-selected piece
              * to the new location
              */
             IChessPiece firstPiece = board.getPiece(firstTile.getPos());

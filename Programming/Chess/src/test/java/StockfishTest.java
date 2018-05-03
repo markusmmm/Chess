@@ -29,7 +29,7 @@ public class StockfishTest {
         stopWatch.start();
         ai.startEngine();
         ai.sendCommand("uci");
-        System.out.println("Best relativeMovement: " + ai.getBestMove(fen, 2500));
+        System.out.println("Best move: " + ai.getBestMove(fen, 2500));
         stopWatch.stop();
         System.out.println("Time used: " + stopWatch.getTime());
     }
