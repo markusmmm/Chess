@@ -332,14 +332,14 @@ public class GameBoard {
 
     public void puzzleCompleted(){
 
-        int numberOfpuzzles = chessPuzzles.getSizeOfDirectory();
+        int numberOfpuzzles = chessPuzzles.getSizeOfDirectory()+1;
         int puzzlesCompleted = player1.getPuzzlesCompleted();
         if(numberOfpuzzles > puzzlesCompleted) {
             String path = chessPuzzles.getFile(puzzlesCompleted);
 
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
 
-            alert.setHeaderText("You have completed the puzzle! " + (puzzlesCompleted) + " / " + numberOfpuzzles + " completed");
+            alert.setHeaderText("You have completed the puzzle! " + (puzzlesCompleted) + " / " + numberOfpuzzles+  " completed");
             alert.setContentText("Do you want to continue?");
 
             ButtonType buttonTypeOne = new ButtonType("Next puzzle");
