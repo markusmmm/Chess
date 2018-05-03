@@ -29,11 +29,9 @@ public class ChessComputerHard extends ChessComputer {
     @Override
     public Move getMove() {
         ai.sendCommand("ucinewgame");
-        System.out.println(generateFen());
         String aiAnswer = ai.getBestMove(generateFen(), thinkTime);
         System.out.println(aiAnswer);
         Move best = readAI(aiAnswer);
-        System.out.println(best);
         return best;
     }
 
