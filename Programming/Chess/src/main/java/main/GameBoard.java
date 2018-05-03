@@ -51,9 +51,10 @@ public class GameBoard {
     private boolean firstClick;
     private Tile firstTile;
     private Player player1, player2;
+    private String username;
     private boolean online;
 
-    public GameBoard(String user1, String user2, int difficulty, BoardMode boardMode, Main main, Stage stage, BorderPane root, boolean online) {
+    public GameBoard(String user1, String user2, int difficulty, BoardMode boardMode, Main main, Stage stage, BorderPane root, boolean online, String username) {
         Board boardVal = null;
 
         if(boardMode == BoardMode.DEFAULT) {
@@ -90,6 +91,7 @@ public class GameBoard {
         this.gameStatus = new Text();
         this.database = new DatabaseController();
         this.online = online;
+        this.username = username;
 
         setComputer();
 
@@ -209,10 +211,10 @@ public class GameBoard {
         MenuItem menuItemQuit = new MenuItem("Quit");
 
         menuItemExit.setOnAction(e -> {
-            main.mainMenu(player1.getUsername(), stage);
+            main.mainMenu(username, stage);
         });
         menuItemReset.setOnAction(e -> {
-            GameBoard newGameBoard = new GameBoard(player1.getUsername(), player2.getUsername(), board.difficulty(), boardMode, main, stage, root, false);
+            GameBoard newGameBoard = new GameBoard(player1.getUsername(), player2.getUsername(), board.difficulty(), boardMode, main, stage, root, false, username);
             newGameBoard.createBoard();
             root.setCenter(newGameBoard.getContainer());
         });

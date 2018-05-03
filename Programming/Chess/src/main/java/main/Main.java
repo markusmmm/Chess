@@ -32,10 +32,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Scanner;
+import java.util.*;
 
 
 public class Main extends Application {
@@ -208,8 +205,8 @@ public class Main extends Application {
         buttonPlayHard.setText("PLAY: HARD");
         // buttonPlayHard.setVisible(false);
 
-        Button buttonPlayOnline = new Button();
-        buttonPlayOnline.setText("PLAY: ONLINE");
+        Button buttonCreateOnlineGame = new Button();
+        buttonCreateOnlineGame.setText("CREATE ONLINE GAME");
 
         Button buttonHighScore = new Button();
         buttonHighScore.setText("HIGHSCORE");
@@ -238,30 +235,30 @@ public class Main extends Application {
         buttonPlayHard.setOnAction(e -> createChessGame(username, "AI: Hard", 3, BoardMode.DEFAULT, root));
         randomBoardPlay.setOnAction(e -> createChessGame(username, "AI: Easy", 1, BoardMode.RANDOM, root));
         buttonHighScore.setOnAction(e -> highscore(username, stage));
-        buttonPlayOnline.setOnAction(e -> { int x = 0; });
-            /*Document game = database.getGame("5ae9f3e9e33da16d580fe644");
-            String player1 = (String) game.get("player1");
-            String player2 = (String) game.get("player2");
-            String gameData = (String) game.get("gameData");
-            try {
-                File gameFile = new File(ONLINE_GAME_DIR, "5ae9f3e9e33da16d580fe644.txt");
-                FileUtils.writeStringToFile(gameFile, gameData, StandardCharsets.UTF_8);
-                GameBoard gameBoard = new GameBoard(player1, player2, 0, BoardMode.DEFAULT, this, stage, root, true);
-                gameBoard.createBoard();
-                gameBoard.performLoad(gameFile);
-                root.setCenter(gameBoard.getContainer());
-                root.setTop(gameBoard.generateGameMenuBar());
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-        });*/
+        buttonCreateOnlineGame.setOnAction(e -> {
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.initStyle(StageStyle.UTILITY);
+            dialog.setTitle("Enter the second players username");
+            dialog.setHeaderText(null);
+            dialog.setGraphic(null);
+            dialog.setContentText("Enter the second players username:");
+            Optional<String> result = dialog.showAndWait();
+            result.ifPresent(player2 -> {
+                if (!username.toLowerCase().equals(player2.toLowerCase())) {
+                    if (!database.userExists(player2))
+                        System.out.println("User does not exist.");
+                    else
+                        database.createGameInvite(username, player2);
+                } else System.out.println("You can't play against yourself!");
+            });
+        });
         media.playSound("welcome.mp3");
         buttonQuit.setOnAction(e -> onQuit());
 
         VBox rightContainer = new VBox(5);
         rightContainer.setAlignment(Pos.BASELINE_CENTER);
         rightContainer.getChildren().addAll(buttonPlayVersus, buttonPlayEasy, buttonPlayMedium,
-                buttonPlayHard, buttonPlayOnline, buttonHighScore, buttonQuit);
+                buttonPlayHard, buttonCreateOnlineGame, buttonHighScore, buttonQuit);
         rightContainer.setPrefWidth(420);
 
         List<Document> games = database.getOnlineGames(username);
@@ -276,16 +273,33 @@ public class Main extends Application {
         Button buttonPlay = new Button("Play");
         buttonPlay.setOnAction(event -> {
             ObservableList selectedIndices = listView.getSelectionModel().getSelectedIndices();
-
             for(Object o : selectedIndices){
                 int i = (Integer) o;
                 ObjectId id = (ObjectId) games.get(i).get("_id");
-                System.out.println(id);
+                String gameData = (String) games.get(i).get("gameData");
+                String player1 = (String) games.get(i).get("player1");
+                String player2 = (String) games.get(i).get("player2");
+                try {
+                    File gameFile = new File(ONLINE_GAME_DIR, id + ".txt");
+                    FileUtils.writeStringToFile(gameFile, gameData, StandardCharsets.UTF_8);
+                    GameBoard gameBoard = new GameBoard(player1, player2, 0, BoardMode.DEFAULT, this, stage, root, true, username);
+                    gameBoard.createBoard();
+                    gameBoard.performLoad(gameFile);
+                    root.setCenter(gameBoard.getContainer());
+                    root.setTop(gameBoard.generateGameMenuBar());
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
             }
         });
         Button buttonForfeit = new Button("Forfeit");
         buttonForfeit.setOnAction(event -> {
-
+            ObservableList selectedIndices = listView.getSelectionModel().getSelectedIndices();
+            for(Object o : selectedIndices) {
+                int i = (Integer) o;
+                ObjectId id = (ObjectId) games.get(i).get("_id");
+                database.forfeitGame(id);
+            }
         });
 
         HBox leftButtonContainer = new HBox(buttonPlay, buttonForfeit);
@@ -295,7 +309,6 @@ public class Main extends Application {
         labelActiveGames.setTextAlignment(TextAlignment.CENTER);
 
         VBox leftContainer = new VBox(labelActiveGames, listView, leftButtonContainer);
-        //leftContainer.setPrefWidth(300);
         leftContainer.setSpacing(15);
         leftContainer.setPadding(new Insets(15, 15, 15, 15));
 
@@ -309,38 +322,8 @@ public class Main extends Application {
         root.setCenter(container);
         //root.setLeft(leftContainer);
 
-        Thread databaseChecker = new Thread(() -> {
-            boolean run = true;
-            try {
-                List<Document> invites = database.checkForGameInvites(username);
-                if (invites.size() > 0) {
-                    run = false;
-                    for (int i = 0; i < invites.size(); i++) {
-                        ObjectId id = (ObjectId) invites.get(i).get("_id");
-                        String player1 = (String) invites.get(i).get("player1");
-                        String player2 = (String) invites.get(i).get("player2");
-                        Platform.runLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                                alert.setTitle("Game Invite");
-                                alert.setHeaderText(player1 + " has invited you to a game of chess!");
-                                alert.setContentText("Do you want to accept?");
-                                Optional<ButtonType> result = alert.showAndWait();
-                                if (result.get() == ButtonType.OK) {
-                                    database.handleGameInvite(id, true, player1, player2);
-                                } else {
-                                    database.handleGameInvite(id, false, player1, player2);
-                                }
-                            }
-                        });
-                    }
-                }
-
-
-            } catch(Exception e) { System.out.println(e); }
-        });
-        databaseChecker.start();
+        Timer t = new Timer();
+        t.scheduleAtFixedRate(new DatabaseInviteChecker(username), 0, 5 * 1000);
 
     }
 
@@ -380,7 +363,7 @@ public class Main extends Application {
      * @return chessGame
      */
     private void createChessGame(String player1, String player2, int difficulty, BoardMode boardMode, BorderPane root) {
-        GameBoard gameBoard = new GameBoard(player1, player2, difficulty, boardMode, this, stage, root, false);
+        GameBoard gameBoard = new GameBoard(player1, player2, difficulty, boardMode, this, stage, root, false, player1);
         gameBoard.createBoard();
         root.setCenter(gameBoard.getContainer());
         root.setTop(gameBoard.generateGameMenuBar());
@@ -421,4 +404,39 @@ public class Main extends Application {
         launch(args);
     }
 
+}
+
+class DatabaseInviteChecker extends TimerTask {
+    private DatabaseController database = new DatabaseController();
+    private String username;
+
+    public DatabaseInviteChecker(String username) {
+        this.username = username;
+    }
+
+    public void run() {
+        List<Document> invites = database.checkForGameInvites(username);
+        if (invites.size() > 0) {
+            for (int i = 0; i < invites.size(); i++) {
+                ObjectId id = (ObjectId) invites.get(i).get("_id");
+                String player1 = (String) invites.get(i).get("player1");
+                String player2 = (String) invites.get(i).get("player2");
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                        alert.setTitle("Game Invite");
+                        alert.setHeaderText(player1 + " has invited you to a game of chess!");
+                        alert.setContentText("Do you want to accept?");
+                        Optional<ButtonType> result = alert.showAndWait();
+                        if (result.get() == ButtonType.OK) {
+                            database.handleGameInvite(id, true, player1, player2);
+                        } else {
+                            database.handleGameInvite(id, false, player1, player2);
+                        }
+                    }
+                });
+            }
+        }
+    }
 }

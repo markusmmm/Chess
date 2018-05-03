@@ -177,9 +177,15 @@ public class DatabaseController {
                 "eeeeeeee\n" +
                 "PPPPPPPP\n" +
                 "RNBQKBNR";
-        Document query = new Document("completed", false).append("player1", player1)
-                .append("player2", player2).append("gameData", defaultChess);
+        Document query = new Document("completed", false).append("player1", player1.toLowerCase())
+                .append("player2", player2.toLowerCase()).append("gameData", defaultChess);
         db.getCollection("games").insertOne(query);
+    }
+
+    public void createGameInvite(String player1, String player2) {
+        Document query = new Document("player1", player1.toLowerCase()).append("player2", player2.toLowerCase())
+                .append("inviteAccepted", null);
+        db.getCollection("gameInvite").insertOne(query);
     }
 
     /**
@@ -196,7 +202,7 @@ public class DatabaseController {
         Document searchQuery = new Document().append("_id", id);
         db.getCollection("gameInvite").updateOne(searchQuery, newDoc);
         if (accepted)
-            createOnlineGame(player1, player2);
+            createOnlineGame(player1.toLowerCase(), player2.toLowerCase());
     }
 
     /**
@@ -209,6 +215,22 @@ public class DatabaseController {
         return db.getCollection("games").find(query).first();
 
     }
+
+    /**
+     * Forfeits game
+     * @param id
+     */
+    public void forfeitGame(ObjectId id) {
+        Document newDoc = new Document();
+        newDoc.append("$set", new Document().append("completed", true));
+        Document searchQuery = new Document().append("_id", id);
+        db.getCollection("games").updateOne(searchQuery, newDoc);
+    }
+
+    public void forfeitGame(String id) {
+        forfeitGame(new ObjectId(id));
+    }
+
 
     /**
      * Closes the database connection
