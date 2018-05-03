@@ -16,7 +16,6 @@ public class Console {
     private static Set<Class> ignoredCallers = new HashSet<>(Arrays.asList(
             ChessComputerMedium.class
             , AbstractChessPiece.class
-            , ChessPiece.class
     ));
 
     private static final String ANSI_RESET = "\u001B[0m";

@@ -37,4 +37,10 @@ public class Tools<E> {
 
         return temp;
     }
+
+    public static int allianceDir(Alliance alliance) {
+        if(alliance == Alliance.BLACK) return 1;
+        if(alliance == Alliance.WHITE) return -1;
+        return 0;
+    }
 }

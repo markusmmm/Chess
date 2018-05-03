@@ -12,6 +12,9 @@ public class Vector2 implements Comparable<Vector2> {
 			W  = new Vector2(-1, 0), ZERO = new Vector2(0, 0), E  = new Vector2(1, 0),
 			SW = new Vector2(-1, 1), S =    new Vector2(0, 1), SE = new Vector2(1, 1);
 
+	public final static HashSet<Vector2> TOP = new HashSet<>(Arrays.asList(NW, N, NE));
+	public final static HashSet<Vector2> CENTER = new HashSet<>(Arrays.asList(W, ZERO, E));
+	public final static HashSet<Vector2> BOTTOM = new HashSet<>(Arrays.asList(SW, S, SE));
 	public final static HashSet<Vector2> DIAGONAL = new HashSet<>(Arrays.asList(NE, SE, SW, NW));
     public final static HashSet<Vector2> VERTICAL = new HashSet<>(Arrays.asList(NE, SE, SW, NW));
     public final static HashSet<Vector2> HORIZONTAL = new HashSet<>(Arrays.asList(W, E));

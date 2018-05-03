@@ -183,10 +183,11 @@ public abstract class AbstractChessPiece implements IChessPiece {
 		return hasMoved;
 	}
 
-
 	/**
-	 * 
-	 * @param destination
+	 * Performs a move, if it is legal
+	 * @param destination End position of attempted move
+     * @param board The board where the piece resides (Ensures that the piece is always in-sync with the board)
+     * @return If the move was legal
 	 */
 	public boolean move(Vector2 destination, Board board) {
 		this.board = board;
