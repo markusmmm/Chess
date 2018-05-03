@@ -408,6 +408,7 @@ public class Main extends Application {
 
 class DatabaseInviteChecker extends TimerTask {
     private DatabaseController database = new DatabaseController();
+    private boolean hasPopup = false;
     private String username;
 
     public DatabaseInviteChecker(String username) {
@@ -421,21 +422,26 @@ class DatabaseInviteChecker extends TimerTask {
                 ObjectId id = (ObjectId) invites.get(i).get("_id");
                 String player1 = (String) invites.get(i).get("player1");
                 String player2 = (String) invites.get(i).get("player2");
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                        alert.setTitle("Game Invite");
-                        alert.setHeaderText(player1 + " has invited you to a game of chess!");
-                        alert.setContentText("Do you want to accept?");
-                        Optional<ButtonType> result = alert.showAndWait();
-                        if (result.get() == ButtonType.OK) {
-                            database.handleGameInvite(id, true, player1, player2);
-                        } else {
-                            database.handleGameInvite(id, false, player1, player2);
+                if (!hasPopup) {
+                    hasPopup = true;
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                            alert.setTitle("Game Invite");
+                            alert.setHeaderText(player1 + " has invited you to a game of chess!");
+                            alert.setContentText("Do you want to accept?");
+                            Optional<ButtonType> result = alert.showAndWait();
+                            if (result.get() == ButtonType.OK) {
+                                database.handleGameInvite(id, true, player1, player2);
+                                hasPopup = false;
+                            } else {
+                                database.handleGameInvite(id, false, player1, player2);
+                                hasPopup = false;
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
         }
     }

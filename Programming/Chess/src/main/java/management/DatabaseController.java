@@ -188,6 +188,17 @@ public class DatabaseController {
         db.getCollection("gameInvite").insertOne(query);
     }
 
+    public void markInviteAsViewed(ObjectId id) {
+        Document newDoc = new Document();
+        newDoc.append("$set", new Document().append("viewed", true));
+        Document searchQuery = new Document().append("_id", id);
+        db.getCollection("games").updateOne(searchQuery, newDoc);
+    }
+
+    public void markInviteAsViewed(String id) {
+        markInviteAsViewed(new ObjectId(id));
+    }
+
     /**
      * Updates the gameInvites in the database and creates a new
      * online game if the invited is accepted
