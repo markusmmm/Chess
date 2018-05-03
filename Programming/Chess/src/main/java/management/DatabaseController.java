@@ -153,9 +153,9 @@ public class DatabaseController {
         if (userExists(username)) {
             List<Document> games = new ArrayList<>();
             db.getCollection("games").find(new Document("player1",
-                    username.toLowerCase())).into(games);
+                    username.toLowerCase()).append("completed", false)).into(games);
             db.getCollection("games").find(new Document("player2",
-                    username.toLowerCase())).into(games);
+                    username.toLowerCase()).append("completed", false)).into(games);
             return games;
         }
         return null;

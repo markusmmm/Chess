@@ -4,12 +4,14 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
@@ -256,14 +258,11 @@ public class Main extends Application {
         media.playSound("welcome.mp3");
         buttonQuit.setOnAction(e -> onQuit());
 
-        VBox buttonContainer = new VBox(5);
-        buttonContainer.setAlignment(Pos.BASELINE_CENTER);
-        buttonContainer.getChildren().addAll(buttonPlayVersus, buttonPlayEasy, buttonPlayMedium, buttonPlayHard, buttonPlayOnline, buttonHighScore, buttonQuit);
-
-        VBox mainContent = new VBox(0);
-        mainContent.setAlignment(Pos.TOP_CENTER);
-        mainContent.setPrefSize(WIDTH, HEIGHT);
-        mainContent.getChildren().addAll(labelWelcome, buttonContainer);
+        VBox rightContainer = new VBox(5);
+        rightContainer.setAlignment(Pos.BASELINE_CENTER);
+        rightContainer.getChildren().addAll(buttonPlayVersus, buttonPlayEasy, buttonPlayMedium,
+                buttonPlayHard, buttonPlayOnline, buttonHighScore, buttonQuit);
+        rightContainer.setPrefWidth(420);
 
         List<Document> games = database.getOnlineGames(username);
         ListView<String> listView = new ListView();
@@ -271,11 +270,11 @@ public class Main extends Application {
         for (int i = 0; i < games.size(); i++) {
             String player1 = (String) games.get(i).get("player1");
             String player2 = (String) games.get(i).get("player2");
-            listView.getItems().add(player1 + " vs " + player2);
+            listView.getItems().add("Game " + (i+1) + ": " + player1 + " vs " + player2);
         }
 
-        Button button = new Button("Play");
-        button.setOnAction(event -> {
+        Button buttonPlay = new Button("Play");
+        buttonPlay.setOnAction(event -> {
             ObservableList selectedIndices = listView.getSelectionModel().getSelectedIndices();
 
             for(Object o : selectedIndices){
@@ -284,12 +283,31 @@ public class Main extends Application {
                 System.out.println(id);
             }
         });
+        Button buttonForfeit = new Button("Forfeit");
+        buttonForfeit.setOnAction(event -> {
 
-        VBox leftContainer = new VBox(listView, button);
+        });
+
+        HBox leftButtonContainer = new HBox(buttonPlay, buttonForfeit);
+        leftButtonContainer.setSpacing(15);
+
+        Label labelActiveGames = new Label("Active Games");
+        labelActiveGames.setTextAlignment(TextAlignment.CENTER);
+
+        VBox leftContainer = new VBox(labelActiveGames, listView, leftButtonContainer);
+        //leftContainer.setPrefWidth(300);
+        leftContainer.setSpacing(15);
+        leftContainer.setPadding(new Insets(15, 15, 15, 15));
+
+        VBox container = new VBox(0);
+        HBox contentContainer = new HBox(0);
+        contentContainer.getChildren().addAll(leftContainer, rightContainer);
+        container.setPrefSize(WIDTH, HEIGHT);
+        container.getChildren().addAll(labelWelcome, contentContainer);
 
         root.setTop(menuBar);
-        root.setCenter(mainContent);
-        root.setLeft(leftContainer);
+        root.setCenter(container);
+        //root.setLeft(leftContainer);
 
         Thread databaseChecker = new Thread(() -> {
             boolean run = true;
