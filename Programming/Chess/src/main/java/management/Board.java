@@ -1,8 +1,7 @@
 package management;
 
 import main.GameBoard;
-import main.Main;
-import pieces.ChessPiece;
+import pieces.AbstractChessPiece;
 import pieces.IChessPiece;
 import pieces.King;
 import pieces.Pawn;
@@ -107,12 +106,12 @@ public class Board extends AbstractBoard {
      * @param alliance The alliance of the pieces to find
      * @return All matching pieces on this board
      */
-    public HashMap<Vector2, ChessPiece> getPieces(Alliance alliance) {
-        HashMap<Vector2, ChessPiece> pieces = getPieces();
-        HashMap<Vector2, ChessPiece> temp = new HashMap<>();
+    public HashMap<Vector2, AbstractChessPiece> getPieces(Alliance alliance) {
+        HashMap<Vector2, AbstractChessPiece> pieces = getPieces();
+        HashMap<Vector2, AbstractChessPiece> temp = new HashMap<>();
 
         for(Vector2 pos : pieces.keySet()) {
-            ChessPiece piece = pieces.get(pos);
+            AbstractChessPiece piece = pieces.get(pos);
             if (piece.alliance().equals(alliance))
                 temp.put(pos, piece);
         }
@@ -123,9 +122,9 @@ public class Board extends AbstractBoard {
     public Set<Move> getAllPossibleMoves(Alliance alliance) {
         Set<Move> moves = new HashSet<>();
 
-        HashMap<Vector2, ChessPiece> pieces = getPieces(alliance);
+        HashMap<Vector2, AbstractChessPiece> pieces = getPieces(alliance);
         for(Vector2 pos : pieces.keySet()) {
-            ChessPiece piece = pieces.get(pos);
+            AbstractChessPiece piece = pieces.get(pos);
             for(Vector2 end : piece.getPossibleDestinations())
                 moves.add(new Move(pos, end));
         }
@@ -160,7 +159,7 @@ public class Board extends AbstractBoard {
     }
 
 
-    public boolean pawnPromotion(ChessPiece piece, Vector2 end){
+    public boolean pawnPromotion(AbstractChessPiece piece, Vector2 end){
 
 
         if (piece instanceof Pawn) {
@@ -193,7 +192,7 @@ public class Board extends AbstractBoard {
 
         saveLog();
 
-        ChessPiece piece = getPiece(start);
+        AbstractChessPiece piece = getPiece(start);
 
         if (piece == null) {
             return advanceMove(false); // Check if a piece exists at the given position
@@ -216,25 +215,25 @@ public class Board extends AbstractBoard {
                     case 'q':
                         removePiece(start);
                         addPiece(end, Piece.QUEEN, alliance);
-                        logMove(new MoveNode(piece, start, end, (ChessPiece) getPiece(end)));
+                        logMove(new MoveNode(piece, start, end, (AbstractChessPiece) getPiece(end)));
 
                         return advanceMove(true);
                     case 'b':
                         removePiece(start);
                         addPiece(end, Piece.BISHOP, alliance);
-                        logMove(new MoveNode(piece, start, end, (ChessPiece) getPiece(end)));
+                        logMove(new MoveNode(piece, start, end, (AbstractChessPiece) getPiece(end)));
 
                         return advanceMove(true);
                     case 'k':
                         removePiece(start);
                         addPiece(end, Piece.KNIGHT, alliance);
-                        logMove(new MoveNode(piece, start, end, (ChessPiece) getPiece(end)));
+                        logMove(new MoveNode(piece, start, end, (AbstractChessPiece) getPiece(end)));
 
                         return advanceMove(true);
                     case 'r':
                         removePiece(start);
                         addPiece(end, Piece.ROOK, alliance);
-                        logMove(new MoveNode(piece, start, end, (ChessPiece) getPiece(end)));
+                        logMove(new MoveNode(piece, start, end, (AbstractChessPiece) getPiece(end)));
 
                         return advanceMove(true);
 
@@ -271,7 +270,7 @@ public class Board extends AbstractBoard {
                 addPiece(new Vector2(kingSideRookX - 1, end.getY()), Piece.KING, alliance);
                 media.playSound("move.mp3");
 
-                logMove(new MoveNode(piece, start, end, (ChessPiece) getPiece(end)));
+                logMove(new MoveNode(piece, start, end, (AbstractChessPiece) getPiece(end)));
 
                 return advanceMove(true);
 
@@ -309,9 +308,9 @@ public class Board extends AbstractBoard {
         }
 
         setLastPiece(piece);
-        ChessPiece endPiece = (ChessPiece) getPiece(end);
+        AbstractChessPiece endPiece = (AbstractChessPiece) getPiece(end);
 
-        ChessPiece victim = null;
+        AbstractChessPiece victim = null;
         if (endPiece != null) {
             //Remove hostile attacked piece
             if (!endPiece.alliance().equals(piece.alliance())) {

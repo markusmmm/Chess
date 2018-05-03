@@ -27,5 +27,5 @@ public interface IChessPiece {
 
 	void loadData(List<Boolean> vals);
 
-	ChessPiece clonePiece();
+	AbstractChessPiece clonePiece();
 }

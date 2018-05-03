@@ -7,14 +7,10 @@ import java.util.Set;
 public class Vector2 implements Comparable<Vector2> {
 	private final int x, y;
 
-	public final static Vector2 N = new Vector2(0,-1);
-	public final static Vector2 NE = new Vector2(1,-1);
-	public final static Vector2 E = new Vector2(1,0);
-	public final static Vector2 SE = new Vector2(1,1);
-	public final static Vector2 S = new Vector2(0,1);
-	public final static Vector2 SW = new Vector2(-1,1);
-	public final static Vector2 W = new Vector2(-1,0);
-	public final static Vector2 NW = new Vector2(-1,-1);
+	public final static Vector2
+			NW = new Vector2(-1,-1), N =    new Vector2(0,-1), NE = new Vector2(1,-1),
+			W  = new Vector2(-1, 0), ZERO = new Vector2(0, 0), E  = new Vector2(1, 0),
+			SW = new Vector2(-1, 1), S =    new Vector2(0, 1), SE = new Vector2(1, 1);
 
 	public final static HashSet<Vector2> DIAGONAL = new HashSet<>(Arrays.asList(NE, SE, SW, NW));
     public final static HashSet<Vector2> VERTICAL = new HashSet<>(Arrays.asList(NE, SE, SW, NW));
@@ -44,8 +40,18 @@ public class Vector2 implements Comparable<Vector2> {
 	public Vector2 mult(int m) { return new Vector2(x * m, y * m); }
     public Vector2 mult(Vector2 v) { return new Vector2(x * v.x, y * v.y); }
 
-    public boolean isParallelTo(Vector2 v) {
-	    return (double)v.x / x == (double)v.y / y;
+	/**
+	 * Normalize both vectors, and see if the result is equal
+	 * @param v Other vector to check
+	 * @return Whether or not the vectors are parallel
+	 */
+	public boolean isParallelTo(Vector2 v) {
+		if(equals(v)) return true;
+
+		double xRatio = x == 0 || v.x == 0 ? 0 : (double)x / v.x,
+			   yRatio = y == 0 || v.y == 0 ? 0 : (double)y / v.y;
+
+		return xRatio == yRatio;
     }
 
     /**
@@ -70,6 +76,14 @@ public class Vector2 implements Comparable<Vector2> {
 
         return new Vector2(stepX,stepY);
     }
+
+    public double dot(Vector2 v) {
+    	return x * v.x + y * v.y;
+	}
+
+	public double magnitude() {
+    	return Math.sqrt(x*x + y*y);
+	}
 
     /**
      *

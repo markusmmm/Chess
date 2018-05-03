@@ -33,6 +33,12 @@ public class Vector2Test {
         Vector2 v2 = u.mult(-1);
         Vector2 v3 = u.mult(new Vector2(2,3));
 
+        assertTrue(u.isParallelTo(u));
+        assertTrue(v2.isParallelTo(v2));
+        assertTrue(Vector2.ZERO.isParallelTo(u));
+        assertTrue(new Vector2(0,-1).isParallelTo(new Vector2(0,-1)));
+        assertTrue(new Vector2(-1,1).isParallelTo(new Vector2(-3,3)));
+        assertTrue(new Vector2(-1,1).isParallelTo(new Vector2(3,-3)));
         assertTrue(u.isParallelTo(v1));
         assertTrue(u.isParallelTo(v2));
         assertFalse(u.isParallelTo(v3));

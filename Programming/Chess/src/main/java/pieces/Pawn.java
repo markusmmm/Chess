@@ -15,7 +15,7 @@ import java.util.Set;
 import static resources.Alliance.BLACK;
 import static resources.Alliance.WHITE;
 
-public class Pawn extends ChessPiece {
+public class Pawn extends AbstractChessPiece {
 
 	private boolean hasDoubleStepped = false;
 
@@ -38,7 +38,7 @@ public class Pawn extends ChessPiece {
 	}
 
 	@Override
-	public ChessPiece clonePiece() {
+	public AbstractChessPiece clonePiece() {
 		return new Pawn(this);
 	}
 
@@ -162,7 +162,7 @@ public class Pawn extends ChessPiece {
 		if(!withinBoard(move)) return false;
 		Vector2 whiteLD = new Vector2(this.position().getX() - 1, this.position().getY() - 1);
 		if (!board.vacant(move)) {
-			ChessPiece enemy = (ChessPiece) board.getPiece(move);
+			AbstractChessPiece enemy = (AbstractChessPiece) board.getPiece(move);
 			if (move.equals(whiteLD) && (!enemy.alliance.equals(this.alliance))) {
 				return true;
 			}
@@ -175,7 +175,7 @@ public class Pawn extends ChessPiece {
 		if(!withinBoard(move)) return false;
 		Vector2 whiteRD = new Vector2(this.position().getX() + 1, this.position().getY() - 1);
 		if (!board.vacant(move)) {
-			ChessPiece enemy = (ChessPiece) board.getPiece(move);
+			AbstractChessPiece enemy = (AbstractChessPiece) board.getPiece(move);
 			if (move.equals(whiteRD) && (!enemy.alliance.equals(this.alliance))) {
 				return true;
 			}
@@ -188,7 +188,7 @@ public class Pawn extends ChessPiece {
 		if(!withinBoard(move)) return false;
 		Vector2 blackLD = new Vector2(this.position().getX() - 1, this.position().getY() + 1);
 		if (!board.vacant(move)) {
-			ChessPiece enemy = (ChessPiece) board.getPiece(move);
+			AbstractChessPiece enemy = (AbstractChessPiece) board.getPiece(move);
 			if (move.equals(blackLD) && (!enemy.alliance.equals(this.alliance))) {
 				return true;
 			}
@@ -201,7 +201,7 @@ public class Pawn extends ChessPiece {
 		if(!withinBoard(move)) return false;
 		Vector2 blackRD = new Vector2(this.position().getX() + 1, this.position().getY() + 1);
 		if (!board.vacant(move)) {
-			ChessPiece enemy = (ChessPiece) board.getPiece(move);
+			AbstractChessPiece enemy = (AbstractChessPiece) board.getPiece(move);
 			if (move.equals(blackRD) && (!enemy.alliance.equals(this.alliance))) {
 				return true;
 			}

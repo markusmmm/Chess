@@ -7,7 +7,6 @@ import resources.Vector2;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Set;
 
 public class Knight  extends ChessPiece {
 
@@ -25,18 +24,7 @@ public class Knight  extends ChessPiece {
 	}
 
 	@Override
-	public ChessPiece clonePiece() {
+	public AbstractChessPiece clonePiece() {
 		return new Knight(this);
-	}
-
-	/**
-	 *
-	 * @param destination
-	 */
-	public boolean legalMove(Vector2 destination) {
-		if(!super.legalMove(destination)) return false;
-
-		Vector2 delta = destination.sub(position());
-		return moves.contains(delta);
 	}
 }

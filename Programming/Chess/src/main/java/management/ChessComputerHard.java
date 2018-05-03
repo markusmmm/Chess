@@ -1,6 +1,6 @@
 package management;
 
-import pieces.ChessPiece;
+import pieces.AbstractChessPiece;
 import resources.Alliance;
 import resources.Move;
 import resources.Piece;
@@ -107,7 +107,7 @@ public class ChessComputerHard extends ChessComputer {
     }
 
     private boolean hasMoved(Vector2 pos) {
-        ChessPiece piece = board.getPiece(pos);
+        AbstractChessPiece piece = board.getPiece(pos);
         if(piece == null) return true;
         return !piece.hasMoved();
     }
@@ -145,7 +145,7 @@ public class ChessComputerHard extends ChessComputer {
         spacecounter = 0;
     }
 
-    private String translatePiece(ChessPiece piece) {
+    private String translatePiece(AbstractChessPiece piece) {
         String translated = "";
         if(piece.piece() == Piece.PAWN && piece.alliance() == Alliance.WHITE) translated = "P";
         else if (piece.piece() == Piece.ROOK && piece.alliance() == Alliance.WHITE) translated = "R";

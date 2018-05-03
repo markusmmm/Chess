@@ -2,6 +2,8 @@ package resources;
 
 import main.GameBoard;
 import management.ChessComputerMedium;
+import pieces.AbstractChessPiece;
+import pieces.ChessPiece;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -13,6 +15,8 @@ public class Console {
 
     private static Set<Class> ignoredCallers = new HashSet<>(Arrays.asList(
             ChessComputerMedium.class
+            , AbstractChessPiece.class
+            , ChessPiece.class
     ));
 
     private static final String ANSI_RESET = "\u001B[0m";
