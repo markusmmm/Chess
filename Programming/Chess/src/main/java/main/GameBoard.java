@@ -447,12 +447,40 @@ public class GameBoard {
         }
     }
 
+    /**
+     * draws the chessboard
+     */
     public void drawBoard() {
+        drawPieces();
+        drawSquares();
+        drawPlayerTurn();
+    }
+
+    /**
+     * updates the GUI feed which tells who's turn it is
+     */
+    private void drawPlayerTurn() {
+        String player;
+        if (board.getActivePlayer() == Alliance.WHITE) player = player1.getUsername();
+        else player = player2.getUsername();
+        gameStatus.setText("It's " + player + " turn.");
+    }
+
+    /**
+     * draws the pieces on the board
+     */
+    public void drawPieces() {
         for (Vector2 pos : board.clearDrawPieces()) {
             int col = pos.getX();
             int row = pos.getY();
             tiles[row][col].drawPiece();
         }
+    }
+
+    /**
+     * draws the black and white squares on the chessboard
+     */
+    public void drawSquares() {
         for (int row = 0; row < SIZE; row++) {
             for (int col = 0; col < SIZE; col++) {
                 if ((row + col) % 2 == 0) {
@@ -462,12 +490,7 @@ public class GameBoard {
                 }
             }
         }
-        String player;
-        if (board.getActivePlayer() == Alliance.WHITE) player = player1.getUsername();
-        else player = player2.getUsername();
-        gameStatus.setText("It's " + player + " turn.");
     }
-
     public void printTiles() {
         for (int row = 0; row < SIZE; row++) {
             for (int col = 0; col < SIZE; col++) {
