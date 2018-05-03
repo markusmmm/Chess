@@ -129,15 +129,43 @@ public class DatabaseController {
         }
     }
 
+    /**
+     * Grabs all the game invites which have not been seen
+     * @param username
+     * @return a list of invites
+     */
     public List<Document> checkForGameInvites(String username) {
         if (userExists(username)) {
             List<Document> gameInvites = new ArrayList<>();
-            db.getCollection("gameInvite").find(new Document("player2", username.toLowerCase()).append("inviteAccepted", null)).into(gameInvites);
+            db.getCollection("gameInvite").find(new Document("player2",
+                    username.toLowerCase()).append("inviteAccepted", null)).into(gameInvites);
             return gameInvites;
         }
         return null;
     }
 
+    /**
+     * Grabs all the game invites which have not been seen
+     * @param username
+     * @return a list of invites
+     */
+    public List<Document> getOnlineGames(String username) {
+        if (userExists(username)) {
+            List<Document> games = new ArrayList<>();
+            db.getCollection("games").find(new Document("player1",
+                    username.toLowerCase())).into(games);
+            db.getCollection("games").find(new Document("player2",
+                    username.toLowerCase())).into(games);
+            return games;
+        }
+        return null;
+    }
+
+    /**
+     * Creates a new game of chess in the database
+     * @param player1
+     * @param player2
+     */
     public void createOnlineGame(String player1, String player2) {
         String defaultChess = "8 -1 0 0 0\n" +
                 "-1 -1\n" +
@@ -154,14 +182,28 @@ public class DatabaseController {
         db.getCollection("games").insertOne(query);
     }
 
+    /**
+     * Updates the gameInvites in the database and creates a new
+     * online game if the invited is accepted
+     * @param id
+     * @param accepted
+     * @param player1
+     * @param player2
+     */
     public void handleGameInvite(ObjectId id, boolean accepted, String player1, String player2) {
         Document newDoc = new Document();
         newDoc.append("$set", new Document().append("inviteAccepted", accepted));
         Document searchQuery = new Document().append("_id", id);
         db.getCollection("gameInvite").updateOne(searchQuery, newDoc);
-        createOnlineGame(player1, player2);
+        if (accepted)
+            createOnlineGame(player1, player2);
     }
 
+    /**
+     * Get game document by id
+     * @param id
+     * @return game document
+     */
     public Document getGame(String id) {
         Document query = new Document("_id", new ObjectId(id));
         return db.getCollection("games").find(query).first();

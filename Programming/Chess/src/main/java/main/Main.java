@@ -182,9 +182,6 @@ public class Main extends Application {
      * @return mainMenu
      */
     public void mainMenu(String username, Stage stage) {
-        // root = new BorderPane();
-        // menuBar = generateMenuBar();
-
         Label labelWelcome = new Label("Welcome, " + username +
                 "!\nYour score: " + database.getScore(username));
         labelWelcome.setPrefWidth(WIDTH);
@@ -239,15 +236,15 @@ public class Main extends Application {
         buttonPlayHard.setOnAction(e -> createChessGame(username, "AI: Hard", 3, BoardMode.DEFAULT, root));
         randomBoardPlay.setOnAction(e -> createChessGame(username, "AI: Easy", 1, BoardMode.RANDOM, root));
         buttonHighScore.setOnAction(e -> highscore(username, stage));
-        buttonPlayOnline.setOnAction(e -> {
-            Document game = database.getGame("5ae9f3e9e33da16d580fe644");
+        buttonPlayOnline.setOnAction(e -> { int x = 0; });
+            /*Document game = database.getGame("5ae9f3e9e33da16d580fe644");
             String player1 = (String) game.get("player1");
             String player2 = (String) game.get("player2");
             String gameData = (String) game.get("gameData");
             try {
                 File gameFile = new File(ONLINE_GAME_DIR, "5ae9f3e9e33da16d580fe644.txt");
                 FileUtils.writeStringToFile(gameFile, gameData, StandardCharsets.UTF_8);
-                GameBoard gameBoard = new GameBoard(player1, player2, 0, BoardMode.DEFAULT, this, stage, root);
+                GameBoard gameBoard = new GameBoard(player1, player2, 0, BoardMode.DEFAULT, this, stage, root, true);
                 gameBoard.createBoard();
                 gameBoard.performLoad(gameFile);
                 root.setCenter(gameBoard.getContainer());
@@ -255,7 +252,7 @@ public class Main extends Application {
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
-        });
+        });*/
         media.playSound("welcome.mp3");
         buttonQuit.setOnAction(e -> onQuit());
 
@@ -268,38 +265,61 @@ public class Main extends Application {
         mainContent.setPrefSize(WIDTH, HEIGHT);
         mainContent.getChildren().addAll(labelWelcome, buttonContainer);
 
+        List<Document> games = database.getOnlineGames(username);
+        ListView<String> listView = new ListView();
+
+        for (int i = 0; i < games.size(); i++) {
+            String player1 = (String) games.get(i).get("player1");
+            String player2 = (String) games.get(i).get("player2");
+            listView.getItems().add(player1 + " vs " + player2);
+        }
+
+        Button button = new Button("Play");
+        button.setOnAction(event -> {
+            ObservableList selectedIndices = listView.getSelectionModel().getSelectedIndices();
+
+            for(Object o : selectedIndices){
+                int i = (Integer) o;
+                ObjectId id = (ObjectId) games.get(i).get("_id");
+                System.out.println(id);
+            }
+        });
+
+        VBox leftContainer = new VBox(listView, button);
+
         root.setTop(menuBar);
         root.setCenter(mainContent);
+        root.setLeft(leftContainer);
 
         Thread databaseChecker = new Thread(() -> {
             boolean run = true;
             try {
-                while (run) {
-                    List<Document> invites = database.checkForGameInvites(username);
-                    if (invites.size() > 0) {
-                        run = false;
-                        for (int i = 0; i < invites.size(); i++) {
-                            ObjectId id = (ObjectId) invites.get(i).get("_id");
-                            String player1 = (String) invites.get(i).get("player1");
-                            String player2 = (String) invites.get(i).get("player2");
-                            Platform.runLater(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                                    alert.setTitle("Game Invite");
-                                    alert.setHeaderText(player1 + " has invited you to a game of chess!");
-                                    alert.setContentText("Do you want to accept?");
-                                    Optional<ButtonType> result = alert.showAndWait();
-                                    if (result.get() == ButtonType.OK) {
-                                        database.handleGameInvite(id, true, player1, player2);
-                                    } else {
-                                        database.handleGameInvite(id, false, player1, player2);
-                                    }
+                List<Document> invites = database.checkForGameInvites(username);
+                if (invites.size() > 0) {
+                    run = false;
+                    for (int i = 0; i < invites.size(); i++) {
+                        ObjectId id = (ObjectId) invites.get(i).get("_id");
+                        String player1 = (String) invites.get(i).get("player1");
+                        String player2 = (String) invites.get(i).get("player2");
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                                alert.setTitle("Game Invite");
+                                alert.setHeaderText(player1 + " has invited you to a game of chess!");
+                                alert.setContentText("Do you want to accept?");
+                                Optional<ButtonType> result = alert.showAndWait();
+                                if (result.get() == ButtonType.OK) {
+                                    database.handleGameInvite(id, true, player1, player2);
+                                } else {
+                                    database.handleGameInvite(id, false, player1, player2);
                                 }
-                            });
-                        }
+                            }
+                        });
                     }
                 }
+
+
             } catch(Exception e) { System.out.println(e); }
         });
         databaseChecker.start();
@@ -342,7 +362,7 @@ public class Main extends Application {
      * @return chessGame
      */
     private void createChessGame(String player1, String player2, int difficulty, BoardMode boardMode, BorderPane root) {
-        GameBoard gameBoard = new GameBoard(player1, player2, difficulty, boardMode, this, stage, root);
+        GameBoard gameBoard = new GameBoard(player1, player2, difficulty, boardMode, this, stage, root, false);
         gameBoard.createBoard();
         root.setCenter(gameBoard.getContainer());
         root.setTop(gameBoard.generateGameMenuBar());
