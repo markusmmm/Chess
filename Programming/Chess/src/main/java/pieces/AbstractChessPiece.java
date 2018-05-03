@@ -18,14 +18,14 @@ public abstract class AbstractChessPiece implements IChessPiece {
 
 		protected boolean evaluate(Vector2 move) {
 			Vector2 destination = position().add(move);
-			Console.printNotice(clonePiece() + " evaluates destination " + destination);
+			//Console.printNotice(clonePiece() + " evaluates destination " + destination);
 
 			if(legalMove(destination)) {
 				possibleDestinations.add(destination);
-				Console.printSuccess("Move success");
+				//Console.printSuccess("Move success");
 				return true;
 			}
-			Console.printError("Move failure");
+			//Console.printError("Move failure");
 			return false;
 		}
 
