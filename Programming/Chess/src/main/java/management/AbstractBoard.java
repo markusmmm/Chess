@@ -25,13 +25,9 @@ public class AbstractBoard {
     private int size;
     private int difficulty;
     private Player player1, player2;
-<<<<<<< HEAD
-    protected ChessClock clock = null;
-    private ChessPiece lastPiece = null;
-=======
+
     private ChessClock clock = null;
     private AbstractChessPiece lastPiece = null;
->>>>>>> improvedPieces
 
     protected Alliance activePlayer = Alliance.WHITE;
 

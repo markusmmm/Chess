@@ -352,6 +352,8 @@ public class Board extends AbstractBoard {
      */
     private boolean advanceMove(boolean state) {
         if (state) {
+            ChessClock clock = getClock();
+
             if(clock != null && !clock.endTurn(moveI % 2))
                 return false;
 
