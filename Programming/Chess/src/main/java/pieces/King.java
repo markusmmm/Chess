@@ -11,7 +11,9 @@ public class King extends AbstractChessPiece {
      *
      */
     public King(Vector2 position, Alliance alliance, AbstractBoard board, boolean hasMoved) {
-        super(position, alliance, Vector2.UNIT, MoveType.STEP, board, false, Piece.KING, 2, hasMoved);
+        super(position, alliance,
+                vectorTools.addAll(Vector2.UNIT, new Vector2(2,0), new Vector2(-2,0)),
+                MoveType.STEP, board, false, Piece.KING, 2, hasMoved);
     }
     public King(King other) {
         super(other);

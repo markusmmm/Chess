@@ -9,6 +9,71 @@ import java.util.List;
 import java.util.Set;
 
 public abstract class AbstractChessPiece implements IChessPiece {
+	public class MoveEvaluator {
+		private HashSet<Vector2> possibleDestinations;
+
+		protected MoveEvaluator() {
+			possibleDestinations = new HashSet<>();
+		}
+
+		protected boolean evaluate(Vector2 move) {
+			Vector2 destination = position().add(move);
+			Console.printNotice(clonePiece() + " evaluates destination " + destination);
+
+			if(legalMove(destination)) {
+				possibleDestinations.add(destination);
+				Console.printSuccess("Move success");
+				return true;
+			}
+			Console.printError("Move failure");
+			return false;
+		}
+
+		/**
+		 * Evaluates one step in each given directions
+		 * @param moves Move directions to evaluate
+		 */
+		protected void evaluate(HashSet<Vector2> moves) {
+			moves = (HashSet<Vector2>)moves.clone();
+
+			for(Vector2 dir : moves)
+				evaluate(dir);
+		}
+
+		/**
+		 * Evaluates multiple directions in parallel, until all directions fail
+		 * @param dirs Directions to evaluate (Set of unit vectors)
+		 */
+		protected void evaluateContinuous(HashSet<Vector2> dirs) {
+			dirs = (HashSet<Vector2>)dirs.clone();
+			if(dirs.size() == 0) {
+				Console.printWarning("Evaluation begun, but " + clonePiece() + " has no moves");
+			}
+
+			for (int variable = 1; variable < board.size(); variable++) {
+				if (dirs.size() == 0) return;
+
+				Set<Vector2> terminatedDirs = new HashSet<>();
+				for (Vector2 d : dirs) {
+					Vector2 move = d.mult(variable);
+					AbstractChessPiece enemy = board.getPiece(position().add(move));
+
+					if ((!evaluate(move) || (enemy != null && enemy.alliance() != alliance())) && !canJump) {
+						// Obstacle/enemy reached. If the piece can't jump, no further evaluation is needed in direction d
+						terminatedDirs.add(d);
+					}
+				}
+				dirs.removeAll(terminatedDirs);
+			}
+		}
+
+		protected Set<Vector2> getResult() {
+			return (HashSet<Vector2>)possibleDestinations.clone();
+		}
+	}
+
+	public final static Tools<Vector2> vectorTools = new Tools<>();
+
     public enum MoveType { STEP, LINE }
 
 	private MediaHelper media = new MediaHelper();
@@ -96,6 +161,19 @@ public abstract class AbstractChessPiece implements IChessPiece {
 
 		// Lastly, check if king is in check, and whether or not the move resolves it (SHOULD OCCUR LAST, FOR OPTIMIZATION)
 		return king.resolvesCheck(position(), destination);
+	}
+
+	@Override
+	public Set<Vector2> getPossibleDestinations() {
+		MoveEvaluator evaluator = new MoveEvaluator();
+		if(moveType == MoveType.LINE)
+			evaluator.evaluateContinuous(moves);
+		else
+			evaluator.evaluate(moves);
+
+		Set<Vector2> result = evaluator.getResult();
+
+		return result;
 	}
 
 	/**
