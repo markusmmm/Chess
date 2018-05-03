@@ -37,21 +37,24 @@ import java.util.*;
 
 public class Main extends Application {
 
+    public static final File SAVES_DIR = new File(System.getProperty("user.home"), "GitGud/");
+    public static final File LOGS_DIR = new File(SAVES_DIR, ".logs/");
+    public static final File ONLINE_GAME_DIR = new File(SAVES_DIR, ".online/");
+    public static final File CORE_DIR = new File("core/");
+    public static final String DATA_SEPARATOR = "====";
+    public static final String SAVE_EXTENSION = ".txt";
     static final int WIDTH = 720;
     static final int HEIGHT = 500;
     MediaHelper media = new MediaHelper();
     private Stage stage;
     private BorderPane root = new BorderPane();
-    private MenuBar menuBar = generateMenuBar();
     private DatabaseController database = new DatabaseController();
+    private MenuBar menuBar = generateMenuBar();
+    private Timer t1;
 
-    public static final File SAVES_DIR = new File(System.getProperty("user.home"), "GitGud/");
-    public static final File LOGS_DIR = new File(SAVES_DIR, ".logs/");
-    public static final File ONLINE_GAME_DIR = new File(SAVES_DIR, ".online/");
-    public static final File CORE_DIR = new File("core/");
-
-    public static final String DATA_SEPARATOR = "====";
-    public static final String SAVE_EXTENSION = ".txt";
+    public static void main(String[] args) {
+        launch(args);
+    }
 
     public void start(Stage primaryStage) throws Exception {
         directorySetup();
@@ -70,20 +73,20 @@ public class Main extends Application {
         if (!SAVES_DIR.exists()) {
             SAVES_DIR.mkdirs();
         }
-        if(!LOGS_DIR.exists())
+        if (!LOGS_DIR.exists())
             LOGS_DIR.mkdirs();
-        if(!ONLINE_GAME_DIR.exists())
+        if (!ONLINE_GAME_DIR.exists())
             ONLINE_GAME_DIR.mkdirs();
 
-        if(CORE_DIR.exists()) {
+        if (CORE_DIR.exists()) {
             File[] coreFiles = CORE_DIR.listFiles();
-            if(coreFiles == null) return;
+            if (coreFiles == null) return;
 
-            for(File coreFile : coreFiles) {
+            for (File coreFile : coreFiles) {
                 String fileName = coreFile.getName();
 
                 File destFile = new File(SAVES_DIR, fileName);
-                if(!destFile.exists()) {
+                if (!destFile.exists()) {
                     try {
                         destFile.createNewFile();
                     } catch (IOException e) {
@@ -98,7 +101,7 @@ public class Main extends Application {
                     writer.write(""); // Clear file
                     Scanner reader = new Scanner(coreFile);
 
-                    while(reader.hasNextLine()) {
+                    while (reader.hasNextLine()) {
                         writer.append(reader.nextLine() + "\n");
                     }
                     writer.close();
@@ -181,6 +184,9 @@ public class Main extends Application {
      * @return mainMenu
      */
     public void mainMenu(String username, Stage stage) {
+        t1 = new Timer();
+        t1.scheduleAtFixedRate(new DatabaseInviteChecker(username), 0, 5 * 1000);
+
         Label labelWelcome = new Label("Welcome, " + username +
                 "!\nYour score: " + database.getScore(username));
         labelWelcome.setPrefWidth(WIDTH);
@@ -262,18 +268,18 @@ public class Main extends Application {
         rightContainer.setPrefWidth(420);
 
         List<Document> games = database.getOnlineGames(username);
-        ListView<String> listView = new ListView();
+        ListView<String> listView = new ListView<String>();
 
         for (int i = 0; i < games.size(); i++) {
             String player1 = (String) games.get(i).get("player1");
             String player2 = (String) games.get(i).get("player2");
-            listView.getItems().add("Game " + (i+1) + ": " + player1 + " vs " + player2);
+            listView.getItems().add("Game " + (i + 1) + ": " + player1 + " vs " + player2);
         }
 
         Button buttonPlay = new Button("Play");
         buttonPlay.setOnAction(event -> {
-            ObservableList selectedIndices = listView.getSelectionModel().getSelectedIndices();
-            for(Object o : selectedIndices){
+            ObservableList<Integer> selectedIndices = listView.getSelectionModel().getSelectedIndices();
+            for (Object o : selectedIndices) {
                 int i = (Integer) o;
                 ObjectId id = (ObjectId) games.get(i).get("_id");
                 String gameData = (String) games.get(i).get("gameData");
@@ -294,8 +300,8 @@ public class Main extends Application {
         });
         Button buttonForfeit = new Button("Forfeit");
         buttonForfeit.setOnAction(event -> {
-            ObservableList selectedIndices = listView.getSelectionModel().getSelectedIndices();
-            for(Object o : selectedIndices) {
+            ObservableList<Integer> selectedIndices = listView.getSelectionModel().getSelectedIndices();
+            for (Object o : selectedIndices) {
                 int i = (Integer) o;
                 ObjectId id = (ObjectId) games.get(i).get("_id");
                 database.forfeitGame(id);
@@ -320,11 +326,6 @@ public class Main extends Application {
 
         root.setTop(menuBar);
         root.setCenter(container);
-        //root.setLeft(leftContainer);
-
-        Timer t = new Timer();
-        t.scheduleAtFixedRate(new DatabaseInviteChecker(username), 0, 5 * 1000);
-
     }
 
     public void highscore(String username, Stage stage) {
@@ -368,6 +369,7 @@ public class Main extends Application {
         root.setCenter(gameBoard.getContainer());
         root.setTop(gameBoard.generateGameMenuBar());
         media.playSound("startup.mp3");
+        t1.cancel();
         //return gameBoard.getContainer();
     }
 
@@ -398,10 +400,6 @@ public class Main extends Application {
     public void onQuit() {
         database.close();
         System.exit(0);
-    }
-
-    public static void main(String[] args) {
-        launch(args);
     }
 
 }
