@@ -9,11 +9,10 @@ import resources.Vector2;
 import java.util.Scanner;
 
 public class ChessComputerHard extends ChessComputer {
-    private Scanner input;
     private Stockfish ai = new Stockfish();
     protected int thinkTime = 2500;
     private StringBuilder fen = new StringBuilder();
-    private int spacecounter = 0;
+    private int spacecounter;
 
     public ChessComputerHard(Board board) {
         super(board);
