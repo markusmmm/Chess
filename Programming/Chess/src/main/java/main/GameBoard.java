@@ -65,6 +65,7 @@ public class GameBoard {
         this.database = new DatabaseController();
 
         this.numberOfPuzzlesCompleted = database.getPuzzlesCompleted(user1);
+        System.out.println(numberOfPuzzlesCompleted);
         player1.setPuzzlesCompleted(numberOfPuzzlesCompleted);
 
         if(boardMode == BoardMode.CHESSPUZZLES){
@@ -334,14 +335,15 @@ public class GameBoard {
 
     public void puzzleCompleted(){
 
-        int numberOfpuzzles = chessPuzzles.getSizeOfDirectory()+1;
-        int puzzlesCompleted = player1.getPuzzlesCompleted();
-        if(numberOfpuzzles > puzzlesCompleted) {
-            String path = chessPuzzles.getFile(puzzlesCompleted);
+        int numberOfPuzzlesCompleted = database.getPuzzlesCompleted(user1);
+
+
+        if(numberOfPuzzles > numberOfPuzzlesCompleted) {
+            String path = chessPuzzles.getFile(numberOfPuzzlesCompleted);
 
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
 
-            alert.setHeaderText("You have completed the puzzle! " + (puzzlesCompleted) + " / " + numberOfpuzzles+  " completed");
+            alert.setHeaderText("You have completed the puzzle! " + (numberOfPuzzlesCompleted) + " / " + numberOfPuzzles+  " completed");
             alert.setContentText("Do you want to continue?");
 
             ButtonType buttonTypeOne = new ButtonType("Next puzzle");

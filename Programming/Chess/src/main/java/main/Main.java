@@ -168,7 +168,6 @@ public class Main extends Application {
             errorField.setText("Please enter a non-empty username.");
         else {
             if (database.userExists(username)) {
-                database.createPuzzlesCompleted(username);
             } else {
                 database.addUser(username);
             }

@@ -114,14 +114,6 @@ public class DatabaseController {
         }
     }
 
-    public void createPuzzlesCompleted(String username) {
-        if (userExists(username)) {
-            Document newDoc = new Document();
-            newDoc.append("$set", new Document().append("completedPuzzles", 0));
-            Document searchQuery = new Document().append("name", username.toLowerCase());
-            db.getCollection("users").updateOne(searchQuery, newDoc);
-        }
-    }
 
 
     /**
