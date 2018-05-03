@@ -119,7 +119,7 @@ public class Stockfish {
     }
 
     /**
-     * This function returns the best move for a given position after
+     * This function returns the best relativeMovement for a given position after
      * calculating for 'waitTime' ms
      *
      * @param fen

@@ -135,7 +135,7 @@ public class Board extends AbstractBoard {
 
 
     /**
-     * Gives all active pieces of a given alliance, that can perform at least one legal move
+     * Gives all active pieces of a given alliance, that can perform at least one legal relativeMovement
      * @param alliance The alliance of the pieces to find
      * @return All matching pieces on this board
      */
@@ -182,10 +182,10 @@ public class Board extends AbstractBoard {
 
     }
     /**
-     * Attempts to move a piece from 'start' to 'end'
+     * Attempts to relativeMovement a piece from 'start' to 'end'
      * @param start Position of the piece to be moved
-     * @param end Destination of the attempted move
-     * @return If the move was successful
+     * @param end Destination of the attempted relativeMovement
+     * @return If the relativeMovement was successful
      */
     public boolean movePiece(Vector2 start, Vector2 end) {
         if (!insideBoard(start)) return advanceMove(false);
@@ -240,7 +240,7 @@ public class Board extends AbstractBoard {
 
                 }
 
-                media.playSound("move.mp3");
+                media.playSound("relativeMovement.mp3");
 
                 if(!end.equals(piece.position()))
                     Console.printError("Position in " + piece + " was not updated internally!");
@@ -268,7 +268,7 @@ public class Board extends AbstractBoard {
 
                 addPiece(new Vector2(kingSideRookX - 2, end.getY()), pieceType, alliance);
                 addPiece(new Vector2(kingSideRookX - 1, end.getY()), Piece.KING, alliance);
-                media.playSound("move.mp3");
+                media.playSound("relativeMovement.mp3");
 
                 logMove(new MoveNode(piece, start, end, (AbstractChessPiece) getPiece(end)));
 
@@ -292,7 +292,7 @@ public class Board extends AbstractBoard {
 
                 addPiece(new Vector2(queenSideRookX + 3, end.getY()), pieceType, alliance);
                 addPiece(new Vector2(queenSideRookX + 2, end.getY()), Piece.KING, alliance);
-                media.playSound("move.mp3");
+                media.playSound("relativeMovement.mp3");
 
                 logMove(new MoveNode(piece, start, end, getPiece(end)));
 
@@ -337,17 +337,17 @@ public class Board extends AbstractBoard {
 
     /**
      * Overload that takes in a Move object
-     * @param move The move to perform
-     * @return Whether or not the move was successful
+     * @param move The relativeMovement to perform
+     * @return Whether or not the relativeMovement was successful
      */
     public boolean movePiece(Move move) {
-        //return movePiece(move.start, move.end);
+        //return movePiece(relativeMovement.start, relativeMovement.end);
     	return movePiece(move.start,move.end);
     }
 
     /**
      * Uses internally by board do advance to the next turn
-     * @param state Whether or not the move should be advanced
+     * @param state Whether or not the relativeMovement should be advanced
      * @return 'state'
      */
     private boolean advanceMove(boolean state) {
@@ -362,12 +362,12 @@ public class Board extends AbstractBoard {
     /**
      * Moves a piece from 'start' to 'end', and removes 'victim' from this board
      * @param start Position of the attacking piece
-     * @param end Destination of the attack
+     * @param end Destination of the relativeAttack
      * @param victim Attacked piece
      */
     public void performAttack(Vector2 start, Vector2 end, Vector2 victim) {
         MoveNode node = new MoveNode(getPiece(start), start, end, getPiece(victim));
-        //resources.Console.println("Performing attack: " + node);
+        //resources.Console.println("Performing relativeAttack: " + node);
 
         removePiece(victim);
         logMove(node);

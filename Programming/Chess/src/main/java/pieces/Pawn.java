@@ -2,10 +2,7 @@ package pieces;
 
 import management.AbstractBoard;
 import management.Board;
-import resources.Alliance;
-import resources.Console;
-import resources.Piece;
-import resources.Vector2;
+import resources.*;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -26,8 +23,9 @@ public class Pawn extends AbstractChessPiece {
 
 
 	public Pawn(Vector2 position, Alliance alliance, AbstractBoard board, boolean hasMoved, boolean hasDoubleStepped) {
-		super(position, alliance,
-                new HashSet<>(Arrays.asList(new Vector2(0, alliance == Alliance.BLACK ? 1 : -1)))
+		super(position, alliance, new HashSet<>(
+		        Arrays.asList(new Vector2( 0, Tools.allianceDir(alliance)), new Vector2(0, Tools.allianceDir(alliance) * 2),
+                              new Vector2(-1, Tools.allianceDir(alliance)), new Vector2(1, Tools.allianceDir(alliance))))
                 , MoveType.STEP, board, false, Piece.PAWN, 1, hasMoved);
 
 		this.hasDoubleStepped = hasDoubleStepped;
@@ -233,70 +231,6 @@ public class Pawn extends AbstractChessPiece {
 		if(move.equals(turnBackBlack1) || move.equals(turnBackBlack2) || move.equals(turnBackBlack3))
 			return false;
 		return true;
-	}
-
-	@Override
-	public Set<Vector2> getPossibleDestinations() {
-		Set<Vector2> possibleMoves = new HashSet<>();
-
-		Vector2 position = position();
-
-		int x = position.getX();
-		int y = position.getY();
-
-		if(this.alliance.equals(WHITE))
-		{
-			Vector2 end = new Vector2(x, y - 2);
-
-			//First move 2 step
-			if(legalMove(end))
-				possibleMoves.add(new Vector2(x, y - 2));
-			//One step
-			if(legalMove(new Vector2(x, y - 1)))
-				possibleMoves.add(new Vector2(x, y - 1));
-			//Take out enemy diagonal to left
-			if(legalMove(new Vector2(x - 1, y - 1)))
-				possibleMoves.add(new Vector2(x - 1, y - 1));
-			//Take out enemy diagonal to right
-			if(legalMove(new Vector2(x + 1, y - 1)))
-				possibleMoves.add(new Vector2(x + 1, y - 1));
-			if(enPassant(new Vector2(x - 1, y)))
-				possibleMoves.add(new Vector2(x - 1, y - 1));
-			if(enPassant(new Vector2(x + 1, y)))
-				possibleMoves.add(new Vector2(x + 1, y - 1));
-			if(promotion(new Vector2(x, y +1)))
-				possibleMoves.add(new Vector2(x, y - 1));
-		}
-		else if(this.alliance.equals(BLACK))
-		{
-			//First move 2 step
-			if(legalMove(new Vector2(x, y + 2)))
-				possibleMoves.add(new Vector2(x, y + 2));
-			//One step
-			if(legalMove(new Vector2(x, y + 1)))
-				possibleMoves.add(new Vector2(x, y + 1));
-			//Take out enemy diagonal to left
-			if(legalMove(new Vector2(x - 1, y + 1)))
-				possibleMoves.add(new Vector2(x - 1, y + 1));
-			//take out enemy diagonal to right
-			if(legalMove(new Vector2(x + 1, y + 1)))
-				possibleMoves.add(new Vector2(x + 1, y + 1));
-			if(enPassant(new Vector2(x - 1, y)))
-				possibleMoves.add(new Vector2(x - 1, y + 1));
-			if(enPassant(new Vector2(x + 1, y)))
-				possibleMoves.add(new Vector2(x + 1, y + 1));
-			if(promotion(new Vector2(x, y +1)))
-				possibleMoves.add(new Vector2(x, y + 1));
-		}
-
-		int startY = 1;
-		int dir = alliance == Alliance.BLACK ? 1 : -1;
-		if(alliance == Alliance.WHITE) startY = board.size() - 1 - startY;
-
-		if(position.getY() != startY)
-			possibleMoves.remove(new Vector2(position.getX(), position.getY() + dir * 2));
-
-		return possibleMoves;
 	}
 
 	public Set<Vector2> getPossibleAttacks() {

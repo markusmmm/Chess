@@ -103,13 +103,13 @@ public class King extends AbstractChessPiece {
     }
 
     /**
-     * Determines if the attempted move puts the king in check
-     * @param start Start position of the attempted move
-     * @param end End position of the attempted move
-     * @return Whether or not the move successfully protects the king
+     * Determines if the attempted relativeMovement puts the king in check
+     * @param start Start position of the attempted relativeMovement
+     * @param end End position of the attempted relativeMovement
+     * @return Whether or not the relativeMovement successfully protects the king
      */
     public boolean resolvesCheck(Vector2 start, Vector2 end) {
-        //resources.Console.printNotice("\nSimulating move " + new Move(start, end));
+        //resources.Console.printNotice("\nSimulating relativeMovement " + new Move(start, end));
         //resources.Console.printCaller();
 
         if(start.equals(position()))

@@ -30,7 +30,7 @@ public abstract class ChessComputer {
         validMoves.addAll(board.getAllPossibleMoves(alliance));
 
         if(move == null && validMoves.size() != 0) {
-            Console.printWarning("Computer found no valid moves in time. Choosing a random valid move...");
+            Console.printWarning("Computer found no valid moves in time. Choosing a random valid relativeMovement...");
 
             Random rand = new Random();
             int r = rand.nextInt(validMoves.size());
