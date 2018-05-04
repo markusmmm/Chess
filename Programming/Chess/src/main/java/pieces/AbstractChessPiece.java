@@ -173,7 +173,7 @@ public abstract class AbstractChessPiece implements IChessPiece {
 
 	@Override
 	public Set<Vector2> getPossibleDestinations() {
-	    if(moveI == board.moveI()) return possibleDestinationsBuffer;
+	    //if(moveI == board.moveI()) return possibleDestinationsBuffer;
         moveI = board.moveI();
 
 		MoveEvaluator evaluator = new MoveEvaluator();
@@ -183,7 +183,7 @@ public abstract class AbstractChessPiece implements IChessPiece {
 			evaluator.evaluate(moves);
 
 		HashSet<Vector2> result = evaluator.getResult();
-		possibleDestinationsBuffer = (HashSet<Vector2>)result.clone();
+		//possibleDestinationsBuffer = (HashSet<Vector2>)result.clone();
 
 		return result;
 	}

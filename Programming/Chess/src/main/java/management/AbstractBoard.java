@@ -446,12 +446,12 @@ public class AbstractBoard {
             pieces.put(end, piece);
 
             mutex.release();
-            return advanceMove(true);
+            return true;
         } catch (InterruptedException e) {
             e.printStackTrace();
 
             mutex.release();
-            return advanceMove(false);
+            return false;
         }
     }
 
@@ -484,20 +484,6 @@ public class AbstractBoard {
             //resources.Console.println("Mutex released");
             return false;
         }
-    }
-
-    /**
-     * Uses internally by board do advance to the next turn
-     * @param state Whether or not the move should be advanced
-     * @return 'state'
-     */
-    protected boolean advanceMove(boolean state) {
-        if (state) {
-            activePlayer = activePlayer.equals(Alliance.WHITE) ? Alliance.BLACK : Alliance.WHITE;
-            moveI++;
-        }
-
-        return state;
     }
 
     public void suspendPieces(Vector2... positions) {

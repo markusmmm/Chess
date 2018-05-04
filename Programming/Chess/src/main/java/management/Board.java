@@ -336,6 +336,20 @@ public class Board extends AbstractBoard {
     }
 
     /**
+     * Uses internally by board do advance to the next turn
+     * @param state Whether or not the move should be advanced
+     * @return 'state'
+     */
+    private boolean advanceMove(boolean state) {
+        if (state) {
+            activePlayer = activePlayer.equals(Alliance.WHITE) ? Alliance.BLACK : Alliance.WHITE;
+            moveI++;
+        }
+
+        return state;
+    }
+
+    /**
      * Overload that takes in a Move object
      * @param move The move to perform
      * @return Whether or not the move was successful
