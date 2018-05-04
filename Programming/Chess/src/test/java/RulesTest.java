@@ -28,22 +28,24 @@ public class RulesTest {
     }
 
     public TestNode[] tests = new TestNode[] {
-            new TestNode("rook", new Move(0,7,0,4), true),
-            new TestNode("rook", new Move(0,7,4,7), true),
-            new TestNode("bishop", new Move(0,7,2,5), true),
-            new TestNode("queen", new Move(0,7,0,4), true),
-            new TestNode("queen", new Move(0,7,4,7), true),
-            new TestNode("queen", new Move(0,7,2,5), true),
-            new TestNode("knight", new Move(1,7,0,5), true),
+            new TestNode("rook",                     new Move(0,7,0,4), true ),
+            new TestNode("rook",                     new Move(0,7,4,7), true ),
+            new TestNode("bishop",                   new Move(0,7,2,5), true ),
+            new TestNode("queen",                    new Move(0,7,0,4), true ),
+            new TestNode("queen",                    new Move(0,7,4,7), true ),
+            new TestNode("queen",                    new Move(0,7,2,5), true ),
+            new TestNode("knight",                   new Move(1,7,0,5), true ),
+            new TestNode("pawn",                     new Move(1,7,1,6), true ),
+            new TestNode("pawn",                     new Move(1,7,1,5), true ),
 
-            new TestNode("allyCantSetCheck", new Move(3, 1, 4, 2), false),
-            new TestNode("enPassant", new Move(0,3,1,2), true),
-            new TestNode("kingCanAttackIntruder", new Move(4,0,3,0), true),
-            new TestNode("pawnCanResolveCheck", new Move(2,7,3,6), true),
-            new TestNode("pawnCantThreatenWithMove", new Move(3,7,3,6), true),
-            new TestNode("threatenedAttacker", new Move(2,1,3,2), true),
-            new TestNode("castling", new Move(4,7,5,7), true),
-            new TestNode("castling", new Move(4,7,2,7), true)
+            new TestNode("allyCantSetCheck",         new Move(3,1,4,2), false),
+            new TestNode("enPassant",                new Move(0,3,1,2), true ),
+            new TestNode("kingCanAttackIntruder",    new Move(4,0,3,0), true ),
+            new TestNode("pawnCanResolveCheck",      new Move(2,7,3,6), true ),
+            new TestNode("pawnCantThreatenWithMove", new Move(3,7,3,6), true ),
+            new TestNode("threatenedAttacker",       new Move(2,1,3,2), true ),
+            new TestNode("castling",                 new Move(4,7,5,7), true ),
+            new TestNode("castling",                 new Move(4,7,2,7), true )
     };
 
     @Test
