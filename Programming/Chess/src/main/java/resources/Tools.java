@@ -29,6 +29,18 @@ public class Tools<E> {
         return temp;
     }
 
+    public E randomSetElem(Set<E> set) {
+        if(set.size() == 0) return null;
+
+        Random rand = new Random();
+        int r = rand.nextInt(set.size());
+
+        int i = 0;
+        for(E e : set)
+            if(i++ == r) return e;
+        return null;
+    }
+
     public HashSet<E> addAll(HashSet<E> set, E... elems) {
         HashSet<E> temp = cloneSet(set);
 

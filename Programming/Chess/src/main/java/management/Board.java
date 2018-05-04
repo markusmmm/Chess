@@ -1,6 +1,7 @@
 package management;
 
 import main.GameBoard;
+import main.Main;
 import pieces.AbstractChessPiece;
 import pieces.IChessPiece;
 import pieces.King;
@@ -49,28 +50,14 @@ public class Board extends AbstractBoard {
     public Board(int size, int difficulty, boolean useClock, BoardMode mode) {
         super(size, difficulty, useClock);
 
-        if (mode == BoardMode.DEFAULT) {
-            int p = 0;
-
-            for (Piece type : defaultBoard) {
-                int x = p % size;
-                int y = p / size;
-
-                Vector2 pos = new Vector2(x, y);
-                Vector2 invPos = new Vector2(x, size - y - 1);
-
-                if (type.equals(Piece.EMPTY)) continue;
-
-                addPiece(pos, type, Alliance.BLACK);
-                //resources.Console.println(pos + ": " + getPiece(pos));
-
-                addPiece(invPos, type, Alliance.WHITE);
-                //resources.Console.println(invPos + ": " + getPiece(invPos));
-
-                p++;
+        try {
+            if (mode == BoardMode.DEFAULT) {
+                loadBoard("default");
+            } else if (mode == BoardMode.RANDOM) {
+                sync(new RandomBoard(size, difficulty, useClock));
             }
-        } else if (mode == BoardMode.RANDOM) {
-            sync(new RandomBoard(size, difficulty, useClock));
+        } catch (FileNotFoundException e) {
+            throw new IllegalStateException("Default board state does not exist in the resource directory. Terminating application...");
         }
     }
 

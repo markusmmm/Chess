@@ -65,6 +65,10 @@ public class AbstractBoard {
         loadBoard(file);
         this.difficulty = difficulty;
     }
+    protected AbstractBoard(String saveName, int difficulty) throws FileNotFoundException {
+        loadBoard(saveName);
+        this.difficulty = difficulty;
+    }
 
     public void sync(AbstractBoard other) {
         moveI = other.moveI;
@@ -96,7 +100,9 @@ public class AbstractBoard {
 
     public int difficulty() { return difficulty; }
 
-    private void loadBoard(File file) throws FileNotFoundException {
+    protected void loadBoard(File file) throws FileNotFoundException {
+        Console.printNotice("Attempting to load board from " + file.getAbsolutePath());
+
         Scanner reader;
         if (file.getName().equals("default" + Main.SAVE_EXTENSION)) {
             InputStream is = Thread.currentThread().getContextClassLoader()
@@ -202,6 +208,10 @@ public class AbstractBoard {
         reader.close();
 
         Console.printSuccess("Board successfully loaded from file " + file.getName());
+    }
+    public void loadBoard(String saveName) throws FileNotFoundException {
+        File file = new File(saveName + Main.SAVE_EXTENSION);
+        loadBoard(file);
     }
 
     /**
