@@ -50,7 +50,11 @@ public class Main extends Application {
     private BorderPane root = new BorderPane();
     private DatabaseController database = new DatabaseController();
     private MenuBar menuBar = generateMenuBar();
+    private ListView<String> listView;
+    private ObservableList<String> observableActiveGameList;
+    private List<Document> activeGameData;
     private Timer t1;
+    private Timer t2;
 
     public static void main(String[] args) {
         launch(args);
@@ -184,9 +188,6 @@ public class Main extends Application {
      * @return mainMenu
      */
     public void mainMenu(String username, Stage stage) {
-        t1 = new Timer();
-        t1.scheduleAtFixedRate(new DatabaseInviteChecker(username), 0, 5 * 1000);
-
         Label labelWelcome = new Label("Welcome, " + username +
                 "!\nYour score: " + database.getScore(username));
         labelWelcome.setPrefWidth(WIDTH);
@@ -267,24 +268,28 @@ public class Main extends Application {
                 buttonPlayHard, buttonCreateOnlineGame, buttonHighScore, buttonQuit);
         rightContainer.setPrefWidth(420);
 
-        List<Document> games = database.getOnlineGames(username);
-        ListView<String> listView = new ListView<String>();
-
-        for (int i = 0; i < games.size(); i++) {
-            String player1 = (String) games.get(i).get("player1");
-            String player2 = (String) games.get(i).get("player2");
-            listView.getItems().add("Game " + (i + 1) + ": " + player1 + " vs " + player2);
+        activeGameData = database.getOnlineGames(username);
+        List<String> activeGameList = new ArrayList<>();
+        for (int i = 0; i < activeGameData.size(); i++) {
+            String player1 = (String) activeGameData.get(i).get("player1");
+            String player2 = (String) activeGameData.get(i).get("player2");
+            // listView.getItems().add("Game " + (i + 1) + ": " + player1 + " vs " + player2);
+            activeGameList.add("Game " + (i + 1) + ": " + player1 + " vs " + player2);
         }
+
+        observableActiveGameList = FXCollections.observableArrayList(activeGameList);
+        listView = new ListView<>();
+        listView.setItems(observableActiveGameList);
 
         Button buttonPlay = new Button("Play");
         buttonPlay.setOnAction(event -> {
             ObservableList<Integer> selectedIndices = listView.getSelectionModel().getSelectedIndices();
             for (Object o : selectedIndices) {
                 int i = (Integer) o;
-                ObjectId id = (ObjectId) games.get(i).get("_id");
-                String gameData = (String) games.get(i).get("gameData");
-                String player1 = (String) games.get(i).get("player1");
-                String player2 = (String) games.get(i).get("player2");
+                ObjectId id = (ObjectId) activeGameData.get(i).get("_id");
+                String gameData = (String) activeGameData.get(i).get("gameData");
+                String player1 = (String) activeGameData.get(i).get("player1");
+                String player2 = (String) activeGameData.get(i).get("player2");
                 try {
                     File gameFile = new File(ONLINE_GAME_DIR, id + ".txt");
                     FileUtils.writeStringToFile(gameFile, gameData, StandardCharsets.UTF_8);
@@ -303,7 +308,7 @@ public class Main extends Application {
             ObservableList<Integer> selectedIndices = listView.getSelectionModel().getSelectedIndices();
             for (Object o : selectedIndices) {
                 int i = (Integer) o;
-                ObjectId id = (ObjectId) games.get(i).get("_id");
+                ObjectId id = (ObjectId) activeGameData.get(i).get("_id");
                 database.forfeitGame(id);
             }
         });
@@ -326,6 +331,12 @@ public class Main extends Application {
 
         root.setTop(menuBar);
         root.setCenter(container);
+
+        t1 = new Timer();
+        t1.scheduleAtFixedRate(new DatabaseInviteChecker(username), 0, 5 * 1000);
+        t2 = new Timer();
+        t2.scheduleAtFixedRate(new DatabaseGameLog(username, listView, activeGameData, observableActiveGameList), 0, 5 * 1000);
+
     }
 
     public void highscore(String username, Stage stage) {
@@ -442,5 +453,40 @@ class DatabaseInviteChecker extends TimerTask {
                 }
             }
         }
+    }
+}
+
+class DatabaseGameLog extends TimerTask {
+    private DatabaseController database = new DatabaseController();
+    private String username;
+    private ListView<String> listView;
+    private List<Document> activeGameData;
+    private ObservableList<String> observableActiveGameList;
+
+    public DatabaseGameLog(String username, ListView<String> listView,
+                           List<Document> activeGameData, ObservableList<String> observableActiveGameList) {
+        this.username = username;
+        this.listView = listView;
+        this.activeGameData = activeGameData;
+        this.observableActiveGameList = observableActiveGameList;
+    }
+
+    public void run() {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                activeGameData = database.getOnlineGames(username);
+                List<String> activeGameList = new ArrayList<>();
+                for (int i = 0; i < activeGameData.size(); i++) {
+                    String player1 = (String) activeGameData.get(i).get("player1");
+                    String player2 = (String) activeGameData.get(i).get("player2");
+                    activeGameList.add("Game " + (i + 1) + ": " + player1 + " vs " + player2);
+                }
+                observableActiveGameList = FXCollections.observableArrayList(activeGameList);
+                listView.setItems(observableActiveGameList);
+            }
+        });
+
+
     }
 }
