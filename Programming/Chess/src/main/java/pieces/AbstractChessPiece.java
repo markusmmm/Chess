@@ -9,9 +9,6 @@ import java.util.List;
 import java.util.Set;
 
 public abstract class AbstractChessPiece implements IChessPiece {
-    private int moveI = -1;
-    private Set<Vector2> possibleDestinationsBuffer = new HashSet<>();
-
 	public class MoveEvaluator {
 		private HashSet<Vector2> possibleDestinations;
 
@@ -216,9 +213,6 @@ public abstract class AbstractChessPiece implements IChessPiece {
      * @return All legal actions of the given type this piece can perform
      */
 	private HashSet<Vector2> getPossibleActionsOfType(Action action) {
-	    //if(moveI == board.moveI()) return possibleDestinationsBuffer;
-        moveI = board.moveI();
-
         HashSet<Vector2> actions = new HashSet<>();
         if(action == Action.ACTION || action == Action.MOVE) actions.addAll(moves);
         if(action == Action.ACTION || action == Action.ATTACK) actions.addAll(attacks);
@@ -230,7 +224,6 @@ public abstract class AbstractChessPiece implements IChessPiece {
 			evaluator.evaluate(actions);
 
 		HashSet<Vector2> result = evaluator.getResult();
-		//possibleDestinationsBuffer = (HashSet<Vector2>)result.clone();
 
 		return result;
 	}
