@@ -58,15 +58,12 @@ public class King extends ChessPiece {
     }
 
     private boolean movesIntoCheck(Vector2 end) {
-        Console.printNotice(this + " checks if square " + end + " is checked");
         Vector2 position = position();
 
         board.suspendPieces(position);
         board.suspendPieces(end);
 
         boolean setsCheck = inCheck(end);
-        if(setsCheck) Console.printError("RESULT: Checked");
-        else Console.printSuccess("RESULT: Not checked");
 
         board.releasePieces(position);
         board.releasePieces(end);
@@ -81,9 +78,6 @@ public class King extends ChessPiece {
      * @return Whether or not the move successfully protects the king
      */
     public boolean resolvesCheck(Vector2 start, Vector2 end) {
-        //resources.Console.printNotice("\nSimulating move " + new Move(start, end));
-        //resources.Console.printCaller();
-
         if(start.equals(position()))
             return !movesIntoCheck(end);
 

@@ -1,9 +1,9 @@
-8 0 0 3 3
-7 5
-rnbqkbnr
+8 0 0 4 4
+0 3
+rnbekbnr
 ppeppppp
 eeeeeeee
-eepeeeee
+qepeeeee
 eeePeeee
 eeeeeeeP
 PPPePPPe
@@ -11,6 +11,7 @@ RNBQKBNR
 P 3 6 3 4 e
 p 2 1 2 3 e
 P 7 6 7 5 e
+q 3 0 0 3 e
 
 ====
 6 0 0
@@ -24,6 +25,7 @@ P 7 6 7 5 e
 6 7 0
 2 3 1 0
 4 6 0 0
+0 3 1
 4 7 0
 2 6 0 0
 2 7 0
@@ -33,7 +35,6 @@ P 7 6 7 5 e
 7 1 0 0
 5 0 0
 5 1 0 0
-3 0 0
 3 1 0 0
 7 5 1 0
 1 0 0
