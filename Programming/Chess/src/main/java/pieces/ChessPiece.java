@@ -31,18 +31,19 @@ public abstract class ChessPiece extends AbstractChessPiece {
             //Console.printNotice("Position: " + position() + ", destination: " + destination + ", delta: " + delta);
 
             if (moveType == MoveType.STEP) {
+                //Console.printNotice("Available moves: " + moves);
                 boolean result = moves.contains(delta);
-                if(result) Console.printSuccess("Move check success");
+                //if(result) Console.printSuccess("Move check success");
                 return result;
             }
             else if (moveType == MoveType.LINE)
                 for (Vector2 move : moves) {
-                    Console.printNotice("\tChecking dir " + move + " to delta " + delta);
+                    //Console.printNotice("\tChecking dir " + move + " to delta " + delta);
                     if (move.isParallelTo(delta)) {
-                        Console.printSuccess("\tMove check success");
+                        //Console.printSuccess("\tMove check success");
                         return true;
                     } else {
-                        Console.printError("Move " + move + " is not parallel to " + delta);
+                        //Console.printError("Move " + move + " is not parallel to " + delta);
                     }
                 }
         }

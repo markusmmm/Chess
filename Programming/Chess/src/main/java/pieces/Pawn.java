@@ -80,6 +80,7 @@ public class Pawn extends ChessPiece {
 		return hasDoubleStepped;
 	}
 
+	@Override
 	public Set<Vector2> getPossibleAttacks() {
 		Vector2 position = position();
 

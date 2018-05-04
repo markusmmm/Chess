@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Set;
 
 public abstract class AbstractChessPiece implements IChessPiece {
+    private int moveI = -1;
+    private Set<Vector2> possibleDestinationsBuffer = new HashSet<>();
+
 	public class MoveEvaluator {
 		private HashSet<Vector2> possibleDestinations;
 
@@ -67,7 +70,7 @@ public abstract class AbstractChessPiece implements IChessPiece {
 			}
 		}
 
-		protected Set<Vector2> getResult() {
+		protected HashSet<Vector2> getResult() {
 			return (HashSet<Vector2>)possibleDestinations.clone();
 		}
 	}
@@ -150,14 +153,19 @@ public abstract class AbstractChessPiece implements IChessPiece {
 		IChessPiece endPiece = board.getPiece(destination);
 		// Prevents attack on an allied piece
 		if(endPiece != null && endPiece.alliance().equals(alliance)) return false;
+        //Console.printSuccess("Alliance: PASS");
 
 		if(!board.insideBoard(position()) || !board.insideBoard(destination)) return false;
+		//Console.printSuccess("Inside board: PASS");
 
 		if(!board.hasKing(alliance))
 			return true;	// Special-case check for boards where a king was never created
+        //Console.printNotice("Has conventional king setup");
 
 		King king = board.getKing(alliance);
 		if(king == null) return false;
+
+		//Console.printSuccess("Allied king present");
 
 		// Lastly, check if king is in check, and whether or not the move resolves it (SHOULD OCCUR LAST, FOR OPTIMIZATION)
 		return king.resolvesCheck(position(), destination);
@@ -165,16 +173,25 @@ public abstract class AbstractChessPiece implements IChessPiece {
 
 	@Override
 	public Set<Vector2> getPossibleDestinations() {
+	    if(moveI == board.moveI()) return possibleDestinationsBuffer;
+        moveI = board.moveI();
+
 		MoveEvaluator evaluator = new MoveEvaluator();
 		if(moveType == MoveType.LINE)
 			evaluator.evaluateContinuous(moves);
 		else
 			evaluator.evaluate(moves);
 
-		Set<Vector2> result = evaluator.getResult();
+		HashSet<Vector2> result = evaluator.getResult();
+		possibleDestinationsBuffer = (HashSet<Vector2>)result.clone();
 
 		return result;
 	}
+
+	@Override
+    public Set<Vector2> getPossibleAttacks() {
+	    return getPossibleDestinations();
+    }
 
 	/**
 	 * @return Whether or not the piece has been moved during the game
