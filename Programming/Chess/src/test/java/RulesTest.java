@@ -20,6 +20,11 @@ public class RulesTest {
             this.move = move;
             this.expectedResult = expectedResult;
         }
+
+        @Override
+        public String toString() {
+            return testFile.getName() + ": " + move + "\texpected: " + expectedResult;
+        }
     }
 
     public TestNode[] tests = new TestNode[] {
@@ -28,7 +33,9 @@ public class RulesTest {
             new TestNode("kingCanAttackIntruder", new Move(4,0,3,0), true),
             new TestNode("pawnCanResolveCheck", new Move(2,7,3,6), true),
             new TestNode("pawnCantThreatenWithMove", new Move(3,7,3,6), true),
-            new TestNode("threatenedAttacker", new Move(2,1,3,2), true)
+            new TestNode("threatenedAttacker", new Move(2,1,3,2), true),
+            new TestNode("castling", new Move(4,7,5,7), true),
+            new TestNode("castling", new Move(4,7,2,7), true)
     };
 
     @Test
