@@ -25,9 +25,9 @@ public class RandomBoard extends Board {
         Tools<Move> tools = new Tools<>();
 
         for(int i = 0; i < n; i++) {
-            Set<Move> possibleMoves = getAllPossibleMoves(getActivePlayer());
+            Set<Move> possibleMoves = getAllPossibleActions(getActivePlayer());
 
-            boolean state = movePiece(tools.randomSetElem(possibleMoves));
+            boolean state = movePiece(tools.randomElem(possibleMoves));
             //if(state) throw new IllegalStateException("Illegal move attempted while generating random board");
         }
     }

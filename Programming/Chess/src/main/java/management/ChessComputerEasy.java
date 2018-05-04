@@ -1,9 +1,8 @@
 package management;
 
-import pieces.IChessPiece;
-import pieces.Pawn;
+import resources.Console;
 import resources.Move;
-import resources.Vector2;
+import resources.Tools;
 
 import java.util.*;
 
@@ -13,40 +12,20 @@ public class ChessComputerEasy extends ChessComputer {
     }
 
     public Move getMove() {
-        Random rand = new Random();
+        Tools<Move> tools = new Tools<>();
 
-        HashMap<Vector2, IChessPiece> pieces = board.getUsablePieces(alliance());
+        Set<Move> attacks = board.getAllPossibleAttacks(alliance());
+        Set<Move> moves = board.getAllPossibleMoves(alliance());
 
-        List<Move> attacks = new ArrayList<>();
-        List<Move> moves = new ArrayList<>();
-
-        for(Vector2 key : pieces.keySet()) {
-            IChessPiece piece = pieces.get(key);
-            Set<Vector2> destinations = piece.getPossibleDestinations();
-
-            if(piece instanceof Pawn) {
-                for(Vector2 destination : ((Pawn) piece).getPossibleAttacks()) {
-                    Move attack = new Move(piece.position(), destination);
-                    attacks.add(attack);
-                }
-            }
-
-            for(Vector2 destination : destinations) {
-                IChessPiece endPiece = board.getPiece(destination);
-
-                Move move = new Move(piece.position(), destination);
-
-                if(endPiece != null && !piece.alliance().equals(endPiece))
-                    attacks.add(move);
-                else
-                    moves.add(move);
-            }
+        // Prioritize attacks
+        if(attacks.size() > 0) {
+            Console.printNotice(this + " is attacking");
+            return tools.randomElem(attacks);
         }
-
-        if(attacks.size() != 0)
-            return attacks.get(rand.nextInt(attacks.size()));
-        else if(moves.size() != 0)
-            return moves.get(rand.nextInt(moves.size()));
+        if(moves.size() > 0) {
+            Console.printNotice(this + " is moving");
+            return tools.randomElem(moves);
+        }
 
         return null;
     }

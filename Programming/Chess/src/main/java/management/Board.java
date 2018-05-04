@@ -1,7 +1,6 @@
 package management;
 
-import main.GameBoard;
-import main.Main;
+import main.GameController;
 import pieces.AbstractChessPiece;
 import pieces.IChessPiece;
 import pieces.King;
@@ -106,20 +105,32 @@ public class Board extends AbstractBoard {
         return temp;
     }
 
-    public Set<Move> getAllPossibleMoves(Alliance alliance) {
-        Set<Move> moves = new HashSet<>();
+    private Set<Move> getAllPossibleActionsOfType(Alliance alliance, Action action) {
+        Set<Move> actions = new HashSet<>();
 
         HashMap<Vector2, AbstractChessPiece> pieces = getPieces(alliance);
         for(Vector2 pos : pieces.keySet()) {
             AbstractChessPiece piece = pieces.get(pos);
-            for(Vector2 end : piece.getPossibleDestinations())
-                moves.add(new Move(pos, end));
+            Set<Vector2> set = action == Action.ACTION ? piece.getPossibleActions() : (action == Action.MOVE ? piece.getPossibleMoves() : piece.getPossibleAttacks());
+
+            Console.printNotice("Possible " + action + "S for " + piece + " " + piece.position() + ": " + set);
+
+            for(Vector2 end : set)
+                actions.add(new Move(pos, end));
         }
 
-        return moves;
+        return actions;
     }
 
-
+    public Set<Move> getAllPossibleMoves(Alliance alliance) {
+        return getAllPossibleActionsOfType(alliance, Action.MOVE);
+    }
+    public Set<Move> getAllPossibleAttacks(Alliance alliance) {
+        return getAllPossibleActionsOfType(alliance, Action.ATTACK);
+    }
+    public Set<Move> getAllPossibleActions(Alliance alliance) {
+        return getAllPossibleActionsOfType(alliance, Action.ACTION);
+    }
 
     /**
      * Gives all active pieces of a given alliance, that can perform at least one legal move
@@ -135,7 +146,7 @@ public class Board extends AbstractBoard {
             if (piece == null) continue; // Ignore empty squares
 
             if (insideBoard(pos) && piece.alliance().equals(alliance)) {
-                Set<Vector2> possibleDestinations = piece.getPossibleDestinations();
+                Set<Vector2> possibleDestinations = piece.getPossibleActions();
                 if (possibleDestinations.size() == 0) continue; // If the piece has no valid moves, ignore it
 
                 usablePieces.put(pos, piece);
@@ -153,7 +164,7 @@ public class Board extends AbstractBoard {
             Vector2 piecePos = piece.position();
             int x = piecePos.getX();
             int y = piecePos.getY();
-            if(((Pawn) piece).legalMove(end)) {
+            if(((Pawn) piece).legalAction(end)) {
                 if (y == 1 && piece.alliance() == Alliance.WHITE && end.getY() == 0) {
                     return true;
                 }
@@ -193,10 +204,10 @@ public class Board extends AbstractBoard {
             if((pawnPromotion((Pawn)piece, end)))
             {
 
-                GameBoard gameBoard = new GameBoard();
+                GameController gameController = new GameController();
                 Alliance alliance = piece.alliance();
 
-                String c = gameBoard.pawnPromotion();
+                String c = gameController.pawnPromotion();
 
                 switch (c.charAt(0)) {
                     case 'q':

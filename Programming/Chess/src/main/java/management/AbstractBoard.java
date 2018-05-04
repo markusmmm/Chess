@@ -101,8 +101,6 @@ public class AbstractBoard {
     public int difficulty() { return difficulty; }
 
     protected void loadBoard(File file) throws FileNotFoundException {
-        Console.printNotice("Attempting to load board from " + file.getAbsolutePath());
-
         Scanner reader;
         if (file.getName().equals("default" + Main.SAVE_EXTENSION)) {
             InputStream is = Thread.currentThread().getContextClassLoader()
@@ -111,8 +109,6 @@ public class AbstractBoard {
         } else {
             reader = new Scanner(file);
         }
-
-        Console.printNotice("Attempting to load board from save " + file.getAbsolutePath());
 
         // Load board data
         size = reader.nextInt();
