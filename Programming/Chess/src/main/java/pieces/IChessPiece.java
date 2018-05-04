@@ -23,6 +23,7 @@ public interface IChessPiece {
 	boolean legalAction(Vector2 destination);
 
 	boolean hasMoved();
+	boolean canJump();
 
 	/**
 	 *
