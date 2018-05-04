@@ -453,7 +453,7 @@ public class AbstractBoard {
             pieces.put(end, piece);
 
             mutex.release();
-            Console.printSuccess("Force move " + start + " -> " + end + " was successful");
+            //Console.printSuccess("Force move " + start + " -> " + end + " was successful");
             return true;
         } catch (InterruptedException e) {
             e.printStackTrace();

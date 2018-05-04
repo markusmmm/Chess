@@ -28,6 +28,14 @@ public class RulesTest {
     }
 
     public TestNode[] tests = new TestNode[] {
+            new TestNode("rook", new Move(0,7,0,4), true),
+            new TestNode("rook", new Move(0,7,4,7), true),
+            new TestNode("bishop", new Move(0,7,2,5), true),
+            new TestNode("queen", new Move(0,7,0,4), true),
+            new TestNode("queen", new Move(0,7,4,7), true),
+            new TestNode("queen", new Move(0,7,2,5), true),
+            new TestNode("knight", new Move(1,7,0,5), true),
+
             new TestNode("allyCantSetCheck", new Move(3, 1, 4, 2), false),
             new TestNode("enPassant", new Move(0,3,1,2), true),
             new TestNode("kingCanAttackIntruder", new Move(4,0,3,0), true),
@@ -50,7 +58,7 @@ public class RulesTest {
                 assertTrue(actual == expected);
             } catch (FileNotFoundException e) {
                 //e.printStackTrace();
-                Console.printError("Test-file" + test.testFile.getName() + " does not exist");
+                Console.printError("Test-file " + test.testFile.getName() + " does not exist");
                 continue;
             }
         }
