@@ -7,19 +7,18 @@ import resources.*;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
-import static resources.Alliance.BLACK;
-import static resources.Alliance.WHITE;
 
 public class Pawn extends ChessPiece {
 
 	private boolean hasDoubleStepped = false;
 
 	public Pawn(Vector2 position, Alliance alliance, AbstractBoard board, boolean hasMoved, boolean hasDoubleStepped) {
-		super(position, alliance, vectorTools.addAll(alliance == Alliance.BLACK ? Vector2.BOTTOM : Vector2.TOP, new Vector2(0, Tools.allianceDir(alliance) * 2)),
-                MoveType.STEP, board, false, Piece.PAWN, 1, hasMoved);
+		super(position, alliance,
+                new HashSet<>(Arrays.asList(new Vector2(0,Tools.allianceDir(alliance)), new Vector2(0,Tools.allianceDir(alliance)*2))),
+                new HashSet<>(Arrays.asList(new Vector2(-1,Tools.allianceDir(alliance)), new Vector2(1,Tools.allianceDir(alliance)))),
+                ActionType.STEP, board, false, Piece.PAWN, 1, hasMoved);
 
+		if(Tools.allianceDir(alliance) == 0) throw new IllegalStateException(this + " was not correctly assigned to an alliance");
 		this.hasDoubleStepped = hasDoubleStepped;
 	}
 	public Pawn(Pawn other) {
@@ -43,9 +42,9 @@ public class Pawn extends ChessPiece {
 	 * @param destination End position of the attempted move
      * @return If the move is legal
 	 */
-	public boolean legalMove(Vector2 destination)
+	public boolean legalAction(Vector2 destination)
 	{
-		if(!super.legalMove(destination)) return false;
+		if(!super.legalAction(destination)) return false;
 
 		AbstractChessPiece other = board.getPiece(destination);
 
@@ -74,23 +73,10 @@ public class Pawn extends ChessPiece {
 
     /**
      *
-     * @return Whether this pawn has performed a double stepped during this game
+     * @return Whether this pawn has performed a double-step during this game
      */
 	public boolean hasDoubleStepped() {
 		return hasDoubleStepped;
-	}
-
-	@Override
-	public Set<Vector2> getPossibleAttacks() {
-		Vector2 position = position();
-
-		int dir = Tools.allianceDir(alliance);
-		int x = position.getX(), y = position.getY();
-
-		return new HashSet<>(Arrays.asList(
-			new Vector2(x-1, y + dir),
-			new Vector2(x+1, y + dir)
-		));
 	}
 
 	public boolean enPassant(Vector2 destination)

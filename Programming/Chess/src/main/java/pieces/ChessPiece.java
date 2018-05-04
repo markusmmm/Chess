@@ -2,7 +2,6 @@ package pieces;
 
 import management.AbstractBoard;
 import resources.Alliance;
-import resources.Console;
 import resources.Piece;
 import resources.Vector2;
 
@@ -10,44 +9,36 @@ import java.util.HashSet;
 
 public abstract class ChessPiece extends AbstractChessPiece {
 
-    /**
-     *
-     */
-    protected ChessPiece(Vector2 position, Alliance alliance, HashSet<Vector2> moves, MoveType moveType, AbstractBoard board, boolean canJump, Piece piece, int value, boolean hasMoved) {
-        super(position, alliance, moves, moveType, board, canJump, piece, value, hasMoved);
+    protected ChessPiece(Vector2 position, Alliance alliance, HashSet<Vector2> moves, ActionType actionType, AbstractBoard board, boolean canJump, Piece piece, int value, boolean hasMoved) {
+        super(position, alliance, moves, actionType, board, canJump, piece, value, hasMoved);
+    }
+    protected ChessPiece(Vector2 position, Alliance alliance, HashSet<Vector2> moves, HashSet<Vector2> attacks, ActionType actionType, AbstractBoard board, boolean canJump, Piece piece, int value, boolean hasMoved) {
+        super(position, alliance, moves, attacks, actionType, board, canJump, piece, value, hasMoved);
     }
     protected ChessPiece(ChessPiece other) {
         super(other);
     }
 
     @Override
-    public boolean legalMove(Vector2 destination) {
+    public boolean legalAction(Vector2 destination) {
         Vector2 delta = destination.sub(position());
-        //Console.printNotice(this + " checking move " + position() + " -> " + destination + "\tdelta: " + delta);
 
-        if(super.legalMove(destination)) {
-            //Console.printNotice(this + " (" + moveType + ", " + moves.size() + ") begun move check.");
-            //Console.printNotice("Position: " + position() + ", destination: " + destination + ", delta: " + delta);
+        AbstractChessPiece other = board.getPiece(destination);
+        boolean isMove = moves.contains(delta);
+        boolean isAttack = attacks.contains(delta);
+        boolean valid = (isMove && isAttack) ||
+                isMove && other == null ||
+                isAttack && other != null && other.alliance() != alliance();
 
-            if (moveType == MoveType.STEP) {
-                //Console.printNotice("Available moves: " + moves);
-                boolean result = moves.contains(delta);
-                //if(result) Console.printSuccess("Move check success");
-                return result;
-            }
-            else if (moveType == MoveType.LINE)
-                for (Vector2 move : moves) {
-                    //Console.printNotice("\tChecking dir " + move + " to delta " + delta);
-                    if (move.isParallelTo(delta)) {
-                        //Console.printSuccess("\tMove check success");
-                        return true;
-                    } else {
-                        //Console.printError("Move " + move + " is not parallel to " + delta);
-                    }
-                }
+        if(super.legalAction(destination)) {
+            if (actionType == ActionType.STEP)
+                return valid;
+            else if (actionType == ActionType.LINE)
+                for (Vector2 action : vectorTools.mergeSets(moves, attacks))
+                    if (action.isParallelTo(delta))
+                        return valid;
         }
 
-        //Console.printError("Move failure");
         return false;
     }
 }

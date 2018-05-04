@@ -13,7 +13,7 @@ public class King extends ChessPiece {
     public King(Vector2 position, Alliance alliance, AbstractBoard board, boolean hasMoved) {
         super(position, alliance,
                 vectorTools.addAll(Vector2.UNIT, new Vector2(2,0), new Vector2(-2,0)),
-                MoveType.STEP, board, false, Piece.KING, 2, hasMoved);
+                ActionType.STEP, board, false, Piece.KING, 2, hasMoved);
     }
     public King(King other) {
         super(other);
@@ -25,8 +25,8 @@ public class King extends ChessPiece {
     }
 
     @Override
-    public boolean legalMove(Vector2 destination) {
-        if(!super.legalMove(destination)) return false;
+    public boolean legalAction(Vector2 destination) {
+        if(!super.legalAction(destination)) return false;
 
         if(Math.abs(destination.sub(position()).getX()) > 1) return castling(destination.add(Vector2.E), destination.add(Vector2.W.mult(2)));
         return true;

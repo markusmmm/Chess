@@ -15,10 +15,10 @@ public class QueenTest {
         Board board = new Board(8,0, false, boardMode);
         Queen queen = new Queen(new Vector2(3,3), Alliance.BLACK, board, false);
 
-        assertTrue(queen.legalMove(new Vector2(5,5)));
-        assertTrue(queen.legalMove(new Vector2(2,2)));
-        assertTrue(queen.legalMove(new Vector2(2,4)));
-        assertTrue(queen.legalMove(new Vector2(1,5)));
+        assertTrue(queen.legalAction(new Vector2(5,5)));
+        assertTrue(queen.legalAction(new Vector2(2,2)));
+        assertTrue(queen.legalAction(new Vector2(2,4)));
+        assertTrue(queen.legalAction(new Vector2(1,5)));
     }
 
     @Test
@@ -26,9 +26,9 @@ public class QueenTest {
         Board board = new Board(8,0,false, boardMode);
         Queen queen = new Queen(new Vector2(3,3), Alliance.BLACK, board, false);
 
-        assertTrue(queen.legalMove(new Vector2(0,3)));
-        assertTrue(queen.legalMove(new Vector2(3,2)));
-        assertTrue(queen.legalMove(new Vector2(7,3)));
-        assertTrue(queen.legalMove(new Vector2(3,5)));
+        assertTrue(queen.legalAction(new Vector2(0,3)));
+        assertTrue(queen.legalAction(new Vector2(3,2)));
+        assertTrue(queen.legalAction(new Vector2(7,3)));
+        assertTrue(queen.legalAction(new Vector2(3,5)));
     }
 }
