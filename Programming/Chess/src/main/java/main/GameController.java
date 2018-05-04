@@ -24,7 +24,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 
-public class GameBoard {
+public class GameController extends GUIController {
     MediaHelper media = new MediaHelper();
     private final int SIZE = 8;
     private Board board;
@@ -50,7 +50,7 @@ public class GameBoard {
     private Tile firstTile;
     private Player player1, player2;
 
-    public GameBoard(String user1, String user2, int difficulty, BoardMode boardMode, Main main, Stage stage, BorderPane root) {
+    public GameController(String user1, String user2, int difficulty, BoardMode boardMode, Main main, Stage stage, BorderPane root) {
         board = new Board(SIZE, difficulty,false, boardMode);
 
         this.main = main;
@@ -103,13 +103,8 @@ public class GameBoard {
                 Vector2 pos = new Vector2(col, row);
                 Tile tile;
 
-                if ((row + col) % 2 == 0) {
-                    tile = new Tile(pos, board);
-                    rect.setFill(Color.LIGHTGRAY);
-                } else {
-                    tile = new Tile(pos, board);
-                    rect.setFill(Color.DARKGRAY);
-                }
+                tile = new Tile(pos, board);
+                rect.setFill((row + col) % 2 == 0 ? Color.LIGHTGRAY : Color.DARKGRAY);
 
                 tile.setOnMouseClicked(e -> tileClick(e, tile));
 
@@ -130,28 +125,13 @@ public class GameBoard {
         right.setSpacing(0);
         right.setId("rightColumn");
 
-        Label labelMoveLog = new Label();
-        labelMoveLog.setPrefWidth(rightColumnSize);
-        labelMoveLog.setText("Movelog:");
-        labelMoveLog.setId("rightColumnTitle");
+        Label labelMoveLog = createLabel(rightColumnSize, "Movelog: ", "rightColumnTitle");
+        Label labelCapturedPieces = createLabel(rightColumnSize, "Captured pieces:", "rightColumnTitle");
 
-        moveLog.setPrefWidth(rightColumnSize);
-        moveLog.setPrefHeight(200);
-        moveLog.setId("moveLog");
+        syncControl(moveLog, rightColumnSize, 200, "moveLog");
+        syncControl(capturedPieces, rightColumnSize, 200, "moveLog");
 
-        Label labelCapturedPieces = new Label();
-        labelCapturedPieces.setPrefWidth(rightColumnSize);
-        labelCapturedPieces.setText("Captured pieces:");
-        labelCapturedPieces.setId("rightColumnTitle");
-
-        capturedPieces.setPrefWidth(rightColumnSize);
-        capturedPieces.setPrefHeight(200);
-        capturedPieces.setId("moveLog");
-
-        Button buttonHint = new Button();
-        buttonHint.setText("Hint");
-
-        buttonHint.setOnAction(e -> {
+        Button buttonHint = createButton("Hint", e -> {
             Move move = getHint(board.getActivePlayer());
 
             squares[move.start.getY()][move.start.getX()].setFill(Color.CYAN);
@@ -160,10 +140,7 @@ public class GameBoard {
 
         right.getChildren().addAll(labelMoveLog, moveLog, labelCapturedPieces, capturedPieces, buttonHint);
 
-        VBox statusFieldContainer = new VBox();
-        statusFieldContainer.setAlignment(Pos.CENTER);
-        statusFieldContainer.getChildren().add(gameStatus);
-        statusFieldContainer.setId("informationFieldContainer");
+        VBox statusFieldContainer = createVBox(Pos.CENTER, gameStatus, "informationFieldContainer");
 
         container.setCenter(grid);
         container.setRight(right);
@@ -180,25 +157,18 @@ public class GameBoard {
         Menu menuFile = new Menu("File");
         Menu menuHelp = new Menu("Help");
 
-        MenuItem menuItemExit = new MenuItem("Main Menu");
-        MenuItem menuItemReset = new MenuItem("Reset Game");
-        MenuItem menuItemLoad = new MenuItem("Load Game");
-        MenuItem menuItemSave = new MenuItem("Save Game");
-        MenuItem menuItemUndo = new MenuItem("Undo");
-        MenuItem menuItemQuit = new MenuItem("Quit");
-
-        menuItemExit.setOnAction(e -> {
+        MenuItem menuItemExit = createMenuItem("Main Menu", e -> {
             main.mainMenu(player1.getUsername(), stage);
         });
-        menuItemReset.setOnAction(e -> {
-            GameBoard newGameBoard = new GameBoard(player1.getUsername(), player2.getUsername(), board.difficulty(), boardMode, main, stage, root);
-            newGameBoard.createBoard();
-            root.setCenter(newGameBoard.getContainer());
+        MenuItem menuItemReset = createMenuItem("Reset Game", e -> {
+            GameController newGameController = new GameController(player1.getUsername(), player2.getUsername(), board.difficulty(), boardMode, main, stage, root);
+            newGameController.createBoard();
+            root.setCenter(newGameController.getContainer());
         });
-        menuItemLoad.setOnAction(e -> performLoad());
-        menuItemUndo.setOnAction(e -> performUndo());
-        menuItemSave.setOnAction(e -> performSave());
-        menuItemQuit.setOnAction(e -> main.onQuit());
+        MenuItem menuItemLoad = createMenuItem("Load Game", e -> performLoad());
+        MenuItem menuItemSave = createMenuItem("Save Game", e -> performSave());
+        MenuItem menuItemUndo = createMenuItem("Undo", e -> performUndo());
+        MenuItem menuItemQuit = createMenuItem("Quit", e -> main.onQuit());
 
         menuFile.getItems().addAll(menuItemExit, menuItemReset, menuItemLoad, menuItemSave, menuItemUndo, menuItemQuit);
         MenuItem menuItemAbout = new MenuItem("About");
@@ -255,7 +225,7 @@ public class GameBoard {
         boolean moveResult = board.movePiece(firstTile.getPos(), pos);
        // resources.Console.println("Outer move result: " + moveResult);
         if (moveResult) {
-            Console.println("Has computer: " + (computer != null));
+            Console.println("Has computer: " + (computer != null) + ", difficulty: " + board.difficulty());
             if (computer != null) {
                 drawBoard();
 
@@ -308,7 +278,7 @@ public class GameBoard {
         }
     }
 
-    public GameBoard(){
+    public GameController(){
 
     }
     public String pawnPromotion() {
@@ -419,7 +389,7 @@ public class GameBoard {
         if(piece == null) return;
 
         Console.printNotice("Highlighting " + pos);
-        Set<Vector2> list = piece.getPossibleDestinations();
+        Set<Vector2> list = piece.getPossibleActions();
         for (Vector2 possibleDestination : list) {
             Color squareColor = board.getPiece(possibleDestination) == null ? Color.YELLOW : Color.RED;
             squares[possibleDestination.getY()][possibleDestination.getX()].setFill(squareColor);

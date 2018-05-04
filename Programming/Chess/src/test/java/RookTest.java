@@ -79,14 +79,14 @@ public class RookTest {
     public void rookPossibleMovesSizeTest() {
         Vector2 pos = new Vector2(0,7);
         board.addPiece(pos, Piece.ROOK, Alliance.WHITE);
-        assert(board.getPiece(pos).getPossibleDestinations().size() == 14);
+        assert(board.getPiece(pos).getPossibleActions().size() == 14);
     }
 
     @Test
     public void rookPossibleMovesSizeTest2() {
         Vector2 pos = new Vector2(3,3);
         board.addPiece(pos, Piece.ROOK, Alliance.WHITE);
-        assert(board.getPiece(pos).getPossibleDestinations().size() == 14);
+        assert(board.getPiece(pos).getPossibleActions().size() == 14);
     }
 
 }

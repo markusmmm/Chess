@@ -1,9 +1,6 @@
 package resources;
 
-import main.GameBoard;
 import management.ChessComputerMedium;
-import pieces.AbstractChessPiece;
-import pieces.ChessPiece;
 
 import java.util.Arrays;
 import java.util.HashSet;

@@ -19,17 +19,16 @@ public class Tools<E> {
 
         return temp;
     }
-    public HashSet<E> mergeSets(HashSet<E>... collections) {
+    public HashSet<E> mergeSets(HashSet<E>... sets) {
         HashSet<E> temp = new HashSet<>();
 
-        for(Collection<E> c : collections)
-            for(E e : c)
-                temp.add(e);
+        for(HashSet<E> s : sets)
+            temp.addAll(s);
 
         return temp;
     }
 
-    public E randomSetElem(Set<E> set) {
+    public E randomElem(Set<E> set) {
         if(set.size() == 0) return null;
 
         Random rand = new Random();
@@ -48,6 +47,12 @@ public class Tools<E> {
             temp.add(e);
 
         return temp;
+    }
+
+    public boolean containsAny(HashSet<E> set, HashSet<E> other) {
+        for(E e : other)
+            if(set.contains(e)) return true;
+        return false;
     }
 
     public static int allianceDir(Alliance alliance) {

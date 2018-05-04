@@ -1,6 +1,7 @@
 package pieces;
 
 import management.Board;
+import resources.Action;
 import resources.Alliance;
 import resources.Piece;
 import resources.Vector2;
@@ -15,8 +16,11 @@ public interface IChessPiece {
 	Piece piece();
 	int getValue();
 
-	Set<Vector2> getPossibleDestinations();
+	Set<Vector2> getPossibleActions();
+	Set<Vector2> getPossibleMoves();
 	Set<Vector2> getPossibleAttacks();
+
+	boolean legalAction(Vector2 destination);
 
 	boolean hasMoved();
 

@@ -298,12 +298,12 @@ public class Main extends Application {
      * @return chessGame
      */
     private void createChessGame(String player1, String player2, int difficulty, BoardMode boardMode, BorderPane root) {
-        GameBoard gameBoard = new GameBoard(player1, player2, difficulty, boardMode, this, stage, root);
-        gameBoard.createBoard();
-        root.setCenter(gameBoard.getContainer());
-        root.setTop(gameBoard.generateGameMenuBar());
+        GameController gameController = new GameController(player1, player2, difficulty, boardMode, this, stage, root);
+        gameController.createBoard();
+        root.setCenter(gameController.getContainer());
+        root.setTop(gameController.generateGameMenuBar());
         media.playSound("startup.mp3");
-        //return gameBoard.getContainer();
+        //return gameController.getContainer();
     }
 
     /**
