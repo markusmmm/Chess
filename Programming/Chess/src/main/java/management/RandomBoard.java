@@ -14,9 +14,9 @@ public class RandomBoard extends Board {
     }
 
     /**
-     * Generates a random board with random amount of pieces.
-     *
-     * @return ChessBoard
+     * Generates a random board, by performing n random moves (n is a random value, within a boundary)
+     * @param minN Minimum amount of steps
+     * @param maxN Maximum amount of steps
      */
     private void generateRandomBoard(int minN, int maxN) {
         Random rand = new Random();
