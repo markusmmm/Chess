@@ -111,6 +111,8 @@ public abstract class AbstractChessPiece implements IChessPiece {
      * @param hasMoved Whether or not this piece has been moved earlier in the game
      */
     protected AbstractChessPiece(Vector2 position, Alliance alliance, HashSet<Vector2> actions, ActionType actionType, AbstractBoard board, boolean canJump, Piece piece, int value, boolean hasMoved) {
+    	actions = vectorTools.cloneSet(actions);
+
     	this.position = position;
         this.alliance = alliance;
 
@@ -135,8 +137,8 @@ public abstract class AbstractChessPiece implements IChessPiece {
 		this.position = position;
 		this.alliance = alliance;
 
-		this.moves = moves;
-		this.attacks = attacks;
+		this.moves = vectorTools.cloneSet(moves);
+		this.attacks = vectorTools.cloneSet(attacks);
 		this.actionType = actionType;
 
 		this.board = (Board)board;

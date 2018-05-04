@@ -30,11 +30,13 @@ public class RulesTest {
     public TestNode[] tests = new TestNode[] {
             new TestNode("rook",                     new Move(0,7,0,4), true ),
             new TestNode("rook",                     new Move(0,7,4,7), true ),
-            new TestNode("bishop",                   new Move(0,7,2,5), true ),
-            new TestNode("queen",                    new Move(0,7,0,4), true ),
-            new TestNode("queen",                    new Move(0,7,4,7), true ),
-            new TestNode("queen",                    new Move(0,7,2,5), true ),
+            new TestNode("bishop",                   new Move(2,7,4,5), true ),
             new TestNode("knight",                   new Move(1,7,0,5), true ),
+            new TestNode("queen",                    new Move(3,7,3,4), true ),
+            new TestNode("queen",                    new Move(3,7,5,7), true ),
+            new TestNode("queen",                    new Move(3,7,5,5), true ),
+            new TestNode("king",                     new Move(5,7,5,6), true ),
+            new TestNode("king",                     new Move(5,7,4,7), true ),
             new TestNode("pawn",                     new Move(1,7,1,6), true ),
             new TestNode("pawn",                     new Move(1,7,1,5), true ),
 
