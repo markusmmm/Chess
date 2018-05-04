@@ -24,7 +24,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 
-public class GameController extends GUIController {
+import static main.GUI.*;
+
+public class GameController {
     MediaHelper media = new MediaHelper();
     private final int SIZE = 8;
     private Board board;
@@ -96,7 +98,7 @@ public class GameController extends GUIController {
     }
 
     /**
-     * Setups the necessary tiles and structures to be able to create a board
+     * Setups the necessary tiles and structures to be able to createNode a board
      */
     public void createBoard() {
         for (int row = 0; row < SIZE; row++) {
@@ -123,15 +125,13 @@ public class GameController extends GUIController {
 
         int rightColumnSize = 200;
 
-        VBox right = new VBox();
-        right.setSpacing(0);
-        right.setId("rightColumn");
+        VBox right = createNode(new VBox(), "spacing:0", "rightColumn");
 
-        Label labelMoveLog = createLabel(rightColumnSize, "Movelog: ", "rightColumnTitle");
-        Label labelCapturedPieces = createLabel(rightColumnSize, "Captured pieces:", "rightColumnTitle");
+        Label labelMoveLog = createNode(new Label("Movelog: "), "prefWidth:" + rightColumnSize + ";", "rightColumnTitle");
+        Label labelCapturedPieces = createNode(new Label("Captured pieces: "), "prefWidth:" + rightColumnSize + ";", "rightColumnTitle");
 
-        syncControl(moveLog, rightColumnSize, 200, "moveLog");
-        syncControl(capturedPieces, rightColumnSize, 200, "moveLog");
+        syncRegion(moveLog, rightColumnSize, 200, "moveLog");
+        syncRegion(capturedPieces, rightColumnSize, 200, "moveLog");
 
         Button buttonHint = createButton("Hint", e -> {
             Move move = getHint(board.getActivePlayer());
@@ -142,7 +142,8 @@ public class GameController extends GUIController {
 
         right.getChildren().addAll(labelMoveLog, moveLog, labelCapturedPieces, capturedPieces, buttonHint);
 
-        VBox statusFieldContainer = createVBox(Pos.CENTER, gameStatus, "informationFieldContainer");
+        VBox statusFieldContainer = createNode(new VBox(), "alignment:CENTER;", "informationFieldContainer");
+        statusFieldContainer.getChildren().add(gameStatus);
 
         container.setCenter(grid);
         container.setRight(right);

@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
-
+import static main.GUI.*;
 
 public class Main extends Application {
 
@@ -128,35 +128,19 @@ public class Main extends Application {
         Rectangle bootDecal = new Rectangle(bootImage.getRequestedWidth(), bootImage.getRequestedHeight());
         bootDecal.setFill(new ImagePattern(bootImage));
 
-        Label labelUsername = new Label("Username:");
-        labelUsername.setPrefWidth(120);
-        labelUsername.setAlignment(Pos.CENTER);
-
-        TextField textUsername = new TextField();
-        textUsername.setPrefWidth(240);
-        textUsername.setAlignment(Pos.CENTER);
-
-        Button loginButton = new Button();
-        loginButton.setText("LOGIN");
-        loginButton.setPrefWidth(120);
-
-        Text errorField = new Text();
-        errorField.setFill(Color.RED);
+        Label labelUsername = createNode(new Label("Username:"), "prefWidth:120;alignment:CENTER;");
+        TextField textUsername = createNode(new TextField(), "prefWidth:240;alignment:CENTER;");
+        Button loginButton = createNode(new Button(), "text:LOGIN;prefWidth:120;");
+        Text errorField = createNode(new Text(), "fill:RED;");
 
         textUsername.setOnAction(e -> handleLogin(textUsername.getText(), errorField));
         loginButton.setOnAction(e -> handleLogin(textUsername.getText(), errorField));
 
-        VBox loginContainer = new VBox(10);
-        loginContainer.setAlignment(Pos.CENTER);
-        loginContainer.setPrefWidth(240);
-        loginContainer.setMaxWidth(240);
+        VBox loginContainer = createNode(new VBox(), "spacing:10;alignment:CENTER;prefWidth:240;maxWidth:240;");
         loginContainer.getChildren().addAll(labelUsername, textUsername);
 
-
-        VBox container = new VBox(10);
-        container.setAlignment(Pos.CENTER);
+        VBox container = createNode(new VBox(), "spacing:10;alignment:CENTER;prefWidth:" + WIDTH + ";prefHeight:" + HEIGHT + ";");
         container.getChildren().addAll(bootDecal, loginContainer, loginButton, errorField);
-        container.setPrefSize(WIDTH, HEIGHT);
         return container;
 
     }
@@ -184,13 +168,11 @@ public class Main extends Application {
         // root = new BorderPane();
         // menuBar = generateMenuBar();
 
-        Label labelWelcome = new Label("Welcome, " + username +
-                "!\nYour score: " + database.getScore(username));
-        labelWelcome.setPrefWidth(WIDTH);
-        labelWelcome.setMinHeight((HEIGHT / 8) * 2);
-        labelWelcome.setAlignment(Pos.CENTER);
-        labelWelcome.setId("title");
-        labelWelcome.setTextAlignment(TextAlignment.CENTER);
+        Label labelWelcome = createNode(new Label("Welcome, " + username +
+                "!\nYour score: " + database.getScore(username)),
+                "prefWidth:" + WIDTH + ";minHeight:" + (HEIGHT / 8) * 2 + ";" +
+                        "alignment:CENTER;textAlignment:CENTER;",
+                "title");
 
         Button buttonPlayVersus = new Button();
         buttonPlayVersus.setText("PLAY: VERSUS");
