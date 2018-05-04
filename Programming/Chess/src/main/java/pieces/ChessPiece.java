@@ -15,9 +15,7 @@ public abstract class ChessPiece extends AbstractChessPiece {
     protected ChessPiece(Vector2 position, Alliance alliance, HashSet<Vector2> moves, HashSet<Vector2> attacks, ActionType actionType, AbstractBoard board, boolean canJump, Piece piece, int value, boolean hasMoved) {
         super(position, alliance, moves, attacks, actionType, board, canJump, piece, value, hasMoved);
     }
-    protected ChessPiece(ChessPiece other) {
-        super(other);
-    }
+    protected ChessPiece(Vector2 position, AbstractChessPiece other) { super(position, other); }
 
     @Override
     public boolean legalAction(Vector2 destination) {

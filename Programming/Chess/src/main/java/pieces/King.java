@@ -15,13 +15,11 @@ public class King extends ChessPiece {
                 vectorTools.addAll(Vector2.UNIT, new Vector2(2,0), new Vector2(-2,0)),
                 ActionType.STEP, board, false, Piece.KING, 2, hasMoved);
     }
-    public King(King other) {
-        super(other);
-    }
+    private King(Vector2 position, King other) { super(position, other); }
 
     @Override
-    public AbstractChessPiece clonePiece() {
-        return new King(this);
+    public AbstractChessPiece clonePiece(Vector2 position) {
+        return new King(position,this);
     }
 
     @Override

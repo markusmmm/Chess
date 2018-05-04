@@ -149,22 +149,23 @@ public abstract class AbstractChessPiece implements IChessPiece {
 
     /**
      * Constructs a clone of an existing chess-piece
+     * @param position Position of cloned piece
      * @param other Piece to clone
      */
-    protected AbstractChessPiece(AbstractChessPiece other) {
-    	position = other.position;
-    	alliance = other.alliance;
+    protected AbstractChessPiece(Vector2 position, AbstractChessPiece other) {
+        this.position = position;
+        alliance = other.alliance;
 
         moves = (HashSet<Vector2>)other.moves.clone();
         attacks = (HashSet<Vector2>)other.attacks.clone();
-    	actionType = other.actionType;
+        actionType = other.actionType;
 
-    	board = other.board;
-    	canJump = other.canJump;
-    	piece = other.piece();
-    	value = other.value;
-    	hasMoved = other.hasMoved;
-	}
+        board = other.board;
+        canJump = other.canJump;
+        piece = other.piece();
+        value = other.value;
+        hasMoved = other.hasMoved;
+    }
 
 	public Vector2 position() { return position; }
 	public Alliance alliance() { return alliance; }
@@ -328,4 +329,9 @@ public abstract class AbstractChessPiece implements IChessPiece {
     public AbstractChessPiece clone() {
 		return clonePiece();
 	}
+
+    @Override
+    public AbstractChessPiece clonePiece() {
+        return clonePiece(position());
+    }
 }

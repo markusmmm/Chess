@@ -33,5 +33,6 @@ public interface IChessPiece {
 
 	void loadData(List<Boolean> vals);
 
+	AbstractChessPiece clonePiece(Vector2 position);
 	AbstractChessPiece clonePiece();
 }

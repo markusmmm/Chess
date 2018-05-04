@@ -417,7 +417,7 @@ public class AbstractBoard {
             return null;
         }
     }
-    public AbstractChessPiece addPiece(Vector2 pos, PieceNode node) {
+    private AbstractChessPiece addPiece(Vector2 pos, PieceNode node) {
         return addPiece(pos, node.piece, node.alliance);
     }
 
@@ -447,11 +447,13 @@ public class AbstractBoard {
 
             pieces.remove(end);
 
-            AbstractChessPiece piece = pieces.get(start).clonePiece();
+            AbstractChessPiece piece = pieces.get(start).clonePiece(end);
+
             pieces.remove(start);
             pieces.put(end, piece);
 
             mutex.release();
+            Console.printSuccess("Force move " + start + " -> " + end + " was successful");
             return true;
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -614,7 +616,8 @@ public class AbstractBoard {
             //resources.Console.println("Mutex acquired by addDrawPos");
 
             for (Vector2 pos : positions)
-                drawPositions.add(pos);
+                if(!drawPositions.contains(pos))
+                    drawPositions.add(pos);
 
         } catch (InterruptedException e) {
             e.printStackTrace();

@@ -83,11 +83,13 @@ public class GameController extends GUIController {
      */
     private void setComputer() {
         int difficulty = board.difficulty();
-        Console.printNotice("Setting computer for difficulty " + difficulty);
         if (difficulty == 1) computer = new ChessComputerEasy(board);
         else if (difficulty == 2) computer = new ChessComputerMedium(board);
         else if (difficulty == 3) computer = new ChessComputerHard(board);
         else computer = null;
+
+        if(computer != null)
+            Console.printSuccess("Computer set for difficulty " + difficulty);
 
         whiteHelper = new ChessComputerHard(board, Alliance.WHITE);
         blackHelper = new ChessComputerHard(board, Alliance.BLACK);

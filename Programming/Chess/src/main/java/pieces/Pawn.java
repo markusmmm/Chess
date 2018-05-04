@@ -21,14 +21,14 @@ public class Pawn extends ChessPiece {
 		if(Tools.allianceDir(alliance) == 0) throw new IllegalStateException(this + " was not correctly assigned to an alliance");
 		this.hasDoubleStepped = hasDoubleStepped;
 	}
-	public Pawn(Pawn other) {
-		super(other);
-		hasDoubleStepped = other.hasDoubleStepped;
+    private Pawn(Vector2 position, Pawn other, boolean hasDoubleStepped) {
+	    super(position, other);
+	    this.hasDoubleStepped = hasDoubleStepped;
 	}
 
 	@Override
-	public AbstractChessPiece clonePiece() {
-		return new Pawn(this);
+	public AbstractChessPiece clonePiece(Vector2 position) {
+		return new Pawn(position, this, hasDoubleStepped);
 	}
 
 	@Override

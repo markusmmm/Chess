@@ -1,10 +1,7 @@
 package management;
 
 import pieces.AbstractChessPiece;
-import resources.Alliance;
-import resources.Move;
-import resources.Piece;
-import resources.Vector2;
+import resources.*;
 
 import java.util.Scanner;
 
@@ -29,11 +26,12 @@ public class ChessComputerHard extends ChessComputer {
     @Override
     public Move getMove() {
         ai.sendCommand("ucinewgame");
-        System.out.println(generateFen());
-        String aiAnswer = ai.getBestMove(generateFen(), thinkTime);
-        System.out.println(aiAnswer);
+        String fen = generateFen();
+        //Console.println(fen);
+        String aiAnswer = ai.getBestMove(fen, thinkTime);
+        //Console.println(aiAnswer);
         Move best = readAI(aiAnswer);
-        System.out.println(best);
+        //Console.println(best);
         return resolveMove(best);
     }
 

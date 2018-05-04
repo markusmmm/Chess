@@ -19,12 +19,10 @@ public class Knight  extends ChessPiece {
                         new Vector2(-2,-1), new Vector2(-1,-2))),
                 ActionType.STEP, board, true, Piece.KNIGHT, 3, hasMoved);
 	}
-	public Knight(Knight other) {
-		super(other);
-	}
+	public Knight(Vector2 position, Knight other) { super(position, other); }
 
 	@Override
-	public AbstractChessPiece clonePiece() {
-		return new Knight(this);
+	public AbstractChessPiece clonePiece(Vector2 position) {
+		return new Knight(position, this);
 	}
 }
