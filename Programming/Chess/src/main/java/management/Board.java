@@ -346,20 +346,6 @@ public class Board extends AbstractBoard {
     }
 
     /**
-     * Uses internally by board do advance to the next turn
-     * @param state Whether or not the move should be advanced
-     * @return 'state'
-     */
-    private boolean advanceMove(boolean state) {
-        if (state) {
-            activePlayer = activePlayer.equals(Alliance.WHITE) ? Alliance.BLACK : Alliance.WHITE;
-            moveI++;
-        }
-
-        return state;
-    }
-
-    /**
      * Moves a piece from 'start' to 'end', and removes 'victim' from this board
      * @param start Position of the attacking piece
      * @param end Destination of the attack

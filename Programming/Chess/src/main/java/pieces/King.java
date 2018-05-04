@@ -28,7 +28,8 @@ public class King extends ChessPiece {
     public boolean legalMove(Vector2 destination) {
         if(!super.legalMove(destination)) return false;
 
-        return castling(destination.add(Vector2.E), destination.add(Vector2.W.mult(2)));
+        if(Math.abs(destination.sub(position()).getX()) > 1) return castling(destination.add(Vector2.E), destination.add(Vector2.W.mult(2)));
+        return true;
     }
 
 
@@ -57,12 +58,15 @@ public class King extends ChessPiece {
     }
 
     private boolean movesIntoCheck(Vector2 end) {
+        Console.printNotice(this + " checks if square " + end + " is checked");
         Vector2 position = position();
 
         board.suspendPieces(position);
         board.suspendPieces(end);
 
         boolean setsCheck = inCheck(end);
+        if(setsCheck) Console.printError("RESULT: Checked");
+        else Console.printSuccess("RESULT: Not checked");
 
         board.releasePieces(position);
         board.releasePieces(end);
