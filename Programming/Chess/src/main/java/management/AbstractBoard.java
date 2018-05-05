@@ -13,15 +13,6 @@ public class AbstractBoard {
     private Semaphore mutex = new Semaphore(1);
     protected int moveI = 0;
 
-    private static final Piece[] defaultBoard = new Piece[]{
-            Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK,
-            Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN,
-            Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY,
-            Piece.PAWN, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY,
-            Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN,
-            Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK
-    };
-
     private int size;
     private int difficulty;
     private Player player1, player2;
@@ -42,15 +33,12 @@ public class AbstractBoard {
         sync(other);
     }
 
-
     protected AbstractBoard(int size, int difficulty, boolean useClock) {
 
         if (size < 2) throw new IllegalArgumentException("The board size must be at least 2");
 
         this.size = size;
-
         generateClock(useClock);
-
         this.difficulty = difficulty;
     }
 
@@ -639,6 +627,19 @@ public class AbstractBoard {
         } finally {
             mutex.release();
             //resources.Console.println("Mutex released");
+        }
+    }
+
+    protected void clearProgress() {
+        try {
+            mutex.acquire();
+            gameLog.clear();
+            capturedPieces.clear();
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            mutex.release();
         }
     }
 

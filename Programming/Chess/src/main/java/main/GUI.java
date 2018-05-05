@@ -9,9 +9,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
-import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
-import resources.Console;
 
 public abstract class GUI {
     public static Button createButton(String text, EventHandler<ActionEvent> value) {
@@ -34,7 +32,7 @@ public abstract class GUI {
     }
 
 
-    public static <T extends Node> T createNode(T elem, String input, String id) {
+    public static <T extends Node> T styleNode(T elem, String input, String id) {
         String[] commands = input.split(";");
 
         if(id.length() > 0)
@@ -50,10 +48,11 @@ public abstract class GUI {
 
         return elem;
     }
-    public static <T extends Node> T createNode(T elem, String input) {
-        return createNode(elem, input, "");
+    public static <T extends Node> T styleNode(T elem, String input) {
+        return styleNode(elem, input, "");
     }
 
+    // NOTE: Because of the css-inspired notation, GUI elements can be styled by the user, by loading a css-file into the application
     private static void setProperty(Node elem, String key, String value) {
         if(key.equals("spacing")) ((VBox) elem).setSpacing(Double.parseDouble(value));
         else if(key.equals("prefWidth")) ((Region)elem).setPrefWidth(Double.parseDouble(value));

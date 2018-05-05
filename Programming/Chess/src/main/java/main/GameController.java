@@ -1,8 +1,8 @@
 package main;
 
+import javafx.application.HostServices;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -27,6 +27,8 @@ import java.util.*;
 import static main.GUI.*;
 
 public class GameController {
+    private HostServices hostServices;
+
     MediaHelper media = new MediaHelper();
     private final int SIZE = 8;
     private Board board;
@@ -52,30 +54,32 @@ public class GameController {
     private Tile firstTile;
     private Player player1, player2;
 
-    public GameController(String user1, String user2, int difficulty, BoardMode boardMode, Main main, Stage stage, BorderPane root) {
+    public GameController(String user1, String user2, int difficulty, BoardMode boardMode, Main main, Stage stage, BorderPane root, HostServices hostServices) {
         board = new Board(SIZE, difficulty,false, boardMode);
 
+        this.user1 = user1;
+        this.user2 = user2;
         this.main = main;
         this.stage = stage;
         this.boardMode = boardMode;
         this.root = root;
-        this.grid = new GridPane();
-        this.tiles = new Tile[SIZE][SIZE];
-        this.squares = new Rectangle[SIZE][SIZE];
-        this.user1 = user1;
-        this.user2 = user2;
-        this.firstClick = false;
-        this.firstTile = null;
-        this.container = new BorderPane();
-        this.moveLog = new ListView<>();
-        this.capturedPieces = new ListView<>();
-        this.gameStatus = new Text();
-        this.database = new DatabaseController();
+        this.hostServices = hostServices;
+
+        grid = new GridPane();
+        tiles = new Tile[SIZE][SIZE];
+        squares = new Rectangle[SIZE][SIZE];
+        firstClick = false;
+        firstTile = null;
+        container = new BorderPane();
+        moveLog = new ListView<>();
+        capturedPieces = new ListView<>();
+        gameStatus = new Text();
+        database = new DatabaseController();
 
         setComputer();
 
-        this.player1 = new Player(user1, Alliance.WHITE);
-        this.player2 = new Player(user2, Alliance.BLACK);
+        player1 = new Player(user1, Alliance.WHITE);
+        player2 = new Player(user2, Alliance.BLACK);
 
         Console.printSuccess("Game setup (Difficulty " + difficulty + ")");
     }
@@ -98,7 +102,7 @@ public class GameController {
     }
 
     /**
-     * Setups the necessary tiles and structures to be able to createNode a board
+     * Setups the necessary tiles and structures needed to create a board
      */
     public void createBoard() {
         for (int row = 0; row < SIZE; row++) {
@@ -125,13 +129,13 @@ public class GameController {
 
         int rightColumnSize = 200;
 
-        VBox right = createNode(new VBox(), "spacing:0", "rightColumn");
+        VBox right = styleNode(new VBox(), "spacing:0", "rightColumn");
 
-        Label labelMoveLog = createNode(new Label("Movelog: "), "prefWidth:" + rightColumnSize + ";", "rightColumnTitle");
-        Label labelCapturedPieces = createNode(new Label("Captured pieces: "), "prefWidth:" + rightColumnSize + ";", "rightColumnTitle");
+        Label labelMoveLog = styleNode(new Label("Movelog: "), "prefWidth:" + rightColumnSize + ";", "rightColumnTitle");
+        Label labelCapturedPieces = styleNode(new Label("Captured pieces: "), "prefWidth:" + rightColumnSize + ";", "rightColumnTitle");
 
-        syncRegion(moveLog, rightColumnSize, 200, "moveLog");
-        syncRegion(capturedPieces, rightColumnSize, 200, "moveLog");
+        moveLog = styleNode(moveLog, "prefWidth:" + rightColumnSize + ";prefHeight:200;", "moveLog");
+        capturedPieces = styleNode(capturedPieces, "prefWidth: " + rightColumnSize + ";prefHeight:200;", "moveLog");
 
         Button buttonHint = createButton("Hint", e -> {
             Move move = getHint(board.getActivePlayer());
@@ -142,7 +146,7 @@ public class GameController {
 
         right.getChildren().addAll(labelMoveLog, moveLog, labelCapturedPieces, capturedPieces, buttonHint);
 
-        VBox statusFieldContainer = createNode(new VBox(), "alignment:CENTER;", "informationFieldContainer");
+        VBox statusFieldContainer = styleNode(new VBox(), "alignment:CENTER;", "informationFieldContainer");
         statusFieldContainer.getChildren().add(gameStatus);
 
         container.setCenter(grid);
@@ -164,7 +168,7 @@ public class GameController {
             main.mainMenu(player1.getUsername(), stage);
         });
         MenuItem menuItemReset = createMenuItem("Reset Game", e -> {
-            GameController newGameController = new GameController(player1.getUsername(), player2.getUsername(), board.difficulty(), boardMode, main, stage, root);
+            GameController newGameController = new GameController(player1.getUsername(), player2.getUsername(), board.difficulty(), boardMode, main, stage, root, hostServices);
             newGameController.createBoard();
             root.setCenter(newGameController.getContainer());
         });
@@ -174,14 +178,15 @@ public class GameController {
         MenuItem menuItemQuit = createMenuItem("Quit", e -> main.onQuit());
 
         menuFile.getItems().addAll(menuItemExit, menuItemReset, menuItemLoad, menuItemSave, menuItemUndo, menuItemQuit);
-        MenuItem menuItemAbout = new MenuItem("About");
+        MenuItem menuItemAbout = new MenuItem("User Manual");
+        menuItemAbout.setOnAction(e -> hostServices.showDocument(Main.USER_MANUAL_URL));
         menuHelp.getItems().add(menuItemAbout);
 
         menuBar.getMenus().addAll(menuFile, menuHelp);
         return menuBar;
     }
 
-    private void performLoad() {
+    public void performLoad() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Chess Game File");
         fileChooser.getExtensionFilters().addAll(
@@ -408,9 +413,9 @@ public class GameController {
         for (int row = 0; row < SIZE; row++) {
             for (int col = 0; col < SIZE; col++) {
                 if ((row + col) % 2 == 0) {
-                    squares[row][col].setFill(Color.LIGHTGRAY);
+                    squares[row][col].setFill(Color.web("#E0E0E0"));
                 } else {
-                    squares[row][col].setFill(Color.DARKGRAY);
+                    squares[row][col].setFill(Color.web("#424242"));
                 }
             }
         }

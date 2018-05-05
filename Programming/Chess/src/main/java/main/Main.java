@@ -1,6 +1,7 @@
 package main;
 
 import javafx.application.Application;
+import javafx.application.HostServices;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
@@ -10,7 +11,6 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
@@ -53,6 +53,8 @@ public class Main extends Application {
     public static final String DATA_SEPARATOR = "====";
     public static final String SAVE_EXTENSION = ".txt";
     public static final String TEST_EXTENSION = ".txt";
+
+    public static final String USER_MANUAL_URL = "https://gitlab.uib.no/inf112-v2018/gruppe-3/blob/c9df10dba1e74977d1eb417fa3cf17cc54f19f0d/Documentation/User%20manual/User%20Manual.pdf";
 
     public void start(Stage primaryStage) throws Exception {
         directorySetup();
@@ -116,7 +118,6 @@ public class Main extends Application {
 
     /**
      * Generates the login window
-     *
      * @return login window
      */
     private Parent loginWindow() {
@@ -128,18 +129,18 @@ public class Main extends Application {
         Rectangle bootDecal = new Rectangle(bootImage.getRequestedWidth(), bootImage.getRequestedHeight());
         bootDecal.setFill(new ImagePattern(bootImage));
 
-        Label labelUsername = createNode(new Label("Username:"), "prefWidth:120;alignment:CENTER;");
-        TextField textUsername = createNode(new TextField(), "prefWidth:240;alignment:CENTER;");
-        Button loginButton = createNode(new Button(), "text:LOGIN;prefWidth:120;");
-        Text errorField = createNode(new Text(), "fill:RED;");
+        Label labelUsername = styleNode(new Label("Username:"), "prefWidth:120;alignment:CENTER;");
+        TextField textUsername = styleNode(new TextField(), "prefWidth:240;alignment:CENTER;");
+        Button loginButton = styleNode(new Button(), "text:LOGIN;prefWidth:120;");
+        Text errorField = styleNode(new Text(), "fill:RED;");
 
         textUsername.setOnAction(e -> handleLogin(textUsername.getText(), errorField));
         loginButton.setOnAction(e -> handleLogin(textUsername.getText(), errorField));
 
-        VBox loginContainer = createNode(new VBox(), "spacing:10;alignment:CENTER;prefWidth:240;maxWidth:240;");
+        VBox loginContainer = styleNode(new VBox(), "spacing:10;alignment:CENTER;prefWidth:240;maxWidth:240;");
         loginContainer.getChildren().addAll(labelUsername, textUsername);
 
-        VBox container = createNode(new VBox(), "spacing:10;alignment:CENTER;prefWidth:" + WIDTH + ";prefHeight:" + HEIGHT + ";");
+        VBox container = styleNode(new VBox(), "spacing:10;alignment:CENTER;prefWidth:" + WIDTH + ";prefHeight:" + HEIGHT + ";");
         container.getChildren().addAll(bootDecal, loginContainer, loginButton, errorField);
         return container;
 
@@ -168,35 +169,13 @@ public class Main extends Application {
         // root = new BorderPane();
         // menuBar = generateMenuBar();
 
-        Label labelWelcome = createNode(new Label("Welcome, " + username +
+        Label labelWelcome = styleNode(new Label("Welcome, " + username +
                 "!\nYour score: " + database.getScore(username)),
                 "prefWidth:" + WIDTH + ";minHeight:" + (HEIGHT / 8) * 2 + ";" +
                         "alignment:CENTER;textAlignment:CENTER;",
                 "title");
 
-        Button buttonPlayVersus = new Button();
-        buttonPlayVersus.setText("PLAY: VERSUS");
-
-        Button buttonPlayEasy = new Button();
-        buttonPlayEasy.setText("PLAY: EASY");
-
-        Button buttonPlayMedium = new Button();
-        buttonPlayMedium.setText("PLAY: MEDIUM");
-
-        Button randomBoardPlay = new Button();
-        randomBoardPlay.setText("PLAY: RANDOM BOARD");
-
-        Button buttonPlayHard = new Button();
-        buttonPlayHard.setText("PLAY: HARD");
-        // buttonPlayHard.setVisible(false);
-
-        Button buttonHighScore = new Button();
-        buttonHighScore.setText("HIGHSCORE");
-
-        Button buttonQuit = new Button();
-        buttonQuit.setText("QUIT");
-
-        buttonPlayVersus.setOnAction(e -> {
+        Button buttonPlayVersus = createButton("PLAY: VERSUS", e -> {
             TextInputDialog dialog = new TextInputDialog();
             dialog.initStyle(StageStyle.UTILITY);
             dialog.setTitle("Enter the second players username");
@@ -212,22 +191,30 @@ public class Main extends Application {
                 } else System.out.println("You can't play against yourself!");
             });
         });
-        buttonPlayEasy.setOnAction(e -> createChessGame(username, "AI: Easy", 1, BoardMode.DEFAULT, root));
-        buttonPlayMedium.setOnAction(e -> createChessGame(username, "AI: Medium", 2, BoardMode.DEFAULT, root));
-        buttonPlayHard.setOnAction(e -> createChessGame(username, "AI: Hard", 3, BoardMode.DEFAULT, root));
-        randomBoardPlay.setOnAction(e -> createChessGame(username, "AI: Easy", 1, BoardMode.RANDOM, root));
-        buttonHighScore.setOnAction(e -> highscore(username, stage));
+
+        Button buttonPlayEasy = createButton("PLAY: EASY", e ->
+                createChessGame(username, "AI: Easy", 1, BoardMode.DEFAULT, root)
+        );
+        Button buttonPlayMedium = createButton("PLAY: MEDIUM", e ->
+                createChessGame(username, "AI: Medium", 2, BoardMode.DEFAULT, root)
+        );
+        Button randomBoardPlay = createButton("PLAY: RANDOM BOARD", e ->
+                createChessGame(username, "AI: Easy", 1, BoardMode.RANDOM, root)
+        );
+        Button buttonPlayHard = createButton("PLAY: HARD", e ->
+                createChessGame(username, "AI: Hard", 3, BoardMode.DEFAULT, root)
+        );
+        Button buttonHighScore = createButton("HIGHSCORE", e -> highscore(username, stage));
+        Button buttonQuit = createButton("QUIT", e -> onQuit());
+
+        // buttonPlayHard.setVisible(false);
         
         media.playSound("welcome.mp3");
-        buttonQuit.setOnAction(e -> onQuit());
 
-        VBox buttonContainer = new VBox(5);
-        buttonContainer.setAlignment(Pos.BASELINE_CENTER);
+        VBox buttonContainer = styleNode(new VBox(), "spacing:5;alignment:BASELINE_CENTER;");
         buttonContainer.getChildren().addAll(buttonPlayVersus, buttonPlayEasy, buttonPlayMedium, buttonPlayHard, randomBoardPlay, buttonHighScore, buttonQuit);
 
-        VBox mainContent = new VBox(0);
-        mainContent.setAlignment(Pos.TOP_CENTER);
-        mainContent.setPrefSize(WIDTH, HEIGHT);
+        VBox mainContent = styleNode(new VBox(), "spacing:0;alignment:TOP_CENTER;prefWidth:" + WIDTH + ";prefHeight:" + HEIGHT + ";");
         mainContent.getChildren().addAll(labelWelcome, buttonContainer);
 
         root.setTop(menuBar);
@@ -280,7 +267,7 @@ public class Main extends Application {
      * @return chessGame
      */
     private void createChessGame(String player1, String player2, int difficulty, BoardMode boardMode, BorderPane root) {
-        GameController gameController = new GameController(player1, player2, difficulty, boardMode, this, stage, root);
+        GameController gameController = new GameController(player1, player2, difficulty, boardMode, this, stage, root, getHostServices());
         gameController.createBoard();
         root.setCenter(gameController.getContainer());
         root.setTop(gameController.generateGameMenuBar());
@@ -300,9 +287,10 @@ public class Main extends Application {
 
         MenuItem menuItemQuit = new MenuItem("Quit");
         menuItemQuit.setOnAction(e -> onQuit());
-        menuFile.getItems().add(menuItemQuit);
+        menuFile.getItems().addAll(menuItemQuit);
 
-        MenuItem menuItemAbout = new MenuItem("About");
+        MenuItem menuItemAbout = new MenuItem("User Manual");
+        menuItemAbout.setOnAction(e -> getHostServices().showDocument(USER_MANUAL_URL));
         menuHelp.getItems().add(menuItemAbout);
 
         menuBar.getMenus().addAll(menuFile, menuHelp);
