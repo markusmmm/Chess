@@ -305,18 +305,8 @@ public class GameController {
         dialog.setContentText("Choose your piece:");
 
         Optional<String> result = dialog.showAndWait();
-        if (result.isPresent()) {
-            String s = result.get().toLowerCase();
-
-            return s;
-
-        } else {
-            return "queen";
-        }
+        return result.map(String::toLowerCase).orElse("queen");
     }
-
-
-
 
     private boolean tileClick(MouseEvent e, Tile tile) {
         Vector2 pos = tile.getPos();

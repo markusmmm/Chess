@@ -64,9 +64,7 @@ public class DatabaseController {
                 ));*/
         long count = db.getCollection("users")
                 .count(new Document("name", username.toLowerCase()));
-        if (count > 0)
-            return true;
-        return false;
+        return count > 0;
     }
 
     /**

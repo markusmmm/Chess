@@ -35,9 +35,7 @@ public class HighscoreController {
 
     public boolean userExists(String username) {
         Highscore score = new Highscore(username, 0);
-        if (highscores.contains(score))
-            return true;
-        return false;
+        return highscores.contains(score);
     }
 
     public boolean addUser(String username) {

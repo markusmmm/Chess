@@ -4,13 +4,11 @@ public class ChessRanking {
 
     public final static int SUPPORTED_PLAYERS = 2;
 
+    private String player1;
+    private String player2;
 
-    private static String player1;
-    private static String player2;
-
-
-    private static int scorePlayer1;
-    private static int scorePlayer2;
+    private int scorePlayer1;
+    private int scorePlayer2;
 
     // player 1 won
     private final static int player1Win = 1;
@@ -22,10 +20,9 @@ public class ChessRanking {
     public ChessRanking(String player1, String player2, int score1, int score2){
         this.player1 = player1;
         this.player2 = player2;
-        this.scorePlayer1= score1;
+        this.scorePlayer1 = score1;
         this.scorePlayer2 = score2;
     }
-
 
     public int getScore(String player){
         if(player.equals(player1)){

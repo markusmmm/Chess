@@ -160,23 +160,6 @@ public class Board extends AbstractBoard {
     }
 
     /**
-     * @param piece Piece to check
-     * @param end End position of attempted move
-     * @return If the piece is a pawn, and move is legal
-     */
-    public boolean canPromotePiece(AbstractChessPiece piece, Vector2 end){
-        if (piece instanceof Pawn) {
-            Pawn pawn = (Pawn)piece;
-
-            if(pawn.legalAction(end)) {
-                int y = pawn.position().getY();
-                return (y == 1 && pawn.alliance() == Alliance.WHITE && end.getY() == 0) ||
-                    (y == 6 && pawn.alliance() == Alliance.BLACK && end.getY() == 7);
-            }
-        }
-        return false;
-    }
-    /**
      * Attempts to move a piece from 'start' to 'end'
      * @param start Position of the piece to be moved
      * @param end Destination of the attempted move
@@ -194,62 +177,10 @@ public class Board extends AbstractBoard {
         // Enables undo
         saveLog();
 
-        // pawnPromotion
-        if((canPromotePiece(piece, end))) {
-            Pawn pawn = (Pawn)piece;
-            GameController gameController = new GameController();
-            Alliance alliance = pawn.alliance();
-
-            char c = gameController.pawnPromotion().charAt(0);
-
-            // Remove the pawn, and add in the selected promotion
-            removePiece(start);
-            addPiece(end, PieceManager.toPiece(c).piece, alliance);
-
-            media.playSound("move.mp3");
-
-            if(!end.equals(piece.position())) {
-                throw new IllegalStateException("Position in " + piece + " was not updated internally!");
-            }
-
+        if(performPromotion(piece, end))
             return advanceMove(piece, start, end, true);
-        }
 
-        // castling
-        if (piece instanceof King) {
-            King king = (King)piece;
-
-            int kingSideRookX = end.getX() + 1;
-            int queenSideRookX = end.getX() - 2;
-            boolean kingSideCastling = king.castling(new Vector2(kingSideRookX, end.getY())),
-                    queenSideCastling = king.castling(new Vector2(queenSideRookX, end.getY()));
-
-            Vector2 rookPos = null, newRookPos = null;
-
-            // Evaluate castling king-side
-            if (kingSideCastling) {
-                rookPos = new Vector2(kingSideRookX, end.getY());
-                newRookPos = new Vector2(kingSideRookX - 2, end.getY());
-            }
-            // Evaluate castling queen-side
-            else if (queenSideCastling) {
-                rookPos = new Vector2(queenSideRookX, end.getY());
-                newRookPos = new Vector2(queenSideRookX + 3, end.getY());
-            }
-
-            if(kingSideCastling || queenSideCastling) {
-                IChessPiece rook = getPiece(rookPos);
-                if(rook.alliance() == king.alliance()) {
-                    boolean rookMoved = forceMovePiece(rookPos, newRookPos);
-                    boolean kingMoved = forceMovePiece(start, end);
-                    if(!rookMoved && !kingMoved) throw new IllegalStateException("An error occurred while castling");
-
-                    media.playSound("move.mp3");
-                    addDrawPos(rookPos, newRookPos);
-                    return advanceMove(piece, start, end, true);
-                }
-            }
-        }
+        performCastling(piece, end);
 
         boolean moveSuccessful = piece.move(end, this);
         if(moveSuccessful) Console.printSuccess("Move " + start + " -> " + end + " successful");
@@ -279,14 +210,18 @@ public class Board extends AbstractBoard {
                 }
             }
 
-            // Assert if the piece's position was updated internally
-            assert(piece.position().equals(end));
-
             logMove(new MoveNode(piece, start, end, victim));
 
             removePiece(start);
             putPiece(end, piece);
             addDrawPos(start,end);
+
+
+            // Assert if the piece's position was updated internally
+            AbstractChessPiece movedPiece = getPiece(end);
+            if(!movedPiece.position().equals(end)) {
+                throw new IllegalStateException(movedPiece + " has position " + movedPiece.position() + " should be " + end);
+            }
         }
 
         return state;
@@ -314,6 +249,80 @@ public class Board extends AbstractBoard {
 
         removePiece(victim);
         logMove(node);
+    }
+
+    /**
+     * @param piece Piece to check
+     * @param end End position of attempted move
+     * @return If the piece is a pawn, and move is legal
+     */
+    private boolean canPromotePiece(AbstractChessPiece piece, Vector2 end){
+        if (piece instanceof Pawn) {
+            Pawn pawn = (Pawn)piece;
+
+            if(pawn.legalAction(end)) {
+                int y = pawn.position().getY();
+                return (y == 1 && pawn.alliance() == Alliance.WHITE && end.getY() == 0) ||
+                        (y == 6 && pawn.alliance() == Alliance.BLACK && end.getY() == 7);
+            }
+        }
+        return false;
+    }
+    private boolean performPromotion(AbstractChessPiece piece, Vector2 end) {
+        if((canPromotePiece(piece, end))) {
+            Pawn pawn = (Pawn)piece;
+            GameController gameController = new GameController();
+            Alliance alliance = pawn.alliance();
+
+            char c = gameController.pawnPromotion().charAt(0);
+
+            // Remove the pawn, and add in the selected promotion
+            removePiece(piece.position());
+            addPiece(end, PieceManager.toPiece(c).piece, alliance);
+
+            media.playSound("move.mp3");
+
+            if(!end.equals(piece.position())) {
+                throw new IllegalStateException("Position in " + piece + " was not updated internally!");
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private void performCastling(AbstractChessPiece piece, Vector2 end) {
+        if (piece instanceof King) {
+            King king = (King)piece;
+
+            int kingSideRookX = end.getX() + 1;
+            int queenSideRookX = end.getX() - 2;
+            boolean kingSideCastling = king.castling(new Vector2(kingSideRookX, end.getY())),
+                    queenSideCastling = king.castling(new Vector2(queenSideRookX, end.getY()));
+
+            Vector2 rookPos = null, newRookPos = null;
+
+            // Evaluate castling king-side
+            if (kingSideCastling) {
+                rookPos = new Vector2(kingSideRookX, end.getY());
+                newRookPos = new Vector2(kingSideRookX - 2, end.getY());
+            }
+            // Evaluate castling queen-side
+            else if (queenSideCastling) {
+                rookPos = new Vector2(queenSideRookX, end.getY());
+                newRookPos = new Vector2(queenSideRookX + 3, end.getY());
+            }
+
+            if(kingSideCastling || queenSideCastling) {
+                IChessPiece rook = getPiece(rookPos);
+                if(rook.alliance() == king.alliance()) {
+                    boolean rookMoved = forceMovePiece(rookPos, newRookPos);
+                    if(!rookMoved) throw new IllegalStateException("An error occurred while castling");
+
+                    media.playSound("move.mp3");
+                    addDrawPos(rookPos, newRookPos);
+                }
+            }
+        }
     }
 
     /**

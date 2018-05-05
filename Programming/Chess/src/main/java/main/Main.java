@@ -104,8 +104,6 @@ public class Main extends Application {
                     writer.close();
                 } catch (IOException e) {
                     Console.printWarning("Couldn't copy core file " + fileName + " to saves directory");
-                    //e.printStackTrace();
-                    continue;
                 }
             }
             Console.printSuccess("All core files copied to save dir");

@@ -8,7 +8,7 @@ import java.util.Set;
 
 public class RandomBoard extends Board {
 
-    public RandomBoard(int size, int difficulty, boolean useClock) throws FileNotFoundException {
+    public RandomBoard(int size, int difficulty, boolean useClock) {
         super(size, difficulty, useClock, BoardMode.DEFAULT);
         generateRandomBoard(6,10);
     }

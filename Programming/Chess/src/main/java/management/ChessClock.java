@@ -4,16 +4,16 @@ public class ChessClock {
 	private final long GIGA = 1000000000;
 
 	private int playerI = 0;
-	private int nPlayers;
-	private long[] durations;
-	private long bonusTime, bonusTimeLimit;
+	private final int nPlayers;
+	private final long[] durations;
+	private final long bonusTime, bonusTimeLimit;
 	private long startTime;
 	private long moveStartTime;
 
 	private ChessClock(ChessClock template) {
 		playerI = template.playerI;
 		nPlayers = template.nPlayers;
-		if(durations != null) durations = template.durations.clone();
+		durations = template.durations != null ? template.durations.clone() : null;
 		bonusTime = template.bonusTime;
 		bonusTimeLimit = template.bonusTimeLimit;
 		startTime = template.startTime;

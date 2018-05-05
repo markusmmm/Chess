@@ -226,9 +226,7 @@ public abstract class AbstractChessPiece implements IChessPiece {
 		else
 			evaluator.evaluate(actions);
 
-		HashSet<Vector2> result = evaluator.getResult();
-
-		return result;
+		return evaluator.getResult();
 	}
 
     /**

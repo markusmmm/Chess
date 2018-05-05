@@ -6,8 +6,6 @@ import resources.Move;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 
@@ -27,10 +25,10 @@ public class RulesTest {
         public String toString() {
             String movesStr = "[ ";
             for(Move move : moves)
-                movesStr += move + "  |  ";
+                movesStr += move.toString() + "  |  ";
             movesStr = movesStr.substring(0,movesStr.length() - 5) + " ]";
 
-            return testFile.getName() + ": " + movesStr + "\texpected: " + expectedResult;
+            return testFile.getName() + "\t" + movesStr + "\n\tExpected result: " + expectedResult;
         }
     }
 
@@ -72,7 +70,7 @@ public class RulesTest {
                     }
                 }
 
-                Console.println("\nTesting moves " + test.moves + " in " + test.testFile.getName() + "\n\tExpected result: " + expected + "\n\tActual result: " + actual);
+                Console.println("Performing test: " + test + "\n\tActual result: " + actual);
                 assertTrue(actual == expected);
             } catch (FileNotFoundException e) {
                 Console.printError("Test-file " + test.testFile.getName() + " does not exist");
