@@ -1,10 +1,9 @@
 package pieces;
 
 import management.Board;
-import resources.Action;
 import resources.Alliance;
-import resources.Piece;
 import resources.Vector2;
+import resources.Piece;
 
 import java.util.List;
 import java.util.Set;

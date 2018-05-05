@@ -1,9 +1,8 @@
 import management.Board;
 import org.junit.jupiter.api.Test;
 import resources.BoardMode;
-import resources.Move;
-import resources.Piece;
 import resources.Vector2;
+import resources.Move;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

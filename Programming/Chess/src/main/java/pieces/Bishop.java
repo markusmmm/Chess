@@ -3,8 +3,8 @@ package pieces;
 
 import management.AbstractBoard;
 import resources.Alliance;
-import resources.Piece;
 import resources.Vector2;
+import resources.Piece;
 
 
 public class Bishop extends ChessPiece {

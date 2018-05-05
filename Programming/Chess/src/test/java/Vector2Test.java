@@ -1,5 +1,4 @@
 import org.junit.Test;
-import resources.Console;
 import resources.Vector2;
 
 import static org.junit.Assert.assertFalse;

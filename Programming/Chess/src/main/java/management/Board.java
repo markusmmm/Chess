@@ -105,7 +105,7 @@ public class Board extends AbstractBoard {
         for(Vector2 pos : pieces.keySet()) {
             AbstractChessPiece piece = pieces.get(pos);
             Set<Vector2> set = action == Action.ACTION ? piece.getPossibleActions() : (action == Action.MOVE ? piece.getPossibleMoves() : piece.getPossibleAttacks());
-            //Console.printNotice("Possible " + action + "S for " + piece + " " + piece.position() + ": " + set);
+            //Console.printNotice("Possible " + action + "S for " + piece + " " + piece.position() + ":\t" + set);
 
             for(Vector2 end : set)
                 actions.add(new Move(pos, end));

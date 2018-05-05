@@ -2,8 +2,8 @@ package pieces.movement;
 
 import management.Board;
 import pieces.AbstractChessPiece;
-import resources.Move;
 import resources.Vector2;
+import resources.Move;
 
 public class Rule {
     public final Vector2 relativeMovement;

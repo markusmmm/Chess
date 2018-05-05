@@ -2,8 +2,8 @@ package pieces;
 
 import management.AbstractBoard;
 import resources.Alliance;
-import resources.Piece;
 import resources.Vector2;
+import resources.Piece;
 
 import java.util.Arrays;
 import java.util.HashSet;

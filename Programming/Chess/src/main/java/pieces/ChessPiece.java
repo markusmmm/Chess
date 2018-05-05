@@ -1,9 +1,7 @@
 package pieces;
 
 import management.AbstractBoard;
-import resources.Alliance;
-import resources.Piece;
-import resources.Vector2;
+import resources.*;
 
 import java.util.HashSet;
 
@@ -18,23 +16,32 @@ public abstract class ChessPiece extends AbstractChessPiece {
     protected ChessPiece(Vector2 position, AbstractChessPiece other) { super(position, other); }
 
     @Override
+    /**
+     * Checks if the piece can either move to or attack the given destination
+     * @param destination End position of attempted move
+     * @return If the action is legal
+     */
     public boolean legalAction(Vector2 destination) {
         Vector2 delta = destination.sub(position());
 
         AbstractChessPiece other = board.getPiece(destination);
-        boolean isMove = moves.contains(delta);
-        boolean isAttack = attacks.contains(delta);
-        boolean valid = (isMove && isAttack) ||
-                isMove && other == null ||
-                isAttack && other != null && other.alliance() != alliance();
+        boolean validMove = other == null,
+                validAttack = other != null && other.alliance() != alliance();
 
         if(super.legalAction(destination)) {
-            if (actionType == ActionType.STEP)
-                return valid;
-            else if (actionType == ActionType.LINE)
-                for (Vector2 action : vectorTools.mergeSets(moves, attacks))
-                    if (action.isParallelTo(delta))
-                        return valid;
+            if(actionType == ActionType.STEP) {
+                return (validMove && moves.contains(delta)) ||
+                        (validAttack && attacks.contains(delta));
+            } else {
+                if(validMove)
+                    for (Vector2 move : moves)
+                        if (move.isParallelTo(delta))
+                            return true;
+                if(validAttack)
+                    for (Vector2 attack : attacks)
+                        if (attack.isParallelTo(delta))
+                            return true;
+            }
         }
 
         return false;

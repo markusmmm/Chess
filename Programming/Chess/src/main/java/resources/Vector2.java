@@ -2,9 +2,8 @@ package resources;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Set;
 
-public class Vector2 implements Comparable<Vector2> {
+public class Vector2 {
 	private final int x, y;
 
 	public final static Vector2
@@ -21,18 +20,14 @@ public class Vector2 implements Comparable<Vector2> {
     public final static HashSet<Vector2> STRAIGHT = new HashSet<>(Arrays.asList(N, E, S, W));
     public final static HashSet<Vector2> UNIT = new HashSet<>(Arrays.asList(N, NE, E, SE, S, SW, W, NW));
 
-	public Vector2 (int x, int y) {
+	public Vector2(int x, int y) {
 		this.x = x;
 		this.y = y;
 	}
 
-	public int getX() {
-		return x;
-	}
+	public int getX() { return x; }
 
-	public int getY() {
-		return y;
-	}
+	public int getY() { return y; }
 
 	public Vector2 add(Vector2 v) {
 		return new Vector2(x + v.x, y + v.y);
@@ -99,7 +94,7 @@ public class Vector2 implements Comparable<Vector2> {
     @Override
 	public int hashCode() {
         //This process ensures that two Vector2-objects with the same x and y-values are assigned to the same hash-code.
-        //This should also createNode different hash-codes for symmetric vector pairs (e.g. (2,1) and (1,2))
+        //This should also create different hash-codes for symmetric vector pairs (e.g. (2,1) and (1,2))
         int hash = 1;
         hash = hash * 17 + x;
         hash = hash * 31 + y;
@@ -112,15 +107,6 @@ public class Vector2 implements Comparable<Vector2> {
 
         return x == v.x && y == v.y;
     }
-
-    @Override
-	public int compareTo(Vector2 v) {
-    	if(y == v.y) {
-			if (x == y) return 0;
-			return x - v.x;
-		}
-		return y - v.y;
-	}
 
     @Override
     public String toString() {
