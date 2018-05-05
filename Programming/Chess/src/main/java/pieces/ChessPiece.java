@@ -31,13 +31,13 @@ public abstract class ChessPiece extends AbstractChessPiece {
         if(super.legalAction(destination)) {
             if(actionType == ActionType.STEP) {
                 return (validMove && moves.contains(delta)) ||
-                        (validAttack && attacks.contains(delta));
+                        attacks.contains(delta);
             } else {
                 if(validMove)
                     for (Vector2 move : moves)
                         if (move.isParallelTo(delta))
                             return true;
-                if(validAttack)
+                else
                     for (Vector2 attack : attacks)
                         if (attack.isParallelTo(delta))
                             return true;

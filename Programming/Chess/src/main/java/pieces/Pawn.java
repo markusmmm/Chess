@@ -42,19 +42,18 @@ public class Pawn extends ChessPiece {
 	 * @param destination End position of the attempted move
      * @return If the move is legal
 	 */
-	public boolean legalAction(Vector2 destination)
-	{
+	public boolean legalAction(Vector2 destination) {
 		if(!super.legalAction(destination)) return false;
-
 		AbstractChessPiece other = board.getPiece(destination);
 
 		// Double step
-		if(hasMoved() && Math.abs(destination.getY() - position().getY()) == 2)
-		    return false;
+		if(Math.abs(destination.getY() - position().getY()) == 2) {
+		    if(hasMoved()) return false;
+            hasDoubleStepped = true;
+            return true;
+        }
 
-		boolean validMove = (destination.getX() == position().getX()) == (other == null);
-
-		return enPassant(destination) || validMove;
+		return (enPassant(destination)) || (destination.getX() == position().getX()) == (other == null);
 	}
 
 	@Override
@@ -79,17 +78,18 @@ public class Pawn extends ChessPiece {
 		return hasDoubleStepped;
 	}
 
-	public boolean enPassant(Vector2 destination)
-	{
+	public boolean enPassant(Vector2 destination) {
 	    int dir = Tools.allianceDir(alliance);
 	    if(dir == 0) throw new IllegalStateException(this + " is not assigned to an alliance");
 
 		Vector2 delta = destination.sub(position());
 		if(Math.abs(delta.getX()) == 1 && delta.getY() == Tools.allianceDir(alliance)) {
-		    AbstractChessPiece other = board.getPiece(destination.add(new Vector2(0, -dir)));
-		    return other != null &&
-                    other.piece() == Piece.PAWN && other.alliance() != alliance() && !((Pawn)other).hasDoubleStepped()
-                    && other.equals(board.getLastPiece());
+			Vector2 victimPos = destination.add(new Vector2(0, -dir));
+		    AbstractChessPiece other = board.getPiece(victimPos);
+		    if(other == null) return false;
+
+		    return other.piece() == Piece.PAWN && other.alliance() != alliance() && ((Pawn)other).hasDoubleStepped() &&
+                    other.equals(board.getLastPiece());
         }
         return false;
 	}
