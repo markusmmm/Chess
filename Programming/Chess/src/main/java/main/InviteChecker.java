@@ -15,9 +15,11 @@ class InviteChecker extends TimerTask {
     private DatabaseController database = new DatabaseController();
     private boolean hasPopup = false;
     private String username;
+    private Main main;
 
-    public InviteChecker(String username) {
+    public InviteChecker(String username, Main main) {
         this.username = username;
+        this.main = main;
     }
 
     public void run() {
@@ -44,6 +46,7 @@ class InviteChecker extends TimerTask {
                                 database.handleGameInvite(id, false, player1, player2);
                                 hasPopup = false;
                             }
+                            main.updateGameList(username);
                         }
                     });
                 }

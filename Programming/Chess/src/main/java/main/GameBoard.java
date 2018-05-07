@@ -14,6 +14,8 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import management.*;
+import org.apache.commons.io.FileUtils;
+import org.bson.Document;
 import org.bson.types.ObjectId;
 import pieces.ChessPiece;
 import pieces.IChessPiece;
@@ -25,7 +27,11 @@ import resources.Console;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
+
+import static org.apache.commons.io.FileUtils.readFileToString;
 
 public class GameBoard {
     MediaHelper media = new MediaHelper();
@@ -55,12 +61,15 @@ public class GameBoard {
     private String username;
     private boolean online;
     private ObjectId gameId;
+    private Timer timer;
 
     public GameBoard(String user1, String user2, int difficulty, BoardMode boardMode, Main main,
                      Stage stage, BorderPane root, String username, ObjectId gameId) {
         this(user1, user2, difficulty, boardMode, main, stage, root, username);
         this.online = true;
         this.gameId = gameId;
+        this.timer = new Timer();
+        timer.scheduleAtFixedRate(new GameUpdater(this, gameId, username), 0, 5 * 1000);
     }
 
     public GameBoard(String user1, String user2, int difficulty, BoardMode boardMode, Main main,
@@ -102,6 +111,7 @@ public class GameBoard {
         this.database = new DatabaseController();
         this.online = false;
         this.username = username;
+        this.gameId = null;
 
         setComputer();
 
@@ -377,9 +387,6 @@ public class GameBoard {
         }
     }
 
-
-
-
     private boolean tileClick(MouseEvent e, Tile tile) {
         if (online)
             if (!isYourTurn())
@@ -414,6 +421,17 @@ public class GameBoard {
             IChessPiece firstPiece = board.getPiece(firstTile.getPos());
             Console.println(firstClick + " " + firstPiece);
             attemptMove(firstTile, pos);
+
+            if (online) {
+                File gameFile = new File(System.getProperty("user.home"), "GitGud/.online/" + username + "/" + gameId + ".txt");
+                board.saveBoard(gameFile);
+                try {
+                    String gameData = readFileToString(gameFile, StandardCharsets.UTF_8);
+                    database.updateGame(gameId, gameData);
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
 
             firstClick = false;
             firstTile = null;

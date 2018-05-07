@@ -52,8 +52,7 @@ public class Main extends Application {
     private ListView<String> listView = new ListView<>();
     private ObservableList<String> observableActiveGameList;
     private List<Document> activeGameData;
-    private Timer t1;
-    private Timer t2;
+    private Timer timer;
 
     public static void main(String[] args) {
         launch(args);
@@ -280,9 +279,10 @@ public class Main extends Application {
                 String player1 = (String) activeGameData.get(i).get("player1");
                 String player2 = (String) activeGameData.get(i).get("player2");
                 try {
-                    File gameFile = new File(ONLINE_GAME_DIR, id + ".txt");
+                    File gameFile = new File(ONLINE_GAME_DIR, username + "/" + id + ".txt");
                     FileUtils.writeStringToFile(gameFile, gameData, StandardCharsets.UTF_8);
-                    GameBoard gameBoard = new GameBoard(player1, player2, 0, BoardMode.DEFAULT, this, stage, root, username, id);
+                    GameBoard gameBoard = new GameBoard(player1, player2, 0, BoardMode.DEFAULT,
+                            this, stage, root, username, id);
                     gameBoard.createBoard();
                     gameBoard.performLoad(gameFile);
                     root.setCenter(gameBoard.getContainer());
@@ -304,7 +304,9 @@ public class Main extends Application {
         });
 
         Button buttonRefresh = new Button("Refresh");
-        buttonRefresh.setOnAction(event -> { updateGameList(username); });
+        buttonRefresh.setOnAction(event -> {
+            updateGameList(username);
+        });
 
         HBox leftButtonContainer = new HBox(buttonPlay, buttonForfeit, buttonRefresh);
         leftButtonContainer.setSpacing(15);
@@ -325,11 +327,8 @@ public class Main extends Application {
         root.setTop(menuBar);
         root.setCenter(container);
 
-        t1 = new Timer();
-        t1.scheduleAtFixedRate(new InviteChecker(username), 0, 5 * 1000);
-        //t2 = new Timer();
-        //t2.scheduleAtFixedRate(new DatabaseGameLog(username, listView, activeGameData, observableActiveGameList), 0, 5 * 1000);
-
+        timer = new Timer();
+        timer.scheduleAtFixedRate(new InviteChecker(username, this), 0, 5 * 1000);
     }
 
     public void updateGameList(String username) {
@@ -385,7 +384,7 @@ public class Main extends Application {
         root.setCenter(gameBoard.getContainer());
         root.setTop(gameBoard.generateGameMenuBar());
         media.playSound("startup.mp3");
-        t1.cancel();
+        timer.cancel();
         //return gameBoard.getContainer();
     }
 
@@ -419,79 +418,3 @@ public class Main extends Application {
     }
 
 }
-/*
-class InviteChecker extends TimerTask {
-    private DatabaseController database = new DatabaseController();
-    private boolean hasPopup = false;
-    private String username;
-
-    public InviteChecker(String username) {
-        this.username = username;
-    }
-
-    public void run() {
-        List<Document> invites = database.checkForGameInvites(username);
-        if (invites.size() > 0) {
-            for (int i = 0; i < invites.size(); i++) {
-                ObjectId id = (ObjectId) invites.get(i).get("_id");
-                String player1 = (String) invites.get(i).get("player1");
-                String player2 = (String) invites.get(i).get("player2");
-                if (!hasPopup) {
-                    hasPopup = true;
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                            alert.setTitle("Game Invite");
-                            alert.setHeaderText(player1 + " has invited you to a game of chess!");
-                            alert.setContentText("Do you want to accept?");
-                            Optional<ButtonType> result = alert.showAndWait();
-                            if (result.get() == ButtonType.OK) {
-                                database.handleGameInvite(id, true, player1, player2);
-                                hasPopup = false;
-                            } else {
-                                database.handleGameInvite(id, false, player1, player2);
-                                hasPopup = false;
-                            }
-                        }
-                    });
-                }
-            }
-        }
-    }
-}
-/*
-class DatabaseGameLog extends TimerTask {
-    private DatabaseController database = new DatabaseController();
-    private String username;
-    private ListView<String> listView;
-    private List<Document> activeGameData;
-    private ObservableList<String> observableActiveGameList;
-
-    public DatabaseGameLog(String username, ListView<String> listView,
-                           List<Document> activeGameData, ObservableList<String> observableActiveGameList) {
-        this.username = username;
-        this.listView = listView;
-        this.activeGameData = activeGameData;
-        this.observableActiveGameList = observableActiveGameList;
-    }
-
-    public void run() {
-        activeGameData = database.getOnlineGames(username);
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                List<String> activeGameList = new ArrayList<>();
-                for (int i = 0; i < activeGameData.size(); i++) {
-                    String player1 = (String) activeGameData.get(i).get("player1");
-                    String player2 = (String) activeGameData.get(i).get("player2");
-                    activeGameList.add("Game " + (i + 1) + ": " + player1 + " vs " + player2);
-                }
-                observableActiveGameList = FXCollections.observableArrayList(activeGameList);
-                listView.setItems(observableActiveGameList);
-            }
-        });
-
-
-    }
-}*/

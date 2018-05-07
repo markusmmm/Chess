@@ -8,6 +8,7 @@ import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
+import javax.print.Doc;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +61,8 @@ public class DatabaseController {
         /*Document gameData = database.getGame("5ae9f3e9e33da16d580fe644");
         String chessData = (String) gameData.get("chessData");
         System.out.println(chessData);*/
+
+        database.updateGame(new ObjectId("5af063f2c3ba570a2871dc0d"), "test");
 
 
         /* Deletes all users with score set to 0 */
@@ -125,6 +128,13 @@ public class DatabaseController {
             Document searchQuery = new Document().append("name", username.toLowerCase());
             db.getCollection("users").updateOne(searchQuery, newDoc);
         }
+    }
+
+    public void updateGame(ObjectId id, String gameData) {
+        Document newDoc = new Document();
+        newDoc.append("$set", new Document().append("gameData", gameData));
+        Document searchQuery = new Document().append("_id", id);
+        db.getCollection("games").updateOne(searchQuery, newDoc);
     }
 
     /**
@@ -219,8 +229,8 @@ public class DatabaseController {
      * @param id
      * @return game document
      */
-    public Document getGame(String id) {
-        Document query = new Document("_id", new ObjectId(id));
+    public Document getGame(ObjectId id) {
+        Document query = new Document("_id", id);
         return db.getCollection("games").find(query).first();
 
     }
