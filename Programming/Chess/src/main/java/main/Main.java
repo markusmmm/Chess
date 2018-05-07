@@ -1,7 +1,6 @@
 package main;
 
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -28,7 +27,6 @@ import resources.BoardMode;
 import resources.Console;
 import resources.MediaHelper;
 
-import javax.print.Doc;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -178,7 +176,7 @@ public class Main extends Application {
             } else {
                 database.addUser(username);
             }
-            mainMenu(username, stage);
+            mainMenu(username.toLowerCase(), stage);
         }
     }
 
@@ -284,7 +282,7 @@ public class Main extends Application {
                 try {
                     File gameFile = new File(ONLINE_GAME_DIR, id + ".txt");
                     FileUtils.writeStringToFile(gameFile, gameData, StandardCharsets.UTF_8);
-                    GameBoard gameBoard = new GameBoard(player1, player2, 0, BoardMode.DEFAULT, this, stage, root, true, username);
+                    GameBoard gameBoard = new GameBoard(player1, player2, 0, BoardMode.DEFAULT, this, stage, root, username, id);
                     gameBoard.createBoard();
                     gameBoard.performLoad(gameFile);
                     root.setCenter(gameBoard.getContainer());
@@ -300,7 +298,6 @@ public class Main extends Application {
             ObservableList<Integer> selectedIndices = listView.getSelectionModel().getSelectedIndices();
             for (Object o : selectedIndices) {
                 int i = (Integer) o;
-                System.out.println(i);
                 ObjectId id = (ObjectId) activeGameData.get(i).get("_id");
                 database.forfeitGame(id);
             }
@@ -329,7 +326,7 @@ public class Main extends Application {
         root.setCenter(container);
 
         t1 = new Timer();
-        t1.scheduleAtFixedRate(new DatabaseInviteChecker(username), 0, 5 * 1000);
+        t1.scheduleAtFixedRate(new InviteChecker(username), 0, 5 * 1000);
         //t2 = new Timer();
         //t2.scheduleAtFixedRate(new DatabaseGameLog(username, listView, activeGameData, observableActiveGameList), 0, 5 * 1000);
 
@@ -383,7 +380,7 @@ public class Main extends Application {
      * @return chessGame
      */
     private void createChessGame(String player1, String player2, int difficulty, BoardMode boardMode, BorderPane root) {
-        GameBoard gameBoard = new GameBoard(player1, player2, difficulty, boardMode, this, stage, root, false, player1);
+        GameBoard gameBoard = new GameBoard(player1, player2, difficulty, boardMode, this, stage, root, player1);
         gameBoard.createBoard();
         root.setCenter(gameBoard.getContainer());
         root.setTop(gameBoard.generateGameMenuBar());
@@ -422,13 +419,13 @@ public class Main extends Application {
     }
 
 }
-
-class DatabaseInviteChecker extends TimerTask {
+/*
+class InviteChecker extends TimerTask {
     private DatabaseController database = new DatabaseController();
     private boolean hasPopup = false;
     private String username;
 
-    public DatabaseInviteChecker(String username) {
+    public InviteChecker(String username) {
         this.username = username;
     }
 

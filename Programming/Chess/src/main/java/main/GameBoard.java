@@ -14,6 +14,7 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import management.*;
+import org.bson.types.ObjectId;
 import pieces.ChessPiece;
 import pieces.IChessPiece;
 import pieces.King;
@@ -53,8 +54,17 @@ public class GameBoard {
     private Player player1, player2;
     private String username;
     private boolean online;
+    private ObjectId gameId;
 
-    public GameBoard(String user1, String user2, int difficulty, BoardMode boardMode, Main main, Stage stage, BorderPane root, boolean online, String username) {
+    public GameBoard(String user1, String user2, int difficulty, BoardMode boardMode, Main main,
+                     Stage stage, BorderPane root, String username, ObjectId gameId) {
+        this(user1, user2, difficulty, boardMode, main, stage, root, username);
+        this.online = true;
+        this.gameId = gameId;
+    }
+
+    public GameBoard(String user1, String user2, int difficulty, BoardMode boardMode, Main main,
+                     Stage stage, BorderPane root, String username) {
         Board boardVal = null;
 
         if(boardMode == BoardMode.DEFAULT) {
@@ -90,7 +100,7 @@ public class GameBoard {
         this.capturedPieces = new ListView<>();
         this.gameStatus = new Text();
         this.database = new DatabaseController();
-        this.online = online;
+        this.online = false;
         this.username = username;
 
         setComputer();
@@ -214,7 +224,7 @@ public class GameBoard {
             main.mainMenu(username, stage);
         });
         menuItemReset.setOnAction(e -> {
-            GameBoard newGameBoard = new GameBoard(player1.getUsername(), player2.getUsername(), board.difficulty(), boardMode, main, stage, root, false, username);
+            GameBoard newGameBoard = new GameBoard(player1.getUsername(), player2.getUsername(), board.difficulty(), boardMode, main, stage, root, username);
             newGameBoard.createBoard();
             root.setCenter(newGameBoard.getContainer());
         });
@@ -371,6 +381,10 @@ public class GameBoard {
 
 
     private boolean tileClick(MouseEvent e, Tile tile) {
+        if (online)
+            if (!isYourTurn())
+                return false;
+
         Vector2 pos = tile.getPos();
         //if(!board.ready()) return false;
 
@@ -486,6 +500,17 @@ public class GameBoard {
             }
             System.out.print("\n");
         }
+    }
+
+    public boolean isYourTurn() {
+        Alliance alliance = board.getActivePlayer();
+        Player player;
+        if (board.getActivePlayer() == Alliance.WHITE)
+            player = player1;
+        else player = player2;
+        if (player.getUsername().equals(username))
+            return true;
+        return false;
     }
     
     public boolean gameOver() {
