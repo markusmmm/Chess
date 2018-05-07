@@ -28,6 +28,7 @@ import resources.BoardMode;
 import resources.Console;
 import resources.MediaHelper;
 
+import javax.print.Doc;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -50,7 +51,7 @@ public class Main extends Application {
     private BorderPane root = new BorderPane();
     private DatabaseController database = new DatabaseController();
     private MenuBar menuBar = generateMenuBar();
-    private ListView<String> listView;
+    private ListView<String> listView = new ListView<>();
     private ObservableList<String> observableActiveGameList;
     private List<Document> activeGameData;
     private Timer t1;
@@ -269,17 +270,7 @@ public class Main extends Application {
         rightContainer.setPrefWidth(420);
 
         activeGameData = database.getOnlineGames(username);
-        List<String> activeGameList = new ArrayList<>();
-        for (int i = 0; i < activeGameData.size(); i++) {
-            String player1 = (String) activeGameData.get(i).get("player1");
-            String player2 = (String) activeGameData.get(i).get("player2");
-            // listView.getItems().add("Game " + (i + 1) + ": " + player1 + " vs " + player2);
-            activeGameList.add("Game " + (i + 1) + ": " + player1 + " vs " + player2);
-        }
-
-        observableActiveGameList = FXCollections.observableArrayList(activeGameList);
-        listView = new ListView<>();
-        listView.setItems(observableActiveGameList);
+        updateGameList(username);
 
         Button buttonPlay = new Button("Play");
         buttonPlay.setOnAction(event -> {
@@ -303,17 +294,22 @@ public class Main extends Application {
                 }
             }
         });
+
         Button buttonForfeit = new Button("Forfeit");
         buttonForfeit.setOnAction(event -> {
             ObservableList<Integer> selectedIndices = listView.getSelectionModel().getSelectedIndices();
             for (Object o : selectedIndices) {
                 int i = (Integer) o;
+                System.out.println(i);
                 ObjectId id = (ObjectId) activeGameData.get(i).get("_id");
                 database.forfeitGame(id);
             }
         });
 
-        HBox leftButtonContainer = new HBox(buttonPlay, buttonForfeit);
+        Button buttonRefresh = new Button("Refresh");
+        buttonRefresh.setOnAction(event -> { updateGameList(username); });
+
+        HBox leftButtonContainer = new HBox(buttonPlay, buttonForfeit, buttonRefresh);
         leftButtonContainer.setSpacing(15);
 
         Label labelActiveGames = new Label("Active Games");
@@ -334,9 +330,21 @@ public class Main extends Application {
 
         t1 = new Timer();
         t1.scheduleAtFixedRate(new DatabaseInviteChecker(username), 0, 5 * 1000);
-        t2 = new Timer();
-        t2.scheduleAtFixedRate(new DatabaseGameLog(username, listView, activeGameData, observableActiveGameList), 0, 5 * 1000);
+        //t2 = new Timer();
+        //t2.scheduleAtFixedRate(new DatabaseGameLog(username, listView, activeGameData, observableActiveGameList), 0, 5 * 1000);
 
+    }
+
+    public void updateGameList(String username) {
+        activeGameData = database.getOnlineGames(username);
+        ArrayList<String> activeGameList = new ArrayList<>();
+        for (int i = 0; i < activeGameData.size(); i++) {
+            String player1 = (String) activeGameData.get(i).get("player1");
+            String player2 = (String) activeGameData.get(i).get("player2");
+            activeGameList.add("Game " + (i + 1) + ": " + player1 + " vs " + player2);
+        }
+        ObservableList<String> observableList = FXCollections.observableArrayList(activeGameList);
+        listView.setItems(observableList);
     }
 
     public void highscore(String username, Stage stage) {
@@ -455,7 +463,7 @@ class DatabaseInviteChecker extends TimerTask {
         }
     }
 }
-
+/*
 class DatabaseGameLog extends TimerTask {
     private DatabaseController database = new DatabaseController();
     private String username;
@@ -472,10 +480,10 @@ class DatabaseGameLog extends TimerTask {
     }
 
     public void run() {
+        activeGameData = database.getOnlineGames(username);
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                activeGameData = database.getOnlineGames(username);
                 List<String> activeGameList = new ArrayList<>();
                 for (int i = 0; i < activeGameData.size(); i++) {
                     String player1 = (String) activeGameData.get(i).get("player1");
@@ -489,4 +497,4 @@ class DatabaseGameLog extends TimerTask {
 
 
     }
-}
+}*/

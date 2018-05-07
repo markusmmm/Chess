@@ -223,7 +223,10 @@ public class GameBoard {
         menuItemSave.setOnAction(e -> performSave());
         menuItemQuit.setOnAction(e -> main.onQuit());
 
-        menuFile.getItems().addAll(menuItemExit, menuItemReset, menuItemLoad, menuItemSave, menuItemUndo, menuItemQuit);
+        if (online)
+            menuFile.getItems().addAll(menuItemExit, menuItemQuit);
+        else
+            menuFile.getItems().addAll(menuItemExit, menuItemReset, menuItemLoad, menuItemSave, menuItemUndo, menuItemQuit);
         MenuItem menuItemAbout = new MenuItem("About");
         menuHelp.getItems().add(menuItemAbout);
 
