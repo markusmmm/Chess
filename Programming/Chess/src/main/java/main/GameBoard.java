@@ -2,6 +2,7 @@ package main;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
@@ -69,7 +70,7 @@ public class GameBoard {
         this.online = true;
         this.gameId = gameId;
         this.timer = new Timer();
-        timer.scheduleAtFixedRate(new GameUpdater(this, gameId, username), 0, 5 * 1000);
+        timer.scheduleAtFixedRate(new GameUpdater(this, gameId, username), 0, 4 * 1000);
     }
 
     public GameBoard(String user1, String user2, int difficulty, BoardMode boardMode, Main main,
@@ -193,6 +194,7 @@ public class GameBoard {
 
         Button buttonHint = new Button();
         buttonHint.setText("Hint");
+        buttonHint.setPadding(new Insets(10, 10, 10, 10));
 
         buttonHint.setOnAction(e -> {
             Move move = getHint(board.getActivePlayer());
@@ -201,7 +203,9 @@ public class GameBoard {
             squares[move.end.getY()][move.end.getX()].setFill(Color.LIMEGREEN);
         });
 
-        right.getChildren().addAll(labelMoveLog, moveLog, labelCapturedPieces, capturedPieces, buttonHint);
+        right.getChildren().addAll(labelMoveLog, moveLog, labelCapturedPieces, capturedPieces);
+        if (!online)
+            right.getChildren().add(buttonHint);
 
         VBox statusFieldContainer = new VBox();
         statusFieldContainer.setAlignment(Pos.CENTER);
@@ -553,11 +557,14 @@ public class GameBoard {
         if (board.difficulty() == 0) {
             if (blackKing.checkmate()) {
                 database.updateScore(player1.getUsername(), (player1.getScore() + 3));
+                if (online) database.gameOver(gameId, player1.getUsername());
             } else if (whiteKing.checkmate()) {
                 database.updateScore(player2.getUsername(), (player2.getScore() + 3));
+                if (online) database.gameOver(gameId, player2.getUsername());
             } else if(whiteKing.stalemate() || blackKing.stalemate()) {
                 database.updateScore(player1.getUsername(), (player1.getScore() + 1));
                 database.updateScore(player2.getUsername(), (player2.getScore() + 1));
+                if (online) database.gameOver(gameId, "none");
             }
         } else {
             if (board.difficulty() == 1) {

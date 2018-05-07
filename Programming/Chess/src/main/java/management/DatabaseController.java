@@ -246,6 +246,20 @@ public class DatabaseController {
         db.getCollection("games").updateOne(searchQuery, newDoc);
     }
 
+    /**
+     * Marks the game as completed and sets the winner
+     * @param id
+     */
+    public void gameOver(ObjectId id, String winner) {
+        Document newDoc = new Document();
+        newDoc.append("$set", new Document().append("completed", true));
+        Document newDoc2 = new Document();
+        newDoc2.append("$set", new Document().append("winner", winner));
+        Document searchQuery = new Document().append("_id", id);
+        db.getCollection("games").updateOne(searchQuery, newDoc);
+        db.getCollection("games").updateOne(searchQuery, newDoc2);
+    }
+
     public void forfeitGame(String id) {
         forfeitGame(new ObjectId(id));
     }

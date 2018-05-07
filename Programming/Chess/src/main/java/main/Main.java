@@ -301,6 +301,7 @@ public class Main extends Application {
                 ObjectId id = (ObjectId) activeGameData.get(i).get("_id");
                 database.forfeitGame(id);
             }
+            updateGameList(username);
         });
 
         Button buttonRefresh = new Button("Refresh");
