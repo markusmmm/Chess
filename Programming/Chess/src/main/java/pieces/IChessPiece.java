@@ -12,6 +12,7 @@ public interface IChessPiece {
 
 	Vector2 position();
 	Alliance alliance();
+	Alliance otherAlliance();
 	Piece piece();
 	int getValue();
 
@@ -31,6 +32,8 @@ public interface IChessPiece {
 	boolean move(Vector2 end, Board board);
 
 	void loadData(List<Boolean> vals);
+
+	boolean freePath(Vector2 destination);
 
 	AbstractChessPiece clonePiece(Vector2 position);
 	AbstractChessPiece clonePiece();

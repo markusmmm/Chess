@@ -440,6 +440,8 @@ public class AbstractBoard {
             pieces.remove(start);
             pieces.put(end, piece);
 
+            assert(piece.position().equals(end));
+
             mutex.release();
             //Console.printSuccess("Force move " + start + " -> " + end + " was successful");
             return true;

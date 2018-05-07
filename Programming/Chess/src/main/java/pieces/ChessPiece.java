@@ -8,7 +8,7 @@ import java.util.HashSet;
 public abstract class ChessPiece extends AbstractChessPiece {
 
     protected ChessPiece(Vector2 position, Alliance alliance, HashSet<Vector2> moves, ActionType actionType, AbstractBoard board, boolean canJump, Piece piece, int value, boolean hasMoved) {
-        super(position, alliance, moves, actionType, board, canJump, piece, value, hasMoved);
+        super(position, alliance, moves, moves, actionType, board, canJump, piece, value, hasMoved);
     }
     protected ChessPiece(Vector2 position, Alliance alliance, HashSet<Vector2> moves, HashSet<Vector2> attacks, ActionType actionType, AbstractBoard board, boolean canJump, Piece piece, int value, boolean hasMoved) {
         super(position, alliance, moves, attacks, actionType, board, canJump, piece, value, hasMoved);
@@ -25,21 +25,20 @@ public abstract class ChessPiece extends AbstractChessPiece {
         Vector2 delta = destination.sub(position());
 
         AbstractChessPiece other = board.getPiece(destination);
-        boolean validMove = other == null,
-                validAttack = other != null && other.alliance() != alliance();
 
         if(super.legalAction(destination)) {
             if(actionType == ActionType.STEP) {
-                return (validMove && moves.contains(delta)) ||
+                return (other == null && moves.contains(delta)) ||
                         attacks.contains(delta);
             } else {
-                if(validMove)
+                if(other != null)
+                    if(other.alliance != alliance)
+                        for (Vector2 attack : attacks)
+                            if (attack.isParallelTo(delta))
+                                return true;
+                else
                     for (Vector2 move : moves)
                         if (move.isParallelTo(delta))
-                            return true;
-                else
-                    for (Vector2 attack : attacks)
-                        if (attack.isParallelTo(delta))
                             return true;
             }
         }

@@ -14,6 +14,7 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import management.*;
+import pieces.AbstractChessPiece;
 import pieces.IChessPiece;
 import pieces.King;
 import resources.MediaHelper;
@@ -208,7 +209,7 @@ public class GameController {
     }
     private void performSave() {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open Chess Game File");
+        fileChooser.setTitle("Save Chess Game File");
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Chess Game File", "*" + Main.SAVE_EXTENSION));
         fileChooser.setInitialDirectory(Main.SAVES_DIR);
@@ -383,15 +384,31 @@ public class GameController {
     }
 
     private void highlightSquares(Vector2 pos) {
-        IChessPiece piece = board.getPiece(pos);
+        AbstractChessPiece piece = board.getPiece(pos);
         if(piece == null) return;
 
         Console.printNotice("Highlighting " + pos);
-        Set<Vector2> list = piece.getPossibleActions();
-        for (Vector2 possibleDestination : list) {
-            Color squareColor = board.getPiece(possibleDestination) == null ? Color.YELLOW : Color.RED;
-            squares[possibleDestination.getY()][possibleDestination.getX()].setFill(squareColor);
+        highlightSquares(piece);
+        for(AbstractChessPiece other : board.getPieces(piece.otherAlliance()).values())
+            highlightSquares(other);
+    }
+    private void highlightSquares(AbstractChessPiece... pieces) {
+        for(IChessPiece piece : pieces) {
+            Set<Vector2> list = piece.getPossibleActions();
+            for (Vector2 possibleDestination : list) {
+                int x = possibleDestination.getX(), y = possibleDestination.getY();
+
+                Color squareColor = board.getPiece(possibleDestination) == null ? Color.YELLOW : Color.RED;
+                if(piece.alliance() != board.getActivePlayer())
+                    squareColor = squareColor.interpolate(defaultSquareColor(y,x), 0.75);
+
+                squares[y][x].setFill(squareColor);
+            }
         }
+    }
+
+    private Color defaultSquareColor(int row, int col) {
+        return (row + col) % 2 == 0 ? Color.web("#E0E0E0") : Color.web("#424242");
     }
 
     public void drawBoard() {
@@ -402,11 +419,7 @@ public class GameController {
         }
         for (int row = 0; row < SIZE; row++) {
             for (int col = 0; col < SIZE; col++) {
-                if ((row + col) % 2 == 0) {
-                    squares[row][col].setFill(Color.web("#E0E0E0"));
-                } else {
-                    squares[row][col].setFill(Color.web("#424242"));
-                }
+                squares[row][col].setFill(defaultSquareColor(row, col));
             }
         }
         String player;

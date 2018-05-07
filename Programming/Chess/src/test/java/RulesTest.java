@@ -33,13 +33,13 @@ public class RulesTest {
     }
 
     public TestNode[] tests = new TestNode[] {
-            new TestNode("rook",                     true,  new Move(0,7,0,4)),
-            new TestNode("rook",                     true,  new Move(0,7,4,7)),
-            new TestNode("bishop",                   true,  new Move(2,7,4,5)),
-            new TestNode("knight",                   true,  new Move(1,7,0,5)),
-            new TestNode("queen",                    true,  new Move(3,7,3,4)),
-            new TestNode("queen",                    true,  new Move(3,7,5,7)),
-            new TestNode("queen",                    true,  new Move(3,7,5,5)),
+            new TestNode("rook",                     true,  new Move(0,7,0,4)), //vertical
+            new TestNode("rook",                     true,  new Move(0,7,4,7)), //horizontal
+            new TestNode("bishop",                   true,  new Move(2,7,4,5)), //positive diagonal
+            new TestNode("knight",                   true,  new Move(1,7,0,5)), //NW
+            new TestNode("queen",                    true,  new Move(3,7,3,4)), //vertical
+            new TestNode("queen",                    true,  new Move(3,7,5,7)), //horizontal
+            new TestNode("queen",                    true,  new Move(3,7,5,5)), //diagonal
             new TestNode("king",                     true,  new Move(4,7,4,6)),
             new TestNode("king",                     false, new Move(4,7,4,5)),
             new TestNode("king",                     true,  new Move(4,7,3,7)),
@@ -52,8 +52,9 @@ public class RulesTest {
             new TestNode("pawnCanResolveCheck",      true,  new Move(2,7,3,6)),
             new TestNode("pawnCantThreatenWithMove", true,  new Move(3,7,3,6)),
             new TestNode("threatenedAttacker",       true,  new Move(2,1,3,2)),
-            new TestNode("castling",                 true,  new Move(4,7,5,7)),
-            new TestNode("castling",                 true,  new Move(4,7,2,7)),
+            new TestNode("castling",                 true,  new Move(4,7,6,7)), //king-side
+            new TestNode("castling",                 true,  new Move(4,7,2,7)), //queen-side
+            new TestNode("castlingOverCheckedArea",  false,  new Move(4,7,2,7)) //queen-side
     };
 
     @Test

@@ -30,9 +30,8 @@ public class PieceManager {
         return new PieceNode(piece.piece(), piece.alliance());
     }
     public static char toSymbol(PieceNode piece) {
-        if(piece == null) return EMPTY_CHAR;
-
-        for(PieceNode p : symbolTable.rightKeys())
+        if(piece != null)
+            for(PieceNode p : symbolTable.rightKeys())
             if(piece.equals(p))
                 return symbolTable.getLeft(p);
 

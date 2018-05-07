@@ -180,8 +180,6 @@ public class Board extends AbstractBoard {
         if(performPromotion(piece, end))
             return advanceMove(piece, start, end, true);
 
-        performCastling(piece, end);
-
         boolean moveSuccessful = piece.move(end, this);
         if(moveSuccessful) Console.printSuccess("Move " + start + " -> " + end + " successful");
         return advanceMove(piece, start, end, moveSuccessful);
@@ -268,6 +266,13 @@ public class Board extends AbstractBoard {
         }
         return false;
     }
+
+    /**
+     * Promotes a given pawn, if possible
+     * @param piece Piece to promote
+     * @param end Destination of promoting move
+     * @return If the given piece was a pawn, and could be performed
+     */
     private boolean performPromotion(AbstractChessPiece piece, Vector2 end) {
         if((canPromotePiece(piece, end))) {
             Pawn pawn = (Pawn)piece;
@@ -290,41 +295,6 @@ public class Board extends AbstractBoard {
         return false;
     }
 
-    private void performCastling(AbstractChessPiece piece, Vector2 end) {
-        if (piece instanceof King) {
-            King king = (King)piece;
-
-            int kingSideRookX = end.getX() + 1;
-            int queenSideRookX = end.getX() - 2;
-            boolean kingSideCastling = king.castling(new Vector2(kingSideRookX, end.getY())),
-                    queenSideCastling = king.castling(new Vector2(queenSideRookX, end.getY()));
-
-            Vector2 rookPos = null, newRookPos = null;
-
-            // Evaluate castling king-side
-            if (kingSideCastling) {
-                rookPos = new Vector2(kingSideRookX, end.getY());
-                newRookPos = new Vector2(kingSideRookX - 2, end.getY());
-            }
-            // Evaluate castling queen-side
-            else if (queenSideCastling) {
-                rookPos = new Vector2(queenSideRookX, end.getY());
-                newRookPos = new Vector2(queenSideRookX + 3, end.getY());
-            }
-
-            if(kingSideCastling || queenSideCastling) {
-                IChessPiece rook = getPiece(rookPos);
-                if(rook.alliance() == king.alliance()) {
-                    boolean rookMoved = forceMovePiece(rookPos, newRookPos);
-                    if(!rookMoved) throw new IllegalStateException("An error occurred while castling");
-
-                    media.playSound("move.mp3");
-                    addDrawPos(rookPos, newRookPos);
-                }
-            }
-        }
-    }
-
     /**
      *
      * @return Clone of this board
@@ -332,5 +302,25 @@ public class Board extends AbstractBoard {
     @Override
     public Board clone() {
         return new Board(this);
+    }
+
+    @Override
+    public String toString() {
+        HashMap<Vector2, AbstractChessPiece> pieces = getPieces();
+        AbstractChessPiece[][] array = new AbstractChessPiece[size()][size()];
+
+        for(Vector2 pos : pieces.keySet())
+            array[pos.getY()][pos.getX()] = pieces.get(pos);
+
+        StringBuilder str = new StringBuilder();
+
+        for(int y = 0; y < array.length; y++) {
+            for(int x = 0; x < array.length; x++) {
+                str.append(PieceManager.toSymbol(array[y][x]));
+            }
+            str.append("\n");
+        }
+
+        return str.toString();
     }
 }

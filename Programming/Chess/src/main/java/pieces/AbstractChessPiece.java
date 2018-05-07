@@ -98,41 +98,19 @@ public abstract class AbstractChessPiece implements IChessPiece {
 
 	private boolean hasMoved = false;
 
-    /**
-     *
-     * @param position Initial position of piece
-     * @param alliance Assigned alliance
-     * @param actions Relative vectors, describing how the piece can move
-     * @param actionType How the actions behave (STEP: Can go to destination of action. LINE: Can go in direction of action)
-     * @param board The board for the currently active game
-     * @param canJump Whether or not the piece can jump over other pieces
-     * @param piece Type of piece
-     * @param value Score used by AI
-     * @param hasMoved Whether or not this piece has been moved earlier in the game
-     */
-    protected AbstractChessPiece(Vector2 position, Alliance alliance, HashSet<Vector2> actions, ActionType actionType, AbstractBoard board, boolean canJump, Piece piece, int value, boolean hasMoved) {
-    	actions = vectorTools.cloneSet(actions);
-
-    	this.position = position;
-        this.alliance = alliance;
-
-        this.moves = actions;
-        attacks = actions;
-        this.actionType = actionType;
-
-        this.board = (Board)board;
-        this.canJump = canJump;
-        this.piece = piece;
-        this.value = value;
-
-        this.hasMoved = hasMoved;
-    }
-
-    /**
-     * Overloaded constructor, that splits actions into moves and attacks (See original constructor for full param documentation)
-     * @param moves Relative vectors, describing how the piece can move
-     * @param attacks Relative vectors, describing how the piece can attack
-     */
+	/**
+	 * Constructs a chess piece
+	 * @param position Initial position of piece
+	 * @param alliance Assigned alliance
+	 * @param moves Relative vectors, describing how the piece can move
+	 * @param attacks Relative vectors, describing how the piece can attack
+	 * @param actionType How the actions behave (STEP: Can go to destination of action. LINE: Can go in direction of action)
+	 * @param board The board for the currently active game
+	 * @param canJump Whether or not the piece can jump over other pieces
+	 * @param piece Type of piece
+	 * @param value Score used by AI
+	 * @param hasMoved Whether or not this piece has been moved earlier in the game
+	 */
 	protected AbstractChessPiece(Vector2 position, Alliance alliance, HashSet<Vector2> moves, HashSet<Vector2> attacks, ActionType actionType, AbstractBoard board, boolean canJump, Piece piece, int value, boolean hasMoved) {
 		this.position = position;
 		this.alliance = alliance;
@@ -189,7 +167,7 @@ public abstract class AbstractChessPiece implements IChessPiece {
 	}
 
 	/**
-	 * Checks if the piece can go to the given destination
+	 * Checks if the piece can go to the given destinationr
 	 * super.legalAction checks if the destination is within the board's boundaries, and if the piece at the given destination is hostile
 	 * @param destination End position of attempted move
 	 * @return Whether or not the move can be performed
@@ -202,13 +180,15 @@ public abstract class AbstractChessPiece implements IChessPiece {
 		if(endPiece != null && endPiece.alliance().equals(alliance)) return false;
 
         // Special-case check for boards where a king was never created
-		if(!board.hasKing(alliance))
+		if(!board.hasKing(alliance)) {
+			Console.printWarning("Board doesn't have a " + alliance + " king");
 			return true;
+		}
 
 		King king = board.getKing(alliance);
 
 		// Check if king is in check, and whether or not the move resolves it (SHOULD OCCUR LAST, FOR OPTIMIZATION)
-		return king != null && king.resolvesCheck(position(), destination);
+		return king.resolvesCheck(position(), destination);
 	}
 
     /**
@@ -298,7 +278,7 @@ public abstract class AbstractChessPiece implements IChessPiece {
 	 * Checks one by one position from this position toward destination
 	 * @return false if runs into another piece
 	 */
-	protected boolean freePath(Vector2 destination) {
+	public boolean freePath(Vector2 destination) {
 		Vector2 position = position();
 
 		Vector2 path = position;
