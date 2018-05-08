@@ -18,7 +18,6 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.util.Duration;
 import management.DatabaseController;
 import management.HighscoreController;
 import org.bson.Document;
@@ -56,6 +55,8 @@ public class Main extends Application {
     public static final String DATA_SEPARATOR = "====";
     public static final String SAVE_EXTENSION = ".txt";
     public static final String TEST_EXTENSION = ".txt";
+
+    public static final String USER_MANUAL_URL = "https://gitlab.uib.no/inf112-v2018/gruppe-3/blob/c9df10dba1e74977d1eb417fa3cf17cc54f19f0d/Documentation/User%20manual/User%20Manual.pdf";
 
     public void start(Stage primaryStage) throws Exception {
         directorySetup();
@@ -315,10 +316,10 @@ public class Main extends Application {
     private void createChessGame(String player1, String player2, int difficulty, BoardMode boardMode, BorderPane root) {
         mp.stop();
         System.out.println(boardMode);
-        GameBoard gameBoard = new GameBoard(player1, player2, difficulty, boardMode, this, stage, root);
-        gameBoard.createBoard();
-        root.setCenter(gameBoard.getContainer());
-        root.setTop(gameBoard.generateGameMenuBar());
+        GameController gameController = new GameController(player1, player2, difficulty, boardMode, this, stage, root, getHostServices());
+        gameController.createBoard();
+        root.setCenter(gameController.getContainer());
+        root.setTop(gameController.generateGameMenuBar());
         MediaPlayer nmp = media.playSound("startup.mp3");
         nmp.play();
         //return gameBoard.getContainer();
@@ -338,8 +339,9 @@ public class Main extends Application {
         menuItemQuit.setOnAction(e -> onQuit());
         menuFile.getItems().add(menuItemQuit);
 
-        MenuItem menuItemAbout = new MenuItem("About");
-        menuHelp.getItems().add(menuItemAbout);
+        MenuItem menuItemManual = new MenuItem("User Manual");
+        menuItemManual.setOnAction(e -> getHostServices().showDocument(USER_MANUAL_URL));
+        menuHelp.getItems().add(menuItemManual);
 
         MenuItem menuMute = new MenuItem("Mute");
         menuMute.setOnAction(e -> {
