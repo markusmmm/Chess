@@ -462,8 +462,6 @@ public class AbstractBoard {
     public boolean transformPiece(Vector2 pos, Piece newType) {
         try {
             mutex.acquire();
-            //resources.Console.println("Mutex acquired by transformPiece");
-
             AbstractChessPiece piece = pieces.get(pos);
             if (piece == null) {
                 mutex.release();

@@ -177,6 +177,15 @@ public abstract class AbstractChessPiece implements IChessPiece {
 	}
 
 	/**
+	 * Standard behaviour is that for all places a piece can move, it can also attack
+	 * @return All positions this piece can attack
+	 */
+	@Override
+	public Set<Vector2> getPossibleAttacks() {
+		return getPossibleDestinations();
+	}
+
+	/**
 	 * @return Whether or not the piece has been moved during the game
 	 */
 	public boolean hasMoved() {

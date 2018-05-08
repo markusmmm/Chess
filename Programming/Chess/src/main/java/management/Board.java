@@ -167,8 +167,6 @@ public class Board extends AbstractBoard {
 
 
     public boolean pawnPromotion(AbstractChessPiece piece, Vector2 end){
-
-
         if (piece instanceof Pawn) {
             Vector2 piecePos = piece.position();
             int x = piecePos.getX();

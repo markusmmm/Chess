@@ -16,6 +16,7 @@ public interface IChessPiece {
 	int getValue();
 
 	Set<Vector2> getPossibleDestinations();
+	Set<Vector2> getPossibleAttacks();
 
 	boolean hasMoved();
 
