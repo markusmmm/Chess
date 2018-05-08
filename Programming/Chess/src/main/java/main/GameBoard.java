@@ -28,7 +28,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 
-public class GameController {
+public class GameBoard {
     private HostServices hostServices;
 
     MediaHelper media = new MediaHelper();
@@ -59,7 +59,7 @@ public class GameController {
     private int numberOfPuzzlesCompleted;
     private int numberOfPuzzles;
 
-    public GameController(String user1, String user2, int difficulty, BoardMode boardMode, Main main, Stage stage, BorderPane root, HostServices hostServices) {
+    public GameBoard(String user1, String user2, int difficulty, BoardMode boardMode, Main main, Stage stage, BorderPane root, HostServices hostServices) {
         this.hostServices = hostServices;
 
         Board boardVal = null;
@@ -271,9 +271,9 @@ public class GameController {
             main.mainMenu(player1.getUsername(), stage);
         });
         menuItemReset.setOnAction(e -> {
-            GameController newGameController = new GameController(player1.getUsername(), player2.getUsername(), board.difficulty(), boardMode, main, stage, root, hostServices);
-            newGameController.createBoard();
-            root.setCenter(newGameController.getContainer());
+            GameBoard newGameBoard = new GameBoard(player1.getUsername(), player2.getUsername(), board.difficulty(), boardMode, main, stage, root, hostServices);
+            newGameBoard.createBoard();
+            root.setCenter(newGameBoard.getContainer());
         });
         menuItemLoad.setOnAction(e -> performLoad());
         menuItemUndo.setOnAction(e -> performUndo());
@@ -351,9 +351,9 @@ public class GameController {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == buttonTypeOne){
 
-            GameController newGameController = new GameController(player1.getUsername(), player2.getUsername(), board.difficulty(), boardMode, main, stage, root, hostServices);
-            newGameController.createBoard();
-            root.setCenter(newGameController.getContainer());
+            GameBoard newGameBoard = new GameBoard(player1.getUsername(), player2.getUsername(), board.difficulty(), boardMode, main, stage, root, hostServices);
+            newGameBoard.createBoard();
+            root.setCenter(newGameBoard.getContainer());
 
         } else if (result.get() == buttonTypeTwo) {
                 main.mainMenu(player1.getUsername(), stage);
@@ -404,9 +404,9 @@ public class GameController {
                 }
 
             } else if (result.get() == buttonTypeTwo) {
-                GameController newGameController = new GameController(player1.getUsername(), player2.getUsername(), board.difficulty(), boardMode, main, stage, root, hostServices);
-                newGameController.createBoard();
-                root.setCenter(newGameController.getContainer());
+                GameBoard newGameBoard = new GameBoard(player1.getUsername(), player2.getUsername(), board.difficulty(), boardMode, main, stage, root, hostServices);
+                newGameBoard.createBoard();
+                root.setCenter(newGameBoard.getContainer());
 
             } else if (result.get() == buttonTypeThree){
                 main.mainMenu(player1.getUsername(), stage);
@@ -510,7 +510,7 @@ public class GameController {
         }
     }
 
-    public GameController(){
+    public GameBoard(){
 
     }
     public String pawnPromotion() {

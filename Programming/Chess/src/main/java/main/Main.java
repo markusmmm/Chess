@@ -316,10 +316,10 @@ public class Main extends Application {
     private void createChessGame(String player1, String player2, int difficulty, BoardMode boardMode, BorderPane root) {
         mp.stop();
         System.out.println(boardMode);
-        GameController gameController = new GameController(player1, player2, difficulty, boardMode, this, stage, root, getHostServices());
-        gameController.createBoard();
-        root.setCenter(gameController.getContainer());
-        root.setTop(gameController.generateGameMenuBar());
+        GameBoard gameBoard = new GameBoard(player1, player2, difficulty, boardMode, this, stage, root, getHostServices());
+        gameBoard.createBoard();
+        root.setCenter(gameBoard.getContainer());
+        root.setTop(gameBoard.generateGameMenuBar());
         MediaPlayer nmp = media.playSound("startup.mp3");
         nmp.play();
         //return gameBoard.getContainer();
