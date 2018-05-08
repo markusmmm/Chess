@@ -2,10 +2,7 @@ package management;
 
 import javafx.scene.media.MediaPlayer;
 import main.GameBoard;
-import pieces.AbstractChessPiece;
-import pieces.IChessPiece;
-import pieces.King;
-import pieces.Pawn;
+import pieces.*;
 import resources.*;
 
 
@@ -161,13 +158,15 @@ public class Board extends AbstractBoard {
         return usablePieces;
     }
 
-
+    /**
+     * @param piece Piece to evaluate
+     * @param end End-position of attempted move
+     * @return If the move is an attempt of pawn promotion
+     */
     public boolean pawnPromotion(AbstractChessPiece piece, Vector2 end){
         if (piece instanceof Pawn) {
-            Vector2 piecePos = piece.position();
-            int x = piecePos.getX();
-            int y = piecePos.getY();
-            if(((Pawn) piece).legalMove(end)) {
+            int y = piece.position().getY();
+            if(piece.legalMove(end)) {
                 if (y == 1 && piece.alliance() == Alliance.WHITE && end.getY() == 0) {
                     return true;
                 }
@@ -177,7 +176,6 @@ public class Board extends AbstractBoard {
                 }
             }
             return false;
-
         }
         return false;
 
@@ -195,7 +193,6 @@ public class Board extends AbstractBoard {
 
         AbstractChessPiece piece = getPiece(start);
 
-
         if (piece == null) {
             return advanceMove(false); // Check if a piece exists at the given position
         }
@@ -203,53 +200,9 @@ public class Board extends AbstractBoard {
             return advanceMove(false); // Checks if the active player owns the piece that is being moved
         }
 
-
-
-        if(piece instanceof Pawn){
-            if((pawnPromotion((Pawn)piece, end)))
-            {
-
-                GameBoard gameBoard = new GameBoard();
-                Alliance alliance = piece.alliance();
-
-                String c = gameBoard.pawnPromotion();
-
-                switch (c.charAt(0)) {
-                    case 'q':
-                        removePiece(start);
-                        addPiece(end, Piece.QUEEN, alliance);
-                        logMove(new MoveNode(piece, start, end, (AbstractChessPiece) getPiece(end)));
-
-                        return advanceMove(true);
-                    case 'b':
-                        removePiece(start);
-                        addPiece(end, Piece.BISHOP, alliance);
-                        logMove(new MoveNode(piece, start, end, (AbstractChessPiece) getPiece(end)));
-
-                        return advanceMove(true);
-                    case 'k':
-                        removePiece(start);
-                        addPiece(end, Piece.KNIGHT, alliance);
-                        logMove(new MoveNode(piece, start, end, (AbstractChessPiece) getPiece(end)));
-
-                        return advanceMove(true);
-                    case 'r':
-                        removePiece(start);
-                        addPiece(end, Piece.ROOK, alliance);
-                        logMove(new MoveNode(piece, start, end, (AbstractChessPiece) getPiece(end)));
-
-                        return advanceMove(true);
-
-
-                }
-
-
-                MediaPlayer np = media.playSound("move.mp3");
-                np.play();
-
-                if(!end.equals(piece.position()))
-                    Console.printError("Position in " + piece + " was not updated internally!");
-            }
+        if(pawnPromotion(piece, end)) {
+            performPawnPromotion((Pawn)piece, start, end);
+            advanceMove(true);
         }
 
         boolean moveSuccessful = piece.move(end);
@@ -259,7 +212,7 @@ public class Board extends AbstractBoard {
         }
 
         setLastPiece(piece);
-        AbstractChessPiece endPiece = (AbstractChessPiece) getPiece(end);
+        AbstractChessPiece endPiece = getPiece(end);
 
         AbstractChessPiece victim = null;
         if (endPiece != null) {
@@ -271,18 +224,19 @@ public class Board extends AbstractBoard {
             }
         }
 
-        //assert(piece.position().equals(end));
+        // Assert if the piece' position was updated internally
+        assert(piece.position().equals(end));
 
         logMove(new MoveNode(piece, start, end, victim));
 
+        // Update the piece's position on the board
         removePiece(start);
         putPiece(end, piece);
+        // Prompt the GUI to re-draw the changed squares
         addDrawPos(start);
         addDrawPos(end);
 
-        //resources.Console.println("Local after: " + piece.position() + ", has moved: " + piece.hasMoved());
-        //resources.Console.println("Move successful!");
-
+        // End move and advance to the next player
         return advanceMove(true);
     }
 
@@ -310,6 +264,9 @@ public class Board extends AbstractBoard {
 
             activePlayer = activePlayer.equals(Alliance.WHITE) ? Alliance.BLACK : Alliance.WHITE;
             moveI++;
+
+            MediaPlayer np = media.playSound("move.mp3");
+            np.play();
         }
 
         return state;
@@ -327,6 +284,16 @@ public class Board extends AbstractBoard {
 
         removePiece(victim);
         logMove(node);
+    }
+
+    private void performPawnPromotion(Pawn piece, Vector2 start, Vector2 end) {
+        Alliance alliance = piece.alliance();
+
+        char c = new GameBoard().pawnPromotion().charAt(0);
+
+        removePiece(start);
+        addPiece(end, PieceManager.toPiece(c).piece, alliance);
+        logMove(new MoveNode(piece, start, end, getPiece(end)));
     }
 
     /**

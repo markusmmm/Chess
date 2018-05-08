@@ -461,35 +461,6 @@ public class AbstractBoard {
         }
     }
 
-    public boolean transformPiece(Vector2 pos, Piece newType) {
-        try {
-            mutex.acquire();
-            AbstractChessPiece piece = pieces.get(pos);
-            if (piece == null) {
-                mutex.release();
-                //resources.Console.println("Mutex released");
-                return false;
-            }
-
-            pieces.remove(pos);
-
-            AbstractChessPiece newPiece = createPiece(pos, newType, piece.alliance());
-
-            pieces.put(pos, newPiece);
-            drawPositions.push(pos);
-
-            mutex.release();
-            //resources.Console.println("Mutex released");
-            return true;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } finally {
-            mutex.release();
-            //resources.Console.println("Mutex released");
-            return false;
-        }
-    }
-
     public void suspendPieces(Vector2... positions) {
         try {
             mutex.acquire();

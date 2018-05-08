@@ -450,13 +450,18 @@ public class GameBoard {
 
     }
 
-    private void attemptMove(Tile firstTile, Vector2 pos) {
+    /**
+     * Attempts to move the piece at the given tile to the given position
+     * @param firstTile Tile where the piece to move is placed
+     * @param destination End position of attempted move
+     */
+    private void attemptMove(Tile firstTile, Vector2 destination) {
         IChessPiece temp = board.getPiece(firstTile.getPos());
         if(!board.ready()) {
             Console.println("Board not ready. Move failed");
             return;
         } else if(temp == null) {
-            Console.println("No piece at " + pos + ". Move failed");
+            Console.println("No piece at " + destination + ". Move failed");
             return;
         }
 
@@ -467,16 +472,13 @@ public class GameBoard {
             Vector2 correctMoveEnd = move.getEnd();
             Vector2 correctMoveStart = move.getStart();
 
-            if(!(correctMoveEnd.equals(pos) && correctMoveStart.equals(firstTile.getPos()))){
+            if(!(correctMoveEnd.equals(destination) && correctMoveStart.equals(firstTile.getPos()))){
                 chessPuzzlePopup();
             }
 
         }
 
-        //resources.Console.println("Before: " + temp.position());
-
-        boolean moveResult = board.movePiece(firstTile.getPos(), pos);
-       // resources.Console.println("Outer move result: " + moveResult);
+        boolean moveResult = board.movePiece(firstTile.getPos(), destination);
         if (moveResult) {
             Console.println("Has computer: " + (computer != null));
             if (computer != null) {
