@@ -10,6 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
@@ -17,6 +18,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Duration;
 import management.DatabaseController;
 import management.HighscoreController;
 import org.bson.Document;
@@ -34,12 +36,13 @@ import java.util.Optional;
 import java.util.Scanner;
 
 
-
 public class Main extends Application {
 
     static final int WIDTH = 720;
     static final int HEIGHT = 500;
+    private int mCounter = 0;
     MediaHelper media = new MediaHelper();
+    MediaPlayer mp = media.playSound("chess_theme.mp3");
     private Stage stage;
     private BorderPane root = new BorderPane();
     private MenuBar menuBar = generateMenuBar();
@@ -73,18 +76,18 @@ public class Main extends Application {
         if (!SAVES_DIR.exists()) {
             SAVES_DIR.mkdirs();
         }
-        if(!LOGS_DIR.exists())
+        if (!LOGS_DIR.exists())
             LOGS_DIR.mkdirs();
 
-        if(CORE_DIR.exists()) {
+        if (CORE_DIR.exists()) {
             File[] coreFiles = CORE_DIR.listFiles();
-            if(coreFiles == null) return;
+            if (coreFiles == null) return;
 
-            for(File coreFile : coreFiles) {
+            for (File coreFile : coreFiles) {
                 String fileName = coreFile.getName();
 
                 File destFile = new File(SAVES_DIR, fileName);
-                if(!destFile.exists()) {
+                if (!destFile.exists()) {
                     try {
                         destFile.createNewFile();
                     } catch (IOException e) {
@@ -99,7 +102,7 @@ public class Main extends Application {
                     writer.write(""); // Clear file
                     Scanner reader = new Scanner(coreFile);
 
-                    while(reader.hasNextLine()) {
+                    while (reader.hasNextLine()) {
                         writer.append(reader.nextLine() + "\n");
                     }
                     writer.close();
@@ -169,10 +172,11 @@ public class Main extends Application {
             errorField.setText("Please enter a non-empty username.");
         else {
             if (database.userExists(username)) {
-                // database.updateScore(username, 9999);
+
             } else {
                 database.addUser(username);
             }
+
             mainMenu(username, stage);
         }
     }
@@ -211,6 +215,9 @@ public class Main extends Application {
         buttonPlayHard.setText("PLAY: HARD");
         // buttonPlayHard.setVisible(false);
 
+        Button playChessPuzzles = new Button();
+        playChessPuzzles.setText("PLAY: Chess Puzzles");
+
         Button buttonHighScore = new Button();
         buttonHighScore.setText("HIGHSCORE");
 
@@ -237,19 +244,24 @@ public class Main extends Application {
         buttonPlayMedium.setOnAction(e -> createChessGame(username, "AI: Medium", 2, BoardMode.DEFAULT, root));
         buttonPlayHard.setOnAction(e -> createChessGame(username, "AI: Hard", 3, BoardMode.DEFAULT, root));
         randomBoardPlay.setOnAction(e -> createChessGame(username, "AI: Easy", 1, BoardMode.RANDOM, root));
+        playChessPuzzles.setOnAction(e -> createChessGame(username, "AI: Medium", 2, BoardMode.CHESSPUZZLES, root));
         buttonHighScore.setOnAction(e -> highscore(username, stage));
-        
-        media.playSound("welcome.mp3");
+
+        mp.play();
+        mp.setCycleCount(-1);
+
+
         buttonQuit.setOnAction(e -> onQuit());
 
         VBox buttonContainer = new VBox(5);
         buttonContainer.setAlignment(Pos.BASELINE_CENTER);
-        buttonContainer.getChildren().addAll(buttonPlayVersus, buttonPlayEasy, buttonPlayMedium, buttonPlayHard, randomBoardPlay, buttonHighScore, buttonQuit);
+        buttonContainer.getChildren().addAll(buttonPlayVersus, buttonPlayEasy, buttonPlayMedium, buttonPlayHard, randomBoardPlay, playChessPuzzles, buttonHighScore, buttonQuit);
 
         VBox mainContent = new VBox(0);
         mainContent.setAlignment(Pos.TOP_CENTER);
         mainContent.setPrefSize(WIDTH, HEIGHT);
         mainContent.getChildren().addAll(labelWelcome, buttonContainer);
+
 
         root.setTop(menuBar);
         root.setCenter(mainContent);
@@ -301,11 +313,14 @@ public class Main extends Application {
      * @return chessGame
      */
     private void createChessGame(String player1, String player2, int difficulty, BoardMode boardMode, BorderPane root) {
+        mp.stop();
+        System.out.println(boardMode);
         GameBoard gameBoard = new GameBoard(player1, player2, difficulty, boardMode, this, stage, root);
         gameBoard.createBoard();
         root.setCenter(gameBoard.getContainer());
         root.setTop(gameBoard.generateGameMenuBar());
-        media.playSound("startup.mp3");
+        MediaPlayer nmp = media.playSound("startup.mp3");
+        nmp.play();
         //return gameBoard.getContainer();
     }
 
@@ -325,6 +340,20 @@ public class Main extends Application {
 
         MenuItem menuItemAbout = new MenuItem("About");
         menuHelp.getItems().add(menuItemAbout);
+
+        MenuItem menuMute = new MenuItem("Mute");
+        menuMute.setOnAction(e -> {
+                    if (mCounter == 0) {
+                        mp.setMute(true);
+                        mCounter++;
+                        System.out.println(mCounter);
+                    } else if (mCounter == 1) {
+                       mp.setMute(false);
+                        mCounter--;
+                    }
+                }
+        );
+                menuHelp.getItems().add(menuMute);
 
         menuBar.getMenus().addAll(menuFile, menuHelp);
         return menuBar;

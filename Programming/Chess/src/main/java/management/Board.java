@@ -1,5 +1,6 @@
 package management;
 
+import javafx.scene.media.MediaPlayer;
 import main.GameBoard;
 import pieces.AbstractChessPiece;
 import pieces.IChessPiece;
@@ -7,12 +8,14 @@ import pieces.King;
 import pieces.Pawn;
 import resources.*;
 
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 
 public class Board extends AbstractBoard {
     MediaHelper media = new MediaHelper();
+    private BoardMode mode = null;
 
     private static final Piece[] defaultBoard = new Piece[]{
             Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK,
@@ -99,6 +102,10 @@ public class Board extends AbstractBoard {
      */
     public Board(File file, int difficulty) throws FileNotFoundException {
         super(file, difficulty);
+    }
+
+    public void setBoardMode (BoardMode mode){
+        this.mode = mode;
     }
 
     /**
@@ -194,12 +201,14 @@ public class Board extends AbstractBoard {
 
         AbstractChessPiece piece = getPiece(start);
 
+
         if (piece == null) {
             return advanceMove(false); // Check if a piece exists at the given position
         }
         if (!piece.alliance().equals(activePlayer)) {
             return advanceMove(false); // Checks if the active player owns the piece that is being moved
         }
+
 
 
         if(piece instanceof Pawn){
@@ -240,7 +249,9 @@ public class Board extends AbstractBoard {
 
                 }
 
-                media.playSound("move.mp3");
+
+                MediaPlayer np = media.playSound("move.mp3");
+                np.play();
 
                 if(!end.equals(piece.position()))
                     Console.printError("Position in " + piece + " was not updated internally!");
@@ -268,7 +279,7 @@ public class Board extends AbstractBoard {
 
                 addPiece(new Vector2(kingSideRookX - 2, end.getY()), pieceType, alliance);
                 addPiece(new Vector2(kingSideRookX - 1, end.getY()), Piece.KING, alliance);
-                media.playSound("move.mp3");
+                media.playSound("move.mp3").play();
 
                 logMove(new MoveNode(piece, start, end, (AbstractChessPiece) getPiece(end)));
 
@@ -292,7 +303,8 @@ public class Board extends AbstractBoard {
 
                 addPiece(new Vector2(queenSideRookX + 3, end.getY()), pieceType, alliance);
                 addPiece(new Vector2(queenSideRookX + 2, end.getY()), Piece.KING, alliance);
-                media.playSound("move.mp3");
+                media.playSound("move.mp3").play();
+
 
                 logMove(new MoveNode(piece, start, end, getPiece(end)));
 

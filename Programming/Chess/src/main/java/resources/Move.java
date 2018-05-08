@@ -20,4 +20,12 @@ public class Move {
     public String toString() {
         return start + " -> " + end;
     }
+
+    public Vector2 getEnd() {
+        return end;
+    }
+
+    public Vector2 getStart() {
+        return start;
+    }
 }
