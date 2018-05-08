@@ -73,11 +73,12 @@ public class Main extends Application {
         scene.getStylesheets().add("stylesheet.css");
         stage = primaryStage;
         stage.setScene(scene);
-        stage.setTitle("Chess");
+        stage.setTitle("GitGud Chess");
         stage.setResizable(false);
         stage.setOnHidden(e -> onQuit());
+        stage.getIcons().add(new Image(Thread.currentThread().getContextClassLoader()
+                .getResourceAsStream("images/chessIcon.png")));
         stage.show();
-
         MediaHelper media = new MediaHelper();
         media.playSound("chess_theme.mp3");
     }
@@ -436,16 +437,6 @@ public class Main extends Application {
     }
 
     /**
-     * TODO: implement a popup with a scoreboard containing scores from a HighscoreController
-     */
-    private void highScorePopup() {
-        HighscoreController highscoreController = new HighscoreController();
-        for (Highscore score : highscoreController.getHighscores()) {
-            System.out.println(score);
-        }
-    }
-
-    /**
      * creates a board with the choosen AI-difficulty
      *
      * @return chessGame
@@ -454,7 +445,6 @@ public class Main extends Application {
         mp.stop();
         System.out.println(boardMode);
         GameBoard gameBoard = new GameBoard(player1, player2, difficulty, boardMode, this, stage, root, player1, getHostServices());
-
         gameBoard.createBoard();
         root.setCenter(gameBoard.getContainer());
         root.setTop(gameBoard.generateGameMenuBar());
