@@ -588,7 +588,7 @@ public class GameBoard {
         MediaHelper media = new MediaHelper();
         media.playSound("game_over.mp3");
         alert.showAndWait();
-        main.mainMenu(player1.getUsername(), stage);
+        main.mainMenu(username, stage);
         return true;
     }
 
