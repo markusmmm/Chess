@@ -3,6 +3,7 @@ package main;
 import javafx.application.HostServices;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
@@ -246,7 +247,10 @@ public class GameBoard {
                 squares[move.start.getY()][move.start.getX()].setFill(Color.CYAN);
                 squares[move.end.getY()][move.end.getX()].setFill(Color.LIMEGREEN);
             });
-            right.getChildren().add(buttonHint);
+            VBox hintContainer = new VBox();
+            hintContainer.setPadding(new Insets(5, 10, 5, 10));
+            hintContainer.getChildren().add(buttonHint);
+            right.getChildren().add(hintContainer);
         }
 
         VBox statusFieldContainer = new VBox();
@@ -254,8 +258,8 @@ public class GameBoard {
         statusFieldContainer.getChildren().add(gameStatus);
         statusFieldContainer.setId("informationFieldContainer");
 
-        container.setCenter(grid);
         container.setRight(right);
+        container.setCenter(grid);
         container.setBottom(statusFieldContainer);
 
         root.setTop(generateGameMenuBar());
