@@ -59,7 +59,8 @@ public class Main extends Application {
     private MenuBar menuBar = generateMenuBar();
     private ListView<String> listView = new ListView<>();
     private List<Document> activeGameData;
-    private Timer thread;
+    private Timer inviteChecker;
+    private Timer gameListUpdater;
 
     public static void main(String[] args) {
         launch(args);
@@ -335,7 +336,8 @@ public class Main extends Application {
                     gameBoard.performLoad(gameFile);
                     root.setCenter(gameBoard.getContainer());
                     root.setTop(gameBoard.generateGameMenuBar());
-                    thread.cancel();
+                    inviteChecker.cancel();
+                    gameListUpdater.cancel();
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
@@ -375,10 +377,10 @@ public class Main extends Application {
         root.setTop(menuBar);
         root.setCenter(container);
 
-        thread = new Timer();
-        thread.scheduleAtFixedRate(new InviteChecker(username, this), 0, 5 * 1000);
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
+        inviteChecker = new Timer();
+        inviteChecker.scheduleAtFixedRate(new InviteChecker(username, this), 0, 5 * 1000);
+        gameListUpdater = new Timer();
+        gameListUpdater.schedule(new TimerTask() {
             @Override
             public void run() {
                 Platform.runLater(new Runnable() {
@@ -459,7 +461,8 @@ public class Main extends Application {
         MediaPlayer nmp = media.playSound("startup.mp3");
         nmp.play();
         media.playSound("startup.mp3");
-        thread.cancel();
+        inviteChecker.cancel();
+        gameListUpdater.cancel();
         //return gameBoard.getContainer();
     }
 
