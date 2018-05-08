@@ -217,17 +217,11 @@ public class Main extends Application {
         labelWelcome.setId("title");
         labelWelcome.setTextAlignment(TextAlignment.CENTER);
 
+        Button buttonCreateOnlineGame = new Button();
+        buttonCreateOnlineGame.setText("CREATE ONLINE GAME");
+
         Button buttonPlayVersus = new Button();
         buttonPlayVersus.setText("PLAY: VERSUS");
-
-        Button buttonPlayEasy = new Button();
-        buttonPlayEasy.setText("PLAY: EASY");
-
-        Button buttonPlayMedium = new Button();
-        buttonPlayMedium.setText("PLAY: MEDIUM");
-
-        Button buttonPlayHard = new Button();
-        buttonPlayHard.setText("PLAY: HARD");
 
         Button buttonPlayAi = new Button();
         buttonPlayAi.setText("PLAY: AI");
@@ -238,17 +232,29 @@ public class Main extends Application {
         Button buttonChessTutor = new Button();
         buttonChessTutor.setText("CHESS TUTORIAL");
 
-        Button buttonCreateOnlineGame = new Button();
-        buttonCreateOnlineGame.setText("CREATE ONLINE GAME");
-
-        Button playChessPuzzles = new Button();
-        playChessPuzzles.setText("PLAY: Chess Puzzles");
-
         Button buttonHighScore = new Button();
         buttonHighScore.setText("HIGHSCORE");
 
         Button buttonQuit = new Button();
         buttonQuit.setText("QUIT");
+
+        buttonCreateOnlineGame.setOnAction(e -> {
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.initStyle(StageStyle.UTILITY);
+            dialog.setTitle("Enter the second players username");
+            dialog.setHeaderText(null);
+            dialog.setGraphic(null);
+            dialog.setContentText("Enter the second players username:");
+            Optional<String> result = dialog.showAndWait();
+            result.ifPresent(player2 -> {
+                if (!username.toLowerCase().equals(player2.toLowerCase())) {
+                    if (!database.userExists(player2))
+                        System.out.println("User does not exist.");
+                    else
+                        database.createGameInvite(username, player2);
+                } else System.out.println("You can't play against yourself!");
+            });
+        });
 
         buttonPlayVersus.setOnAction(e -> {
             TextInputDialog dialog = new TextInputDialog();
@@ -266,23 +272,6 @@ public class Main extends Application {
                 } else System.out.println("You can't play against yourself!");
             });
         });
-
-        buttonPlayEasy.setOnAction(e -> createChessGame(username, "AI: Easy", 1, BoardMode.DEFAULT, root));
-        buttonPlayMedium.setOnAction(e -> createChessGame(username, "AI: Medium", 2, BoardMode.DEFAULT, root));
-        buttonPlayHard.setOnAction(e -> createChessGame(username, "AI: Hard", 3, BoardMode.DEFAULT, root));
-        buttonRandomBoardPlay.setOnAction(e -> createChessGame(username, "AI: Easy", 1, BoardMode.RANDOM, root));
-        playChessPuzzles.setOnAction(e -> createChessGame(username, "AI: Medium", 2, BoardMode.CHESSPUZZLES, root));
-        buttonHighScore.setOnAction(e -> highscore(username, stage));
-
-        mp.play();
-        mp.setCycleCount(-1);
-
-
-        buttonQuit.setOnAction(e -> onQuit());
-
-        //VBox buttonContainer = new VBox(5);
-        //buttonContainer.setAlignment(Pos.BASELINE_CENTER);
-        //buttonContainer.getChildren().addAll(buttonPlayVersus, buttonPlayEasy, buttonPlayMedium, buttonPlayHard, buttonRandomBoardPlay, playChessPuzzles, buttonHighScore, buttonQuit);
 
         buttonPlayAi.setOnAction(e -> {
             List<String> choices = new ArrayList<>();
@@ -309,27 +298,12 @@ public class Main extends Application {
         });
 
         buttonRandomBoardPlay.setOnAction(e -> createChessGame(username, "AI: Easy", 1, BoardMode.RANDOM, root));
+        buttonChessTutor.setOnAction(e -> createChessGame(username, "AI: Medium", 2, BoardMode.CHESSPUZZLES, root));
         buttonHighScore.setOnAction(e -> highscore(username, stage));
-
-        buttonCreateOnlineGame.setOnAction(e -> {
-            TextInputDialog dialog = new TextInputDialog();
-            dialog.initStyle(StageStyle.UTILITY);
-            dialog.setTitle("Enter the second players username");
-            dialog.setHeaderText(null);
-            dialog.setGraphic(null);
-            dialog.setContentText("Enter the second players username:");
-            Optional<String> result = dialog.showAndWait();
-            result.ifPresent(player2 -> {
-                if (!username.toLowerCase().equals(player2.toLowerCase())) {
-                    if (!database.userExists(player2))
-                        System.out.println("User does not exist.");
-                    else
-                        database.createGameInvite(username, player2);
-                } else System.out.println("You can't play against yourself!");
-            });
-        });
-        media.playSound("welcome.mp3");
         buttonQuit.setOnAction(e -> onQuit());
+
+        mp.play();
+        mp.setCycleCount(-1);
 
         VBox rightContainer = new VBox(5);
         rightContainer.setAlignment(Pos.BASELINE_CENTER);

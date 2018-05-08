@@ -23,7 +23,7 @@ public class ChessPuzzles {
         file = new File(path);
         files = file.listFiles();
 
-        removeDsStore();
+        //removeDsStore();
         sizeOfDirectory = textFiles.size();
 
 

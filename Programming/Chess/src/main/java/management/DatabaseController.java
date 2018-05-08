@@ -62,11 +62,11 @@ public class DatabaseController {
         String chessData = (String) gameData.get("chessData");
         System.out.println(chessData);*/
 
-        database.updateGame(new ObjectId("5af063f2c3ba570a2871dc0d"), "test");
+        //database.updateGame(new ObjectId("5af063f2c3ba570a2871dc0d"), "test");
 
 
         /* Deletes all users with score set to 0 */
-        //collection.deleteMany(new Document("score", 0));
+        // collection.deleteMany(new Document("score", 0));
     }
 
     /**
