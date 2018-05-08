@@ -30,10 +30,11 @@ public class GameUpdater extends TimerTask {
         Document gameDocument = database.getGame(id);
         String databaseGameData = (String) gameDocument.get("gameData");
         try {
-            String gameDataOnPc = readFileToString(new File(System.getProperty("user.home"), "GitGud/.online/" + username + "/" + id + ".txt"),
-                    StandardCharsets.UTF_8);
+            String gameDataOnPc = readFileToString(new File(System.getProperty("user.home"),
+                            "GitGud/.online/" + username + "/" + id + ".txt"), StandardCharsets.UTF_8);
             if (!databaseGameData.equals(gameDataOnPc)) {
-                File gameFile = new File(System.getProperty("user.home"), "GitGud/.online/" + username + "/" + id + ".txt");
+                File gameFile = new File(System.getProperty("user.home"),
+                        "GitGud/.online/" + username + "/" + id + ".txt");
                 FileUtils.writeStringToFile(gameFile, databaseGameData, StandardCharsets.UTF_8);
                 Platform.runLater(new Runnable() {
                     @Override
@@ -41,13 +42,9 @@ public class GameUpdater extends TimerTask {
                         gameBoard.performLoad(gameFile);
                     }
                 });
-                /*System.out.println("is equal");
-                File gameFile = new File(System.getProperty("user.home"), "GitGud/.online/" + id + ".txt");
-                FileUtils.writeStringToFile(gameFile, gameData, StandardCharsets.UTF_8);
-                gameBoard.performLoad(gameFile);*/
             }
         } catch (IOException e1){
-        e1.printStackTrace();
+            e1.printStackTrace();
         }
     }
 }

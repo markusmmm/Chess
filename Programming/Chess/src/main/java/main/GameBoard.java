@@ -15,16 +15,11 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import management.*;
-import org.apache.commons.io.FileUtils;
-import org.bson.Document;
 import org.bson.types.ObjectId;
 import pieces.ChessPiece;
 import pieces.IChessPiece;
 import pieces.King;
-import pieces.Pawn;
-import resources.MediaHelper;
 import resources.*;
-import resources.Console;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -62,15 +57,16 @@ public class GameBoard {
     private String username;
     private boolean online;
     private ObjectId gameId;
-    private Timer timer;
+    private Timer thread;
 
     public GameBoard(String user1, String user2, int difficulty, BoardMode boardMode, Main main,
                      Stage stage, BorderPane root, String username, ObjectId gameId) {
         this(user1, user2, difficulty, boardMode, main, stage, root, username);
         this.online = true;
         this.gameId = gameId;
-        this.timer = new Timer();
-        timer.scheduleAtFixedRate(new GameUpdater(this, gameId, username), 0, 4 * 1000);
+        this.thread = new Timer();
+        thread.scheduleAtFixedRate(new GameUpdater(this, gameId, username),
+                0, 4 * 1000);
     }
 
     public GameBoard(String user1, String user2, int difficulty, BoardMode boardMode, Main main,
@@ -234,9 +230,7 @@ public class GameBoard {
         MenuItem menuItemUndo = new MenuItem("Undo");
         MenuItem menuItemQuit = new MenuItem("Quit");
 
-        menuItemExit.setOnAction(e -> {
-            main.mainMenu(username, stage);
-        });
+        menuItemExit.setOnAction(e -> goToMenu(username, stage));
         menuItemReset.setOnAction(e -> {
             GameBoard newGameBoard = new GameBoard(player1.getUsername(), player2.getUsername(), board.difficulty(), boardMode, main, stage, root, username);
             newGameBoard.createBoard();
@@ -333,6 +327,12 @@ public class GameBoard {
         updateLogs();
 
         //resources.Console.println("After:" + temp.position());
+    }
+
+    private void goToMenu(String username, Stage stage) {
+        if (online)
+            thread.cancel();
+        main.mainMenu(username, stage);
     }
 
     public Move getHint(Alliance alliance) {
@@ -525,7 +525,6 @@ public class GameBoard {
     }
 
     public boolean isYourTurn() {
-        Alliance alliance = board.getActivePlayer();
         Player player;
         if (board.getActivePlayer() == Alliance.WHITE)
             player = player1;
@@ -588,7 +587,7 @@ public class GameBoard {
         MediaHelper media = new MediaHelper();
         media.playSound("game_over.mp3");
         alert.showAndWait();
-        main.mainMenu(username, stage);
+        goToMenu(username, stage);
         return true;
     }
 

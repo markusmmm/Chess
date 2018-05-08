@@ -203,12 +203,17 @@ public class Main extends Application {
         Button buttonPlayMedium = new Button();
         buttonPlayMedium.setText("PLAY: MEDIUM");
 
-        Button randomBoardPlay = new Button();
-        randomBoardPlay.setText("PLAY: RANDOM BOARD");
-
         Button buttonPlayHard = new Button();
         buttonPlayHard.setText("PLAY: HARD");
-        // buttonPlayHard.setVisible(false);
+
+        Button buttonPlayAi = new Button();
+        buttonPlayAi.setText("PLAY: AI");
+
+        Button buttonRandomBoardPlay = new Button();
+        buttonRandomBoardPlay.setText("PLAY: RANDOM BOARD");
+
+        Button buttonChessTutor = new Button();
+        buttonChessTutor.setText("CHESS TUTORIAL");
 
         Button buttonCreateOnlineGame = new Button();
         buttonCreateOnlineGame.setText("CREATE ONLINE GAME");
@@ -235,11 +240,38 @@ public class Main extends Application {
                 } else System.out.println("You can't play against yourself!");
             });
         });
+
         buttonPlayEasy.setOnAction(e -> createChessGame(username, "AI: Easy", 1, BoardMode.DEFAULT, root));
         buttonPlayMedium.setOnAction(e -> createChessGame(username, "AI: Medium", 2, BoardMode.DEFAULT, root));
         buttonPlayHard.setOnAction(e -> createChessGame(username, "AI: Hard", 3, BoardMode.DEFAULT, root));
-        randomBoardPlay.setOnAction(e -> createChessGame(username, "AI: Easy", 1, BoardMode.RANDOM, root));
+
+        buttonPlayAi.setOnAction(e -> {
+            List<String> choices = new ArrayList<>();
+            choices.add("Easy");
+            choices.add("Medium");
+            choices.add("Hard");
+
+            ChoiceDialog<String> dialog = new ChoiceDialog<>("Easy", choices);
+            dialog.setTitle("Play against AI");
+            dialog.setContentText("Choose difficulty:");
+            dialog.setHeaderText(null);
+            dialog.setGraphic(null);
+
+            Optional<String> result = dialog.showAndWait();
+            result.ifPresent(choice -> {
+                if (choice.equals("Easy"))
+                    createChessGame(username, "AI: Easy", 1, BoardMode.DEFAULT, root);
+                else if (choice.equals("Medium"))
+                    createChessGame(username, "AI: Medium", 2, BoardMode.DEFAULT, root);
+                else if (choice.equals("Hard"))
+                    createChessGame(username, "AI: Hard", 3, BoardMode.DEFAULT, root);
+            });
+
+        });
+
+        buttonRandomBoardPlay.setOnAction(e -> createChessGame(username, "AI: Easy", 1, BoardMode.RANDOM, root));
         buttonHighScore.setOnAction(e -> highscore(username, stage));
+
         buttonCreateOnlineGame.setOnAction(e -> {
             TextInputDialog dialog = new TextInputDialog();
             dialog.initStyle(StageStyle.UTILITY);
@@ -262,9 +294,10 @@ public class Main extends Application {
 
         VBox rightContainer = new VBox(5);
         rightContainer.setAlignment(Pos.BASELINE_CENTER);
-        rightContainer.getChildren().addAll(buttonPlayVersus, buttonPlayEasy, buttonPlayMedium,
-                buttonPlayHard, buttonCreateOnlineGame, buttonHighScore, buttonQuit);
-        rightContainer.setPrefWidth(420);
+        rightContainer.getChildren().addAll(buttonCreateOnlineGame, buttonPlayVersus, buttonPlayAi,
+                buttonRandomBoardPlay, buttonChessTutor, buttonHighScore, buttonQuit);
+        rightContainer.setPrefWidth(275);
+        rightContainer.setPadding(new Insets(0, 15, 0, 15));
 
         activeGameData = database.getOnlineGames(username);
         updateGameList(username);
@@ -287,6 +320,7 @@ public class Main extends Application {
                     gameBoard.performLoad(gameFile);
                     root.setCenter(gameBoard.getContainer());
                     root.setTop(gameBoard.generateGameMenuBar());
+                    timer.cancel();
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
@@ -314,6 +348,7 @@ public class Main extends Application {
 
         Label labelActiveGames = new Label("Active Games");
         labelActiveGames.setTextAlignment(TextAlignment.CENTER);
+        labelActiveGames.setId("bold");
 
         VBox leftContainer = new VBox(labelActiveGames, listView, leftButtonContainer);
         leftContainer.setSpacing(15);

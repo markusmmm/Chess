@@ -16,6 +16,9 @@
     -fx-font-weight: bold;
     -fx-padding: 10px;
 }
+#bold {
+    -fx-font-weight: bold;
+}
 #rightColumn {
 }
 #rightColumnTitle {
