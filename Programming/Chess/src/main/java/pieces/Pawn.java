@@ -59,10 +59,10 @@ public class Pawn extends ChessPiece {
 	}
 
 	@Override
-	public boolean move(Vector2 destination, Board board) {
-		// EnPassant-check must occur before super.move, as it will update the piece's position
+	public boolean move(Vector2 destination) {
+		// EnPassant-check must occur before super.move, as super.move will update the piece's position
 		boolean enPassant = enPassant(destination);
-		if(!super.move(destination, board)) return false;
+		if(!super.move(destination)) return false;
 
 		if(enPassant) {
 			Vector2 attackPos = destination.sub(new Vector2(0, Tools.allianceDir(alliance)));

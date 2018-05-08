@@ -185,15 +185,17 @@ public class AbstractBoard {
                     vals.add(hasMoved);
 
                     AbstractChessPiece piece = getPiece(pos);
-                    if (piece instanceof Pawn) {
-                        boolean hasDoubleStepped = reader.nextInt() == 1;
-                        vals.add(hasDoubleStepped);
-                    }
-                    piece.loadData(vals);
-                    //Console.printNotice("Loading piece " + piece + "\nsource.hasMoved: " + vals.get(0) + ", target.hasMoved: " + piece.hasMoved());
+                    if (piece != null) {
+                        if (piece instanceof Pawn) {
+                            boolean hasDoubleStepped = reader.nextInt() == 1;
+                            vals.add(hasDoubleStepped);
+                        }
+                        piece.loadData(vals);
+                        //Console.printNotice("Loading piece " + piece + "\nsource.hasMoved: " + vals.get(0) + ", target.hasMoved: " + piece.hasMoved());
 
-                    removePiece(pos);
-                    putPiece(pos, piece);
+                        removePiece(pos);
+                        putPiece(pos, piece);
+                    }
                 }
 
                 // All data loaded. Break the outer loop

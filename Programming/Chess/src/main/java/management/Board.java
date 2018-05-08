@@ -104,10 +104,6 @@ public class Board extends AbstractBoard {
         super(file, difficulty);
     }
 
-    public void setBoardMode (BoardMode mode){
-        this.mode = mode;
-    }
-
     /**
      * Gives all active pieces of a given alliance
      * @param alliance The alliance of the pieces to find
@@ -256,62 +252,7 @@ public class Board extends AbstractBoard {
             }
         }
 
-        //castling
-        if (piece instanceof King) {
-            int kingSideRookX = end.getX() + 1;
-            int queenSideRookX = end.getX() - 2;
-
-            // castling kingside
-            if (((King) piece).castling(new Vector2(kingSideRookX, end.getY()))) {
-                Vector2 rookPos = new Vector2(kingSideRookX, end.getY());
-                IChessPiece rook = getPiece(rookPos);
-                Alliance alliance = rook.alliance();
-                Piece pieceType = rook.piece();
-
-                IChessPiece king = getKing(alliance);
-                Vector2 kingPos = king.position();
-
-                removePiece(rookPos);
-                removePiece(kingPos);
-
-
-                addPiece(new Vector2(kingSideRookX - 2, end.getY()), pieceType, alliance);
-                addPiece(new Vector2(kingSideRookX - 1, end.getY()), Piece.KING, alliance);
-                media.playSound("move.mp3").play();
-
-                logMove(new MoveNode(piece, start, end, (AbstractChessPiece) getPiece(end)));
-
-                return advanceMove(true);
-
-            }
-
-            // castling queenside
-            if (((King) piece).castling(new Vector2(queenSideRookX, end.getY()))) {
-                Vector2 rookPos = new Vector2(queenSideRookX, end.getY());
-                IChessPiece rook = getPiece(rookPos);
-                Alliance alliance = rook.alliance();
-                Piece pieceType = rook.piece();
-
-                IChessPiece king = getKing(alliance);
-                Vector2 kingPos = king.position();
-
-                removePiece(rookPos);
-                removePiece(kingPos);
-
-
-                addPiece(new Vector2(queenSideRookX + 3, end.getY()), pieceType, alliance);
-                addPiece(new Vector2(queenSideRookX + 2, end.getY()), Piece.KING, alliance);
-                media.playSound("move.mp3").play();
-
-
-                logMove(new MoveNode(piece, start, end, getPiece(end)));
-
-                return advanceMove(true);
-            }
-
-        }
-
-        boolean moveSuccessful = piece.move(end, this);
+        boolean moveSuccessful = piece.move(end);
 
         if (!moveSuccessful) {
             return advanceMove(false);

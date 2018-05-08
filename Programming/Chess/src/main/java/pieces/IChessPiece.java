@@ -24,9 +24,11 @@ public interface IChessPiece {
 	 *
 	 * @param end
 	 */
-	boolean move(Vector2 end, Board board);
+	boolean move(Vector2 end);
 
 	void loadData(List<Boolean> vals);
+
+	boolean freePath(Vector2 destination);
 
 	AbstractChessPiece clonePiece();
 }
