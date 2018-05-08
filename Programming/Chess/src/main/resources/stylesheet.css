@@ -5,14 +5,19 @@
 .button {
     -fx-text-align: center;
     -fx-color: black;
-    -fx-padding: 8px 10px;
-    -fx-min-width: 240px;
+    -fx-padding: 10px 20px;
+    -fx-min-width: 125px;
+    -fx-pref-width: 140px;
+    -fx-max-width: 230px;
     -fx-font-weight: bold;
 }
 #title {
     -fx-font-size: 40px;
     -fx-font-weight: bold;
     -fx-padding: 10px;
+}
+#bold {
+    -fx-font-weight: bold;
 }
 #rightColumn {
 }

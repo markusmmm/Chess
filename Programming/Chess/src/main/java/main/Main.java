@@ -3,12 +3,14 @@ package main;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
@@ -20,11 +22,19 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import management.DatabaseController;
+
 import management.HighscoreController;
 import org.bson.Document;
 import resources.BoardMode;
 import resources.Console;
 import resources.Highscore;
+
+import org.apache.commons.io.FileUtils;
+import org.bson.Document;
+import org.bson.types.ObjectId;
+import resources.BoardMode;
+import resources.Console;
+
 import resources.MediaHelper;
 
 import java.io.File;
@@ -35,9 +45,19 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 public class Main extends Application {
 
+    public static final File SAVES_DIR = new File(System.getProperty("user.home"), "GitGud/");
+    public static final File LOGS_DIR = new File(SAVES_DIR, ".logs/");
+    public static final File ONLINE_GAME_DIR = new File(SAVES_DIR, ".online/");
+    public static final File CORE_DIR = new File("core/");
+    public static final File TESTS_DIR = new File("tests/");
+    public static final String DATA_SEPARATOR = "====";
+    public static final String SAVE_EXTENSION = ".txt";
+    public static final String TEST_EXTENSION = ".txt";
     static final int WIDTH = 720;
     static final int HEIGHT = 500;
     private int mCounter = 0;
@@ -45,17 +65,16 @@ public class Main extends Application {
     MediaPlayer mp = media.playSound("chess_theme.mp3");
     private Stage stage;
     private BorderPane root = new BorderPane();
-    private MenuBar menuBar = generateMenuBar();
     private DatabaseController database = new DatabaseController();
+    private MenuBar menuBar = generateMenuBar();
+    private ListView<String> listView = new ListView<>();
+    private ObservableList<String> observableActiveGameList;
+    private List<Document> activeGameData;
+    private Timer timer;
 
-    public static final File SAVES_DIR = new File(System.getProperty("user.home"), "GitGud/");
-    public static final File LOGS_DIR = new File(SAVES_DIR, ".logs/");
-    public static final File CORE_DIR = new File("core/");
-    public static final File TESTS_DIR = new File("tests/");
-
-    public static final String DATA_SEPARATOR = "====";
-    public static final String SAVE_EXTENSION = ".txt";
-    public static final String TEST_EXTENSION = ".txt";
+    public static void main(String[] args) {
+        launch(args);
+    }
 
     public void start(Stage primaryStage) throws Exception {
         directorySetup();
@@ -66,6 +85,7 @@ public class Main extends Application {
         stage.setScene(scene);
         stage.setTitle("Chess");
         stage.setResizable(false);
+        stage.setOnHidden(e -> onQuit());
         stage.show();
 
         MediaHelper media = new MediaHelper();
@@ -78,6 +98,8 @@ public class Main extends Application {
         }
         if (!LOGS_DIR.exists())
             LOGS_DIR.mkdirs();
+        if (!ONLINE_GAME_DIR.exists())
+            ONLINE_GAME_DIR.mkdirs();
 
         if (CORE_DIR.exists()) {
             File[] coreFiles = CORE_DIR.listFiles();
@@ -176,8 +198,7 @@ public class Main extends Application {
             } else {
                 database.addUser(username);
             }
-
-            mainMenu(username, stage);
+            mainMenu(username.toLowerCase(), stage);
         }
     }
 
@@ -188,9 +209,6 @@ public class Main extends Application {
      * @return mainMenu
      */
     public void mainMenu(String username, Stage stage) {
-        // root = new BorderPane();
-        // menuBar = generateMenuBar();
-
         Label labelWelcome = new Label("Welcome, " + username +
                 "!\nYour score: " + database.getScore(username));
         labelWelcome.setPrefWidth(WIDTH);
@@ -208,12 +226,20 @@ public class Main extends Application {
         Button buttonPlayMedium = new Button();
         buttonPlayMedium.setText("PLAY: MEDIUM");
 
-        Button randomBoardPlay = new Button();
-        randomBoardPlay.setText("PLAY: RANDOM BOARD");
-
         Button buttonPlayHard = new Button();
         buttonPlayHard.setText("PLAY: HARD");
-        // buttonPlayHard.setVisible(false);
+
+        Button buttonPlayAi = new Button();
+        buttonPlayAi.setText("PLAY: AI");
+
+        Button buttonRandomBoardPlay = new Button();
+        buttonRandomBoardPlay.setText("PLAY: RANDOM BOARD");
+
+        Button buttonChessTutor = new Button();
+        buttonChessTutor.setText("CHESS TUTORIAL");
+
+        Button buttonCreateOnlineGame = new Button();
+        buttonCreateOnlineGame.setText("CREATE ONLINE GAME");
 
         Button playChessPuzzles = new Button();
         playChessPuzzles.setText("PLAY: Chess Puzzles");
@@ -240,10 +266,11 @@ public class Main extends Application {
                 } else System.out.println("You can't play against yourself!");
             });
         });
+
         buttonPlayEasy.setOnAction(e -> createChessGame(username, "AI: Easy", 1, BoardMode.DEFAULT, root));
         buttonPlayMedium.setOnAction(e -> createChessGame(username, "AI: Medium", 2, BoardMode.DEFAULT, root));
         buttonPlayHard.setOnAction(e -> createChessGame(username, "AI: Hard", 3, BoardMode.DEFAULT, root));
-        randomBoardPlay.setOnAction(e -> createChessGame(username, "AI: Easy", 1, BoardMode.RANDOM, root));
+        buttonRandomBoardPlay.setOnAction(e -> createChessGame(username, "AI: Easy", 1, BoardMode.RANDOM, root));
         playChessPuzzles.setOnAction(e -> createChessGame(username, "AI: Medium", 2, BoardMode.CHESSPUZZLES, root));
         buttonHighScore.setOnAction(e -> highscore(username, stage));
 
@@ -253,18 +280,143 @@ public class Main extends Application {
 
         buttonQuit.setOnAction(e -> onQuit());
 
-        VBox buttonContainer = new VBox(5);
-        buttonContainer.setAlignment(Pos.BASELINE_CENTER);
-        buttonContainer.getChildren().addAll(buttonPlayVersus, buttonPlayEasy, buttonPlayMedium, buttonPlayHard, randomBoardPlay, playChessPuzzles, buttonHighScore, buttonQuit);
+        //VBox buttonContainer = new VBox(5);
+        //buttonContainer.setAlignment(Pos.BASELINE_CENTER);
+        //buttonContainer.getChildren().addAll(buttonPlayVersus, buttonPlayEasy, buttonPlayMedium, buttonPlayHard, buttonRandomBoardPlay, playChessPuzzles, buttonHighScore, buttonQuit);
 
-        VBox mainContent = new VBox(0);
-        mainContent.setAlignment(Pos.TOP_CENTER);
-        mainContent.setPrefSize(WIDTH, HEIGHT);
-        mainContent.getChildren().addAll(labelWelcome, buttonContainer);
+        buttonPlayAi.setOnAction(e -> {
+            List<String> choices = new ArrayList<>();
+            choices.add("Easy");
+            choices.add("Medium");
+            choices.add("Hard");
+
+            ChoiceDialog<String> dialog = new ChoiceDialog<>("Easy", choices);
+            dialog.setTitle("Play against AI");
+            dialog.setContentText("Choose difficulty:");
+            dialog.setHeaderText(null);
+            dialog.setGraphic(null);
+
+            Optional<String> result = dialog.showAndWait();
+            result.ifPresent(choice -> {
+                if (choice.equals("Easy"))
+                    createChessGame(username, "AI: Easy", 1, BoardMode.DEFAULT, root);
+                else if (choice.equals("Medium"))
+                    createChessGame(username, "AI: Medium", 2, BoardMode.DEFAULT, root);
+                else if (choice.equals("Hard"))
+                    createChessGame(username, "AI: Hard", 3, BoardMode.DEFAULT, root);
+            });
+
+        });
+
+        buttonRandomBoardPlay.setOnAction(e -> createChessGame(username, "AI: Easy", 1, BoardMode.RANDOM, root));
+        buttonHighScore.setOnAction(e -> highscore(username, stage));
+
+        buttonCreateOnlineGame.setOnAction(e -> {
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.initStyle(StageStyle.UTILITY);
+            dialog.setTitle("Enter the second players username");
+            dialog.setHeaderText(null);
+            dialog.setGraphic(null);
+            dialog.setContentText("Enter the second players username:");
+            Optional<String> result = dialog.showAndWait();
+            result.ifPresent(player2 -> {
+                if (!username.toLowerCase().equals(player2.toLowerCase())) {
+                    if (!database.userExists(player2))
+                        System.out.println("User does not exist.");
+                    else
+                        database.createGameInvite(username, player2);
+                } else System.out.println("You can't play against yourself!");
+            });
+        });
+        media.playSound("welcome.mp3");
+        buttonQuit.setOnAction(e -> onQuit());
+
+        VBox rightContainer = new VBox(5);
+        rightContainer.setAlignment(Pos.BASELINE_CENTER);
+        rightContainer.getChildren().addAll(buttonCreateOnlineGame, buttonPlayVersus, buttonPlayAi,
+                buttonRandomBoardPlay, buttonChessTutor, buttonHighScore, buttonQuit);
+        rightContainer.setPrefWidth(275);
+        rightContainer.setPadding(new Insets(0, 15, 0, 15));
+
+        activeGameData = database.getOnlineGames(username);
+        updateGameList(username);
+
+        Button buttonPlay = new Button("Play");
+        buttonPlay.setOnAction(event -> {
+            ObservableList<Integer> selectedIndices = listView.getSelectionModel().getSelectedIndices();
+            for (Object o : selectedIndices) {
+                int i = (Integer) o;
+                ObjectId id = (ObjectId) activeGameData.get(i).get("_id");
+                String gameData = (String) activeGameData.get(i).get("gameData");
+                String player1 = (String) activeGameData.get(i).get("player1");
+                String player2 = (String) activeGameData.get(i).get("player2");
+                try {
+                    File gameFile = new File(ONLINE_GAME_DIR, username + "/" + id + ".txt");
+                    FileUtils.writeStringToFile(gameFile, gameData, StandardCharsets.UTF_8);
+                    GameBoard gameBoard = new GameBoard(player1, player2, 0, BoardMode.DEFAULT,
+                            this, stage, root, username, id);
+                    gameBoard.createBoard();
+                    gameBoard.performLoad(gameFile);
+                    root.setCenter(gameBoard.getContainer());
+                    root.setTop(gameBoard.generateGameMenuBar());
+                    timer.cancel();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+
+        Button buttonForfeit = new Button("Forfeit");
+        buttonForfeit.setOnAction(event -> {
+            ObservableList<Integer> selectedIndices = listView.getSelectionModel().getSelectedIndices();
+            for (Object o : selectedIndices) {
+                int i = (Integer) o;
+                ObjectId id = (ObjectId) activeGameData.get(i).get("_id");
+                database.forfeitGame(id);
+            }
+            updateGameList(username);
+        });
+
+        Button buttonRefresh = new Button("Refresh");
+        buttonRefresh.setOnAction(event -> {
+            updateGameList(username);
+        });
+
+        HBox leftButtonContainer = new HBox(buttonPlay, buttonForfeit, buttonRefresh);
+        leftButtonContainer.setSpacing(15);
+
+        Label labelActiveGames = new Label("Active Games");
+        labelActiveGames.setTextAlignment(TextAlignment.CENTER);
+        labelActiveGames.setId("bold");
+
+        VBox leftContainer = new VBox(labelActiveGames, listView, leftButtonContainer);
+        leftContainer.setSpacing(15);
+        leftContainer.setPadding(new Insets(15, 15, 15, 15));
+
+        VBox container = new VBox(0);
+        HBox contentContainer = new HBox(0);
+        contentContainer.getChildren().addAll(leftContainer, rightContainer);
+        container.setPrefSize(WIDTH, HEIGHT);
+        container.getChildren().addAll(labelWelcome, contentContainer);
 
 
         root.setTop(menuBar);
-        root.setCenter(mainContent);
+        root.setCenter(container);
+
+        timer = new Timer();
+        timer.scheduleAtFixedRate(new InviteChecker(username, this), 0, 5 * 1000);
+    }
+
+    public void updateGameList(String username) {
+        activeGameData = database.getOnlineGames(username);
+        ArrayList<String> activeGameList = new ArrayList<>();
+        for (int i = 0; i < activeGameData.size(); i++) {
+            String player1 = (String) activeGameData.get(i).get("player1");
+            String player2 = (String) activeGameData.get(i).get("player2");
+            activeGameList.add("Game " + (i + 1) + ": " + player1 + " vs " + player2);
+        }
+        ObservableList<String> observableList = FXCollections.observableArrayList(activeGameList);
+        listView.setItems(observableList);
     }
 
     public void highscore(String username, Stage stage) {
@@ -315,12 +467,14 @@ public class Main extends Application {
     private void createChessGame(String player1, String player2, int difficulty, BoardMode boardMode, BorderPane root) {
         mp.stop();
         System.out.println(boardMode);
-        GameBoard gameBoard = new GameBoard(player1, player2, difficulty, boardMode, this, stage, root);
+        GameBoard gameBoard = new GameBoard(player1, player2, difficulty, boardMode, this, stage, root, player1);
         gameBoard.createBoard();
         root.setCenter(gameBoard.getContainer());
         root.setTop(gameBoard.generateGameMenuBar());
         MediaPlayer nmp = media.playSound("startup.mp3");
         nmp.play();
+        media.playSound("startup.mp3");
+        timer.cancel();
         //return gameBoard.getContainer();
     }
 
@@ -365,10 +519,6 @@ public class Main extends Application {
     public void onQuit() {
         database.close();
         System.exit(0);
-    }
-
-    public static void main(String[] args) {
-        launch(args);
     }
 
 }

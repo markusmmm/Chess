@@ -2,6 +2,7 @@ package main;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
@@ -22,12 +23,21 @@ import resources.*;
 import resources.Console;
 import management.Board;
 import resources.Move;
+import org.bson.types.ObjectId;
+import pieces.ChessPiece;
+import pieces.IChessPiece;
+import pieces.King;
+import resources.*;
 
 
 import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
+
+import static org.apache.commons.io.FileUtils.readFileToString;
 
 public class GameBoard {
     MediaHelper media = new MediaHelper();
@@ -57,8 +67,23 @@ public class GameBoard {
     private ChessPuzzles chessPuzzles;
     private int numberOfPuzzlesCompleted;
     private int numberOfPuzzles;
+    private String username;
+    private boolean online;
+    private ObjectId gameId;
+    private Timer thread;
 
-    public GameBoard(String user1, String user2, int difficulty, BoardMode boardMode, Main main, Stage stage, BorderPane root) {
+    public GameBoard(String user1, String user2, int difficulty, BoardMode boardMode, Main main,
+                     Stage stage, BorderPane root, String username, ObjectId gameId) {
+        this(user1, user2, difficulty, boardMode, main, stage, root, username);
+        this.online = true;
+        this.gameId = gameId;
+        this.thread = new Timer();
+        thread.scheduleAtFixedRate(new GameUpdater(this, gameId, username),
+                0, 4 * 1000);
+    }
+
+    public GameBoard(String user1, String user2, int difficulty, BoardMode boardMode, Main main,
+                     Stage stage, BorderPane root, String username) {
         Board boardVal = null;
 
         this.player1 = new Player(user1, Alliance.WHITE);
@@ -128,7 +153,10 @@ public class GameBoard {
         this.moveLog = new ListView<>();
         this.capturedPieces = new ListView<>();
         this.gameStatus = new Text();
-
+        this.database = new DatabaseController();
+        this.online = false;
+        this.username = username;
+        this.gameId = null;
 
 
         setComputer();
@@ -216,9 +244,7 @@ public class GameBoard {
         capturedPieces.setPrefHeight(200);
         capturedPieces.setId("moveLog");
 
-
-
-        if(boardMode != BoardMode.CHESSPUZZLES) {
+        if(boardMode != BoardMode.CHESSPUZZLES || !online) {
 
             Button buttonHint = new Button();
             buttonHint.setText("Hint");
@@ -235,7 +261,6 @@ public class GameBoard {
             right.getChildren().addAll(labelMoveLog, moveLog, labelCapturedPieces, capturedPieces, buttonHint);
 
         }
-
 
         VBox statusFieldContainer = new VBox();
         statusFieldContainer.setAlignment(Pos.CENTER);
@@ -264,11 +289,9 @@ public class GameBoard {
         MenuItem menuItemUndo = new MenuItem("Undo");
         MenuItem menuItemQuit = new MenuItem("Quit");
 
-        menuItemExit.setOnAction(e -> {
-            main.mainMenu(player1.getUsername(), stage);
-        });
+        menuItemExit.setOnAction(e -> goToMenu(username, stage));
         menuItemReset.setOnAction(e -> {
-            GameBoard newGameBoard = new GameBoard(player1.getUsername(), player2.getUsername(), board.difficulty(), boardMode, main, stage, root);
+            GameBoard newGameBoard = new GameBoard(player1.getUsername(), player2.getUsername(), board.difficulty(), boardMode, main, stage, root, username);
             newGameBoard.createBoard();
             root.setCenter(newGameBoard.getContainer());
         });
@@ -277,7 +300,10 @@ public class GameBoard {
         menuItemSave.setOnAction(e -> performSave());
         menuItemQuit.setOnAction(e -> main.onQuit());
 
-        menuFile.getItems().addAll(menuItemExit, menuItemReset, menuItemLoad, menuItemSave, menuItemUndo, menuItemQuit);
+        if (online)
+            menuFile.getItems().addAll(menuItemExit, menuItemQuit);
+        else
+            menuFile.getItems().addAll(menuItemExit, menuItemReset, menuItemLoad, menuItemSave, menuItemUndo, menuItemQuit);
         MenuItem menuItemAbout = new MenuItem("About");
         menuHelp.getItems().add(menuItemAbout);
 
@@ -294,19 +320,23 @@ public class GameBoard {
                 new FileChooser.ExtensionFilter("Chess Game File", "*" + Main.SAVE_EXTENSION));
         fileChooser.setInitialDirectory(Main.SAVES_DIR);
         File selectedFile = fileChooser.showOpenDialog(stage);
+        performLoad(selectedFile);
+    }
 
-        if(selectedFile != null) {
+    public void performLoad(File file) {
+        if(file != null) {
             try {
-                board = new Board(selectedFile);
+                board = new Board(file);
                 createBoard();
                 setComputer();
                 updateLogs();
             } catch (FileNotFoundException e1) {
-                Console.printError("Save file " + selectedFile.getName() + " does not exist");
+                Console.printError("Save file " + file.getName() + " does not exist");
                 e1.printStackTrace();
             }
         }
     }
+
     private void performSave() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Chess Game File");
@@ -347,7 +377,7 @@ public class GameBoard {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == buttonTypeOne){
 
-            GameBoard newGameBoard = new GameBoard(player1.getUsername(), player2.getUsername(), board.difficulty(), boardMode, main, stage, root);
+            GameBoard newGameBoard = new GameBoard(player1.getUsername(), player2.getUsername(), board.difficulty(), boardMode, main, stage, root, player1.getUsername());
             newGameBoard.createBoard();
             root.setCenter(newGameBoard.getContainer());
 
@@ -400,7 +430,7 @@ public class GameBoard {
                 }
 
             } else if (result.get() == buttonTypeTwo) {
-                GameBoard newGameBoard = new GameBoard(player1.getUsername(), player2.getUsername(), board.difficulty(), boardMode, main, stage, root);
+                GameBoard newGameBoard = new GameBoard(player1.getUsername(), player2.getUsername(), board.difficulty(), boardMode, main, stage, root, player1.getUsername());
                 newGameBoard.createBoard();
                 root.setCenter(newGameBoard.getContainer());
 
@@ -479,6 +509,12 @@ public class GameBoard {
         //resources.Console.println("After:" + temp.position());
     }
 
+    private void goToMenu(String username, Stage stage) {
+        if (online)
+            thread.cancel();
+        main.mainMenu(username, stage);
+    }
+
     public Move getHint(Alliance alliance) {
         if(alliance == Alliance.BLACK)
             return blackHelper.getMove();
@@ -535,10 +571,11 @@ public class GameBoard {
         }
     }
 
-
-
-
     private boolean tileClick(MouseEvent e, Tile tile) {
+        if (online)
+            if (!isYourTurn())
+                return false;
+
         Vector2 pos = tile.getPos();
         //if(!board.ready()) return false;
 
@@ -568,6 +605,17 @@ public class GameBoard {
             IChessPiece firstPiece = board.getPiece(firstTile.getPos());
             Console.println(firstClick + " " + firstPiece);
             attemptMove(firstTile, pos);
+
+            if (online) {
+                File gameFile = new File(System.getProperty("user.home"), "GitGud/.online/" + username + "/" + gameId + ".txt");
+                board.saveBoard(gameFile);
+                try {
+                    String gameData = readFileToString(gameFile, StandardCharsets.UTF_8);
+                    database.updateGame(gameId, gameData);
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
 
             firstClick = false;
             firstTile = null;
@@ -685,6 +733,16 @@ public class GameBoard {
             System.out.print("\n");
         }
     }
+
+    public boolean isYourTurn() {
+        Player player;
+        if (board.getActivePlayer() == Alliance.WHITE)
+            player = player1;
+        else player = player2;
+        if (player.getUsername().equals(username))
+            return true;
+        return false;
+    }
     
     public boolean gameOver() {
         King whiteKing = board.getKing(Alliance.WHITE),
@@ -719,11 +777,14 @@ public class GameBoard {
         if (board.difficulty() == 0) {
             if (blackKing.checkmate()) {
                 database.updateScore(player1.getUsername(), (player1.getScore() + 3));
+                if (online) database.gameOver(gameId, player1.getUsername());
             } else if (whiteKing.checkmate()) {
                 database.updateScore(player2.getUsername(), (player2.getScore() + 3));
+                if (online) database.gameOver(gameId, player2.getUsername());
             } else if(whiteKing.stalemate() || blackKing.stalemate()) {
                 database.updateScore(player1.getUsername(), (player1.getScore() + 1));
                 database.updateScore(player2.getUsername(), (player2.getScore() + 1));
+                if (online) database.gameOver(gameId, "none");
             }
         } else {
             if (board.difficulty() == 1) {
@@ -747,7 +808,7 @@ public class GameBoard {
         MediaHelper media = new MediaHelper();
         media.playSound("game_over.mp3").play();
         alert.showAndWait();
-        main.mainMenu(player1.getUsername(), stage);
+        goToMenu(username, stage);
         return true;
     }
 
