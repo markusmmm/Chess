@@ -26,7 +26,6 @@ public abstract class ChessPiece extends AbstractChessPiece {
 		//Console.printNotice(this + " checking move " + position() + " -> " + destination + "\tdelta: " + delta);
 
 		if(super.legalMove(destination)) {
-
 			//Console.printNotice(this + " (" + moveType + ", " + moves.size() + ") begun move check.");
 			//Console.printNotice("Position: " + position() + ", destination: " + destination + ", delta: " + delta);
 

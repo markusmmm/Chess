@@ -15,7 +15,7 @@ public interface IChessPiece {
 	Piece piece();
 	int getValue();
 
-	Set<Vector2> getPossibleDestinations();
+	Set<Vector2> getPossibleActions();
 	Set<Vector2> getPossibleAttacks();
 
 	boolean hasMoved();

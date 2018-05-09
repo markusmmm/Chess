@@ -29,10 +29,7 @@ import resources.Console;
 import resources.Highscore;
 
 import org.apache.commons.io.FileUtils;
-import org.bson.Document;
 import org.bson.types.ObjectId;
-import resources.BoardMode;
-import resources.Console;
 
 import resources.MediaHelper;
 
@@ -61,7 +58,7 @@ public class Main extends Application {
     static final int HEIGHT = 500;
     private int mCounter = 0;
     MediaHelper media = new MediaHelper();
-    MediaPlayer mp = media.playSound("chess_theme.mp3");
+    MediaPlayer mp = media.getMediaPlayer("chess_theme.mp3");
     private Stage stage;
     private BorderPane root = new BorderPane();
     private DatabaseController database = new DatabaseController();
@@ -75,8 +72,7 @@ public class Main extends Application {
         launch(args);
     }
 
-    public static final String USER_MANUAL_URL = "https://gitlab.uib.no/inf112-v2018/gruppe-3/blob/c9df10dba1e74977d1eb417fa3cf17cc54f19f0d/Documentation/User%20manual/User%20Manual.pdf";
-
+    public static final String USER_MANUAL_URL = "https://gitlab.uib.no/inf112-v2018/gruppe-3/blob/master/Documentation/User%20manual/User%20Manual.pdf";
     public void start(Stage primaryStage) throws Exception {
         directorySetup();
         root.setCenter(loginWindow());
@@ -90,7 +86,7 @@ public class Main extends Application {
         stage.show();
 
         MediaHelper media = new MediaHelper();
-        media.playSound("chess_theme.mp3");
+        media.getMediaPlayer("chess_theme.mp3");
     }
 
     private void directorySetup() {
@@ -288,14 +284,9 @@ public class Main extends Application {
 
             Optional<String> result = dialog.showAndWait();
             result.ifPresent(choice -> {
-                if (choice.equals("Easy"))
-                    createChessGame(username, "AI: Easy", 1, BoardMode.DEFAULT, root);
-                else if (choice.equals("Medium"))
-                    createChessGame(username, "AI: Medium", 2, BoardMode.DEFAULT, root);
-                else if (choice.equals("Hard"))
-                    createChessGame(username, "AI: Hard", 3, BoardMode.DEFAULT, root);
+                int difficulty = choice.equals("Easy") ? 1 : choice.equals("Medium") ? 2 : choice.equals("Hard") ? 3 : 0;
+                createChessGame(username, "AI: " + choice, difficulty, BoardMode.DEFAULT, root);
             });
-
         });
 
         buttonRandomBoardPlay.setOnAction(e -> createChessGame(username, "AI: Easy", 1, BoardMode.RANDOM, root));
@@ -447,9 +438,9 @@ public class Main extends Application {
         gameBoard.createBoard();
         root.setCenter(gameBoard.getContainer());
         root.setTop(gameBoard.generateGameMenuBar());
-        MediaPlayer nmp = media.playSound("startup.mp3");
+        MediaPlayer nmp = media.getMediaPlayer("startup.mp3");
         nmp.play();
-        media.playSound("startup.mp3");
+        media.getMediaPlayer("startup.mp3");
         timer.cancel();
         //return gameBoard.getContainer();
     }

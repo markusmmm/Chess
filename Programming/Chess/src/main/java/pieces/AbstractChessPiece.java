@@ -164,7 +164,7 @@ public abstract class AbstractChessPiece implements IChessPiece {
 	}
 
 	@Override
-	public Set<Vector2> getPossibleDestinations() {
+	public Set<Vector2> getPossibleActions() {
 		MoveEvaluator evaluator = new MoveEvaluator();
 		if(moveType == MoveType.LINE)
 			evaluator.evaluateContinuous(moves);
@@ -182,7 +182,7 @@ public abstract class AbstractChessPiece implements IChessPiece {
 	 */
 	@Override
 	public Set<Vector2> getPossibleAttacks() {
-		return getPossibleDestinations();
+		return getPossibleActions();
 	}
 
 	/**
@@ -213,7 +213,7 @@ public abstract class AbstractChessPiece implements IChessPiece {
 	 */
 	protected void performMove(Vector2 destination) {
 		position = destination;
-		media.playSound("move.mp3");
+		media.getMediaPlayer("move.mp3");
 		hasMoved = true;
 	}
 
@@ -243,25 +243,6 @@ public abstract class AbstractChessPiece implements IChessPiece {
 			}
 		}
 		return true;
-	}
-	/**
-	 * @return if piece is placed in the lines:
-	 * up, down, left, right
-	 *
-	 * logic is: if only x or y change, the piece move in a straight path
-	 */
-	protected boolean inStraights(Vector2 move) {
-		Vector2 position = position();
-
-		return (
-				( position.getX() == move.getX() && position.getY() != move.getY() )
-						||
-						( position.getX() != move.getX() && position.getY() == move.getY() )
-		);
-	}
-	protected boolean inDiagonals(Vector2 newPos) {
-		Vector2 position = position();
-		return Math.abs(position.getX() - newPos.getX()) == Math.abs(position.getY() - newPos.getY());
 	}
 
 	@Override

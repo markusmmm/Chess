@@ -1,14 +1,15 @@
 package management;
 
 import javafx.scene.media.MediaPlayer;
-import main.GameBoard;
 import pieces.*;
 import resources.*;
 
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.lang.reflect.Method;
 import java.util.*;
+import java.util.concurrent.Callable;
 
 public class Board extends AbstractBoard {
     MediaHelper media = new MediaHelper();
@@ -16,11 +17,7 @@ public class Board extends AbstractBoard {
 
     private static final Piece[] defaultBoard = new Piece[]{
             Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK,
-            Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN,
-            Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY,
-            Piece.PAWN, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY, Piece.EMPTY,
-            Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN,
-            Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK
+            Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN
     };
 
     /**
@@ -62,10 +59,8 @@ public class Board extends AbstractBoard {
                 if (type.equals(Piece.EMPTY)) continue;
 
                 addPiece(pos, type, Alliance.BLACK);
-                //resources.Console.println(pos + ": " + getPiece(pos));
 
                 addPiece(invPos, type, Alliance.WHITE);
-                //resources.Console.println(invPos + ": " + getPiece(invPos));
 
                 p++;
             }
@@ -76,11 +71,11 @@ public class Board extends AbstractBoard {
 
     /**
      * Loads this board's content from a given file
-     * @param fileName Name of the save file
+     * @param saveName Name of save file (without file extension)
      * @throws FileNotFoundException
      */
-    public Board(String fileName) throws FileNotFoundException {
-        super(fileName);
+    public Board(String saveName) throws FileNotFoundException {
+        super(saveName);
     }
 
     /**
@@ -125,7 +120,7 @@ public class Board extends AbstractBoard {
         HashMap<Vector2, AbstractChessPiece> pieces = getPieces(alliance);
         for(Vector2 pos : pieces.keySet()) {
             AbstractChessPiece piece = pieces.get(pos);
-            for(Vector2 end : piece.getPossibleDestinations())
+            for(Vector2 end : piece.getPossibleActions())
                 moves.add(new Move(pos, end));
         }
 
@@ -148,7 +143,7 @@ public class Board extends AbstractBoard {
             if (piece == null) continue; // Ignore empty squares
 
             if (insideBoard(pos) && piece.alliance().equals(alliance)) {
-                Set<Vector2> possibleDestinations = piece.getPossibleDestinations();
+                Set<Vector2> possibleDestinations = piece.getPossibleActions();
                 if (possibleDestinations.size() == 0) continue; // If the piece has no valid moves, ignore it
 
                 usablePieces.put(pos, piece);
@@ -159,85 +154,68 @@ public class Board extends AbstractBoard {
     }
 
     /**
-     * @param piece Piece to evaluate
-     * @param end End-position of attempted move
-     * @return If the move is an attempt of pawn promotion
-     */
-    public boolean pawnPromotion(AbstractChessPiece piece, Vector2 end){
-        if (piece instanceof Pawn) {
-            int y = piece.position().getY();
-            if(piece.legalMove(end)) {
-                if (y == 1 && piece.alliance() == Alliance.WHITE && end.getY() == 0) {
-                    return true;
-                }
-
-                if (y == 6 && piece.alliance() == Alliance.BLACK && end.getY() == 7){
-                    return true;
-                }
-            }
-            return false;
-        }
-        return false;
-
-    }
-    /**
      * Attempts to move a piece from 'start' to 'end'
      * @param start Position of the piece to be moved
      * @param end Destination of the attempted move
      * @return If the move was successful
      */
     public boolean movePiece(Vector2 start, Vector2 end) {
-        if (!insideBoard(start)) return advanceMove(false);
-
+        // Save the board's state, before attempting the move (enables undo)
         saveLog();
+
+        // Attempt move
+        boolean moveSuccess = performAdditionalAction(start, end);
+        if (moveSuccess) {
+            setLastPiece(getPiece(end));
+
+            activePlayer = activePlayer.equals(Alliance.WHITE) ? Alliance.BLACK : Alliance.WHITE;
+            moveI++;
+
+            media.play("move.mp3");
+        }
+        return moveSuccess;
+    }
+
+    /**
+     * Performs an additional action, which does not advance the game
+     * @param start Position of the piece to be moved
+     * @param end Destination of the attempted move
+     * @return If the additional action was successful
+     */
+    public boolean performAdditionalAction(Vector2 start, Vector2 end) {
+        if (!insideBoard(start)) return false;
+
+        // If the game is timed, determine if the current player has any time left
+        ChessClock clock = getClock();
+        if(clock != null && !clock.endTurn(moveI % 2)) return false;
 
         AbstractChessPiece piece = getPiece(start);
 
-        if (piece == null) {
-            return advanceMove(false); // Check if a piece exists at the given position
-        }
-        if (!piece.alliance().equals(activePlayer)) {
-            return advanceMove(false); // Checks if the active player owns the piece that is being moved
-        }
+        // Check if a piece exists at the given position
+        if (piece == null) return false;
+        // Checks if the active player owns the piece that is being moved
+        if (!piece.alliance().equals(activePlayer)) return false;
 
-        if(pawnPromotion(piece, end)) {
-            performPawnPromotion((Pawn)piece, start, end);
-            advanceMove(true);
-        }
+        // Attempt to move the piece
+        if(piece.move(end)) {
+            addDrawPos(start, end);
 
-        boolean moveSuccessful = piece.move(end);
+            // Update the piece's position on the board
+            removePiece(start);
+            putPiece(end, piece);
 
-        if (!moveSuccessful) {
-            return advanceMove(false);
-        }
-
-        setLastPiece(piece);
-        AbstractChessPiece endPiece = getPiece(end);
-
-        AbstractChessPiece victim = null;
-        if (endPiece != null) {
-            //Remove hostile attacked piece
-            if (!endPiece.alliance().equals(piece.alliance())) {
-                capturePiece(endPiece);
+            AbstractChessPiece victim = getPiece(end);
+            //Remove hostile attacked piece, if any
+            if (victim != null && !victim.alliance().equals(piece.alliance())) {
+                capturePiece(victim);
                 removePiece(end);
-                victim = endPiece;
             }
+
+            logMove(new MoveNode(piece, start, end, victim));
+
+            return true;
         }
-
-        // Assert if the piece' position was updated internally
-        assert(piece.position().equals(end));
-
-        logMove(new MoveNode(piece, start, end, victim));
-
-        // Update the piece's position on the board
-        removePiece(start);
-        putPiece(end, piece);
-        // Prompt the GUI to re-draw the changed squares
-        addDrawPos(start);
-        addDrawPos(end);
-
-        // End move and advance to the next player
-        return advanceMove(true);
+        return false;
     }
 
     /**
@@ -246,30 +224,7 @@ public class Board extends AbstractBoard {
      * @return Whether or not the move was successful
      */
     public boolean movePiece(Move move) {
-        //return movePiece(move.start, move.end);
-    	return movePiece(move.start,move.end);
-    }
-
-    /**
-     * Uses internally by board do advance to the next turn
-     * @param state Whether or not the move should be advanced
-     * @return 'state'
-     */
-    private boolean advanceMove(boolean state) {
-        if (state) {
-            ChessClock clock = getClock();
-
-            if(clock != null && !clock.endTurn(moveI % 2))
-                return false;
-
-            activePlayer = activePlayer.equals(Alliance.WHITE) ? Alliance.BLACK : Alliance.WHITE;
-            moveI++;
-
-            MediaPlayer np = media.playSound("move.mp3");
-            np.play();
-        }
-
-        return state;
+        return movePiece(move.start,move.end);
     }
 
     /**
@@ -280,20 +235,34 @@ public class Board extends AbstractBoard {
      */
     public void performAttack(Vector2 start, Vector2 end, Vector2 victim) {
         MoveNode node = new MoveNode(getPiece(start), start, end, getPiece(victim));
-        //resources.Console.println("Performing attack: " + node);
 
         removePiece(victim);
         logMove(node);
     }
 
-    private void performPawnPromotion(Pawn piece, Vector2 start, Vector2 end) {
-        Alliance alliance = piece.alliance();
+    public void transformPiece(Vector2 pos, Piece newType) {
+        AbstractChessPiece oldPiece = getPiece(pos);
+        if(oldPiece == null) return;
 
-        char c = new GameBoard().pawnPromotion().charAt(0);
+        removePiece(pos);
+        addPiece(pos, newType, oldPiece.alliance());
+    }
 
-        removePiece(start);
-        addPiece(end, PieceManager.toPiece(c).piece, alliance);
-        logMove(new MoveNode(piece, start, end, getPiece(end)));
+    /**
+     * Simulates a move (bypasses legalMove), then restores this board to it's prior state
+     * @param start Start-position of simulated move
+     * @param end End-position of simulated move
+     * @return If king is in check after performed move
+     */
+    public boolean simulateCheck(Vector2 start, Vector2 end, Alliance alliance) {
+        Board tempBoard = clone();
+
+        forceMovePiece(start, end);
+        King king = getKing(alliance);
+        boolean checked = king.inCheck();
+        sync(tempBoard);
+
+        return checked;
     }
 
     /**
@@ -303,5 +272,17 @@ public class Board extends AbstractBoard {
     @Override
     public Board clone() {
         return new Board(this);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder str = new StringBuilder();
+        for(int y = 0; y < size(); y++) {
+            for (int x = 0; x < size(); x++) {
+                str.append("").append(PieceManager.toSymbol(getPiece(new Vector2(x, y))));
+            }
+            str.append("\n");
+        }
+        return str.toString();
     }
 }

@@ -14,7 +14,7 @@ public class MediaHelper {
      * @param fileName
      * @return Playable sound
      */
-    public MediaPlayer playSound(String fileName) {
+    public MediaPlayer getMediaPlayer(String fileName) {
         String path = "sounds/" + fileName;
         ClassLoader cLoader = getClass().getClassLoader();
         Media sound;
@@ -28,6 +28,10 @@ public class MediaHelper {
         return null;
     }
 
-
-
+    public boolean play(String fileName) {
+        MediaPlayer mp = getMediaPlayer(fileName);
+        if(mp == null) return false;
+        mp.play();
+        return true;
+    }
 }

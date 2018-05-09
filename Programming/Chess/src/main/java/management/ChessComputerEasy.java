@@ -22,7 +22,7 @@ public class ChessComputerEasy extends ChessComputer {
 
         for(Vector2 key : pieces.keySet()) {
             IChessPiece piece = pieces.get(key);
-            Set<Vector2> destinations = piece.getPossibleDestinations();
+            Set<Vector2> destinations = piece.getPossibleActions();
 
             if(piece instanceof Pawn) {
                 for(Vector2 destination : ((Pawn) piece).getPossibleAttacks()) {
