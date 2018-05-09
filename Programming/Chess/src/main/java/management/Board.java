@@ -255,6 +255,10 @@ public class Board extends AbstractBoard {
      * @return If king is in check after performed move
      */
     public boolean simulateCheck(Vector2 start, Vector2 end, Alliance alliance) {
+        if(!hasKing(alliance)) {
+            Console.printWarning("Board doesn't have a " + alliance + " KING");
+            return false;
+        }
         Board tempBoard = clone();
 
         forceMovePiece(start, end);

@@ -98,19 +98,7 @@ public class King extends ChessPiece {
         if(start.equals(position()))
             return !movesIntoCheck(end);
 
-        AbstractChessPiece other = board.getPiece(start);
-        boolean doPrint = start.getY() == 7 && other != null && other.piece() == Piece.QUEEN;
-
-        if(doPrint) Console.printNotice(start + " -> " + end + " resolves check?");
-
-        Board tempBoard = board.clone();
-
-        board.forceMovePiece(start, end);
-        boolean checked = inCheck();
-
-        board.sync(tempBoard);
-
-        return !checked;
+        return !board.simulateCheck(start, end, alliance);
     }
 
     /**
@@ -178,8 +166,9 @@ public class King extends ChessPiece {
         Vector2 endRookPos = destination.add(diff > 0 ? Vector2.W : Vector2.E);
 
         // Move and update position of rook that was castled
-        board.forceMovePiece(rookPos, endRookPos);
-        board.addDrawPos(rookPos, endRookPos);
+        board.suspendPieces(position());
+        board.performAdditionalAction(rookPos, endRookPos);
+        board.releasePieces(position());
         return true;
     }
 }
