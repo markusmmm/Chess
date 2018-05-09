@@ -56,12 +56,13 @@ public abstract class AbstractChessPiece implements IChessPiece {
 				Set<Vector2> terminatedDirs = new HashSet<>();
 				for (Vector2 d : dirs) {
 					Vector2 move = d.mult(variable);
-					AbstractChessPiece enemy = board.getPiece(position().add(move));
+					Vector2 destination = position.add(move);
 
-					if ((!evaluate(move) || (enemy != null && enemy.alliance() != alliance())) && !canJump) {
-						// Obstacle/enemy reached. If the piece can't jump, no further evaluation is needed in direction d
+					if(legalMove(destination))
+                        possibleDestinations.add(destination);
+					if (!board.insideBoard(destination) || board.getPiece(destination) != null)
+                        // Piece/end of board reached. No need to further evaluate direction
 						terminatedDirs.add(d);
-					}
 				}
 				dirs.removeAll(terminatedDirs);
 			}
