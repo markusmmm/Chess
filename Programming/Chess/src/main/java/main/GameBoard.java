@@ -106,7 +106,9 @@ public class GameBoard {
             Console.print("Attempting to open path " + path);
 
             try {
-                boardVal = new Board(new File(System.getProperty("user.home"), "GitGud/" + path), difficulty);
+                File file = new File(System.getProperty("user.home"), "GitGud/chessTutorial/" + path + ".txt");
+                System.out.println(file);
+                boardVal = new Board(file, difficulty);
             } catch (FileNotFoundException e) {
                 //e.printCaller();
                 //System.err.println("Game setup failed! exiting...");
