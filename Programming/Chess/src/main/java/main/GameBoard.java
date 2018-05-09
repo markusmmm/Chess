@@ -66,7 +66,6 @@ public class GameBoard {
 
     public GameBoard(String user1, String user2, int difficulty, BoardMode boardMode, Main main,
                      Stage stage, BorderPane root, String username, ObjectId gameId, HostServices hostServices) {
-        //this(user1, user2, difficulty, boardMode, main, stage, root, username);
         this(user1, user2, difficulty, boardMode, main, stage, root, username, hostServices);
         this.online = true;
         this.gameId = gameId;
@@ -77,41 +76,33 @@ public class GameBoard {
 
     public GameBoard(String user1, String user2, int difficulty, BoardMode boardMode, Main main, Stage stage, BorderPane root, String username, HostServices hostServices) {
         this.hostServices = hostServices;
-
-        Board boardVal = null;
-
         this.player1 = new Player(user1, Alliance.WHITE);
         this.player2 = new Player(user2, Alliance.BLACK);
         this.database = new DatabaseController();
-
-
         this.numberOfPuzzlesCompleted = database.getPuzzlesCompleted(user1);
         player1.setPuzzlesCompleted(numberOfPuzzlesCompleted);
+        Board boardVal = null;
 
         if(boardMode == BoardMode.CHESSPUZZLES){
             chessPuzzles = new ChessPuzzles();
             this.numberOfPuzzles = chessPuzzles.getSizeOfDirectory();
-
-            String path;
-
+            String path = "";
             if(numberOfPuzzlesCompleted < numberOfPuzzles) {
-                 path = chessPuzzles.getFile(numberOfPuzzlesCompleted);
+                 path = path + chessPuzzles.getFile(numberOfPuzzlesCompleted);
             } else {
                 completedAllPuzzles();
                 path = chessPuzzles.getRandomFile();
             }
-
-
             Console.print("Attempting to open path " + path);
-
             try {
-                boardVal = new Board(new File(path + Main.SAVE_EXTENSION), difficulty);
+                File file = new File(System.getProperty("user.home"), "GitGud/chessTutorial/" + path + Main.SAVE_EXTENSION);
+                boardVal = new Board(file, difficulty);
             } catch (FileNotFoundException e) {
                 //e.printCaller();
                 //System.err.println("Game setup failed! exiting...");
                 //System.exit(1);
 
-                Console.printWarning("Save file 'default' not found. Attempting legacy generation...");
+                Console.printWarning("Save file " + path + " not found. Attempting legacy generation...");
                 boardVal = new Board(SIZE, difficulty,false, boardMode);
             }
         }
@@ -152,10 +143,7 @@ public class GameBoard {
         this.gameId = null;
         this.username = username;
 
-
         setComputer();
-
-
 
         Console.printSuccess("Game setup (Difficulty " + difficulty + ")");
     }
@@ -178,7 +166,7 @@ public class GameBoard {
     /**
      * Setups the necessary tiles and structures to be able to create a board
      */
-    public void createBoard() {
+    void createBoard() {
         for (int row = 0; row < SIZE; row++) {
             for (int col = 0; col < SIZE; col++) {
                 Rectangle rect = new Rectangle();
@@ -268,7 +256,7 @@ public class GameBoard {
         drawBoard();
     }
 
-    public MenuBar generateGameMenuBar() {
+    MenuBar generateGameMenuBar() {
         MenuBar menuBar = new MenuBar();
         Menu menuFile = new Menu("File");
         Menu menuHelp = new Menu("Help");
@@ -317,7 +305,7 @@ public class GameBoard {
         performLoad(selectedFile);
     }
 
-    public void performLoad(File file) {
+    void performLoad(File file) {
         if(file != null) {
             try {
                 board = new Board(file);
@@ -342,7 +330,7 @@ public class GameBoard {
             board.saveBoard(file);
     }
 
-    public void completedAllPuzzles(){
+    private void completedAllPuzzles(){
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setHeaderText("You have already completed all of the puzzles");
         alert.setContentText("Starting a random puzzle");
@@ -356,7 +344,8 @@ public class GameBoard {
         return;
 
     }
-    public void chessPuzzlePopup(){
+
+    private void chessPuzzlePopup(){
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
 
@@ -383,7 +372,7 @@ public class GameBoard {
         }
     }
 
-    public void puzzleCompleted(){
+    private void puzzleCompleted(){
 
         database.updatePuzzlesCompleted(player1.getUsername(),(player1.getPuzzlesCompleted()+1));
         player1.setPuzzlesCompleted(player1.getPuzzlesCompleted()+1);
@@ -411,7 +400,9 @@ public class GameBoard {
             if (result.get() == buttonTypeOne) {
 
                 try {
-                    board = new Board(new File(path + Main.SAVE_EXTENSION),board.difficulty());
+                    File file = new File(System.getProperty("user.home"), "GitGud/chessTutorial/" + path + Main.SAVE_EXTENSION);
+                    board = new Board(file, board.difficulty());
+
 
                     createBoard();
                     setComputer();
@@ -512,7 +503,7 @@ public class GameBoard {
         main.mainMenu(username, stage);
     }
 
-    public Move getHint(Alliance alliance) {
+    private Move getHint(Alliance alliance) {
         if(alliance == Alliance.BLACK)
             return blackHelper.getMove();
         else if(alliance == Alliance.WHITE)
@@ -543,8 +534,6 @@ public class GameBoard {
 
     }
     public String pawnPromotion() {
-
-
         ArrayList<String> choices = new ArrayList<>();
         choices.add("QUEEN");
         choices.add("BISHOP");
@@ -553,16 +542,13 @@ public class GameBoard {
 
         ChoiceDialog<String> dialog = new ChoiceDialog<>("QUEEN", choices);
 
-
         dialog.setHeaderText("Promote your pawn");
         dialog.setContentText("Choose your piece:");
 
         Optional<String> result = dialog.showAndWait();
         if (result.isPresent()) {
             String s = result.get().toLowerCase();
-
             return s;
-
         } else {
             return "queen";
         }
@@ -672,7 +658,7 @@ public class GameBoard {
     /**
      * draws the chessboard
      */
-    public void drawBoard() {
+    private void drawBoard() {
         drawPieces();
         drawSquares();
         drawPlayerTurn();
@@ -691,7 +677,7 @@ public class GameBoard {
     /**
      * draws the pieces on the board
      */
-    public void drawPieces() {
+    private void drawPieces() {
         for (Vector2 pos : board.clearDrawPieces()) {
             tiles[pos.getY()][pos.getX()].drawPiece();
         }
@@ -700,7 +686,7 @@ public class GameBoard {
     /**
      * draws the black and white squares on the chessboard
      */
-    public void drawSquares() {
+    private void drawSquares() {
         for (int row = 0; row < SIZE; row++) {
             for (int col = 0; col < SIZE; col++) {
                 if ((row + col) % 2 == 0) {
@@ -722,26 +708,16 @@ public class GameBoard {
         }
 
     }
-    public void printTiles() {
-        for (int row = 0; row < SIZE; row++) {
-            for (int col = 0; col < SIZE; col++) {
-                System.out.print(tiles[col][row].getPiece() + " ");
-            }
-            System.out.print("\n");
-        }
-    }
 
-    public boolean isYourTurn() {
+    private boolean isYourTurn() {
         Player player;
         if (board.getActivePlayer() == Alliance.WHITE)
             player = player1;
         else player = player2;
-        if (player.getUsername().equals(username))
-            return true;
-        return false;
+        return player.getUsername().equals(username);
     }
     
-    public boolean gameOver() {
+    private boolean gameOver() {
         King whiteKing = board.getKing(Alliance.WHITE),
                 blackKing = board.getKing(Alliance.BLACK);
         if(boardMode == BoardMode.CHESSPUZZLES){
@@ -809,7 +785,7 @@ public class GameBoard {
         return true;
     }
 
-    public BorderPane getContainer() {
+    BorderPane getContainer() {
         return container;
     }
 }

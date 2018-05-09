@@ -21,19 +21,19 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import management.ChessPuzzles;
 import management.DatabaseController;
-import management.HighscoreController;
 import org.apache.commons.io.FileUtils;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import resources.BoardMode;
 import resources.Console;
-import resources.Highscore;
 import resources.MediaHelper;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -42,6 +42,7 @@ public class Main extends Application {
     public static final File SAVES_DIR = new File(System.getProperty("user.home"), "GitGud/");
     public static final File LOGS_DIR = new File(SAVES_DIR, ".logs/");
     public static final File ONLINE_GAME_DIR = new File(SAVES_DIR, ".online/");
+    public static final File CHESS_TUTOR_DIR = new File(SAVES_DIR, "chessTutorial/");
     public static final File CORE_DIR = new File("core/");
     public static final File TESTS_DIR = new File("tests/");
     public static final String DATA_SEPARATOR = "====";
@@ -59,6 +60,7 @@ public class Main extends Application {
     private MenuBar menuBar = generateMenuBar();
     private ListView<String> listView = new ListView<>();
     private List<Document> activeGameData;
+    private ChessPuzzles chessPuzzles = new ChessPuzzles();
     private Timer inviteChecker;
     private Timer gameListUpdater;
 
@@ -95,6 +97,26 @@ public class Main extends Application {
         if (!ONLINE_GAME_DIR.exists())
             ONLINE_GAME_DIR.mkdirs();
 
+        String[] files = chessPuzzles.getAllFiles();
+
+        if (!CHESS_TUTOR_DIR.exists()) {
+            CHESS_TUTOR_DIR.mkdirs();
+
+            for (int i = 0; i < files.length; i++) {
+                File dest = new File(CHESS_TUTOR_DIR, files[i]);
+                URL source = Thread.currentThread().getContextClassLoader()
+                        .getResource("chessTutorial/" + files[i]);
+                System.out.println(dest);
+                System.out.println(source);
+                try {
+                    FileUtils.copyURLToFile(source, dest);
+                    dest.setExecutable(true);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
         if (CORE_DIR.exists()) {
             File[] coreFiles = CORE_DIR.listFiles();
             if (coreFiles == null) return;
@@ -112,6 +134,7 @@ public class Main extends Application {
                         continue;
                     }
                 }
+
 
                 try {
                     FileWriter writer = new FileWriter(destFile);
@@ -362,12 +385,14 @@ public class Main extends Application {
             updateGameList(username);
         });
 
-        HBox leftButtonContainer = new HBox(buttonPlay, buttonForfeit, buttonRefresh);
+        HBox leftButtonContainer = new HBox(buttonPlay, buttonForfeit);
         leftButtonContainer.setSpacing(15);
+        leftButtonContainer.setPrefWidth(450);
 
         VBox leftContainer = new VBox(labelActiveGames, listView, leftButtonContainer);
         leftContainer.setSpacing(15);
         leftContainer.setPadding(new Insets(15, 15, 15, 15));
+        leftContainer.setPrefWidth(450);
 
         VBox container = new VBox(0);
         HBox contentContainer = new HBox(0);
