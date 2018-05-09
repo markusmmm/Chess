@@ -47,6 +47,7 @@ import java.util.*;
 public class Main extends Application {
 
     public static final File SAVES_DIR = new File(System.getProperty("user.home"), "GitGud/");
+    public static final File USER_SAVES_DIR = new File(SAVES_DIR, "saves/");
     public static final File LOGS_DIR = new File(SAVES_DIR, ".logs/");
     public static final File ONLINE_GAME_DIR = new File(SAVES_DIR, ".online/");
     public static final File CORE_DIR = new File("core/");

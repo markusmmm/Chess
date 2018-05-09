@@ -306,14 +306,12 @@ public class GameBoard {
         return menuBar;
     }
 
-
-
     private void performLoad() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Chess Game File");
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Chess Game File", "*" + Main.SAVE_EXTENSION));
-        fileChooser.setInitialDirectory(Main.SAVES_DIR);
+        fileChooser.setInitialDirectory(Main.USER_SAVES_DIR);
         File selectedFile = fileChooser.showOpenDialog(stage);
         performLoad(selectedFile);
     }
@@ -337,7 +335,7 @@ public class GameBoard {
         fileChooser.setTitle("Save Chess Game File");
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Chess Game File", "*" + Main.SAVE_EXTENSION));
-        fileChooser.setInitialDirectory(Main.SAVES_DIR);
+        fileChooser.setInitialDirectory(Main.USER_SAVES_DIR);
         File file = fileChooser.showSaveDialog(stage);
         if (file != null)
             board.saveBoard(file);
