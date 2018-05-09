@@ -60,7 +60,6 @@ public class Main extends Application {
     private MenuBar menuBar = generateMenuBar();
     private ListView<String> listView = new ListView<>();
     private List<Document> activeGameData;
-    private Timer timer;
     private ChessPuzzles chessPuzzles = new ChessPuzzles();
     private Timer inviteChecker;
     private Timer gameListUpdater;
@@ -386,12 +385,14 @@ public class Main extends Application {
             updateGameList(username);
         });
 
-        HBox leftButtonContainer = new HBox(buttonPlay, buttonForfeit, buttonRefresh);
+        HBox leftButtonContainer = new HBox(buttonPlay, buttonForfeit);
         leftButtonContainer.setSpacing(15);
+        leftButtonContainer.setPrefWidth(450);
 
         VBox leftContainer = new VBox(labelActiveGames, listView, leftButtonContainer);
         leftContainer.setSpacing(15);
         leftContainer.setPadding(new Insets(15, 15, 15, 15));
+        leftContainer.setPrefWidth(450);
 
         VBox container = new VBox(0);
         HBox contentContainer = new HBox(0);
