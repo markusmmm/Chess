@@ -286,6 +286,7 @@ public class GameBoard {
             newGameBoard.createBoard();
             root.setCenter(newGameBoard.getContainer());
         });
+
         menuItemLoad.setOnAction(e -> performLoad());
         menuItemUndo.setOnAction(e -> performUndo());
         menuItemSave.setOnAction(e -> performSave());
