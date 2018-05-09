@@ -16,7 +16,7 @@ public class Pawn extends ChessPiece {
 
 	public Pawn(Vector2 position, Alliance alliance, AbstractBoard board, boolean hasMoved, boolean hasDoubleStepped) {
 		super(position, alliance, vectorTools.addAll(alliance == Alliance.BLACK ? Vector2.BOTTOM : Vector2.TOP, new Vector2(0, Tools.allianceDir(alliance) * 2)),
-				MoveType.STEP, board, false, Piece.PAWN, 1, hasMoved);
+				MoveType.STEP, board, false, Piece.PAWN, hasMoved);
 
 		this.hasDoubleStepped = hasDoubleStepped;
 	}
@@ -31,9 +31,9 @@ public class Pawn extends ChessPiece {
 	}
 
 	@Override
-	public void loadData(List<Boolean> vals) {
-		super.loadData(vals);
-		hasDoubleStepped = vals.get(1);
+	public void loadData(List<Boolean> values) {
+		super.loadData(values);
+		hasDoubleStepped = values.get(1);
 	}
 
 	/**
@@ -41,9 +41,8 @@ public class Pawn extends ChessPiece {
 	 * @param destination End position of the attempted move
 	 * @return If the move is legal
 	 */
-	public boolean legalMove(Vector2 destination) {
-		if(!super.legalMove(destination)) return false;
-		//Console.printNotice("Evaluating destination " + destination);
+	public boolean isLegalMove(Vector2 destination) {
+		if(!super.isLegalMove(destination)) return false;
 
 		AbstractChessPiece other = board.getPiece(destination);
 
@@ -55,12 +54,11 @@ public class Pawn extends ChessPiece {
 
 	@Override
 	public boolean move(Vector2 destination) {
-		// En-passant and promotion-checks must occur before super.move, as super.move will update the piece's position
+		// Checks for move type must occur before super.move, as super.move will update the piece's position
 		boolean isDoubleStep = isDoubleStep(destination),
 				isEnPassant = isEnPassant(destination),
 				isPromotion = isPromotion(destination);
 
-		if(isEnPassant) Console.printNotice("Attempting enPassant: " + position() + " -> " + destination);
 		if(!super.move(destination)) return false;
 
 		if(isDoubleStep)
@@ -84,7 +82,7 @@ public class Pawn extends ChessPiece {
 	}
 
 	@Override
-	public Set<Vector2> getPossibleAttacks() {
+	public Set<Vector2> getLegalAttacks() {
 		Vector2 position = position();
 
 		int dir = Tools.allianceDir(alliance);

@@ -17,8 +17,8 @@ public class RulesTest {
     @Test public void rookN()                           { perform("rook",                    true,  new Move(0,7,0,4)); }
     @Test public void rookE()                           { perform("rook",                    true,  new Move(0,7,4,7)); }
     @Test public void bishopNE()                        { perform("bishop",                  true,  new Move(2,7,4,5)); }
-    @Test public void knightNW()                        { perform("knight",                  true,  new Move(1,7,0,5)); }
-    @Test public void knightNE()                        { perform("knight",                  true,  new Move(1,7,2,5)); }
+    @Test public void knight2NW()                        { perform("knight",                  true,  new Move(1,7,0,5)); }
+    @Test public void knight2NE()                        { perform("knight",                  true,  new Move(1,7,2,5)); }
     @Test public void queenN()                          { perform("queen",                   true,  new Move(3,7,3,4)); }
     @Test public void queenE()                          { perform("queen",                   true,  new Move(3,7,5,7)); }
     @Test public void queenNE()                         { perform("queen",                   true,  new Move(3,7,5,5)); }

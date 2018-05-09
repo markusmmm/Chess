@@ -1,19 +1,15 @@
 package management;
 
-import javafx.scene.media.MediaPlayer;
 import pieces.*;
 import resources.*;
 
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.lang.reflect.Method;
 import java.util.*;
-import java.util.concurrent.Callable;
 
 public class Board extends AbstractBoard {
     MediaHelper media = new MediaHelper();
-    private BoardMode mode = null;
 
     private static final Piece[] defaultBoard = new Piece[]{
             Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK,
@@ -35,7 +31,6 @@ public class Board extends AbstractBoard {
     public Board(int size, int difficulty) {
         super(size, difficulty,false);
     }
-    //public Board(int size) { super(size, 0, false); }
 
     /**
      * Creates a new square board
@@ -97,9 +92,8 @@ public class Board extends AbstractBoard {
     }
 
     /**
-     * Gives all active pieces of a given alliance
      * @param alliance The alliance of the pieces to find
-     * @return All matching pieces on this board
+     * @return All active pieces owned by the given alliance
      */
     public HashMap<Vector2, AbstractChessPiece> getPieces(Alliance alliance) {
         HashMap<Vector2, AbstractChessPiece> pieces = getPieces();
@@ -114,13 +108,17 @@ public class Board extends AbstractBoard {
         return temp;
     }
 
-    public Set<Move> getAllPossibleMoves(Alliance alliance) {
+    /**
+     * @param alliance Alliance to get moves from
+     * @return All possible actions an alliance can legally perform
+     */
+    public Set<Move> getAllLegalActions(Alliance alliance) {
         Set<Move> moves = new HashSet<>();
 
         HashMap<Vector2, AbstractChessPiece> pieces = getPieces(alliance);
         for(Vector2 pos : pieces.keySet()) {
             AbstractChessPiece piece = pieces.get(pos);
-            for(Vector2 end : piece.getPossibleActions())
+            for(Vector2 end : piece.getLegalActions())
                 moves.add(new Move(pos, end));
         }
 
@@ -143,7 +141,7 @@ public class Board extends AbstractBoard {
             if (piece == null) continue; // Ignore empty squares
 
             if (insideBoard(pos) && piece.alliance().equals(alliance)) {
-                Set<Vector2> possibleDestinations = piece.getPossibleActions();
+                Set<Vector2> possibleDestinations = piece.getLegalActions();
                 if (possibleDestinations.size() == 0) continue; // If the piece has no valid moves, ignore it
 
                 usablePieces.put(pos, piece);
@@ -240,6 +238,11 @@ public class Board extends AbstractBoard {
         logMove(node);
     }
 
+    /**
+     * Transform a piece on the board into another piece
+     * @param pos Position of piece to transform
+     * @param newType Type of resulting piece
+     */
     public void transformPiece(Vector2 pos, Piece newType) {
         AbstractChessPiece oldPiece = getPiece(pos);
         if(oldPiece == null) return;
@@ -249,7 +252,7 @@ public class Board extends AbstractBoard {
     }
 
     /**
-     * Simulates a move (bypasses legalMove), then restores this board to it's prior state
+     * Simulates a move (bypasses isLegalMove), then restores this board to it's prior state
      * @param start Start-position of simulated move
      * @param end End-position of simulated move
      * @return If king is in check after performed move
@@ -278,6 +281,9 @@ public class Board extends AbstractBoard {
         return new Board(this);
     }
 
+    /**
+     * @return A text-representation of the board's current state
+     */
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();

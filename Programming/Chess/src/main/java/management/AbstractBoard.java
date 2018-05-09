@@ -83,19 +83,11 @@ public class AbstractBoard {
             capturedPieces = other.getCapturedPieces();
 
             gameLog = (Stack<MoveNode>) other.gameLog.clone();
-
-
-            checkBoardState();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
             mutex.release();
         }
-    }
-
-    private void checkBoardState() {
-        //if(!hasKing(Alliance.WHITE) || !hasKing(Alliance.BLACK))
-            //Console.printWarning("Non-conventional game setup (one or more kings missing). Game-over check not supported");
     }
 
     public int moveI() {
@@ -118,13 +110,11 @@ public class AbstractBoard {
             reader = new Scanner(file);
         }
 
-        //Console.printNotice("Attempting to load board from save " + file.getAbsolutePath());
-
         // Load board data
         size = reader.nextInt();
         int diff = reader.nextInt();
-        if(diff >= 0 && diff <= 3)
-            difficulty = diff;
+        if(diff >= 0 && diff <= 3) difficulty = diff;
+
         generateClock(reader.nextInt() != 0);
         int logSize = reader.nextInt();
         moveI = reader.nextInt();
@@ -163,16 +153,15 @@ public class AbstractBoard {
         // Jump to next line
         if(reader.hasNextLine())
             reader.nextLine();
+        // Read next line of data, if it exists
         if(reader.hasNextLine()) {
             nextData = reader.nextLine();
         }
 
         // Load capturedPieces
-        // If the save file doesn't contain capturedPieces, this operation will instead behave as a primer before loading piece data
         if(!nextData.equals(Main.DATA_SEPARATOR)) {
             for (int i = 0; i < nextData.length(); i++) {
                 char c = nextData.charAt(i);
-
                 capturedPieces.add(PieceManager.toPiece(c));
             }
         }
@@ -186,18 +175,18 @@ public class AbstractBoard {
                             y = reader.nextInt();
                     Vector2 pos = new Vector2(x, y);
 
-                    List<Boolean> vals = new ArrayList<>();
+                    List<Boolean> values = new ArrayList<>();
                     boolean hasMoved = reader.nextInt() == 1;
-                    vals.add(hasMoved);
+                    values.add(hasMoved);
 
                     AbstractChessPiece piece = getPiece(pos);
                     if (piece != null) {
                         if (piece instanceof Pawn) {
                             boolean hasDoubleStepped = reader.nextInt() == 1;
                             //Console.printNotice("Loaded pawn at " + piece.position() + ". hasDoubleStepped: " + hasDoubleStepped);
-                            vals.add(hasDoubleStepped);
+                            values.add(hasDoubleStepped);
                         }
-                        piece.loadData(vals);
+                        piece.loadData(values);
 
                         removePiece(pos);
                         putPiece(pos, piece);
@@ -211,8 +200,6 @@ public class AbstractBoard {
         }
 
         reader.close();
-
-        checkBoardState();
     }
 
     /**

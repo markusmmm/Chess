@@ -13,12 +13,13 @@ public interface IChessPiece {
 	Vector2 position();
 	Alliance alliance();
 	Piece piece();
-	int getValue();
 
-	Set<Vector2> getPossibleActions();
-	Set<Vector2> getPossibleAttacks();
+	Set<Vector2> getLegalActions();
+	Set<Vector2> getLegalAttacks();
 
 	boolean hasMoved();
+
+	boolean isLegalMove(Vector2 destination);
 
 	/**
 	 *
@@ -26,7 +27,7 @@ public interface IChessPiece {
 	 */
 	boolean move(Vector2 end);
 
-	void loadData(List<Boolean> vals);
+	void loadData(List<Boolean> values);
 
 	boolean freePath(Vector2 destination);
 
