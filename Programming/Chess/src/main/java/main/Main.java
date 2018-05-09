@@ -298,8 +298,9 @@ public class Main extends Application {
         buttonHighScore.setOnAction(e -> highscore(username, stage));
         buttonQuit.setOnAction(e -> onQuit());
 
-        //mp.play();
-        //mp.setCycleCount(-1);
+        mp.play();
+        mp.setCycleCount(-1);
+        mp.setVolume(.1);
 
         // Setups the right container of the buttons
         VBox rightContainer = new VBox(5);
