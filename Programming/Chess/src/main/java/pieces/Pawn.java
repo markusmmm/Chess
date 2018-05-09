@@ -47,7 +47,7 @@ public class Pawn extends ChessPiece {
 
 		AbstractChessPiece other = board.getPiece(destination);
 
-		if(hasMoved() && isDoubleStep(destination)) return false;
+		if((hasMoved() || hasDoubleStepped()) && isDoubleStep(destination)) return false;
 
 		boolean validMove = (destination.getX() == position().getX()) == (other == null);
 		return isEnPassant(destination) || validMove;
@@ -101,7 +101,7 @@ public class Pawn extends ChessPiece {
 	 * @return If the move is an attempted double-step
 	 */
 	private boolean isDoubleStep(Vector2 destination) {
-		return Math.abs(destination.getY() - position().getY()) > 1 && !hasMoved();
+		return Math.abs(destination.getY() - position().getY()) > 1;
 	}
 
 	/**
