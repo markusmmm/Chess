@@ -55,6 +55,7 @@ public class ChessPuzzles {
         int i = r.nextInt(sizeOfDirectory);
 
         String fileString = files[i].toString();
+        fileString = fileString.substring(0, fileString.lastIndexOf('.'));
 
         return fileString;
     }

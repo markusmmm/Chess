@@ -106,8 +106,7 @@ public class GameBoard {
             Console.print("Attempting to open path " + path);
 
             try {
-                File file = new File(System.getProperty("user.home"), "GitGud/chessTutorial/" + path + ".txt");
-                System.out.println(file);
+                File file = new File(System.getProperty("user.home"), "GitGud/chessTutorial/" + path + Main.SAVE_EXTENSION);
                 boardVal = new Board(file, difficulty);
             } catch (FileNotFoundException e) {
                 //e.printCaller();
@@ -413,7 +412,8 @@ public class GameBoard {
             if (result.get() == buttonTypeOne) {
 
                 try {
-                    board = new Board(new File(System.getProperty("user.home"), "GitGud/" + path), board.difficulty());
+                    File file = new File(System.getProperty("user.home"), "GitGud/chessTutorial/" + path + Main.SAVE_EXTENSION);
+                    board = new Board(file, board.difficulty());
 
 
                     createBoard();
