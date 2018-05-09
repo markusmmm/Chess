@@ -20,7 +20,11 @@ public class BoardLibrary {
 
     private boolean set(String boardName) {
         try {
-            boards.put(boardName, new Board(new File(directory, boardName + Main.SAVE_EXTENSION)));
+
+            File file = new File(directory, boardName + Main.SAVE_EXTENSION);
+            if(!file.exists()) return false;
+
+            boards.put(boardName, new Board(file));
             return true;
         } catch (FileNotFoundException e) {
             e.printStackTrace();

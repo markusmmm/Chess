@@ -133,11 +133,11 @@ public class King extends ChessPiece {
         int x = kingPos.getX();
         int y = kingPos.getY();
 
-        int diff = rookPos.getX() - x;
+        int castlingDir = Tools.sign(rookPos.getX() - x);
         if(!rook.freePath(kingPos)) return false;
 
         // King can't pass through or end up at a checked destination
-        return !inCheck(new Vector2(x + diff,y)) && !inCheck(new Vector2(x + diff*2, y));
+        return !inCheck(new Vector2(x + castlingDir,y)) && !inCheck(new Vector2(x + castlingDir*2, y));
     }
 
     /**

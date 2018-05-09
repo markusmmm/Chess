@@ -5,16 +5,15 @@ import org.junit.Test;
 import resources.Console;
 import resources.Move;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 
 import static org.junit.Assert.assertTrue;
 
 public class RulesTest {
-    BoardLibrary boards = new BoardLibrary(Main.SAVES_DIR);
+    BoardLibrary boards = new BoardLibrary(Main.TESTS_DIR);
 
     public class TestNode {
-        public final File testFile;
+        public final String testName;
         public final Move[] moves;
         public final boolean expectedResult;
 
@@ -25,7 +24,7 @@ public class RulesTest {
          * @param moves: Vararg collection of moves to attempt on the loaded board
          */
         public TestNode(String testName, boolean expectedResult, Move... moves) {
-            testFile = new File(Main.TESTS_DIR, testName + Main.TEST_EXTENSION);
+            this.testName = testName;
             this.moves = moves;
             this.expectedResult = expectedResult;
         }
@@ -37,7 +36,7 @@ public class RulesTest {
                 movesStr += move.toString() + "  |  ";
             movesStr = movesStr.substring(0,movesStr.length() - 5) + " ]";
 
-            return testFile.getName() + "\t" + movesStr + "\n\tExpected result: " + expectedResult;
+            return testName + "\t" + movesStr + "\n\tExpected result: " + expectedResult;
         }
     }
 
@@ -78,7 +77,7 @@ public class RulesTest {
         for(TestNode test : tests) {
             boolean actual = false, expected = test.expectedResult;
             try {
-                Board board = new Board(test.testFile);
+                Board board = boards.get(test.testName);
                 actual = true;
                 for (Move move : test.moves) {
                     if (!board.movePiece(move)) {
@@ -88,15 +87,14 @@ public class RulesTest {
                 }
 
                 assertTrue(actual == expected);
-            } catch (FileNotFoundException e) {
-                Console.printError("Test-file " + test.testFile.getName() + " does not exist");
+            } catch (AssertionError e) {
+                Console.printError(test + "\n\tActual result: " + actual);
                 continue;
-            } catch (Exception e) {
-                Console.printError(test + "\nActual result: " + actual);
-                continue;
+            } catch (NullPointerException e) {
+                Console.printError("Test-file " + test.testName + " does not exist");
             }
             nSuccess++;
-            Console.printSuccess(test + "\n SUCCESS");
+            Console.printSuccess(test + "\n\tSUCCESS");
         }
         Console.printNotice("\n\nRESULT: " + nSuccess + " / " + nTests + " tests succeeded");
     }
