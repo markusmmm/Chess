@@ -1,3 +1,4 @@
+import main.Main;
 import management.Board;
 import management.BoardLibrary;
 import org.junit.Test;
@@ -7,7 +8,7 @@ import resources.Vector2;
 import static org.junit.Assert.assertTrue;
 
 public class CloneBoardTest {
-    private final BoardLibrary boards = new BoardLibrary();
+    private final BoardLibrary boards = new BoardLibrary(Main.CORE_DIR);
 
     @Test
     public void CloneCantChangeOrgTest() {

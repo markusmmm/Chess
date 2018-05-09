@@ -1,5 +1,6 @@
 import main.Main;
 import management.Board;
+import management.BoardLibrary;
 import org.junit.Test;
 import resources.Console;
 import resources.Move;
@@ -10,11 +11,19 @@ import java.io.FileNotFoundException;
 import static org.junit.Assert.assertTrue;
 
 public class RulesTest {
+    BoardLibrary boards = new BoardLibrary(Main.SAVES_DIR);
+
     public class TestNode {
         public final File testFile;
         public final Move[] moves;
         public final boolean expectedResult;
 
+        /**
+         * Defines a node for testing a sequence of moves for a given board state
+         * @param testName Name of board state to load in prior to testing (No file-extension)
+         * @param expectedResult Expected result of performing the given move(s)
+         * @param moves: Vararg collection of moves to attempt on the loaded board
+         */
         public TestNode(String testName, boolean expectedResult, Move... moves) {
             testFile = new File(Main.TESTS_DIR, testName + Main.TEST_EXTENSION);
             this.moves = moves;
@@ -32,7 +41,7 @@ public class RulesTest {
         }
     }
 
-    public TestNode[] tests = new TestNode[] {
+    private TestNode[] tests = new TestNode[] {
             new TestNode("rook",                     true,  new Move(0,7,0,4)),  //vertical
             new TestNode("rook",                     true,  new Move(0,7,4,7)),  //horizontal
             new TestNode("bishop",                   true,  new Move(2,7,4,5)),  //positive diagonal
@@ -58,12 +67,19 @@ public class RulesTest {
     };
 
     @Test
+    /**
+     * Loops through all defined TestNode-objects, and asserts for each node, that performing all defined moves in
+     * sequence will give the expectedResult
+     */
     public void rulesTest() {
+        int nTests = tests.length;
+        int nSuccess = 0;
+
         for(TestNode test : tests) {
+            boolean actual = false, expected = test.expectedResult;
             try {
                 Board board = new Board(test.testFile);
-                boolean expected = test.expectedResult;
-                boolean actual = true;
+                actual = true;
                 for (Move move : test.moves) {
                     if (!board.movePiece(move)) {
                         actual = false;
@@ -71,11 +87,17 @@ public class RulesTest {
                     }
                 }
 
-                Console.println("Performing test: " + test + "\n\tActual result: " + actual);
                 assertTrue(actual == expected);
             } catch (FileNotFoundException e) {
                 Console.printError("Test-file " + test.testFile.getName() + " does not exist");
+                continue;
+            } catch (Exception e) {
+                Console.printError(test + "\nActual result: " + actual);
+                continue;
             }
+            nSuccess++;
+            Console.printSuccess(test + "\n SUCCESS");
         }
+        Console.printNotice("\n\nRESULT: " + nSuccess + " / " + nTests + " tests succeeded");
     }
 }

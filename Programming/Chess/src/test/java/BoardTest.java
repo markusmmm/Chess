@@ -1,3 +1,4 @@
+import main.Main;
 import management.Board;
 import management.BoardLibrary;
 import org.junit.Test;
@@ -10,7 +11,7 @@ import static org.junit.Assert.*;
 
 public class BoardTest {
     private final Vector2 queenPos = new Vector2(3,7);
-    private final BoardLibrary boards = new BoardLibrary();
+    private final BoardLibrary boards = new BoardLibrary(Main.CORE_DIR);
 
     @Test
     public void piecesAreLoadedOntoBoardTest() {

@@ -7,17 +7,20 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 
 /**
- * Used to store a library of multiple boards (useful for tests)
+ * Stores and manages a library of multiple boards (useful for tests)
+ * Prevents the same board from being loaded twice into the library
  */
 public class BoardLibrary {
     private HashMap<String, Board> boards = new HashMap<>();
+    private final File directory;
 
-    public BoardLibrary() {
+    public BoardLibrary(File directory) {
+        this.directory = directory;
     }
 
     private boolean set(String boardName) {
         try {
-            boards.put(boardName, new Board(new File(Main.CORE_DIR, boardName + Main.SAVE_EXTENSION)));
+            boards.put(boardName, new Board(new File(directory, boardName + Main.SAVE_EXTENSION)));
             return true;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
