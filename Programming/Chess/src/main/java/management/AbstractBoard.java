@@ -185,15 +185,17 @@ public class AbstractBoard {
                     vals.add(hasMoved);
 
                     AbstractChessPiece piece = getPiece(pos);
-                    if (piece instanceof Pawn) {
-                        boolean hasDoubleStepped = reader.nextInt() == 1;
-                        vals.add(hasDoubleStepped);
-                    }
-                    piece.loadData(vals);
-                    //Console.printNotice("Loading piece " + piece + "\nsource.hasMoved: " + vals.get(0) + ", target.hasMoved: " + piece.hasMoved());
+                    if (piece != null) {
+                        if (piece instanceof Pawn) {
+                            boolean hasDoubleStepped = reader.nextInt() == 1;
+                            vals.add(hasDoubleStepped);
+                        }
+                        piece.loadData(vals);
+                        //Console.printNotice("Loading piece " + piece + "\nsource.hasMoved: " + vals.get(0) + ", target.hasMoved: " + piece.hasMoved());
 
-                    removePiece(pos);
-                    putPiece(pos, piece);
+                        removePiece(pos);
+                        putPiece(pos, piece);
+                    }
                 }
 
                 // All data loaded. Break the outer loop
@@ -455,37 +457,6 @@ public class AbstractBoard {
             e.printStackTrace();
 
             mutex.release();
-            return false;
-        }
-    }
-
-    public boolean transformPiece(Vector2 pos, Piece newType) {
-        try {
-            mutex.acquire();
-            //resources.Console.println("Mutex acquired by transformPiece");
-
-            AbstractChessPiece piece = pieces.get(pos);
-            if (piece == null) {
-                mutex.release();
-                //resources.Console.println("Mutex released");
-                return false;
-            }
-
-            pieces.remove(pos);
-
-            AbstractChessPiece newPiece = createPiece(pos, newType, piece.alliance());
-
-            pieces.put(pos, newPiece);
-            drawPositions.push(pos);
-
-            mutex.release();
-            //resources.Console.println("Mutex released");
-            return true;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } finally {
-            mutex.release();
-            //resources.Console.println("Mutex released");
             return false;
         }
     }

@@ -1,5 +1,6 @@
 package main;
 
+import javafx.application.HostServices;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -12,25 +13,14 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import management.*;
-import pieces.IChessPiece;
-import pieces.King;
-import resources.MediaHelper;
-import resources.*;
-import resources.Console;
-import management.Board;
-import resources.Move;
 import org.bson.types.ObjectId;
-import pieces.ChessPiece;
 import pieces.IChessPiece;
 import pieces.King;
 import resources.*;
 
-
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -40,6 +30,8 @@ import java.util.*;
 import static org.apache.commons.io.FileUtils.readFileToString;
 
 public class GameBoard {
+    private HostServices hostServices;
+
     MediaHelper media = new MediaHelper();
     private final int SIZE = 8;
     private Board board;
@@ -73,8 +65,9 @@ public class GameBoard {
     private Timer thread;
 
     public GameBoard(String user1, String user2, int difficulty, BoardMode boardMode, Main main,
-                     Stage stage, BorderPane root, String username, ObjectId gameId) {
-        this(user1, user2, difficulty, boardMode, main, stage, root, username);
+                     Stage stage, BorderPane root, String username, ObjectId gameId, HostServices hostServices) {
+        //this(user1, user2, difficulty, boardMode, main, stage, root, username);
+        this(user1, user2, difficulty, boardMode, main, stage, root, username, hostServices);
         this.online = true;
         this.gameId = gameId;
         this.thread = new Timer();
@@ -82,8 +75,9 @@ public class GameBoard {
                 0, 4 * 1000);
     }
 
-    public GameBoard(String user1, String user2, int difficulty, BoardMode boardMode, Main main,
-                     Stage stage, BorderPane root, String username) {
+    public GameBoard(String user1, String user2, int difficulty, BoardMode boardMode, Main main, Stage stage, BorderPane root, String username, HostServices hostServices) {
+        this.hostServices = hostServices;
+
         Board boardVal = null;
 
         this.player1 = new Player(user1, Alliance.WHITE);
@@ -156,8 +150,8 @@ public class GameBoard {
         this.gameStatus = new Text();
         this.database = new DatabaseController();
         this.online = false;
-        this.username = username;
         this.gameId = null;
+        this.username = username;
 
 
         setComputer();
@@ -245,22 +239,19 @@ public class GameBoard {
         capturedPieces.setPrefHeight(200);
         capturedPieces.setId("moveLog");
 
-        if(boardMode != BoardMode.CHESSPUZZLES || !online) {
-
+        right.getChildren().addAll(labelMoveLog, moveLog, labelCapturedPieces, capturedPieces);
+        if(!online && boardMode != BoardMode.CHESSPUZZLES) {
             Button buttonHint = new Button();
             buttonHint.setText("Hint");
             buttonHint.setOnAction(e -> {
                 Move move = getHint(board.getActivePlayer());
-
-
                 squares[move.start.getY()][move.start.getX()].setFill(Color.CYAN);
                 squares[move.end.getY()][move.end.getX()].setFill(Color.LIMEGREEN);
-
-
             });
-
-            right.getChildren().addAll(labelMoveLog, moveLog, labelCapturedPieces, capturedPieces, buttonHint);
-
+            VBox hintContainer = new VBox();
+            hintContainer.setPadding(new Insets(5, 10, 5, 10));
+            hintContainer.getChildren().add(buttonHint);
+            right.getChildren().add(hintContainer);
         }
 
         VBox statusFieldContainer = new VBox();
@@ -268,8 +259,8 @@ public class GameBoard {
         statusFieldContainer.getChildren().add(gameStatus);
         statusFieldContainer.setId("informationFieldContainer");
 
-        container.setCenter(grid);
         container.setRight(right);
+        container.setCenter(grid);
         container.setBottom(statusFieldContainer);
 
         root.setTop(generateGameMenuBar());
@@ -292,7 +283,7 @@ public class GameBoard {
 
         menuItemExit.setOnAction(e -> goToMenu(username, stage));
         menuItemReset.setOnAction(e -> {
-            GameBoard newGameBoard = new GameBoard(player1.getUsername(), player2.getUsername(), board.difficulty(), boardMode, main, stage, root, username);
+            GameBoard newGameBoard = new GameBoard(player1.getUsername(), player2.getUsername(), board.difficulty(), boardMode, main, stage, root, username, hostServices);
             newGameBoard.createBoard();
             root.setCenter(newGameBoard.getContainer());
         });
@@ -305,8 +296,10 @@ public class GameBoard {
             menuFile.getItems().addAll(menuItemExit, menuItemQuit);
         else
             menuFile.getItems().addAll(menuItemExit, menuItemReset, menuItemLoad, menuItemSave, menuItemUndo, menuItemQuit);
-        MenuItem menuItemAbout = new MenuItem("About");
-        menuHelp.getItems().add(menuItemAbout);
+
+        MenuItem menuItemManual = new MenuItem("User Manual");
+        menuItemManual.setOnAction(e -> hostServices.showDocument(Main.USER_MANUAL_URL));
+        menuHelp.getItems().add(menuItemManual);
 
         menuBar.getMenus().addAll(menuFile, menuHelp);
         return menuBar;
@@ -340,7 +333,7 @@ public class GameBoard {
 
     private void performSave() {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open Chess Game File");
+        fileChooser.setTitle("Save Chess Game File");
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Chess Game File", "*" + Main.SAVE_EXTENSION));
         fileChooser.setInitialDirectory(Main.SAVES_DIR);
@@ -351,7 +344,7 @@ public class GameBoard {
 
     public void completedAllPuzzles(){
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setHeaderText("You have already completed all of the puzzlds");
+        alert.setHeaderText("You have already completed all of the puzzles");
         alert.setContentText("Starting a random puzzle");
 
         Optional<ButtonType> result = alert.showAndWait();
@@ -377,8 +370,8 @@ public class GameBoard {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == buttonTypeOne){
+            GameBoard newGameBoard = new GameBoard(player1.getUsername(), player2.getUsername(), board.difficulty(), boardMode, main, stage, root, player1.getUsername(), hostServices);
 
-            GameBoard newGameBoard = new GameBoard(player1.getUsername(), player2.getUsername(), board.difficulty(), boardMode, main, stage, root, player1.getUsername());
             newGameBoard.createBoard();
             root.setCenter(newGameBoard.getContainer());
 
@@ -432,7 +425,8 @@ public class GameBoard {
                 }
 
             } else if (result.get() == buttonTypeTwo) {
-                GameBoard newGameBoard = new GameBoard(player1.getUsername(), player2.getUsername(), board.difficulty(), boardMode, main, stage, root, player1.getUsername());
+                GameBoard newGameBoard = new GameBoard(player1.getUsername(), player2.getUsername(), board.difficulty(), boardMode, main, stage, root, player1.getUsername(), hostServices);
+
                 newGameBoard.createBoard();
                 root.setCenter(newGameBoard.getContainer());
 
@@ -456,13 +450,18 @@ public class GameBoard {
 
     }
 
-    private void attemptMove(Tile firstTile, Vector2 pos) {
+    /**
+     * Attempts to move the piece at the given tile to the given position
+     * @param firstTile Tile where the piece to move is placed
+     * @param destination End position of attempted move
+     */
+    private void attemptMove(Tile firstTile, Vector2 destination) {
         IChessPiece temp = board.getPiece(firstTile.getPos());
         if(!board.ready()) {
             Console.println("Board not ready. Move failed");
             return;
         } else if(temp == null) {
-            Console.println("No piece at " + pos + ". Move failed");
+            Console.println("No piece at " + destination + ". Move failed");
             return;
         }
 
@@ -473,16 +472,13 @@ public class GameBoard {
             Vector2 correctMoveEnd = move.getEnd();
             Vector2 correctMoveStart = move.getStart();
 
-            if(!(correctMoveEnd.equals(pos) && correctMoveStart.equals(firstTile.getPos()))){
+            if(!(correctMoveEnd.equals(destination) && correctMoveStart.equals(firstTile.getPos()))){
                 chessPuzzlePopup();
             }
 
         }
 
-        //resources.Console.println("Before: " + temp.position());
-
-        boolean moveResult = board.movePiece(firstTile.getPos(), pos);
-       // resources.Console.println("Outer move result: " + moveResult);
+        boolean moveResult = board.movePiece(firstTile.getPos(), destination);
         if (moveResult) {
             Console.println("Has computer: " + (computer != null));
             if (computer != null) {

@@ -177,6 +177,15 @@ public abstract class AbstractChessPiece implements IChessPiece {
 	}
 
 	/**
+	 * Standard behaviour is that for all places a piece can move, it can also attack
+	 * @return All positions this piece can attack
+	 */
+	@Override
+	public Set<Vector2> getPossibleAttacks() {
+		return getPossibleDestinations();
+	}
+
+	/**
 	 * @return Whether or not the piece has been moved during the game
 	 */
 	public boolean hasMoved() {
@@ -185,23 +194,33 @@ public abstract class AbstractChessPiece implements IChessPiece {
 
 
 	/**
-	 * 
-	 * @param destination
+	 * Attempts to move the piece to the given destination
+	 * @param destination End position of attempted move
 	 */
-	public boolean move(Vector2 destination, Board board) {
-		this.board = board;
-
+	public boolean move(Vector2 destination) {
 		//resources.Console.println("Attempting to move " + alliance + " " + piece + " from " + position + " to " + move);
 		if (!legalMove(destination)) return false; // If the destination is unreachable, the move fails
 
-		position = destination;
-		media.playSound("move.mp3");
-		hasMoved = true;
+		performMove(destination);
 
 		//resources.Console.println("Move performed. New pos: " + position);
 		return true;
 	}
 
+	/**
+	 * Performs a move to the given destination
+	 * @param destination End position of move to perform
+	 */
+	protected void performMove(Vector2 destination) {
+		position = destination;
+		media.playSound("move.mp3");
+		hasMoved = true;
+	}
+
+	/**
+	 * Loads all dynamic piece data
+	 * @param vals Data values to load
+	 */
 	public void loadData(List<Boolean> vals) {
 		hasMoved = vals.get(0);
 	}
@@ -211,7 +230,7 @@ public abstract class AbstractChessPiece implements IChessPiece {
 	 * toward destination
 	 * @return false if runs into another piece
 	 */
-	protected boolean freePath(Vector2 destination) {
+	public boolean freePath(Vector2 destination) {
 		Vector2 position = position();
 
 		Vector2 path = position;
