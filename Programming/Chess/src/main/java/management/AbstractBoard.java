@@ -61,7 +61,7 @@ public class AbstractBoard {
         this.difficulty = difficulty;
     }
 
-    private void sync(AbstractBoard other) {
+    protected void sync(AbstractBoard other) {
         try {
             mutex.acquire();
 
