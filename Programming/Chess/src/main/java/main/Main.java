@@ -21,6 +21,7 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
+import management.ChessPuzzles;
 import management.DatabaseController;
 
 import management.HighscoreController;
@@ -40,6 +41,7 @@ import resources.MediaHelper;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -47,6 +49,8 @@ import java.util.Scanner;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+
+import static sun.jvm.hotspot.utilities.PlatformInfo.getOS;
 
 public class Main extends Application {
 
@@ -71,6 +75,7 @@ public class Main extends Application {
     private ObservableList<String> observableActiveGameList;
     private List<Document> activeGameData;
     private Timer timer;
+    private ChessPuzzles chessPuzzles = new ChessPuzzles();
 
     public static void main(String[] args) {
         launch(args);
@@ -101,6 +106,22 @@ public class Main extends Application {
         if (!ONLINE_GAME_DIR.exists())
             ONLINE_GAME_DIR.mkdirs();
 
+        String[] files = chessPuzzles.getAllFiles();
+
+        for(int i = 0; i > files.length; i++) {
+
+            File dest = new File(Main.SAVES_DIR, files[i]);
+            if (!dest.exists()) {
+                URL source = getClass().getResource(files[i]);
+                try {
+                    FileUtils.copyURLToFile(source, dest);
+                    dest.setExecutable(true);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
         if (CORE_DIR.exists()) {
             File[] coreFiles = CORE_DIR.listFiles();
             if (coreFiles == null) return;
@@ -118,6 +139,7 @@ public class Main extends Application {
                         continue;
                     }
                 }
+
 
                 try {
                     FileWriter writer = new FileWriter(destFile);

@@ -98,10 +98,11 @@ public class GameBoard {
             chessPuzzles = new ChessPuzzles();
             this.numberOfPuzzles = chessPuzzles.getSizeOfDirectory();
 
-            String path;
+            String path = "";
 
             if(numberOfPuzzlesCompleted < numberOfPuzzles) {
-                 path = chessPuzzles.getFile(numberOfPuzzlesCompleted);
+                 path = path + chessPuzzles.getFile(numberOfPuzzlesCompleted);
+
             } else {
                 completedAllPuzzles();
                 path = chessPuzzles.getRandomFile();
@@ -111,13 +112,13 @@ public class GameBoard {
             Console.print("Attempting to open path " + path);
 
             try {
-                boardVal = new Board(new File(path + Main.SAVE_EXTENSION), difficulty);
+                boardVal = new Board(new File(System.getProperty("user.home"), "GitGud/" + path), difficulty);
             } catch (FileNotFoundException e) {
                 //e.printCaller();
                 //System.err.println("Game setup failed! exiting...");
                 //System.exit(1);
 
-                Console.printWarning("Save file 'default' not found. Attempting legacy generation...");
+                Console.printWarning("Save file " + path + " not found. Attempting legacy generation...");
                 boardVal = new Board(SIZE, difficulty,false, boardMode);
             }
         }
@@ -417,7 +418,8 @@ public class GameBoard {
             if (result.get() == buttonTypeOne) {
 
                 try {
-                    board = new Board(new File(path + Main.SAVE_EXTENSION),board.difficulty());
+                    board = new Board(new File(System.getProperty("user.home"), "GitGud/" + path), board.difficulty());
+
 
                     createBoard();
                     setComputer();
