@@ -1,8 +1,7 @@
 import management.Board;
 import org.junit.Assert;
 import org.junit.Test;
-import pieces.ChessPiece;
-import pieces.King;
+import pieces.AbstractChessPiece;
 import pieces.Queen;
 import resources.Alliance;
 import resources.Piece;
@@ -38,7 +37,7 @@ public class BoardTest {
     public void addPieceEmptyBoardTest() {
         Vector2 queenPos = new Vector2(1,1);
         Board board = new Board(3, 0);
-        ChessPiece queen = board.addPiece(queenPos, Piece.QUEEN, Alliance.WHITE);
+        AbstractChessPiece queen = board.addPiece(queenPos, Piece.QUEEN, Alliance.WHITE);
         Assert.assertEquals(queen, board.getPiece(queenPos));
     }
     @Test
@@ -48,8 +47,8 @@ public class BoardTest {
         Board board = new Board(3, 0);
         Vector2 newQueenPos = new Vector2(2,1);
 
-        ChessPiece queen = board.addPiece(queenPos, Piece.QUEEN, Alliance.WHITE);
-        ChessPiece king = board.addPiece(kingPos, Piece.KING, Alliance.WHITE); //can't move without a king
+        AbstractChessPiece queen = board.addPiece(queenPos, Piece.QUEEN, Alliance.WHITE);
+        AbstractChessPiece king = board.addPiece(kingPos, Piece.KING, Alliance.WHITE); //can't move without a king
 
         board.movePiece(queenPos, newQueenPos);
 
@@ -61,7 +60,7 @@ public class BoardTest {
         Vector2 queenPos = new Vector2(1,1);
         Board board = new Board(3, 0);
 
-        ChessPiece queen = board.addPiece(queenPos, Piece.QUEEN, Alliance.WHITE);
+        AbstractChessPiece queen = board.addPiece(queenPos, Piece.QUEEN, Alliance.WHITE);
 
         Assert.assertTrue(board.getPiece(queenPos) instanceof Queen);
     }

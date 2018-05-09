@@ -1,11 +1,7 @@
 package management;
 
-import pieces.ChessPiece;
+import pieces.AbstractChessPiece;
 import resources.*;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
 
 public class PieceManager {
     private static final char EMPTY_CHAR = 'e';
@@ -29,7 +25,7 @@ public class PieceManager {
 
         return new PieceNode(Piece.EMPTY, Alliance.NONE);
     }
-    public static PieceNode toPiece(ChessPiece piece) {
+    public static PieceNode toPiece(AbstractChessPiece piece) {
         if(piece == null) return new PieceNode(Piece.EMPTY, Alliance.NONE);
         return new PieceNode(piece.piece(), piece.alliance());
     }
@@ -42,7 +38,7 @@ public class PieceManager {
 
         return EMPTY_CHAR;
     }
-    public static char toSymbol(ChessPiece piece) {
+    public static char toSymbol(AbstractChessPiece piece) {
         return toSymbol(toPiece(piece));
     }
 }

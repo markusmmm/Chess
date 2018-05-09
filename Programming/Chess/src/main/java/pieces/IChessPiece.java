@@ -16,6 +16,7 @@ public interface IChessPiece {
 	int getValue();
 
 	Set<Vector2> getPossibleDestinations();
+	Set<Vector2> getPossibleAttacks();
 
 	boolean hasMoved();
 
@@ -23,9 +24,11 @@ public interface IChessPiece {
 	 *
 	 * @param end
 	 */
-	boolean move(Vector2 end, Board board);
+	boolean move(Vector2 end);
 
 	void loadData(List<Boolean> vals);
 
-	ChessPiece clonePiece();
+	boolean freePath(Vector2 destination);
+
+	AbstractChessPiece clonePiece();
 }
