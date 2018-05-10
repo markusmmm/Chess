@@ -2,7 +2,7 @@ import main.Main;
 import management.Board;
 import management.BoardLibrary;
 import org.junit.Test;
-import pieces.AbstractChessPiece;
+import pieces.IChessPiece;
 import pieces.Queen;
 import resources.Alliance;
 import resources.Vector2;
@@ -35,7 +35,7 @@ public class BoardTest {
         Board board = boards.get("queen");
 
         board.movePiece(queenPos, newQueenPos);
-        AbstractChessPiece piece = board.getPiece(newQueenPos);
+        IChessPiece piece = board.getPiece(newQueenPos);
 
         assertTrue(board.getPiece(queenPos) == null &&
                 piece != null && piece.position().equals(newQueenPos));

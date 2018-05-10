@@ -18,14 +18,10 @@ public abstract class AbstractChessPiece implements IChessPiece {
 
 		protected boolean evaluate(Vector2 move) {
 			Vector2 destination = position().add(move);
-			//Console.printNotice(clonePiece() + " evaluates destination " + destination);
-
 			if(isLegalMove(destination)) {
 				possibleDestinations.add(destination);
-				//Console.printSuccess("Move success");
 				return true;
 			}
-			//Console.printError("Move failure");
 			return false;
 		}
 
@@ -249,13 +245,14 @@ public abstract class AbstractChessPiece implements IChessPiece {
 
     @Override
 	public boolean equals(Object o) {
-		if(!(o instanceof AbstractChessPiece)) return false;
-		AbstractChessPiece other = (AbstractChessPiece)o;
+		if(!(o instanceof IChessPiece)) return false;
+        IChessPiece other = (IChessPiece)o;
 
-		return position == other.position;
+		return position == other.position();
 	}
 
-    public AbstractChessPiece clone() {
+	@Override
+    public IChessPiece clone() {
 		return clonePiece();
 	}
 }

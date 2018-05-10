@@ -15,7 +15,7 @@ public class Queen extends ChessPiece {
     }
 
     @Override
-    public AbstractChessPiece clonePiece() {
+    public IChessPiece clonePiece() {
         return new Queen(this);
     }
 }

@@ -1,6 +1,6 @@
 package management;
 
-import pieces.AbstractChessPiece;
+import pieces.IChessPiece;
 import resources.*;
 
 public class PieceManager {
@@ -25,7 +25,7 @@ public class PieceManager {
 
         return new PieceNode(Piece.EMPTY, Alliance.NONE);
     }
-    public static PieceNode toPiece(AbstractChessPiece piece) {
+    public static PieceNode toPiece(IChessPiece piece) {
         if(piece == null) return new PieceNode(Piece.EMPTY, Alliance.NONE);
         return new PieceNode(piece.piece(), piece.alliance());
     }
@@ -38,7 +38,7 @@ public class PieceManager {
 
         return EMPTY_CHAR;
     }
-    public static char toSymbol(AbstractChessPiece piece) {
+    public static char toSymbol(IChessPiece piece) {
         return toSymbol(toPiece(piece));
     }
 }

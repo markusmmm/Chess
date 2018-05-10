@@ -17,7 +17,7 @@ public class Bishop extends ChessPiece {
 	}
 
 	@Override
-	public AbstractChessPiece clonePiece() {
+	public IChessPiece clonePiece() {
 		return new Bishop(this);
 	}
 }

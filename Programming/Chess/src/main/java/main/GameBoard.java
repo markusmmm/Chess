@@ -619,7 +619,6 @@ public class GameBoard {
                 Console.println("Not your alliance");
                 return false;
             }
-            //resources.Console.println(piece);
 
             firstClick = true;
             firstTile = tile;

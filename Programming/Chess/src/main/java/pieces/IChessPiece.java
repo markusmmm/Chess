@@ -31,5 +31,7 @@ public interface IChessPiece {
 
 	boolean freePath(Vector2 destination);
 
-	AbstractChessPiece clonePiece();
+    IChessPiece clonePiece();
+
+	IChessPiece clone();
 }

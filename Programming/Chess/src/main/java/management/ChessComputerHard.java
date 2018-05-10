@@ -1,12 +1,10 @@
 package management;
 
-import pieces.AbstractChessPiece;
+import pieces.IChessPiece;
 import resources.Alliance;
 import resources.Move;
 import resources.Piece;
-import resources.Vector2;
-
-import java.util.Scanner;
+import resources.Vector2
 
 public class ChessComputerHard extends ChessComputer {
     private Stockfish ai = new Stockfish();
@@ -106,7 +104,7 @@ public class ChessComputerHard extends ChessComputer {
     }
 
     private boolean hasMoved(Vector2 pos) {
-        AbstractChessPiece piece = board.getPiece(pos);
+        IChessPiece piece = board.getPiece(pos);
         if(piece == null) return true;
         return !piece.hasMoved();
     }
@@ -144,7 +142,7 @@ public class ChessComputerHard extends ChessComputer {
         spacecounter = 0;
     }
 
-    private String translatePiece(AbstractChessPiece piece) {
+    private String translatePiece(IChessPiece piece) {
         String translated = "";
         if(piece.piece() == Piece.PAWN && piece.alliance() == Alliance.WHITE) translated = "P";
         else if (piece.piece() == Piece.ROOK && piece.alliance() == Alliance.WHITE) translated = "R";

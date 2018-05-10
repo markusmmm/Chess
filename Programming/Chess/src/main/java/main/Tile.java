@@ -26,18 +26,14 @@ public class Tile extends Rectangle {
 
 
     public void drawPiece() {
-        //System.out.print("Printing " + pos + ": ");
-
         if(getPiece() == null) {
             setFill(Color.TRANSPARENT);
-            //resources.Console.println(" EMPTY");
             return;
         }
 
         String pieceName = getPiece().piece().toString();
-        //resources.Console.println(pieceName);
-
         String s = "";
+
         if (getPieceColor() == Alliance.WHITE)
             s += "w_";
         else
@@ -62,23 +58,5 @@ public class Tile extends Rectangle {
             return getPiece().alliance();
         else
             return null;
-    }
-
-    public boolean tileClicked(MouseEvent e, Alliance alliance) {
-        IChessPiece piece = getPiece();
-
-       // resources.Console.println(pos + ": ");
-
-        if (piece == null) {
-            Console.println("No piece");
-            return false;
-        }
-        if (piece.alliance() != alliance) {
-            Console.println("Not your alliance");
-            return false;
-        }
-
-        Console.println("legal piece");
-        return true;
     }
 }

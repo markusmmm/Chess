@@ -16,7 +16,7 @@ public class King extends ChessPiece {
     }
 
     @Override
-    public AbstractChessPiece clonePiece() {
+    public IChessPiece clonePiece() {
         return new King(this);
     }
 
@@ -53,7 +53,7 @@ public class King extends ChessPiece {
         boolean checked = false;
         board.suspendPieces(position);
 
-        HashMap<Vector2, AbstractChessPiece> hostilePieces = board.getPieces(otherAlliance());
+        HashMap<Vector2, IChessPiece> hostilePieces = board.getPieces(otherAlliance());
         for(IChessPiece hostile : hostilePieces.values()) {
             if(hostile.getLegalAttacks().contains(destination)) {
                 checked = true;

@@ -17,7 +17,7 @@ public class Rook extends ChessPiece {
 	}
 
 	@Override
-	public AbstractChessPiece clonePiece() {
+	public IChessPiece clonePiece() {
 		return new Rook(this);
 	}
 }

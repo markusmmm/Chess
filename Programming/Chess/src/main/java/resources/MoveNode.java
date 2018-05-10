@@ -1,7 +1,8 @@
 package resources;
 
 import management.PieceManager;
-import pieces.AbstractChessPiece;
+import pieces.IChessPiece;
+import pieces.IChessPiece;
 
 public class MoveNode {
     public final PieceNode piece;
@@ -14,7 +15,7 @@ public class MoveNode {
         this.end = end;
         this.victimPiece = victimPiece;
     }
-    public MoveNode(AbstractChessPiece piece, Vector2 start, Vector2 end, AbstractChessPiece victimPiece) {
+    public MoveNode(IChessPiece piece, Vector2 start, Vector2 end, IChessPiece victimPiece) {
         this.piece = PieceManager.toPiece(piece);
         this.start = start;
         this.end = end;

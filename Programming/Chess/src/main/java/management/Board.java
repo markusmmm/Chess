@@ -95,12 +95,12 @@ public class Board extends AbstractBoard {
      * @param alliance The alliance of the pieces to find
      * @return All active pieces owned by the given alliance
      */
-    public HashMap<Vector2, AbstractChessPiece> getPieces(Alliance alliance) {
-        HashMap<Vector2, AbstractChessPiece> pieces = getPieces();
-        HashMap<Vector2, AbstractChessPiece> temp = new HashMap<>();
+    public HashMap<Vector2, IChessPiece> getPieces(Alliance alliance) {
+        HashMap<Vector2, IChessPiece> pieces = getPieces();
+        HashMap<Vector2, IChessPiece> temp = new HashMap<>();
 
         for(Vector2 pos : pieces.keySet()) {
-            AbstractChessPiece piece = pieces.get(pos);
+            IChessPiece piece = pieces.get(pos);
             if (piece.alliance().equals(alliance))
                 temp.put(pos, piece);
         }
@@ -115,9 +115,9 @@ public class Board extends AbstractBoard {
     public Set<Move> getAllLegalActions(Alliance alliance) {
         Set<Move> moves = new HashSet<>();
 
-        HashMap<Vector2, AbstractChessPiece> pieces = getPieces(alliance);
+        HashMap<Vector2, IChessPiece> pieces = getPieces(alliance);
         for(Vector2 pos : pieces.keySet()) {
-            AbstractChessPiece piece = pieces.get(pos);
+            IChessPiece piece = pieces.get(pos);
             for(Vector2 end : piece.getLegalActions())
                 moves.add(new Move(pos, end));
         }
@@ -164,7 +164,7 @@ public class Board extends AbstractBoard {
         // Attempt move
         boolean moveSuccess = performAdditionalAction(start, end);
         if (moveSuccess) {
-            setLastPiece(getPiece(end));
+            setLastMovedPiece(getPiece(end));
 
             activePlayer = activePlayer.equals(Alliance.WHITE) ? Alliance.BLACK : Alliance.WHITE;
             moveI++;
@@ -188,7 +188,7 @@ public class Board extends AbstractBoard {
         ChessClock clock = getClock();
         if(clock != null && !clock.endTurn(moveI % 2)) return false;
 
-        AbstractChessPiece piece = getPiece(start);
+        IChessPiece piece = getPiece(start);
 
         // Check if a piece exists at the given position
         if (piece == null) return false;
@@ -203,7 +203,7 @@ public class Board extends AbstractBoard {
             removePiece(start);
             putPiece(end, piece);
 
-            AbstractChessPiece victim = getPiece(end);
+            IChessPiece victim = getPiece(end);
             //Remove hostile attacked piece, if any
             if (victim != null && !victim.alliance().equals(piece.alliance())) {
                 capturePiece(victim);
@@ -245,7 +245,7 @@ public class Board extends AbstractBoard {
      * @param newType Type of resulting piece
      */
     public void transformPiece(Vector2 pos, Piece newType) {
-        AbstractChessPiece oldPiece = getPiece(pos);
+        IChessPiece oldPiece = getPiece(pos);
         if(oldPiece == null) return;
 
         removePiece(pos);

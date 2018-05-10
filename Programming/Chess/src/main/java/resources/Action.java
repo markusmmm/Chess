@@ -1,14 +1,14 @@
 package resources;
 
-import pieces.AbstractChessPiece;
+import pieces.IChessPiece;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.Set;
 
-public class Action extends Tuple<AbstractChessPiece, Vector2> {
+public class Action extends Tuple<IChessPiece, Vector2> {
     public enum Type { STEP, LINE }
 
-    public Action(AbstractChessPiece piece, Vector2 dir) {
+    public Action(IChessPiece piece, Vector2 dir) {
         super(piece, dir);
     }
 

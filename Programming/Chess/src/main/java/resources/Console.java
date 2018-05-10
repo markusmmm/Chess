@@ -1,8 +1,7 @@
 package resources;
 
-import main.GameBoard;
 import management.ChessComputerMedium;
-import pieces.AbstractChessPiece;
+import pieces.IChessPiece;
 import pieces.ChessPiece;
 
 import java.util.Arrays;
@@ -15,7 +14,7 @@ public class Console {
 
     private static Set<Class> ignoredCallers = new HashSet<>(Arrays.asList(
             ChessComputerMedium.class
-            , AbstractChessPiece.class
+            , IChessPiece.class
             , ChessPiece.class
     ));
 

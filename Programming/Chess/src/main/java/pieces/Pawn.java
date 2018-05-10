@@ -26,7 +26,7 @@ public class Pawn extends ChessPiece {
 	}
 
 	@Override
-	public AbstractChessPiece clonePiece() {
+	public IChessPiece clonePiece() {
 		return new Pawn(this);
 	}
 
@@ -44,7 +44,7 @@ public class Pawn extends ChessPiece {
 	public boolean isLegalMove(Vector2 destination) {
 		if(!super.isLegalMove(destination)) return false;
 
-		AbstractChessPiece other = board.getPiece(destination);
+		IChessPiece other = board.getPiece(destination);
 
 		if((hasMoved() || hasDoubleStepped()) && isDoubleStep(destination)) return false;
 
@@ -112,10 +112,10 @@ public class Pawn extends ChessPiece {
 		if(dir == 0) throw new IllegalStateException(this + " is not assigned to an alliance");
 
 		Vector2 victimPos = destination.add(new Vector2(0, -dir));
-		AbstractChessPiece victim = board.getPiece(victimPos);
+		IChessPiece victim = board.getPiece(victimPos);
 
 		return victim != null && victim.piece() == Piece.PAWN && victim.alliance() != alliance() &&
-				((Pawn)victim).hasDoubleStepped() && victim.equals(board.getLastPiece());
+				((Pawn)victim).hasDoubleStepped() && victim.equals(board.getLastMovedPiece());
 	}
 
 	/**
