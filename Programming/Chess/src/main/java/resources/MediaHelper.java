@@ -10,9 +10,7 @@ import javax.swing.*;
 public class MediaHelper {
 
     /**
-     * Method to help find and play sound
-     *
-     * @param fileName
+     * @param fileName Name of sound-file
      * @return Playable sound
      */
     public MediaPlayer getMedia(String fileName) {
@@ -23,14 +21,18 @@ public class MediaHelper {
         Media sound;
         try {
             sound = new Media(cLoader.getResource(path).toURI().toString());
-            MediaPlayer mp =  new MediaPlayer(sound);
-            return mp;
+            return new MediaPlayer(sound);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
         return null;
     }
 
+    /**
+     * Loads a given file, and plays it (if it exists)
+     * @param fileName Name of sound-file
+     * @return If the sound was played successfully
+     */
     public boolean play(String fileName) {
         MediaPlayer mp = getMedia(fileName);
         if(mp == null) return false;
