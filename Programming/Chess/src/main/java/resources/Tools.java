@@ -3,20 +3,22 @@ package resources;
 import java.util.*;
 
 public class Tools<E> {
-    public HashSet<E> cloneSet(HashSet<E> set) {
-        HashSet<E> temp = new HashSet<>();
+    public E randomElem(Set<E> set) {
+        if(set.size() == 0) return null;
 
+        Random rand = new Random();
+        int r = rand.nextInt(set.size());
+
+        int i = 0;
         for(E e : set)
-            temp.add(e);
-
-        return temp;
+            if(i++ == r) return e;
+        return null;
     }
 
-    public HashSet<E> addAll(HashSet<E> set, E... elems) {
-        HashSet<E> temp = cloneSet(set);
-
-        for(E e : elems)
-            temp.add(e);
+    @SafeVarargs
+    public final HashSet<E> merge(HashSet<E> set, E... elems) {
+        HashSet<E> temp = (HashSet<E>)set.clone();
+        temp.addAll(Arrays.asList(elems));
 
         return temp;
     }

@@ -15,7 +15,7 @@ public class Pawn extends ChessPiece {
 	private boolean hasDoubleStepped = false;
 
 	public Pawn(Vector2 position, Alliance alliance, AbstractBoard board, boolean hasMoved, boolean hasDoubleStepped) {
-		super(position, alliance, vectorTools.addAll(alliance == Alliance.BLACK ? Vector2.BOTTOM : Vector2.TOP, new Vector2(0, Tools.allianceDir(alliance) * 2)),
+		super(position, alliance, vectorTools.merge(alliance == Alliance.BLACK ? Vector2.BOTTOM : Vector2.TOP, new Vector2(0, Tools.allianceDir(alliance) * 2)),
 				MoveType.STEP, board, false, Piece.PAWN, hasMoved);
 
 		this.hasDoubleStepped = hasDoubleStepped;

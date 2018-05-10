@@ -8,7 +8,7 @@ import java.util.*;
 public class King extends ChessPiece {
     public King(Vector2 position, Alliance alliance, AbstractBoard board, boolean hasMoved) {
         super(position, alliance,
-                vectorTools.addAll(Vector2.UNIT, new Vector2(2,0), new Vector2(-2,0)),
+                vectorTools.merge(Vector2.UNIT, new Vector2(2,0), new Vector2(-2,0)),
                 MoveType.STEP, board, false, Piece.KING, hasMoved);
     }
     public King(King other) {
