@@ -468,7 +468,7 @@ public class Main extends Application {
      * @return chessGame
      */
     private void createChessGame(String player1, String player2, int difficulty, BoardMode boardMode, BorderPane root) {
-        mp.stop();
+        mp.setVolume(.04);
         System.out.println(boardMode);
         GameBoard gameBoard = new GameBoard(player1, player2, difficulty, boardMode, this, stage, root, player1, getHostServices());
         gameBoard.createBoard();

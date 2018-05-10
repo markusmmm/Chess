@@ -20,7 +20,6 @@ Tom Rune Sæverås (yap006)
 Viet Hoang Nguyen (vng006)
 
 
-
 Chess Game Icon:
 - Link: https://www.iconfinder.com/icons/190304/chess_game_icon#size=128
 - By Vlad Marin 
