@@ -48,6 +48,7 @@ public class Main extends Application {
     public static final File CHESS_TUTOR_DIR = new File(SAVES_DIR, "chessTutorial/");
     public static final File CORE_DIR = new File("core/");
     public static final File TESTS_DIR = new File("tests/");
+    public static final File RESOURCES_DIR = new File("src/main/resources/sounds");
     public static final String DATA_SEPARATOR = "====";
     public static final String SAVE_EXTENSION = ".txt";
     public static final String USER_MANUAL_URL = "https://gitlab.uib.no/inf112-v2018/gruppe-3/blob/master/Documentation/User%20manual/User%20Manual.pdf";
@@ -66,11 +67,16 @@ public class Main extends Application {
     private Timer inviteChecker;
     private Timer gameListUpdater;
 
+    private static boolean launched = false;
+    public static boolean hasLaunched() { return launched; }
+
     public static void main(String[] args) {
+        //Launch the application
         launch(args);
+        launched = true;
     }
 
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
         directorySetup();
         root.setCenter(loginWindow());
         Scene scene = new Scene(root);

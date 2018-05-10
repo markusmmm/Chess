@@ -1,11 +1,14 @@
 package resources;
 
 
+import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import main.Main;
 
 import javax.swing.*;
+import java.io.File;
 
 public class MediaHelper {
 
@@ -14,13 +17,14 @@ public class MediaHelper {
      * @return Playable sound
      */
     public MediaPlayer getMedia(String fileName) {
-        if(!Platform.isAccessibilityActive()) return null;
-        
-        String path = "sounds/" + fileName;
-        ClassLoader cLoader = getClass().getClassLoader();
+        if(!Main.hasLaunched()) {
+            Console.printWarning("Application has not yet been launched");
+            return null;
+        }
+
         Media sound;
         try {
-            sound = new Media(cLoader.getResource(path).toURI().toString());
+            sound = new Media((new File(Main.RESOURCES_DIR, "sounds/" + fileName)).getAbsolutePath());
             return new MediaPlayer(sound);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
