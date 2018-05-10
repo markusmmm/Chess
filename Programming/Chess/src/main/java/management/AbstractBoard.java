@@ -127,10 +127,7 @@ public class AbstractBoard {
         for (int y = 0; y < size; y++) {
             String line = reader.next();
             for (int x = 0; x < size; x++) {
-                char c = line.charAt(x);
-
-                Vector2 pos = new Vector2(x, y);
-                addPiece(pos, PieceManager.toPiece(c));
+                addPiece(new Vector2(x, y), PieceManager.toPiece(line.charAt(x)));
             }
         }
 
@@ -145,8 +142,8 @@ public class AbstractBoard {
 
             PieceNode piece = PieceManager.toPiece(p.charAt(0)),
                     victim = PieceManager.toPiece(v.charAt(0));
-            MoveNode node = new MoveNode(piece, new Vector2(x0, y0), new Vector2(x1, y1), victim);
-            gameLog.push(node);
+
+            gameLog.push(new MoveNode(piece, new Vector2(x0, y0), new Vector2(x1, y1), victim));
         }
 
         String nextData = "";
@@ -176,15 +173,12 @@ public class AbstractBoard {
                     Vector2 pos = new Vector2(x, y);
 
                     List<Boolean> values = new ArrayList<>();
-                    boolean hasMoved = reader.nextInt() == 1;
-                    values.add(hasMoved);
+                    values.add(reader.nextInt() == 1); // Load hasMoved
 
                     AbstractChessPiece piece = getPiece(pos);
                     if (piece != null) {
                         if (piece instanceof Pawn) {
-                            boolean hasDoubleStepped = reader.nextInt() == 1;
-                            //Console.printNotice("Loaded pawn at " + piece.position() + ". hasDoubleStepped: " + hasDoubleStepped);
-                            values.add(hasDoubleStepped);
+                            values.add(reader.nextInt() == 1); // Load hasDoubleStepped
                         }
                         piece.loadData(values);
 
