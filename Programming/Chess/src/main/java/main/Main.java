@@ -41,6 +41,7 @@ import java.util.*;
 
 public class Main extends Application {
 
+    public static final File RESOURCES_DIR = new File("src/main/resources/");
     public static final File SAVES_DIR = new File(System.getProperty("user.home"), "GitGud/");
     public static final File USER_SAVES_DIR = new File(SAVES_DIR, "saves/");
     public static final File LOGS_DIR = new File(SAVES_DIR, ".logs/");
@@ -66,8 +67,12 @@ public class Main extends Application {
     private Timer inviteChecker;
     private Timer gameListUpdater;
 
+    private static boolean launched = false;
+    public static boolean hasLaunched() { return launched; }
+
     public static void main(String[] args) {
         launch(args);
+        launched = true;
     }
 
     public void start(Stage primaryStage) throws Exception {
@@ -238,9 +243,6 @@ public class Main extends Application {
         labelWelcome.setTextAlignment(TextAlignment.CENTER);
 
         // Buttons for right container
-        Button buttonCreateOnlineGame = new Button();
-        buttonCreateOnlineGame.setText("CREATE ONLINE GAME");
-
         Button buttonPlayVersus = new Button();
         buttonPlayVersus.setText("PLAY: VERSUS");
 
@@ -250,32 +252,17 @@ public class Main extends Application {
         Button buttonRandomBoardPlay = new Button();
         buttonRandomBoardPlay.setText("PLAY: RANDOM BOARD");
 
-        Button buttonChessTutor = new Button();
-        buttonChessTutor.setText("CHESS TUTORIAL");
+        Button buttonPlayShadam = new Button();
+        buttonPlayShadam.setText("PLAY: SHADAM");
+
+        Button buttonChessPuzzles = new Button();
+        buttonChessPuzzles.setText("CHESS PUZZLES");
 
         Button buttonHighScore = new Button();
         buttonHighScore.setText("HIGHSCORE");
 
         Button buttonQuit = new Button();
         buttonQuit.setText("QUIT");
-
-        buttonCreateOnlineGame.setOnAction(e -> {
-            TextInputDialog dialog = new TextInputDialog();
-            dialog.initStyle(StageStyle.UTILITY);
-            dialog.setTitle("Enter the second players username");
-            dialog.setHeaderText(null);
-            dialog.setGraphic(null);
-            dialog.setContentText("Enter the second players username:");
-            Optional<String> result = dialog.showAndWait();
-            result.ifPresent(player2 -> {
-                if (!username.toLowerCase().equals(player2.toLowerCase())) {
-                    if (!database.userExists(player2))
-                        System.out.println("User does not exist.");
-                    else
-                        database.createGameInvite(username, player2);
-                } else System.out.println("You can't play against yourself!");
-            });
-        });
 
         buttonPlayVersus.setOnAction(e -> {
             TextInputDialog dialog = new TextInputDialog();
@@ -314,25 +301,27 @@ public class Main extends Application {
         });
 
         buttonRandomBoardPlay.setOnAction(e -> createChessGame(username, "AI: Easy", 1, BoardMode.RANDOM, root));
-        buttonChessTutor.setOnAction(e -> createChessGame(username, "AI: Medium", 2, BoardMode.CHESSPUZZLES, root));
+        buttonChessPuzzles.setOnAction(e -> createChessGame(username, "AI: Medium", 2, BoardMode.CHESSPUZZLES, root));
         buttonHighScore.setOnAction(e -> highscore(username, stage));
         buttonQuit.setOnAction(e -> onQuit());
 
-        mp.play();
-        mp.setCycleCount(-1);
-        mp.setVolume(.1);
+        if(mp != null) {
+            mp.play();
+            mp.setCycleCount(-1);
+            mp.setVolume(.1);
+        }
 
         // Setups the right container of the buttons
         VBox rightContainer = new VBox(5);
         //rightContainer.setAlignment(Pos.BASELINE_CENTER);
-        rightContainer.getChildren().addAll(buttonCreateOnlineGame, buttonPlayVersus, buttonPlayAi,
-                buttonRandomBoardPlay, buttonChessTutor, buttonHighScore, buttonQuit);
+        rightContainer.getChildren().addAll(buttonPlayVersus, buttonPlayAi,
+                buttonRandomBoardPlay, buttonPlayShadam, buttonChessPuzzles, buttonHighScore, buttonQuit);
         rightContainer.setPrefWidth(275);
         rightContainer.setPadding(new Insets(25, 15, 0, 15));
 
 
         // START of left container setup
-        Label labelActiveGames = new Label("Active Games");
+        Label labelActiveGames = new Label("Active Online Games");
         labelActiveGames.setTextAlignment(TextAlignment.CENTER);
         labelActiveGames.setId("bold");
 
@@ -377,12 +366,35 @@ public class Main extends Application {
             updateGameList(username);
         });
 
+        /*
         Button buttonRefresh = new Button("Refresh");
         buttonRefresh.setOnAction(event -> {
             updateGameList(username);
         });
+        */
 
-        HBox leftButtonContainer = new HBox(buttonPlay, buttonForfeit);
+        Button buttonCreateOnlineGame = new Button();
+        buttonCreateOnlineGame.setText("Create");
+
+        buttonCreateOnlineGame.setOnAction(e -> {
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.initStyle(StageStyle.UTILITY);
+            dialog.setTitle("Enter the second players username");
+            dialog.setHeaderText(null);
+            dialog.setGraphic(null);
+            dialog.setContentText("Enter the second players username:");
+            Optional<String> result = dialog.showAndWait();
+            result.ifPresent(player2 -> {
+                if (!username.toLowerCase().equals(player2.toLowerCase())) {
+                    if (!database.userExists(player2))
+                        System.out.println("User does not exist.");
+                    else
+                        database.createGameInvite(username, player2);
+                } else System.out.println("You can't play against yourself!");
+            });
+        });
+
+        HBox leftButtonContainer = new HBox(buttonPlay, buttonForfeit, buttonCreateOnlineGame);
         leftButtonContainer.setSpacing(15);
         leftButtonContainer.setPrefWidth(450);
 
@@ -465,14 +477,15 @@ public class Main extends Application {
      * @return chessGame
      */
     private void createChessGame(String player1, String player2, int difficulty, BoardMode boardMode, BorderPane root) {
-        mp.setVolume(.04);
+        if(mp != null)
+            mp.setVolume(.04);
         System.out.println(boardMode);
         GameBoard gameBoard = new GameBoard(player1, player2, difficulty, boardMode, this, stage, root, player1, getHostServices());
         gameBoard.createBoard();
         root.setCenter(gameBoard.getContainer());
         root.setTop(gameBoard.generateGameMenuBar());
         MediaPlayer nmp = media.getMedia("startup.mp3");
-        nmp.play();
+        if(nmp != null) nmp.play();
         inviteChecker.cancel();
         gameListUpdater.cancel();
     }
