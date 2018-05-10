@@ -303,9 +303,8 @@ public class Main extends Application {
         buttonHighScore.setOnAction(e -> highscore(username, stage));
         buttonQuit.setOnAction(e -> onQuit());
 
-        media.play("chess_theme.mp3");
-        media.setCycleCount("\"chess_theme.mp3\"", -1);
-        media.setVolume("\"chess_theme.mp3\"", .1);
+        media.setCycleCount("chess_theme.mp3", -1);
+        media.setVolume("chess_theme.mp3", .1);
 
         // Setups the right container of the buttons
         VBox rightContainer = new VBox(5);

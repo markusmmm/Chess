@@ -3,8 +3,10 @@ package resources;
 
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import main.Main;
 
 import javax.swing.*;
+import java.io.File;
 import java.util.HashMap;
 
 /**
@@ -27,10 +29,9 @@ public class MediaHelper {
         if(sounds.containsKey(fileName))
             return sounds.get(fileName);
 
-        String path = "sounds/" + fileName;
-        ClassLoader cLoader = getClass().getClassLoader();
+        File file = new File(Main.RESOURCES_DIR, "sounds/" + fileName);
         try {
-            MediaPlayer sound = new MediaPlayer(new Media(cLoader.getResource(path).toURI().toString()));
+            MediaPlayer sound = new MediaPlayer(new Media(file.toURI().toString()));
             sounds.put(fileName, sound);
             return sound;
         } catch (Exception e) {
