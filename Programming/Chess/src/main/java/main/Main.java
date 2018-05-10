@@ -39,7 +39,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class Main extends Application {
-    
+
     public static final File SAVES_DIR = new File(System.getProperty("user.home"), "GitGud/");
     public static final File USER_SAVES_DIR = new File(SAVES_DIR, "saves/");
     public static final File LOGS_DIR = new File(SAVES_DIR, ".logs/");

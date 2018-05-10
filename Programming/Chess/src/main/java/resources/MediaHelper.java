@@ -8,6 +8,7 @@ import main.Main;
 import javax.swing.*;
 import java.io.File;
 import java.util.HashMap;
+import java.util.Objects;
 
 /**
  * Handles loading and playing of sounds
@@ -26,12 +27,16 @@ public class MediaHelper {
     private static MediaPlayer getMedia(String fileName) {
         if(!Main.hasLaunched()) return null;
 
+        if(sounds.containsKey(fileName))
+            return sounds.get(fileName);
+        Console.printNotice("Loaded sound " + fileName);
+
         String path = "sounds/" + fileName;
         ClassLoader cLoader = MediaHelper.class.getClassLoader();
-        Media sound;
         try {
-            sound = new Media(cLoader.getResource(path).toURI().toString());
-            return new MediaPlayer(sound);
+            MediaPlayer sound = new MediaPlayer(new Media(Objects.requireNonNull(cLoader.getResource(path)).toURI().toString()));
+            sounds.put(fileName, sound);
+            return sound;
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
