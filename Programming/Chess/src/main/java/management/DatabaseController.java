@@ -75,11 +75,6 @@ public class DatabaseController {
      * @return true (user exists)/false (user does not exist)
      */
     public boolean userExists(String username) {
-        /*long count = db.getCollection("users")
-                .count(new Document("name",
-                        new Document("$regex", username)
-                        .append("$options", "i")
-                ));*/
         long count = db.getCollection("users")
                 .count(new Document("name", username.toLowerCase()));
         if (count > 0)
@@ -94,11 +89,6 @@ public class DatabaseController {
      */
     public int getScore(String username) {
         if (userExists(username)) {
-            /*FindIterable<Document> it = db.getCollection("users")
-                    .find(new Document("name", new Document("$regex", username)
-                            .append("$options", "i")));
-
-            return (int) it.first().get("score");*/
             FindIterable<Document> it = db.getCollection("users")
                     .find(new Document("name", username.toLowerCase()));
             return (int) it.first().get("score");
@@ -106,13 +96,13 @@ public class DatabaseController {
         return 0;
     }
 
+    /**
+     * Retrieves the amount of puzzles completed for the given user
+     * @param username
+     * @return puzzles completed
+     */
     public int getPuzzlesCompleted(String username) {
         if (userExists(username)) {
-            /*FindIterable<Document> it = db.getCollection("users")
-                    .find(new Document("name", new Document("$regex", username)
-                            .append("$options", "i")));
-
-            return (int) it.first().get("score");*/
             FindIterable<Document> it = db.getCollection("users")
                     .find(new Document("name", username.toLowerCase()));
             if(it.first().get("completedPuzzles") == null){
@@ -123,19 +113,16 @@ public class DatabaseController {
         return 0;
     }
 
-
-
     /**
      * Adds the user to the database
      * @param username
      */
     public void addUser(String username) {
         if (!userExists(username)) {
-            db.getCollection("users").insertOne(new Document("name", username.toLowerCase()).append("score", 0).append("completedPuzzles",0));
+            db.getCollection("users").insertOne(new Document("name", username.toLowerCase())
+                    .append("score", 0).append("completedPuzzles", 0));
         }
     }
-
-
 
     /**
      * Updates the score of the user
@@ -151,6 +138,11 @@ public class DatabaseController {
         }
     }
 
+    /**
+     * Updates the game data for the game with matching id
+     * @param id
+     * @param gameData
+     */
     public void updateGame(ObjectId id, String gameData) {
         Document newDoc = new Document();
         newDoc.append("$set", new Document().append("gameData", gameData));
@@ -211,21 +203,15 @@ public class DatabaseController {
         db.getCollection("games").insertOne(query);
     }
 
+    /**
+     * creates a new game invite in the database
+     * @param player1
+     * @param player2
+     */
     public void createGameInvite(String player1, String player2) {
         Document query = new Document("player1", player1.toLowerCase()).append("player2", player2.toLowerCase())
                 .append("inviteAccepted", null);
         db.getCollection("gameInvite").insertOne(query);
-    }
-
-    public void markInviteAsViewed(ObjectId id) {
-        Document newDoc = new Document();
-        newDoc.append("$set", new Document().append("viewed", true));
-        Document searchQuery = new Document().append("_id", id);
-        db.getCollection("games").updateOne(searchQuery, newDoc);
-    }
-
-    public void markInviteAsViewed(String id) {
-        markInviteAsViewed(new ObjectId(id));
     }
 
     /**
@@ -241,8 +227,7 @@ public class DatabaseController {
         newDoc.append("$set", new Document().append("inviteAccepted", accepted));
         Document searchQuery = new Document().append("_id", id);
         db.getCollection("gameInvite").updateOne(searchQuery, newDoc);
-        if (accepted)
-            createOnlineGame(player1.toLowerCase(), player2.toLowerCase());
+        if (accepted) createOnlineGame(player1.toLowerCase(), player2.toLowerCase());
     }
 
     /**
@@ -257,7 +242,7 @@ public class DatabaseController {
     }
 
     /**
-     * Forfeits game
+     * Forfeits game by id
      * @param id
      */
     public void forfeitGame(ObjectId id) {
@@ -285,13 +270,11 @@ public class DatabaseController {
         forfeitGame(new ObjectId(id));
     }
 
-
     /**
      * Updates the number of puzzles completed of the user
      * @param username
      * @param newScore
      */
-
     public void updatePuzzlesCompleted(String username, int newScore) {
         if (userExists(username)) {
             Document newDoc = new Document();
