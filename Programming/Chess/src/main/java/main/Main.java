@@ -50,7 +50,7 @@ public class Main extends Application {
     public static final File TESTS_DIR = new File("tests/");
     public static final String DATA_SEPARATOR = "====";
     public static final String SAVE_EXTENSION = ".txt";
-    public static final String USER_MANUAL_URL = "https://gitlab.uib.no/inf112-v2018/gruppe-3/blob/c9df10dba1e74977d1eb417fa3cf17cc54f19f0d/Documentation/User%20manual/User%20Manual.pdf";
+    public static final String USER_MANUAL_URL = "https://gitlab.uib.no/inf112-v2018/gruppe-3/blob/master/Documentation/User%20manual/User%20Manual.pdf";
     static final int WIDTH = 720;
     static final int HEIGHT = 500;
     MediaHelper media = new MediaHelper();
