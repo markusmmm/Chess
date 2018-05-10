@@ -7,7 +7,6 @@ import javafx.scene.media.MediaPlayer;
 import main.Main;
 
 import javax.swing.*;
-import java.io.File;
 
 public class MediaHelper {
 
@@ -16,11 +15,13 @@ public class MediaHelper {
      * @return Playable sound
      */
     public MediaPlayer getMedia(String fileName) {
-        //if(!Main.hasLaunched()) return null;
+        if(!Main.hasLaunched()) return null;
 
+        String path = "sounds/" + fileName;
+        ClassLoader cLoader = getClass().getClassLoader();
         Media sound;
         try {
-            sound = new Media((new File(Main.RESOURCES_DIR, "sounds/" + fileName)).getAbsolutePath());
+            sound = new Media(cLoader.getResource(path).toURI().toString());
             return new MediaPlayer(sound);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
