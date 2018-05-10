@@ -1,7 +1,6 @@
 package pieces;
 
 import management.AbstractBoard;
-import management.Board;
 import resources.*;
 
 import java.util.*;
@@ -10,7 +9,7 @@ public class King extends ChessPiece {
     public King(Vector2 position, Alliance alliance, AbstractBoard board, boolean hasMoved) {
         super(position, alliance,
                 vectorTools.addAll(Vector2.UNIT, new Vector2(2,0), new Vector2(-2,0)),
-                MoveType.STEP, board, false, Piece.KING, 2, hasMoved);
+                MoveType.STEP, board, false, Piece.KING, hasMoved);
     }
     public King(King other) {
         super(other);
@@ -22,16 +21,16 @@ public class King extends ChessPiece {
     }
 
     @Override
-    public boolean legalMove(Vector2 destination) {
+    public boolean isLegalMove(Vector2 destination) {
         boolean isCastling = isCastling(destination);
-        if(!super.legalMove(destination)) return false;
+        if(!super.isLegalMove(destination)) return false;
         if(isCastling) return getCastlingRook(destination) != null;
         return true;
     }
 
     @Override
     public boolean move(Vector2 destination) {
-        if(isCastling(destination) && legalMove(destination)) {
+        if(isCastling(destination) && isLegalMove(destination)) {
             if(!performCastling(destination)) return false;
             performMove(destination);
             return true;
@@ -56,7 +55,7 @@ public class King extends ChessPiece {
 
         HashMap<Vector2, AbstractChessPiece> hostilePieces = board.getPieces(otherAlliance());
         for(IChessPiece hostile : hostilePieces.values()) {
-            if(hostile.getPossibleAttacks().contains(destination)) {
+            if(hostile.getLegalAttacks().contains(destination)) {
                 checked = true;
                 break;
             }
@@ -98,19 +97,7 @@ public class King extends ChessPiece {
         if(start.equals(position()))
             return !movesIntoCheck(end);
 
-        AbstractChessPiece other = board.getPiece(start);
-        boolean doPrint = start.getY() == 7 && other != null && other.piece() == Piece.QUEEN;
-
-        if(doPrint) Console.printNotice(start + " -> " + end + " resolves check?");
-
-        Board tempBoard = board.clone();
-
-        board.forceMovePiece(start, end);
-        boolean checked = inCheck();
-
-        board.sync(tempBoard);
-
-        return !checked;
+        return !board.simulateCheck(start, end, alliance);
     }
 
     /**
@@ -135,7 +122,6 @@ public class King extends ChessPiece {
      * @return If castling can be performed
      */
     private boolean canCastleWith(Vector2 rookPos) {
-        //Console.printNotice("Checking castling between king " + position() + " and " + rookPos);
         if(hasMoved() || inCheck()) return false;
 
         IChessPiece rook = board.getPiece(rookPos);
@@ -145,11 +131,11 @@ public class King extends ChessPiece {
         int x = kingPos.getX();
         int y = kingPos.getY();
 
-        int diff = rookPos.getX() - x;
+        int castlingDir = Tools.sign(rookPos.getX() - x);
         if(!rook.freePath(kingPos)) return false;
 
         // King can't pass through or end up at a checked destination
-        return !inCheck(new Vector2(x + diff,y)) && !inCheck(new Vector2(x + diff*2, y));
+        return !inCheck(new Vector2(x + castlingDir,y)) && !inCheck(new Vector2(x + castlingDir*2, y));
     }
 
     /**
@@ -169,17 +155,15 @@ public class King extends ChessPiece {
     }
     private boolean performCastling(Vector2 destination) {
         Vector2 rookPos = getCastlingRook(destination);
-        Console.printNotice("rookPos: " + rookPos);
         if(rookPos == null) return false; // No valid rook found. Castling failed
-
-        Console.printNotice("Performing castling: " + position() + " -> " + destination);
 
         int diff = rookPos.getX() - position().getX();
         Vector2 endRookPos = destination.add(diff > 0 ? Vector2.W : Vector2.E);
 
-        // Move and update position of rook that was castled
-        board.forceMovePiece(rookPos, endRookPos);
-        board.addDrawPos(rookPos, endRookPos);
+        // Move rook that was castled (The king is temporarily suspended, so that the rook can move "through" the king's square
+        board.suspendPieces(position());
+        board.performAdditionalAction(rookPos, endRookPos);
+        board.releasePieces(position());
         return true;
     }
 }

@@ -17,7 +17,7 @@ public class Knight  extends ChessPiece {
                         new Vector2(-2, 1), new Vector2(-1, 2),
                         new Vector2( 2,-1), new Vector2( 1,-2),
                         new Vector2(-2,-1), new Vector2(-1,-2))),
-                MoveType.STEP, board, true, Piece.KNIGHT, 3, hasMoved);
+                MoveType.STEP, board, true, Piece.KNIGHT, hasMoved);
 	}
 	public Knight(Knight other) {
 		super(other);

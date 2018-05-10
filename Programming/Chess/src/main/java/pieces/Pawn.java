@@ -1,7 +1,8 @@
 package pieces;
 
+import main.GameBoard;
 import management.AbstractBoard;
-import management.Board;
+import management.PieceManager;
 import resources.*;
 
 import java.util.Arrays;
@@ -9,16 +10,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static resources.Alliance.BLACK;
-import static resources.Alliance.WHITE;
-
 public class Pawn extends ChessPiece {
 
 	private boolean hasDoubleStepped = false;
 
 	public Pawn(Vector2 position, Alliance alliance, AbstractBoard board, boolean hasMoved, boolean hasDoubleStepped) {
 		super(position, alliance, vectorTools.addAll(alliance == Alliance.BLACK ? Vector2.BOTTOM : Vector2.TOP, new Vector2(0, Tools.allianceDir(alliance) * 2)),
-				MoveType.STEP, board, false, Piece.PAWN, 1, hasMoved);
+				MoveType.STEP, board, false, Piece.PAWN, hasMoved);
 
 		this.hasDoubleStepped = hasDoubleStepped;
 	}
@@ -33,9 +31,9 @@ public class Pawn extends ChessPiece {
 	}
 
 	@Override
-	public void loadData(List<Boolean> vals) {
-		super.loadData(vals);
-		hasDoubleStepped = vals.get(1);
+	public void loadData(List<Boolean> values) {
+		super.loadData(values);
+		hasDoubleStepped = values.get(1);
 	}
 
 	/**
@@ -43,45 +41,48 @@ public class Pawn extends ChessPiece {
 	 * @param destination End position of the attempted move
 	 * @return If the move is legal
 	 */
-	public boolean legalMove(Vector2 destination)
-	{
-		if(!super.legalMove(destination)) return false;
+	public boolean isLegalMove(Vector2 destination) {
+		if(!super.isLegalMove(destination)) return false;
 
 		AbstractChessPiece other = board.getPiece(destination);
 
-		// Double step
-		if(hasMoved() && Math.abs(destination.getY() - position().getY()) == 2)
-			return false;
+		if((hasMoved() || hasDoubleStepped()) && isDoubleStep(destination)) return false;
 
 		boolean validMove = (destination.getX() == position().getX()) == (other == null);
-
-		return enPassant(destination) || validMove;
+		return isEnPassant(destination) || validMove;
 	}
 
 	@Override
 	public boolean move(Vector2 destination) {
-		// EnPassant-check must occur before super.move, as super.move will update the piece's position
-		boolean enPassant = enPassant(destination);
+		// Checks for move type must occur before super.move, as super.move will update the piece's position
+		boolean isDoubleStep = isDoubleStep(destination),
+				isEnPassant = isEnPassant(destination),
+				isPromotion = isPromotion(destination);
+
 		if(!super.move(destination)) return false;
 
-		if(enPassant) {
+		if(isDoubleStep)
+			hasDoubleStepped = true;
+		if(isEnPassant) {
 			Vector2 attackPos = destination.sub(new Vector2(0, Tools.allianceDir(alliance)));
 			board.performAttack(position(), destination, attackPos);
+		} else if(isPromotion) {
+			char pieceSymbol = new GameBoard().pawnPromotion().charAt(0);
+			board.transformPiece(position(), PieceManager.toPiece(pieceSymbol).piece);
 		}
 
 		return true;
 	}
 
 	/**
-	 *
-	 * @return Whether this pawn has performed a double stepped during this game
+	 * @return Whether or not this pawn has performed a double step during this game
 	 */
 	public boolean hasDoubleStepped() {
 		return hasDoubleStepped;
 	}
 
 	@Override
-	public Set<Vector2> getPossibleAttacks() {
+	public Set<Vector2> getLegalAttacks() {
 		Vector2 position = position();
 
 		int dir = Tools.allianceDir(alliance);
@@ -93,18 +94,38 @@ public class Pawn extends ChessPiece {
 		));
 	}
 
-	public boolean enPassant(Vector2 destination)
+	/**
+	 * @param destination End-position of move to evaluate
+	 * @return If the move is an attempted double-step
+	 */
+	private boolean isDoubleStep(Vector2 destination) {
+		return Math.abs(destination.getY() - position().getY()) > 1;
+	}
+
+	/**
+	 * @param destination End-position of move to evaluate
+	 * @return If the move is an attempt of en-passant
+	 */
+	private boolean isEnPassant(Vector2 destination)
 	{
 		int dir = Tools.allianceDir(alliance);
 		if(dir == 0) throw new IllegalStateException(this + " is not assigned to an alliance");
 
-		Vector2 delta = destination.sub(position());
-		if(Math.abs(delta.getX()) == 1 && delta.getY() == Tools.allianceDir(alliance)) {
-			AbstractChessPiece other = board.getPiece(destination.add(new Vector2(0, -dir)));
-			return other != null &&
-					other.piece() == Piece.PAWN && other.alliance() != alliance() && !((Pawn)other).hasDoubleStepped()
-					&& other.equals(board.getLastPiece());
-		}
-		return false;
+		Vector2 victimPos = destination.add(new Vector2(0, -dir));
+		AbstractChessPiece victim = board.getPiece(victimPos);
+
+		return victim != null && victim.piece() == Piece.PAWN && victim.alliance() != alliance() &&
+				((Pawn)victim).hasDoubleStepped() && victim.equals(board.getLastPiece());
+	}
+
+	/**
+	 * @param destination End-position of move to evaluate
+	 * @return If the move is an attempt of pawn promotion
+	 */
+	private boolean isPromotion(Vector2 destination) {
+		int firstRankIndex = Tools.firstRankOfAlliance(otherAlliance());
+
+		return destination.getY() == firstRankIndex &&
+				position().getY() == firstRankIndex + Tools.allianceDir(otherAlliance());
 	}
 }

@@ -27,7 +27,7 @@ public abstract class ChessComputer {
 
     public Move resolveMove(Move move) {
         List<Move> validMoves = new ArrayList<>();
-        validMoves.addAll(board.getAllPossibleMoves(alliance));
+        validMoves.addAll(board.getAllLegalActions(alliance));
 
         if(move == null && validMoves.size() != 0) {
             Console.printWarning("Computer found no valid moves in time. Choosing a random valid move...");
