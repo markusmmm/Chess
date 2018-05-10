@@ -24,10 +24,11 @@ public class MediaHelper {
      * @return Playable sound
      */
     private MediaPlayer getMedia(String fileName) {
-        //if(!Main.hasLaunched()) return null;
+        if(!Main.hasLaunched()) return null;
 
         if(sounds.containsKey(fileName))
             return sounds.get(fileName);
+        Console.printSuccess("Loaded sound " + fileName);
 
         File file = new File(Main.RESOURCES_DIR, "sounds/" + fileName);
         try {

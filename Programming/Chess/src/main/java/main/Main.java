@@ -69,8 +69,10 @@ public class Main extends Application {
     public static boolean hasLaunched() { return launched; }
 
     public static void main(String[] args) {
-        launch(args);
         launched = true;
+        Console.printSuccess("Application launched");
+        launch(args);   // Will loop, until the application terminates
+        Console.printNotice("Application terminated");
     }
 
     public void start(Stage primaryStage) throws Exception {
@@ -86,7 +88,6 @@ public class Main extends Application {
         stage.getIcons().add(new Image(Thread.currentThread().getContextClassLoader()
                 .getResourceAsStream("images/chessIcon.png")));
         stage.show();
-        MediaHelper media = new MediaHelper();
         media.play("chess_theme.mp3");
     }
 
@@ -472,7 +473,7 @@ public class Main extends Application {
      * @return chessGame
      */
     private void createChessGame(String player1, String player2, int difficulty, BoardMode boardMode, BorderPane root) {
-        media.setVolume("chess_theme.mp3", .04);
+        media.setMute("chess_theme.mp3", true);
         System.out.println(boardMode);
         GameBoard gameBoard = new GameBoard(player1, player2, difficulty, boardMode, this, stage, root, player1, getHostServices());
         gameBoard.createBoard();
