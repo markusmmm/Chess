@@ -6,6 +6,9 @@ import resources.Move;
 
 import java.util.*;
 
+/**
+ * A player that is controller by an AI
+ */
 public abstract class ChessComputer {
     private final Alliance alliance;
     protected final Board board;
@@ -23,8 +26,16 @@ public abstract class ChessComputer {
         return alliance;
     }
 
+    /**
+     * @return Move that is evaluated as the best move by the AI
+     */
     public abstract Move getMove();
 
+    /**
+     * Controls if the move found by the AI can be used. If not, choose a legal move at random
+     * @param move Move to evaluate
+     * @return Final chosen move
+     */
     public Move resolveMove(Move move) {
         List<Move> validMoves = new ArrayList<>();
         validMoves.addAll(board.getAllLegalActions(alliance));
