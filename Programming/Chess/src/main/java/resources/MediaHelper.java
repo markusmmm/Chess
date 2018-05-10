@@ -28,9 +28,9 @@ public class MediaHelper {
 
         if(sounds.containsKey(fileName))
             return sounds.get(fileName);
-        Console.printSuccess("Loaded sound " + fileName);
 
         File file = new File(Main.RESOURCES_DIR, "sounds/" + fileName);
+        Console.printSuccess("Loaded sound " + file.getAbsolutePath());
         try {
             MediaPlayer sound = new MediaPlayer(new Media(file.toURI().toString()));
             sounds.put(fileName, sound);
