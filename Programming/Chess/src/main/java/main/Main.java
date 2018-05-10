@@ -53,7 +53,6 @@ public class Main extends Application {
     public static final String USER_MANUAL_URL = "https://gitlab.uib.no/inf112-v2018/gruppe-3/blob/master/Documentation/User%20manual/User%20Manual.pdf";
     static final int WIDTH = 720;
     static final int HEIGHT = 500;
-    MediaHelper media = new MediaHelper();
     private int mCounter = 0;
     private Stage stage;
     private BorderPane root = new BorderPane();
@@ -88,7 +87,7 @@ public class Main extends Application {
         stage.getIcons().add(new Image(Thread.currentThread().getContextClassLoader()
                 .getResourceAsStream("images/chessIcon.png")));
         stage.show();
-        media.play("chess_theme.mp3");
+        MediaHelper.play("chess_theme.mp3");
     }
 
     /**
@@ -304,8 +303,8 @@ public class Main extends Application {
         buttonHighScore.setOnAction(e -> highscore(username, stage));
         buttonQuit.setOnAction(e -> onQuit());
 
-        media.setCycleCount("chess_theme.mp3", -1);
-        media.setVolume("chess_theme.mp3", .1);
+        MediaHelper.setCycleCount("chess_theme.mp3", -1);
+        MediaHelper.setVolume("chess_theme.mp3", .1);
 
         // Setups the right container of the buttons
         VBox rightContainer = new VBox(5);
@@ -473,13 +472,13 @@ public class Main extends Application {
      * @return chessGame
      */
     private void createChessGame(String player1, String player2, int difficulty, BoardMode boardMode, BorderPane root) {
-        media.setMute("chess_theme.mp3", true);
+        MediaHelper.setMute("chess_theme.mp3", true);
         System.out.println(boardMode);
         GameBoard gameBoard = new GameBoard(player1, player2, difficulty, boardMode, this, stage, root, player1, getHostServices());
         gameBoard.createBoard();
         root.setCenter(gameBoard.getContainer());
         root.setTop(gameBoard.generateGameMenuBar());
-        media.play("startup.mp3");
+        MediaHelper.play("startup.mp3");
         inviteChecker.cancel();
         gameListUpdater.cancel();
     }
@@ -506,11 +505,11 @@ public class Main extends Application {
         MenuItem menuMute = new MenuItem("Mute");
         menuMute.setOnAction(e -> {
                     if (mCounter == 0) {
-                        media.setMute("chess_theme.mp3", true);
+                        MediaHelper.setMute("chess_theme.mp3", true);
                         mCounter++;
                         System.out.println(mCounter);
                     } else if (mCounter == 1) {
-                        media.setMute("chess_theme.mp3", false);
+                        MediaHelper.setMute("chess_theme.mp3", false);
                         mCounter--;
                     }
                 }

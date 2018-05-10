@@ -16,14 +16,14 @@ import java.util.HashMap;
  * (e.g. trying to play a sound that doesn't exist)
  */
 public class MediaHelper {
-    private HashMap<String, MediaPlayer> sounds = new HashMap<>();
+    private static HashMap<String, MediaPlayer> sounds = new HashMap<>();
 
     /**
      * Returns the corresponding stored media player. If the player doesn't already exist in the library, it will be loaded and added
      * @param fileName Name of sound-file
      * @return Playable sound
      */
-    private MediaPlayer getMedia(String fileName) {
+    private static MediaPlayer getMedia(String fileName) {
         if(!Main.hasLaunched()) return null;
 
         if(sounds.containsKey(fileName))
@@ -46,26 +46,26 @@ public class MediaHelper {
      * @param fileName Name of sound-file
      * @return If the sound was played successfully
      */
-    public boolean play(String fileName) {
+    public static boolean play(String fileName) {
         MediaPlayer mp = getMedia(fileName);
         if(mp == null) return false;
         mp.play();
         return true;
     }
 
-    public boolean setCycleCount(String fileName, int value) {
+    public static boolean setCycleCount(String fileName, int value) {
         MediaPlayer mp = getMedia(fileName);
         if(mp == null) return false;
         mp.setCycleCount(value);
         return true;
     }
-    public boolean setVolume(String fileName, double value) {
+    public static boolean setVolume(String fileName, double value) {
         MediaPlayer mp = getMedia(fileName);
         if(mp == null) return false;
         mp.setVolume(value);
         return true;
     }
-    public boolean setMute(String fileName, boolean state) {
+    public static boolean setMute(String fileName, boolean state) {
         MediaPlayer mp = getMedia(fileName);
         if(mp == null) return false;
         mp.setMute(state);
