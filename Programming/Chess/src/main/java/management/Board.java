@@ -169,7 +169,8 @@ public class Board extends AbstractBoard {
             activePlayer = activePlayer.equals(Alliance.WHITE) ? Alliance.BLACK : Alliance.WHITE;
             moveI++;
 
-            media.getMedia("move.mp3").play();
+            if(media != null)
+                media.play("move.mp3");
         }
         return moveSuccess;
     }

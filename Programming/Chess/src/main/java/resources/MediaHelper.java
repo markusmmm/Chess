@@ -1,6 +1,7 @@
 package resources;
 
 
+import javafx.application.Platform;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
@@ -15,6 +16,8 @@ public class MediaHelper {
      * @return Playable sound
      */
     public MediaPlayer getMedia(String fileName) {
+        if(!Platform.isAccessibilityActive()) return null;
+        
         String path = "sounds/" + fileName;
         ClassLoader cLoader = getClass().getClassLoader();
         Media sound;
@@ -28,6 +31,10 @@ public class MediaHelper {
         return null;
     }
 
-
-
+    public boolean play(String fileName) {
+        MediaPlayer mp = getMedia(fileName);
+        if(mp == null) return false;
+        mp.play();
+        return true;
+    }
 }

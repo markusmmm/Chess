@@ -13,7 +13,7 @@ public class RulesTest {
     BoardLibrary boards = new BoardLibrary(Main.TESTS_DIR);
 
     // Naming convention: pieceToTest|cantMove(Expected result: false)|relativeMoveDestination
-    // More general tests break this naming convention (e.g. allyCantSetCheckWithMove)
+    // More complex tests break this naming convention (e.g. allyCantSetCheckWithMove)
 
     //Basic movement tests
     @Test public void rookN()                           { perform("rook",                    true,  new Move(0,7,0,4)); }
@@ -39,14 +39,14 @@ public class RulesTest {
 
     //Special movement tests
     @Test public void whiteEnPassant()                  { perform("whiteEnPassant",          true,  new Move(0,3,1,2)); }
-    @Test public void blackEnPassant()                  { perform("blackEnPassant",          true,  new Move(0,3,1,2)); }
+    @Test public void blackEnPassant()                  { perform("blackEnPassant",          true,  new Move(1,4,0,5)); }
 
     @Test public void castlingKingSide()                { perform("castling",                true,  new Move(4,7,6,7)); }
     @Test public void castlingQueenSide()               { perform("castling",                true,  new Move(4,7,2,7)); }
     @Test public void cantCastleOverCheckedArea()       { perform("castlingOverCheckedArea", false, new Move(4,7,2,7)); }
 
     //Behaviour tests
-    @Test public void allyCantSetCheckWithMove()        { perform("allyCantSetCheckWithMove",false, new Move(3,1,4,2)); }
+    @Test public void allyCantSetCheckWithMove()        { perform("allyCantSetCheck",false, new Move(3,1,4,2)); }
     @Test public void kingCanAttackIntruder()           { perform("kingCanAttackIntruder",   true,  new Move(4,0,3,0)); }
     @Test public void pawnCanResolveCheck()             { perform("pawnCanResolveCheck",     true,  new Move(2,6,3,5)); }
     @Test public void pawnCantThreatenWithMove()        { perform("pawnCantThreatenWithMove",true,  new Move(3,7,3,6)); }
