@@ -26,15 +26,12 @@ public class MediaHelper {
     private static MediaPlayer getMedia(String fileName) {
         if(!Main.hasLaunched()) return null;
 
-        if(sounds.containsKey(fileName))
-            return sounds.get(fileName);
-
-        File file = new File(Main.RESOURCES_DIR, "sounds/" + fileName);
-        Console.printSuccess("Loaded sound " + file.getAbsolutePath());
+        String path = "sounds/" + fileName;
+        ClassLoader cLoader = MediaHelper.class.getClassLoader();
+        Media sound;
         try {
-            MediaPlayer sound = new MediaPlayer(new Media(file.toURI().toString()));
-            sounds.put(fileName, sound);
-            return sound;
+            sound = new Media(cLoader.getResource(path).toURI().toString());
+            return new MediaPlayer(sound);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
