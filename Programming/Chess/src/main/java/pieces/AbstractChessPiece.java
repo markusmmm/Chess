@@ -210,7 +210,7 @@ public abstract class AbstractChessPiece implements IChessPiece {
 	 */
 	protected void performMove(Vector2 destination) {
 		position = destination;
-		media.getMedia("move.mp3");
+		media.play("move.mp3");
 		hasMoved = true;
 	}
 

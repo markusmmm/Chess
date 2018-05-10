@@ -13,7 +13,6 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
@@ -55,7 +54,6 @@ public class Main extends Application {
     static final int WIDTH = 720;
     static final int HEIGHT = 500;
     MediaHelper media = new MediaHelper();
-    MediaPlayer mp = media.getMedia("chess_theme.mp3");
     private int mCounter = 0;
     private Stage stage;
     private BorderPane root = new BorderPane();
@@ -89,7 +87,7 @@ public class Main extends Application {
                 .getResourceAsStream("images/chessIcon.png")));
         stage.show();
         MediaHelper media = new MediaHelper();
-        media.getMedia("chess_theme.mp3");
+        media.play("chess_theme.mp3");
     }
 
     /**
@@ -305,11 +303,9 @@ public class Main extends Application {
         buttonHighScore.setOnAction(e -> highscore(username, stage));
         buttonQuit.setOnAction(e -> onQuit());
 
-        if(mp != null) {
-            mp.play();
-            mp.setCycleCount(-1);
-            mp.setVolume(.1);
-        }
+        media.play("chess_theme.mp3");
+        media.setCycleCount("\"chess_theme.mp3\"", -1);
+        media.setVolume("\"chess_theme.mp3\"", .1);
 
         // Setups the right container of the buttons
         VBox rightContainer = new VBox(5);
@@ -477,15 +473,13 @@ public class Main extends Application {
      * @return chessGame
      */
     private void createChessGame(String player1, String player2, int difficulty, BoardMode boardMode, BorderPane root) {
-        if(mp != null)
-            mp.setVolume(.04);
+        media.setVolume("chess_theme.mp3", .04);
         System.out.println(boardMode);
         GameBoard gameBoard = new GameBoard(player1, player2, difficulty, boardMode, this, stage, root, player1, getHostServices());
         gameBoard.createBoard();
         root.setCenter(gameBoard.getContainer());
         root.setTop(gameBoard.generateGameMenuBar());
-        MediaPlayer nmp = media.getMedia("startup.mp3");
-        if(nmp != null) nmp.play();
+        media.play("startup.mp3");
         inviteChecker.cancel();
         gameListUpdater.cancel();
     }
@@ -512,11 +506,11 @@ public class Main extends Application {
         MenuItem menuMute = new MenuItem("Mute");
         menuMute.setOnAction(e -> {
                     if (mCounter == 0) {
-                        mp.setMute(true);
+                        media.setMute("chess_theme.mp3", true);
                         mCounter++;
                         System.out.println(mCounter);
                     } else if (mCounter == 1) {
-                        mp.setMute(false);
+                        media.setMute("chess_theme.mp3", false);
                         mCounter--;
                     }
                 }
