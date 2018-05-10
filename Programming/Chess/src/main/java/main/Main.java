@@ -26,8 +26,10 @@ import management.DatabaseController;
 import org.apache.commons.io.FileUtils;
 import org.bson.Document;
 import org.bson.types.ObjectId;
+
 import resources.BoardMode;
 import resources.Console;
+
 import resources.MediaHelper;
 
 import java.io.File;
@@ -40,6 +42,7 @@ import java.util.*;
 public class Main extends Application {
 
     public static final File SAVES_DIR = new File(System.getProperty("user.home"), "GitGud/");
+    public static final File USER_SAVES_DIR = new File(SAVES_DIR, "saves/");
     public static final File LOGS_DIR = new File(SAVES_DIR, ".logs/");
     public static final File ONLINE_GAME_DIR = new File(SAVES_DIR, ".online/");
     public static final File CHESS_TUTOR_DIR = new File(SAVES_DIR, "chessTutorial/");
@@ -47,12 +50,11 @@ public class Main extends Application {
     public static final File TESTS_DIR = new File("tests/");
     public static final String DATA_SEPARATOR = "====";
     public static final String SAVE_EXTENSION = ".txt";
-    public static final String TEST_EXTENSION = ".txt";
     public static final String USER_MANUAL_URL = "https://gitlab.uib.no/inf112-v2018/gruppe-3/blob/c9df10dba1e74977d1eb417fa3cf17cc54f19f0d/Documentation/User%20manual/User%20Manual.pdf";
     static final int WIDTH = 720;
     static final int HEIGHT = 500;
     MediaHelper media = new MediaHelper();
-    MediaPlayer mp = media.playSound("chess_theme.mp3");
+    MediaPlayer mp = media.getMedia("chess_theme.mp3");
     private int mCounter = 0;
     private Stage stage;
     private BorderPane root = new BorderPane();
@@ -82,7 +84,7 @@ public class Main extends Application {
                 .getResourceAsStream("images/chessIcon.png")));
         stage.show();
         MediaHelper media = new MediaHelper();
-        media.playSound("chess_theme.mp3");
+        media.getMedia("chess_theme.mp3");
     }
 
     /**
@@ -306,14 +308,9 @@ public class Main extends Application {
 
             Optional<String> result = dialog.showAndWait();
             result.ifPresent(choice -> {
-                if (choice.equals("Easy"))
-                    createChessGame(username, "AI: Easy", 1, BoardMode.DEFAULT, root);
-                else if (choice.equals("Medium"))
-                    createChessGame(username, "AI: Medium", 2, BoardMode.DEFAULT, root);
-                else if (choice.equals("Hard"))
-                    createChessGame(username, "AI: Hard", 3, BoardMode.DEFAULT, root);
+                int difficulty = choice.equals("Easy") ? 1 : choice.equals("Medium") ? 2 : choice.equals("Hard") ? 3 : 0;
+                createChessGame(username, "AI: " + choice, difficulty, BoardMode.DEFAULT, root);
             });
-
         });
 
         buttonRandomBoardPlay.setOnAction(e -> createChessGame(username, "AI: Easy", 1, BoardMode.RANDOM, root));
@@ -474,12 +471,10 @@ public class Main extends Application {
         gameBoard.createBoard();
         root.setCenter(gameBoard.getContainer());
         root.setTop(gameBoard.generateGameMenuBar());
-        MediaPlayer nmp = media.playSound("startup.mp3");
+        MediaPlayer nmp = media.getMedia("startup.mp3");
         nmp.play();
-        media.playSound("startup.mp3");
         inviteChecker.cancel();
         gameListUpdater.cancel();
-        //return gameBoard.getContainer();
     }
 
     /**

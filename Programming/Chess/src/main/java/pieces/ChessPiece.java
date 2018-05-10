@@ -13,20 +13,19 @@ public abstract class ChessPiece extends AbstractChessPiece {
 	/**
 	 *
 	 */
-	protected ChessPiece(Vector2 position, Alliance alliance, HashSet<Vector2> moves, MoveType moveType, AbstractBoard board, boolean canJump, Piece piece, int value, boolean hasMoved) {
-		super(position, alliance, moves, moveType, board, canJump, piece, value, hasMoved);
+	protected ChessPiece(Vector2 position, Alliance alliance, HashSet<Vector2> moves, MoveType moveType, AbstractBoard board, boolean canJump, Piece piece, boolean hasMoved) {
+		super(position, alliance, moves, moveType, board, canJump, piece, hasMoved);
 	}
 	protected ChessPiece(ChessPiece other) {
 		super(other);
 	}
 
 	@Override
-	public boolean legalMove(Vector2 destination) {
+	public boolean isLegalMove(Vector2 destination) {
 		Vector2 delta = destination.sub(position());
 		//Console.printNotice(this + " checking move " + position() + " -> " + destination + "\tdelta: " + delta);
 
-		if(super.legalMove(destination)) {
-
+		if(super.isLegalMove(destination)) {
 			//Console.printNotice(this + " (" + moveType + ", " + moves.size() + ") begun move check.");
 			//Console.printNotice("Position: " + position() + ", destination: " + destination + ", delta: " + delta);
 

@@ -293,14 +293,12 @@ public class GameBoard {
         return menuBar;
     }
 
-
-
     private void performLoad() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Chess Game File");
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Chess Game File", "*" + Main.SAVE_EXTENSION));
-        fileChooser.setInitialDirectory(Main.SAVES_DIR);
+        fileChooser.setInitialDirectory(Main.USER_SAVES_DIR);
         File selectedFile = fileChooser.showOpenDialog(stage);
         performLoad(selectedFile);
     }
@@ -324,7 +322,7 @@ public class GameBoard {
         fileChooser.setTitle("Save Chess Game File");
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Chess Game File", "*" + Main.SAVE_EXTENSION));
-        fileChooser.setInitialDirectory(Main.SAVES_DIR);
+        fileChooser.setInitialDirectory(Main.USER_SAVES_DIR);
         File file = fileChooser.showSaveDialog(stage);
         if (file != null)
             board.saveBoard(file);
@@ -487,7 +485,7 @@ public class GameBoard {
             /*resources.Console.println("Moving " + board.getPiece(firstTile.getPos()) +
                     " from " + firstTile.getPos() + " to " + pos);*/
         } else {
-            media.playSound("denied.mp3").play();
+            media.getMedia("denied.mp3").play();
 
         }
 
@@ -648,7 +646,7 @@ public class GameBoard {
         if(piece == null) return;
 
         Console.printNotice("Highlighting " + pos);
-        Set<Vector2> list = piece.getPossibleDestinations();
+        Set<Vector2> list = piece.getLegalActions();
         for (Vector2 possibleDestination : list) {
             Color squareColor = board.getPiece(possibleDestination) == null ? Color.YELLOW : Color.RED;
             squares[possibleDestination.getY()][possibleDestination.getX()].setFill(squareColor);
@@ -671,7 +669,7 @@ public class GameBoard {
         String player;
         if (board.getActivePlayer() == Alliance.WHITE) player = player1.getUsername();
         else player = player2.getUsername();
-        gameStatus.setText("It's " + player + " turn.");
+        gameStatus.setText("It's " + player + "'s turn.");
     }
 
     /**
@@ -702,7 +700,7 @@ public class GameBoard {
         else player = player2.getUsername();
 
         if(!(boardMode == BoardMode.CHESSPUZZLES)) {
-            gameStatus.setText("It's " + player + " turn.");
+            gameStatus.setText("It's " + player + "'s turn.");
         } else {
             gameStatus.setText("Playing as white. Get checkmate in 3 moves.");
         }
@@ -727,10 +725,9 @@ public class GameBoard {
             }
         }
 
-        if(whiteKing == null || blackKing == null) {
-            Console.printWarning("Non-conventional game setup (one or more kings missing). Game-over check not supported");
+        //"Non-conventional game setup (one or more kings missing). Game-over check not supported"
+        if(whiteKing == null || blackKing == null)
             return false;
-        }
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
 
@@ -779,7 +776,7 @@ public class GameBoard {
         alert.setHeaderText(null);
         alert.setGraphic(null);
         MediaHelper media = new MediaHelper();
-        media.playSound("game_over.mp3").play();
+        media.getMedia("game_over.mp3").play();
         alert.showAndWait();
         goToMenu(username, stage);
         return true;

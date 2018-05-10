@@ -20,7 +20,7 @@ public abstract class AbstractChessPiece implements IChessPiece {
 			Vector2 destination = position().add(move);
 			//Console.printNotice(clonePiece() + " evaluates destination " + destination);
 
-			if(legalMove(destination)) {
+			if(isLegalMove(destination)) {
 				possibleDestinations.add(destination);
 				//Console.printSuccess("Move success");
 				return true;
@@ -56,12 +56,13 @@ public abstract class AbstractChessPiece implements IChessPiece {
 				Set<Vector2> terminatedDirs = new HashSet<>();
 				for (Vector2 d : dirs) {
 					Vector2 move = d.mult(variable);
-					AbstractChessPiece enemy = board.getPiece(position().add(move));
+					Vector2 destination = position.add(move);
 
-					if ((!evaluate(move) || (enemy != null && enemy.alliance() != alliance())) && !canJump) {
-						// Obstacle/enemy reached. If the piece can't jump, no further evaluation is needed in direction d
+					if(isLegalMove(destination))
+                        possibleDestinations.add(destination);
+					if (!board.insideBoard(destination) || board.getPiece(destination) != null)
+                        // Piece/end of board reached. No need to further evaluate direction
 						terminatedDirs.add(d);
-					}
 				}
 				dirs.removeAll(terminatedDirs);
 			}
@@ -88,14 +89,13 @@ public abstract class AbstractChessPiece implements IChessPiece {
 
 	protected final boolean canJump;
 	protected final Piece piece;
-	protected final int value;
 
 	private boolean hasMoved = false;
 
     /**
      *
      */
-    protected AbstractChessPiece(Vector2 position, Alliance alliance, HashSet<Vector2> moves, MoveType moveType, AbstractBoard board, boolean canJump, Piece piece, int value, boolean hasMoved) {
+    protected AbstractChessPiece(Vector2 position, Alliance alliance, HashSet<Vector2> moves, MoveType moveType, AbstractBoard board, boolean canJump, Piece piece, boolean hasMoved) {
     	this.position = position;
         this.alliance = alliance;
 
@@ -105,7 +105,6 @@ public abstract class AbstractChessPiece implements IChessPiece {
         this.board = (Board)board;
         this.canJump = canJump;
         this.piece = piece;
-        this.value = value;
 
         this.hasMoved = hasMoved;
     }
@@ -119,14 +118,12 @@ public abstract class AbstractChessPiece implements IChessPiece {
     	board = other.board;
     	canJump = other.canJump;
     	piece = other.piece();
-    	value = other.value;
     	hasMoved = other.hasMoved;
 	}
 
 	public Vector2 position() { return position; }
 	public Alliance alliance() { return alliance; }
 	public Piece piece() { return piece; }
-	public int getValue() { return value; }
 
 	public Alliance otherAlliance() {
     	return alliance.equals(Alliance.BLACK) ? Alliance.WHITE : Alliance.BLACK;
@@ -142,11 +139,11 @@ public abstract class AbstractChessPiece implements IChessPiece {
 
 	/**
 	 * Checks if the piece can go to the given destination
-	 * super.legalMove checks if the destination is within the board's boundaries, and if the piece at the given destination is hostile
+	 * super.isLegalMove checks if the destination is within the board's boundaries, and if the piece at the given destination is hostile
 	 * @param destination
 	 * @return Whether or not the move can be performed
 	 */
-	public boolean legalMove(Vector2 destination) {
+	public boolean isLegalMove(Vector2 destination) {
 		IChessPiece endPiece = board.getPiece(destination);
 		// Prevents attack on an allied piece
 		if(endPiece != null && endPiece.alliance().equals(alliance)) return false;
@@ -164,7 +161,7 @@ public abstract class AbstractChessPiece implements IChessPiece {
 	}
 
 	@Override
-	public Set<Vector2> getPossibleDestinations() {
+	public Set<Vector2> getLegalActions() {
 		MoveEvaluator evaluator = new MoveEvaluator();
 		if(moveType == MoveType.LINE)
 			evaluator.evaluateContinuous(moves);
@@ -181,8 +178,8 @@ public abstract class AbstractChessPiece implements IChessPiece {
 	 * @return All positions this piece can attack
 	 */
 	@Override
-	public Set<Vector2> getPossibleAttacks() {
-		return getPossibleDestinations();
+	public Set<Vector2> getLegalAttacks() {
+		return getLegalActions();
 	}
 
 	/**
@@ -199,7 +196,7 @@ public abstract class AbstractChessPiece implements IChessPiece {
 	 */
 	public boolean move(Vector2 destination) {
 		//resources.Console.println("Attempting to move " + alliance + " " + piece + " from " + position + " to " + move);
-		if (!legalMove(destination)) return false; // If the destination is unreachable, the move fails
+		if (!isLegalMove(destination)) return false; // If the destination is unreachable, the move fails
 
 		performMove(destination);
 
@@ -213,16 +210,16 @@ public abstract class AbstractChessPiece implements IChessPiece {
 	 */
 	protected void performMove(Vector2 destination) {
 		position = destination;
-		media.playSound("move.mp3");
+		media.getMedia("move.mp3");
 		hasMoved = true;
 	}
 
 	/**
 	 * Loads all dynamic piece data
-	 * @param vals Data values to load
+	 * @param values Data values to load
 	 */
-	public void loadData(List<Boolean> vals) {
-		hasMoved = vals.get(0);
+	public void loadData(List<Boolean> values) {
+		hasMoved = values.get(0);
 	}
 
 	/**
@@ -243,25 +240,6 @@ public abstract class AbstractChessPiece implements IChessPiece {
 			}
 		}
 		return true;
-	}
-	/**
-	 * @return if piece is placed in the lines:
-	 * up, down, left, right
-	 *
-	 * logic is: if only x or y change, the piece move in a straight path
-	 */
-	protected boolean inStraights(Vector2 move) {
-		Vector2 position = position();
-
-		return (
-				( position.getX() == move.getX() && position.getY() != move.getY() )
-						||
-						( position.getX() != move.getX() && position.getY() == move.getY() )
-		);
-	}
-	protected boolean inDiagonals(Vector2 newPos) {
-		Vector2 position = position();
-		return Math.abs(position.getX() - newPos.getX()) == Math.abs(position.getY() - newPos.getY());
 	}
 
 	@Override

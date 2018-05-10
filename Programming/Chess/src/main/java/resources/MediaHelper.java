@@ -14,13 +14,13 @@ public class MediaHelper {
      * @param fileName
      * @return Playable sound
      */
-    public MediaPlayer playSound(String fileName) {
+    public MediaPlayer getMedia(String fileName) {
         String path = "sounds/" + fileName;
         ClassLoader cLoader = getClass().getClassLoader();
         Media sound;
         try {
-           sound = new Media(cLoader.getResource(path).toURI().toString());
-           MediaPlayer mp =  new MediaPlayer(sound);
+            sound = new Media(cLoader.getResource(path).toURI().toString());
+            MediaPlayer mp =  new MediaPlayer(sound);
             return mp;
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);

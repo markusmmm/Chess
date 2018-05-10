@@ -49,6 +49,20 @@ public class Console {
         return true;
     }
 
+    public static String indent(String str, int amount) {
+        StringBuilder result = new StringBuilder();
+        for(String line : str.split("\n")) {
+            String tab = "";
+            for(int i = 0; i < amount; i++) tab += "\t";
+            result.append(tab).append(line).append("\n");
+        }
+
+        return result.toString();
+    }
+    public static String indent(String str) {
+        return indent(str, 1);
+    }
+
     public static void print(String msg) {
         if(!doPrint()) return;
         System.out.print(ANSI_WHITE + msg + ANSI_RESET);
