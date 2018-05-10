@@ -16,11 +16,11 @@ public class MediaHelper {
      * @return Playable sound
      */
     public MediaPlayer getMedia(String fileName) {
-        if(!Main.hasLaunched()) return null;
-        
+        //if(!Main.hasLaunched()) return null;
+
         Media sound;
         try {
-            sound = new Media((new File(Main.RESOURCES_DIR, "sounds/")).getAbsolutePath());
+            sound = new Media((new File(Main.RESOURCES_DIR, "sounds/" + fileName)).getAbsolutePath());
             return new MediaPlayer(sound);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
