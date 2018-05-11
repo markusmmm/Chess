@@ -473,12 +473,16 @@ public class GameBoard {
                 drawBoard();
 
                 Move move = computer.getMove();
-                Console.println("Computer attempting move " + move);
-                board.movePiece(move);
-                int row = move.start.getY();
-                int col = move.start.getX();
+                if(move != null) {
+                    Console.println("Computer attempting move " + move);
+                    board.movePiece(move);
+                    int row = move.start.getY();
+                    int col = move.start.getX();
 
-                //tiles[row][col].setFill(Color.TRANSPARENT);
+                    //tiles[row][col].setFill(Color.TRANSPARENT);
+                } else {
+                    gameOver();
+                }
             }
 
             //firstTile.setFill(Color.TRANSPARENT);
