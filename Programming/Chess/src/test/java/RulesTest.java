@@ -52,6 +52,11 @@ public class RulesTest {
     @Test public void pawnCantThreatenWithMove()        { perform("pawnCantThreatenWithMove",true,  new Move(3,7,3,6)); }
     @Test public void attackCanResolveCheck()           { perform("threatenedAttacker",      true,  new Move(2,1,3,2)); }
 
+    @Test public void checkmateAgainstPlayer()          { perform("checkmate",               true, new Move(3,3,5,1)); }
+    @Test public void checkmateAgainstEasyAI()          { perform("checkmate_easyAI",        true, new Move(3,3,5,1)); }
+    @Test public void checkmateAgainstMediumAI()        { perform("checkmate_mediumAI",      true, new Move(3,3,5,1)); }
+    @Test public void checkmateAgainstHardAI()          { perform("checkmate_hardAI",        true, new Move(3,3,5,1)); }
+
     public void perform(String testName, boolean expectedResult, Move... moves) {
         boolean actual = true;
         for(Move move : moves) {

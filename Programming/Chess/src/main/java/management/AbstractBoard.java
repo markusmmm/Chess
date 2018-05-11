@@ -23,7 +23,6 @@ public class AbstractBoard {
 
     protected Alliance activePlayer = Alliance.WHITE;
 
-    private boolean hasWhiteKing, hasBlackKing;
 
     private HashMap<Vector2, AbstractChessPiece> pieces = new HashMap<>();
     private Stack<Vector2> drawPositions = new Stack<>();
@@ -305,7 +304,7 @@ public class AbstractBoard {
     }
 
     public boolean hasKing(Alliance alliance) {
-        return alliance == Alliance.WHITE ? hasWhiteKing : alliance == Alliance.BLACK && hasBlackKing;
+        return getKing(alliance) != null;
     }
 
     public boolean vacant(Vector2 pos) {
@@ -326,9 +325,6 @@ public class AbstractBoard {
 
             pieces.put(pos, piece);
             drawPositions.push(pos);
-
-            if(alliance == Alliance.WHITE) hasWhiteKing = true;
-            if(alliance == Alliance.BLACK) hasBlackKing = true;
 
             mutex.release();
             //resources.Console.println("Mutex released");
