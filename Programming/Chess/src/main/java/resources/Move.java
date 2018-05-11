@@ -11,9 +11,21 @@ public class Move {
         start = new Vector2(x0, y0);
         end = new Vector2(x1, y1);
     }
+    
+    public Vector2 difference() {
+        return end.sub(start);
+    }
 
     @Override
     public String toString() {
         return start + " -> " + end;
+    }
+
+    public Vector2 getEnd() {
+        return end;
+    }
+
+    public Vector2 getStart() {
+        return start;
     }
 }

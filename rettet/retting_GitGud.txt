@@ -1,0 +1,27 @@
+Feedback INF112 spring 2018 - Oblig.2
+
+Group: Git Gud
+
+Overall feedback
+Spelling errors should be avoided. 
+The minutes
+- Very detailed and good minutes.
+Use case diagram is a bit off. The diagram delivered is more like a flow diagram than a use case diagram.  Flow diagrams are great and I actually like the information we get from your diagram as it shows very simplistic how the program flow will be, but again that was not the assignment so I had to deduct some points here. 
+	- Redo the Use case diagram during the next compulsory exercise
+Class Diagram is missing multiplicity so I have to deduct a point here.
+	- Add multiplicity during the next exercise
+User Manual 
+- Very funny and well written. Good job!
+Product Specification 
+- Very nice! There were few non-functional requirements.  
+Process and planning
+-The part about why you go for an agile development method is very good. You clearly describe why you chose it and what motivated you to choose it. Some part of Scrum was a bit unclear. You mentioned that there is no team leader in Scrum that makes people do different tasks, but you didn't mention how you will divide the work. (Read the last part as "will there be planning poker" or do you value each of the tasks equally?). Who creates the product backlog?  Yes, I read that you will be using Trello to display your workflow, but somehow a task has to be created. How will you do this? 
+I like the adaption of "stand-up meetings" and if I understand you correctly you will have the standard stand-up meetings when you physically meet and use discord as a way of solving problems between meetings. Very nice! 
+Overall this document was very good - I think it will help you out a lot when you start with the implementation part of the project. 
+Team organization 
+Very nice!
+
+Score: 93.5 (of 100)
+Evaluation: PASS
+
+Graded by Steffen Sande and Øyvind Skeie Liland, Bergen 01.03.2018

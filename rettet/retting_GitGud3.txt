@@ -1,0 +1,24 @@
+INF112 spring 2018 - Oblig.4
+
+Group: GitGud
+
+Overall feedback
+Very good work! Not alot to comment on to be honest.  
+
+If there is one thing it is that you are unconsistent with the quality of code and comments. Make some houserules and use javaDoc to describe methods. Also reading a 30 line long method is not ideal. Try to extract common functionality out to different methods. 
+
+Also in the retrospective I would like to know how and what you will do to reach the goals you present.
+For instance you talk about how it is difficult to move a developer from one part of the project to another. 
+You also state why, but not how you are going to fix this problem.
+How will it get easier? 
+You already trace your workflow using trello and have diagrams explaining the sequence of the program, how classes relate to eachother and more documents.
+What more will you do to make it easier to pick up new tasks?
+I for one hope the solution is to use the current tools because adding more tools seems unessesary, maybe set someone to be responsible for the different tools and if someone does not understand what or how something works - they can ask that person.  
+Also if the code is to messy for another person to read it is to hard for us gruop leaders to read and understand so please clean your code before pushing it and comment according to the house rules.  
+I ask that you read though the documents before submitting them. 
+
+  
+Score: 95.5(of 100)
+Evaluation: PASS
+
+Graded by Steffen and Øyvind, Bergen 29.04.18j

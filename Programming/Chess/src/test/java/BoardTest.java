@@ -1,68 +1,48 @@
+import main.Main;
 import management.Board;
-import org.junit.Assert;
+import management.BoardLibrary;
 import org.junit.Test;
-import pieces.ChessPiece;
-import pieces.King;
+import pieces.AbstractChessPiece;
 import pieces.Queen;
 import resources.Alliance;
-import resources.Piece;
 import resources.Vector2;
 
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-//import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
+import static org.junit.Assert.*;
 
 public class BoardTest {
+    private final Vector2 queenPos = new Vector2(3,7);
+    private final BoardLibrary boards = new BoardLibrary(Main.CORE_DIR);
+
+    @Test
+    public void piecesAreLoadedOntoBoardTest() {
+        assertNotEquals(boards.get("default").getPiece(new Vector2(0,7)), null);
+    }
     @Test
     public void getUsablePiecesAllIsTest() {
-        int size = 8;
-        int y = 1;
-        Board board = new Board(size, 0);
-        for (int x = 0; x < size; x++) {
-            board.removePieces(new Vector2(x,y));
-        }
-        assertEquals(board.getUsablePieces(Alliance.BLACK).size(), 16);
+        assertEquals(boards.get("default_noPawns").getUsablePieces(Alliance.BLACK).size(), 8);
 
     }
 
     @Test
-    public void getUsablePiecesValidSomeIsTest() {
-        int size = 8;
-        Board board = new Board(size, 0);
-        assertEquals(board.getUsablePieces(Alliance.WHITE).size(), 10);
-    }
-    @Test
-    public void addPieceEmptyBoardTest() {
-        Vector2 queenPos = new Vector2(1,1);
-        Board board = new Board(3, 0);
-        ChessPiece queen = board.addPiece(queenPos, Piece.QUEEN, Alliance.WHITE);
-        Assert.assertEquals(queen, board.getPiece(queenPos));
+    public void allUsablePiecesAreValidTest() {
+        // On a default board (standard setup, without any performed moves),
+        // there should be 10 usable white pieces: 8 pawns, 2 knights
+        assertEquals(boards.get("default").getUsablePieces(Alliance.WHITE).size(), 10);
     }
     @Test
     public void MovePieceUpdatesPosInPieceTest() {
-        Vector2 queenPos = new Vector2(1,1);
-        Vector2 kingPos = new Vector2(1,1);
-        Board board = new Board(3, 0);
-        Vector2 newQueenPos = new Vector2(2,1);
-
-        ChessPiece queen = board.addPiece(queenPos, Piece.QUEEN, Alliance.WHITE);
-        ChessPiece king = board.addPiece(kingPos, Piece.KING, Alliance.WHITE); //can't move without a king
+        Vector2 newQueenPos = new Vector2(2,7);
+        Board board = boards.get("queen");
 
         board.movePiece(queenPos, newQueenPos);
+        AbstractChessPiece piece = board.getPiece(newQueenPos);
 
-        Assert.assertTrue(queen.position().equals(newQueenPos));
+        assertTrue(board.getPiece(queenPos) == null &&
+                piece != null && piece.position().equals(newQueenPos));
     }
 
     @Test
     public void getPieceTest() {
-        Vector2 queenPos = new Vector2(1,1);
-        Board board = new Board(3, 0);
-
-        ChessPiece queen = board.addPiece(queenPos, Piece.QUEEN, Alliance.WHITE);
-
-        Assert.assertTrue(board.getPiece(queenPos) instanceof Queen);
+        assertTrue(boards.get("queen").getPiece(queenPos) instanceof Queen);
     }
 }

@@ -6,9 +6,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import management.Board;
+import management.ChessComputer;
 import pieces.IChessPiece;
 import resources.Alliance;
 import resources.Console;
+import resources.Move;
 import resources.Vector2;
 
 public class Tile extends Rectangle {
@@ -53,6 +55,7 @@ public class Tile extends Rectangle {
     public Vector2 getPos() {
         return pos;
     }
+
 
     public Alliance getPieceColor() {
         if (getPiece() != null)
