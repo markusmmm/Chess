@@ -1,10 +1,7 @@
 package pieces;
 
 import management.AbstractBoard;
-import resources.Alliance;
-import resources.Console;
-import resources.Piece;
-import resources.Vector2;
+import resources.*;
 
 import java.util.HashSet;
 
@@ -25,7 +22,7 @@ public abstract class ChessPiece extends AbstractChessPiece {
 		Vector2 delta = destination.sub(position());
 
 		if(super.isLegalMove(destination)) {
-			if(isShadam(destination)) return true; // All additional evaluation has been approved. Shadam can be performed
+			if(isShadam(destination) && board.getMode() == BoardMode.SHADAM) return true;
 
 			if (moveType == MoveType.STEP) {
 				return moves.contains(delta);

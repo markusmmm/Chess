@@ -41,7 +41,7 @@ public class Board extends AbstractBoard {
     public Board(int size, int difficulty, boolean useClock, BoardMode mode) {
         super(size, difficulty, useClock, mode);
 
-        if (mode == BoardMode.DEFAULT) {
+        if (mode == BoardMode.DEFAULT || mode == BoardMode.SHADAM) {
             int p = 0;
 
             for (Piece type : defaultBoard) {

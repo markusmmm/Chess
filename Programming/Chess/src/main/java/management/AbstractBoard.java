@@ -117,7 +117,6 @@ public class AbstractBoard {
         String firstData = reader.next();
         if(StringUtils.isNumeric(firstData)) {
             size = Integer.parseInt(firstData);
-            mode = BoardMode.DEFAULT;
         } else {
             size = reader.nextInt();
             mode = BoardMode.valueOf(firstData);
