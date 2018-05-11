@@ -2,6 +2,8 @@ package resources;
 
 import main.GameBoard;
 import management.ChessComputerMedium;
+import pieces.AbstractChessPiece;
+import pieces.ChessPiece;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -13,6 +15,8 @@ public class Console {
 
     private static Set<Class> ignoredCallers = new HashSet<>(Arrays.asList(
             ChessComputerMedium.class
+            , AbstractChessPiece.class
+            , ChessPiece.class
     ));
 
     private static final String ANSI_RESET = "\u001B[0m";
@@ -43,6 +47,20 @@ public class Console {
                 return false;
 
         return true;
+    }
+
+    public static String indent(String str, int amount) {
+        StringBuilder result = new StringBuilder();
+        for(String line : str.split("\n")) {
+            String tab = "";
+            for(int i = 0; i < amount; i++) tab += "\t";
+            result.append(tab).append(line).append("\n");
+        }
+
+        return result.toString();
+    }
+    public static String indent(String str) {
+        return indent(str, 1);
     }
 
     public static void print(String msg) {
@@ -103,6 +121,9 @@ public class Console {
         StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
         for(StackTraceElement e : stackTraceElements)
             System.out.print("\t" + e + "\n");
+    }
+    public static void printFirstCaller() {
+        printCaller(4);
     }
 
     public static StackTraceElement getCaller() {

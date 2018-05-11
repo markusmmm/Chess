@@ -12,17 +12,20 @@ public class Move {
         end = new Vector2(x1, y1);
     }
     
-    public Vector2 getStart(){
-    	return this.start;
+    public Vector2 difference() {
+        return end.sub(start);
     }
-    
-    public Vector2 getEnd(){
-    	return this.end;
-    }
-    ///kommentar
 
     @Override
     public String toString() {
         return start + " -> " + end;
+    }
+
+    public Vector2 getEnd() {
+        return end;
+    }
+
+    public Vector2 getStart() {
+        return start;
     }
 }

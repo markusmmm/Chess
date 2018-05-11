@@ -9,7 +9,7 @@ Anne-Lise Ackenhausen (aac003)
 
 Jan Olav Berg (jbe091)
 
-Magnus Furnes Vadø (xew006)
+Magnus Furnes Vadøy (xew006)
 
 Markus Mæhlum (div005)
 
@@ -19,4 +19,8 @@ Tom Rune Sæverås (yap006)
 
 Viet Hoang Nguyen (vng006)
 
--------------------------------------------------------
+
+Chess Game Icon:
+- Link: https://www.iconfinder.com/icons/190304/chess_game_icon#size=128
+- By Vlad Marin 
+

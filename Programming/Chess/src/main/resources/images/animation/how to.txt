@@ -1,0 +1,3 @@
+https://www.codeproject.com/Tips/788527/Creating-Animation-from-Sequence-of-Images-in-Java
+
+https://stackoverflow.com/questions/11300847/load-and-display-all-the-images-from-a-folder

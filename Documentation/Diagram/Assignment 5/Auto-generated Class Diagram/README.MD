@@ -1,0 +1,1 @@
+Diagram and corresponding uml-file has been automatically generated with IntelliJ/yFiles

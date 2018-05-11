@@ -1,6 +1,6 @@
 package management;
 
-import pieces.ChessPiece;
+import pieces.AbstractChessPiece;
 import resources.Alliance;
 import resources.Move;
 import resources.Piece;
@@ -9,11 +9,10 @@ import resources.Vector2;
 import java.util.Scanner;
 
 public class ChessComputerHard extends ChessComputer {
-    private Scanner input;
     private Stockfish ai = new Stockfish();
     protected int thinkTime = 2500;
     private StringBuilder fen = new StringBuilder();
-    private int spacecounter = 0;
+    private int spacecounter;
 
     public ChessComputerHard(Board board) {
         super(board);
@@ -29,10 +28,10 @@ public class ChessComputerHard extends ChessComputer {
     @Override
     public Move getMove() {
         ai.sendCommand("ucinewgame");
-        System.out.println(generateFen());
         String aiAnswer = ai.getBestMove(generateFen(), thinkTime);
         System.out.println(aiAnswer);
         Move best = readAI(aiAnswer);
+
         System.out.println(best);
         return resolveMove(best);
     }
@@ -107,7 +106,7 @@ public class ChessComputerHard extends ChessComputer {
     }
 
     private boolean hasMoved(Vector2 pos) {
-        ChessPiece piece = board.getPiece(pos);
+        AbstractChessPiece piece = board.getPiece(pos);
         if(piece == null) return true;
         return !piece.hasMoved();
     }
@@ -145,7 +144,7 @@ public class ChessComputerHard extends ChessComputer {
         spacecounter = 0;
     }
 
-    private String translatePiece(ChessPiece piece) {
+    private String translatePiece(AbstractChessPiece piece) {
         String translated = "";
         if(piece.piece() == Piece.PAWN && piece.alliance() == Alliance.WHITE) translated = "P";
         else if (piece.piece() == Piece.ROOK && piece.alliance() == Alliance.WHITE) translated = "R";
