@@ -1,0 +1,1888 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement />
+  <nodes>
+    <node x="2331.1146094831256" y="2625.5">pieces.Rook</node>
+    <node x="4809.729534089689" y="533.0">resources.Vector2</node>
+    <node x="2235.467550659596" y="1802.5">pieces.ChessPiece</node>
+    <node x="1440.637752593213" y="830.5">resources.PieceNode</node>
+    <node x="1211.1026263982621" y="3304.0">resources.MoveNode</node>
+    <node x="6707.860880777622" y="11339.0">management.RandomBoard</node>
+    <node x="7145.838711001904" y="4459.0">resources.Animation</node>
+    <node x="6344.570080489357" y="3315.0">management.Player</node>
+    <node x="6531.838711001904" y="3898.0">main.GameBoard</node>
+    <node x="4444.4970064691815" y="7350.0">resources.Console</node>
+    <node x="2040.6419192598796" y="3205.0">management.ChessClock</node>
+    <node x="9159.832732193889" y="12731.0">CloneBoardTest</node>
+    <node x="3077.1810425847634" y="12162.0">management.BoardLibrary</node>
+    <node x="6453.764573070869" y="2372.0">management.DatabaseController</node>
+    <node x="4595.702030547171" y="44.0">resources.Alliance</node>
+    <node x="7621.563711001903" y="3359.5">management.ChessComputerEasy</node>
+    <node x="7170.563711001903" y="3303.5">main.Tile</node>
+    <node x="5822.570080489357" y="4481.0">main.InviteChecker</node>
+    <node x="5848.570080489357" y="5487.0">main.Main</node>
+    <node x="9446.832732193889" y="191.0">management.HighscoreController</node>
+    <node x="5889.5360421750775" y="2602.5">resources.MoveScore</node>
+    <node x="5680.486747156023" y="3303.5">management.ChessPuzzles</node>
+    <node x="1203.637752593213" y="775.5">resources.BiMap</node>
+    <node x="3994.4927549079616" y="2514.5">pieces.Pawn</node>
+    <node x="4036.334506469182" y="8418.0">pieces.AbstractChessPiece.MoveEvaluator</node>
+    <node x="8460.579214877871" y="7239.0">management.ChessComputerMedium</node>
+    <node x="10235.832732193889" y="0.0">images.animation</node>
+    <node x="3027.3649771301843" y="3216.5">pieces.King</node>
+    <node x="2775.594343521214" y="864.5">pieces.AbstractChessPiece.MoveType</node>
+    <node x="0.0" y="12423.0">RulesTest</node>
+    <node x="5018.096243280055" y="4514.5">ChessPuzzlesTest</node>
+    <node x="8526.995881544537" y="6783.0">management.ChessComputerHard</node>
+    <node x="390.77071850352513" y="9619.0">pieces.Queen</node>
+    <node x="9055.547017908175" y="12173.5">HardAITest</node>
+    <node x="6631.727024933801" y="11633.0">management.Board</node>
+    <node x="10413.832732193889" y="0.0">images.pieces</node>
+    <node x="6608.807580489356" y="3315.0">main.GameUpdater</node>
+    <node x="6601.7617471560225" y="12687.0">BoardTest</node>
+    <node x="5224.249021057833" y="9531.0">pieces.IChessPiece</node>
+    <node x="8294.261416793386" y="12173.5">MediumAI</node>
+    <node x="8146.36718925129" y="1769.0">resources.Move</node>
+    <node x="934.1576617410828" y="9619.0">pieces.Bishop</node>
+    <node x="1480.012752593213" y="0.0">resources.Piece</node>
+    <node x="1969.3481692598798" y="9619.0">pieces.Knight</node>
+    <node x="9481.332732193889" y="0.0">resources.Highscore</node>
+    <node x="2390.6597282884854" y="10103.0">management.AbstractBoard</node>
+    <node x="7481.563711001903" y="3338.0">resources.BoardMode</node>
+    <node x="7953.563711001903" y="6916.0">StockfishTest</node>
+    <node x="8578.984517908175" y="2580.5">management.ChessComputer</node>
+    <node x="4473.04856886145" y="1759.0">resources.Tools</node>
+    <node x="3479.8649771301843" y="8741.0">pieces.AbstractChessPiece</node>
+    <node x="9752.832732193889" y="0.0">management.ChessRanking</node>
+    <node x="3927.143917698659" y="1781.0">Vector2Test</node>
+    <node x="1289.8872416309905" y="1769.5">management.PieceManager</node>
+    <node x="5445.661716190763" y="8418.5">resources.MediaHelper</node>
+    <node x="10059.832732193889" y="0.0">resources.Tuple</node>
+    <node x="7976.813711001903" y="6387.0">management.Stockfish</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="management.PieceManager" target="resources.PieceNode">
+      <point x="43.42857142857156" y="-81.0" />
+      <point x="1485.315813059562" y="1479.0" />
+      <point x="1515.1877525932132" y="1479.0" />
+      <point x="-31.950000000000045" y="70.5" />
+    </edge>
+    <edge source="main.Tile" target="pieces.IChessPiece">
+      <point x="72.75" y="93.0" />
+      <point x="7388.813711001903" y="3838.0" />
+      <point x="7486.782580489356" y="3838.0" />
+      <point x="7486.782580489356" y="8338.0" />
+      <point x="6556.518835323077" y="8338.0" />
+      <point x="6556.518835323077" y="9491.0" />
+      <point x="5409.703566512377" y="9491.0" />
+      <point x="65.45454545454504" y="-136.0" />
+    </edge>
+    <edge source="pieces.ChessPiece" target="pieces.AbstractChessPiece.MoveType">
+      <point x="75.875" y="-48.0" />
+      <point x="2614.842550659596" y="1529.0" />
+      <point x="2822.394343521214" y="1529.0" />
+      <point x="-5.199999999999818" y="36.5" />
+    </edge>
+    <edge source="management.Board" target="resources.Move">
+      <point x="167.05555555555566" y="-224.5" />
+      <point x="6992.782580489356" y="11593.0" />
+      <point x="8895.192851241507" y="11593.0" />
+      <point x="8895.192851241507" y="3135.0" />
+      <point x="8851.526184574843" y="3135.0" />
+      <point x="8851.526184574843" y="1972.0" />
+      <point x="8321.36718925129" y="1972.0" />
+      <point x="77.0" y="81.5" />
+    </edge>
+    <edge source="BoardTest" target="management.BoardLibrary">
+      <point x="-14.149999999999636" y="-92.0" />
+      <point x="6729.111747156023" y="12343.0" />
+      <point x="3218.9310425847634" y="12343.0" />
+      <point x="20.25" y="70.5" />
+    </edge>
+    <edge source="pieces.Rook" target="pieces.AbstractChessPiece.MoveType">
+      <point x="-27.083333333333258" y="-48.0" />
+      <point x="2466.5312761497926" y="2192.0" />
+      <point x="2213.967550659596" y="2192.0" />
+      <point x="2213.967550659596" y="1519.0" />
+      <point x="2811.994343521214" y="1519.0" />
+      <point x="-15.599999999999909" y="36.5" />
+    </edge>
+    <edge source="management.Board" target="pieces.King">
+      <point x="-113.16666666666697" y="-224.5" />
+      <point x="6712.560358267134" y="11543.0" />
+      <point x="380.27071850352513" y="11543.0" />
+      <point x="380.27071850352513" y="5337.0" />
+      <point x="1942.365126398262" y="5337.0" />
+      <point x="1942.365126398262" y="3848.0" />
+      <point x="3047.4899771301843" y="3848.0" />
+      <point x="-140.875" y="180.0" />
+    </edge>
+    <edge source="main.GameBoard" target="main.Tile">
+      <point x="204.82758620689674" y="-664.5" />
+      <point x="7033.666297208801" y="3818.0" />
+      <point x="7272.413711001904" y="3818.0" />
+      <point x="-43.649999999999636" y="93.0" />
+    </edge>
+    <edge source="main.GameBoard" target="resources.BoardMode">
+      <point x="245.79310344827627" y="-664.5" />
+      <point x="7074.63181445018" y="3848.0" />
+      <point x="7493.563711001903" y="3848.0" />
+      <point x="-48.0" y="58.5" />
+    </edge>
+    <edge source="management.ChessComputerHard" target="resources.Alliance">
+      <point x="130.45454545454504" y="-203.0" />
+      <point x="8800.950426999083" y="6763.0" />
+      <point x="8829.748406797064" y="6763.0" />
+      <point x="8829.748406797064" y="3878.0" />
+      <point x="8862.637295685952" y="3878.0" />
+      <point x="8862.637295685952" y="3185.0" />
+      <point x="8895.526184574843" y="3185.0" />
+      <point x="8895.526184574843" y="223.0" />
+      <point x="4676.702030547171" y="223.0" />
+      <point x="35.999999999999545" y="47.5" />
+    </edge>
+    <edge source="pieces.AbstractChessPiece" target="management.AbstractBoard">
+      <point x="-116.25" y="335.0" />
+      <point x="3689.1149771301843" y="9511.0" />
+      <point x="3762.4399771301846" y="9511.0" />
+      <point x="3762.4399771301846" y="9953.0" />
+      <point x="2641.0847282884856" y="9953.0" />
+      <point x="61.42500000000018" y="-588.0" />
+    </edge>
+    <edge source="main.Main" target="resources.BoardMode">
+      <point x="192.5" y="-400.0" />
+      <point x="6251.070080489357" y="5467.0" />
+      <point x="7475.782580489356" y="5467.0" />
+      <point x="7475.782580489356" y="3868.0" />
+      <point x="7541.563711001903" y="3868.0" />
+      <point x="0.0" y="58.5" />
+    </edge>
+    <edge source="pieces.AbstractChessPiece" target="pieces.IChessPiece">
+      <point x="302.25" y="335.0" />
+      <point x="4107.614977130184" y="9471.0" />
+      <point x="5278.794475603287" y="9471.0" />
+      <point x="-65.45454545454504" y="-136.0" />
+    </edge>
+    <edge source="main.InviteChecker" target="main.Main">
+      <point x="73.33333333333303" y="81.5" />
+      <point x="-52.5" y="-400.0" />
+    </edge>
+    <edge source="resources.MediaHelper" target="resources.Console">
+      <point x="-116.25" y="-81.0" />
+      <point x="5468.911716190763" y="8388.0" />
+      <point x="4648.797006469182" y="8388.0" />
+      <point x="90.80000000000018" y="444.0" />
+    </edge>
+    <edge source="BoardTest" target="resources.Vector2">
+      <point x="-127.35000000000036" y="-92.0" />
+      <point x="6615.911747156022" y="12383.0" />
+      <point x="207.95821850352513" y="12383.0" />
+      <point x="207.95821850352513" y="2172.0" />
+      <point x="475.7877759998155" y="2172.0" />
+      <point x="475.7877759998155" y="1539.0" />
+      <point x="4812.578371298991" y="1539.0" />
+      <point x="-119.65116279069753" y="368.0" />
+    </edge>
+    <edge source="management.Stockfish" target="main.Main">
+      <point x="0.0" y="-158.0" />
+      <point x="8102.313711001903" y="6357.0" />
+      <point x="6151.903413822689" y="6357.0" />
+      <point x="93.33333333333303" y="400.0" />
+    </edge>
+    <edge source="resources.PieceNode" target="resources.Piece">
+      <point x="-26.625" y="-70.5" />
+      <point x="0.0" y="91.5" />
+    </edge>
+    <edge source="management.AbstractBoard" target="resources.MoveNode">
+      <point x="-70.875" y="-588.0" />
+      <point x="2508.7847282884854" y="9953.0" />
+      <point x="1381.952626398262" y="9953.0" />
+      <point x="1381.952626398262" y="3788.0" />
+      <point x="1404.9151263982621" y="3788.0" />
+      <point x="-27.6875" y="92.5" />
+    </edge>
+    <edge source="main.GameBoard" target="pieces.King">
+      <point x="-225.31034482758605" y="-664.5" />
+      <point x="6603.528366174318" y="3708.0" />
+      <point x="3329.2399771301843" y="3708.0" />
+      <point x="140.875" y="180.0" />
+    </edge>
+    <edge source="management.AbstractBoard" target="management.PieceManager">
+      <point x="-127.57499999999982" y="-588.0" />
+      <point x="2452.0847282884856" y="10013.0" />
+      <point x="904.7576617410832" y="10013.0" />
+      <point x="904.7576617410832" y="2192.0" />
+      <point x="1381.0872416309903" y="2192.0" />
+      <point x="-60.80000000000018" y="81.0" />
+    </edge>
+    <edge source="main.GameBoard" target="resources.Move">
+      <point x="122.89655172413768" y="-664.5" />
+      <point x="6951.735262726042" y="3768.0" />
+      <point x="7133.187548211206" y="3768.0" />
+      <point x="7133.187548211206" y="3105.0" />
+      <point x="7739.251663198285" y="3105.0" />
+      <point x="7739.251663198285" y="2332.0" />
+      <point x="8209.36718925129" y="2332.0" />
+      <point x="-35.0" y="81.5" />
+    </edge>
+    <edge source="management.Board" target="resources.Console">
+      <point x="-48.5" y="-224.5" />
+      <point x="6777.227024933801" y="11483.0" />
+      <point x="4742.902562024737" y="11483.0" />
+      <point x="4742.902562024737" y="8398.0" />
+      <point x="4603.397006469181" y="8398.0" />
+      <point x="45.399999999999636" y="444.0" />
+    </edge>
+    <edge source="pieces.Pawn" target="management.PieceManager">
+      <point x="-169.20000000000027" y="-159.0" />
+      <point x="4013.2927549079614" y="2102.0" />
+      <point x="1563.4872416309904" y="2102.0" />
+      <point x="121.59999999999991" y="81.0" />
+    </edge>
+    <edge source="main.GameBoard" target="resources.PieceNode">
+      <point x="-143.3793103448279" y="-664.5" />
+      <point x="6685.459400657076" y="3668.0" />
+      <point x="6334.070080489357" y="3668.0" />
+      <point x="6334.070080489357" y="1459.0" />
+      <point x="1621.6877525932132" y="1459.0" />
+      <point x="74.55000000000018" y="70.5" />
+    </edge>
+    <edge source="management.Board" target="resources.BoardMode">
+      <point x="91.61111111111131" y="-224.5" />
+      <point x="6917.338136044912" y="11523.0" />
+      <point x="8439.301437100094" y="11523.0" />
+      <point x="8439.301437100094" y="3798.0" />
+      <point x="7589.563711001903" y="3798.0" />
+      <point x="48.0" y="58.5" />
+    </edge>
+    <edge source="CloneBoardTest" target="management.Board">
+      <point x="-34.57142857142844" y="-48.0" />
+      <point x="9246.261303622461" y="12403.0" />
+      <point x="9258.047017908175" y="12403.0" />
+      <point x="9258.047017908175" y="12102.0" />
+      <point x="6998.171469378245" y="12102.0" />
+      <point x="172.44444444444434" y="224.5" />
+    </edge>
+    <edge source="pieces.Queen" target="management.AbstractBoard">
+      <point x="111.0" y="48.0" />
+      <point x="668.2707185035251" y="10063.0" />
+      <point x="2404.8347282884856" y="10063.0" />
+      <point x="-174.82499999999982" y="-588.0" />
+    </edge>
+    <edge source="management.HighscoreController" target="resources.Highscore">
+      <point x="-87.0" y="-115.0" />
+      <point x="9490.332732193889" y="166.0" />
+      <point x="9513.332732193889" y="166.0" />
+      <point x="-64.0" y="70.5" />
+    </edge>
+    <edge source="management.ChessComputerEasy" target="resources.Move">
+      <point x="-18.25" y="-37.0" />
+      <point x="7712.813711001903" y="3115.0" />
+      <point x="8042.502825988982" y="3115.0" />
+      <point x="8042.502825988982" y="2342.0" />
+      <point x="8223.36718925129" y="2342.0" />
+      <point x="-21.0" y="81.5" />
+    </edge>
+    <edge source="pieces.Queen" target="pieces.AbstractChessPiece">
+      <point x="142.71428571428578" y="-48.0" />
+      <point x="699.9850042178109" y="9481.0" />
+      <point x="3503.1149771301843" y="9481.0" />
+      <point x="-302.25" y="335.0" />
+    </edge>
+    <edge source="management.Board" target="management.RandomBoard">
+      <point x="-16.16666666666697" y="-224.5" />
+      <point x="6809.560358267134" y="11453.0" />
+      <point x="6751.027547444289" y="11453.0" />
+      <point x="-86.33333333333303" y="37.0" />
+    </edge>
+    <edge source="pieces.Pawn" target="resources.Piece">
+      <point x="-18.800000000000182" y="-159.0" />
+      <point x="4163.692754907961" y="2252.0" />
+      <point x="4135.643917698659" y="2252.0" />
+      <point x="4135.643917698659" y="323.0" />
+      <point x="1550.354857856371" y="323.0" />
+      <point x="29.84210526315792" y="91.5" />
+    </edge>
+    <edge source="ChessPuzzlesTest" target="management.ChessPuzzles">
+      <point x="51.25" y="-48.0" />
+      <point x="5171.846243280055" y="3758.0" />
+      <point x="5728.986747156023" y="3758.0" />
+      <point x="-48.5" y="93.0" />
+    </edge>
+    <edge source="resources.Animation" target="resources.Vector2">
+      <point x="-83.0" y="-103.5" />
+      <point x="7187.338711001904" y="3748.0" />
+      <point x="7057.937548211206" y="3748.0" />
+      <point x="7057.937548211206" y="3045.0" />
+      <point x="7642.001663198285" y="3045.0" />
+      <point x="7642.001663198285" y="1419.0" />
+      <point x="4977.810929438526" y="1419.0" />
+      <point x="45.58139534883685" y="368.0" />
+    </edge>
+    <edge source="management.Board" target="management.ChessClock">
+      <point x="-123.94444444444434" y="-224.5" />
+      <point x="6701.782580489356" y="11553.0" />
+      <point x="369.49294072574776" y="11553.0" />
+      <point x="369.49294072574776" y="5327.0" />
+      <point x="408.3024645352716" y="5327.0" />
+      <point x="408.3024645352716" y="3808.0" />
+      <point x="2062.94191925988" y="3808.0" />
+      <point x="-89.19999999999982" y="191.5" />
+    </edge>
+    <edge source="main.GameBoard" target="management.DatabaseController">
+      <point x="-61.44827586206884" y="-664.5" />
+      <point x="6767.390435139835" y="3628.0" />
+      <point x="6598.307580489356" y="3628.0" />
+      <point x="6598.307580489356" y="3125.0" />
+      <point x="6692.314573070869" y="3125.0" />
+      <point x="55.05000000000018" y="301.5" />
+    </edge>
+    <edge source="main.GameBoard" target="resources.Console">
+      <point x="-106.07142857142844" y="664.5" />
+      <point x="6722.7672824304755" y="5427.0" />
+      <point x="6279.070080489357" y="5427.0" />
+      <point x="6279.070080489357" y="6367.0" />
+      <point x="4611.7707910836725" y="6367.0" />
+      <point x="4611.7707910836725" y="7330.0" />
+      <point x="4622.854149326325" y="7330.0" />
+      <point x="64.85714285714312" y="-444.0" />
+    </edge>
+    <edge source="main.Tile" target="resources.Vector2">
+      <point x="0.0" y="-93.0" />
+      <point x="7316.063711001903" y="3075.0" />
+      <point x="7675.001663198285" y="3075.0" />
+      <point x="7675.001663198285" y="1399.0" />
+      <point x="4989.206278275736" y="1399.0" />
+      <point x="56.976744186046744" y="368.0" />
+    </edge>
+    <edge source="pieces.King" target="pieces.ChessPiece">
+      <point x="-107.33333333333303" y="-180.0" />
+      <point x="3081.0316437968513" y="3135.0" />
+      <point x="3128.278950913627" y="3135.0" />
+      <point x="3128.278950913627" y="2122.0" />
+      <point x="2646.0851977184193" y="2122.0" />
+      <point x="107.11764705882342" y="48.0" />
+    </edge>
+    <edge source="pieces.Knight" target="pieces.ChessPiece">
+      <point x="-20.8125" y="-48.0" />
+      <point x="2115.03566925988" y="9441.0" />
+      <point x="1934.8856692598797" y="9441.0" />
+      <point x="1934.8856692598797" y="5377.0" />
+      <point x="2274.1419192598796" y="5377.0" />
+      <point x="2274.1419192598796" y="3115.0" />
+      <point x="2666.6146094831256" y="3115.0" />
+      <point x="2666.6146094831256" y="2162.0" />
+      <point x="2538.967550659596" y="2162.0" />
+      <point x="0.0" y="48.0" />
+    </edge>
+    <edge source="main.GameBoard" target="resources.Alliance">
+      <point x="102.41379310344837" y="-664.5" />
+      <point x="6931.252504105352" y="3758.0" />
+      <point x="7068.937548211206" y="3758.0" />
+      <point x="7068.937548211206" y="3055.0" />
+      <point x="7653.001663198285" y="3055.0" />
+      <point x="7653.001663198285" y="283.0" />
+      <point x="4658.702030547171" y="283.0" />
+      <point x="18.0" y="47.5" />
+    </edge>
+    <edge source="pieces.Bishop" target="pieces.AbstractChessPiece.MoveType">
+      <point x="-47.714285714285325" y="-48.0" />
+      <point x="1053.4433760267975" y="9471.0" />
+      <point x="1064.6874478268342" y="9471.0" />
+      <point x="1064.6874478268342" y="2112.0" />
+      <point x="824.3808688794657" y="2112.0" />
+      <point x="824.3808688794657" y="1499.0" />
+      <point x="2791.194343521214" y="1499.0" />
+      <point x="-36.40000000000009" y="36.5" />
+    </edge>
+    <edge source="management.AbstractBoard" target="management.Player">
+      <point x="165.375" y="-588.0" />
+      <point x="2745.0347282884854" y="10063.0" />
+      <point x="4700.897006469181" y="10063.0" />
+      <point x="4700.897006469181" y="5457.0" />
+      <point x="5252.496243280055" y="5457.0" />
+      <point x="5252.496243280055" y="3768.0" />
+      <point x="6368.445080489357" y="3768.0" />
+      <point x="-71.625" y="81.5" />
+    </edge>
+    <edge source="pieces.Queen" target="pieces.ChessPiece">
+      <point x="95.14285714285734" y="-48.0" />
+      <point x="652.4135756463825" y="9491.0" />
+      <point x="542.5555555555538" y="9491.0" />
+      <point x="542.5555555555538" y="2242.0" />
+      <point x="2289.0263741890076" y="2242.0" />
+      <point x="-249.9411764705883" y="48.0" />
+    </edge>
+    <edge source="Vector2Test" target="resources.Vector2">
+      <point x="-46.75" y="-69.5" />
+      <point x="3973.893917698659" y="1629.0" />
+      <point x="4863.857441066433" y="1629.0" />
+      <point x="-68.37209302325573" y="368.0" />
+    </edge>
+    <edge source="BoardTest" target="main.Main">
+      <point x="42.44999999999982" y="-92.0" />
+      <point x="6785.711747156023" y="12373.0" />
+      <point x="9012.047017908175" y="12373.0" />
+      <point x="9012.047017908175" y="6347.0" />
+      <point x="6198.570080489357" y="6347.0" />
+      <point x="140.0" y="400.0" />
+    </edge>
+    <edge source="pieces.AbstractChessPiece" target="resources.Piece">
+      <point x="-58.125" y="-335.0" />
+      <point x="3747.2399771301843" y="8611.0" />
+      <point x="3509.0210654977877" y="8611.0" />
+      <point x="3509.0210654977877" y="5257.0" />
+      <point x="3983.9927549079616" y="5257.0" />
+      <point x="3983.9927549079616" y="2222.0" />
+      <point x="3835.9927549079616" y="2222.0" />
+      <point x="3835.9927549079616" y="333.0" />
+      <point x="1546.0916999616338" y="333.0" />
+      <point x="25.578947368420813" y="91.5" />
+    </edge>
+    <edge source="management.ChessComputerHard" target="resources.Move">
+      <point x="-26.09090909090901" y="-203.0" />
+      <point x="8644.404972453627" y="6723.0" />
+      <point x="8562.984517908175" y="6723.0" />
+      <point x="8562.984517908175" y="2002.0" />
+      <point x="8279.36718925129" y="2002.0" />
+      <point x="35.0" y="81.5" />
+    </edge>
+    <edge source="pieces.King" target="resources.Alliance">
+      <point x="35.77777777777783" y="-180.0" />
+      <point x="3224.142754907962" y="3115.0" />
+      <point x="3481.2363900781525" y="3115.0" />
+      <point x="3481.2363900781525" y="2242.0" />
+      <point x="3916.643917698659" y="2242.0" />
+      <point x="3916.643917698659" y="473.0" />
+      <point x="4626.302030547171" y="473.0" />
+      <point x="-14.400000000000091" y="47.5" />
+    </edge>
+    <edge source="management.AbstractBoard" target="management.ChessClock">
+      <point x="-42.524999999999636" y="-588.0" />
+      <point x="2537.134728288486" y="9923.0" />
+      <point x="1674.0526263982629" y="9923.0" />
+      <point x="1674.0526263982629" y="5307.0" />
+      <point x="1912.4651263982623" y="5307.0" />
+      <point x="1912.4651263982623" y="3818.0" />
+      <point x="2107.5419192598793" y="3818.0" />
+      <point x="-44.600000000000364" y="191.5" />
+    </edge>
+    <edge source="pieces.Knight" target="management.AbstractBoard">
+      <point x="83.25" y="48.0" />
+      <point x="2219.09816925988" y="9873.0" />
+      <point x="2584.384728288486" y="9873.0" />
+      <point x="4.725000000000364" y="-588.0" />
+    </edge>
+    <edge source="pieces.Knight" target="pieces.AbstractChessPiece">
+      <point x="145.6875" y="-48.0" />
+      <point x="2281.53566925988" y="9501.0" />
+      <point x="3596.1149771301843" y="9501.0" />
+      <point x="-209.25" y="335.0" />
+    </edge>
+    <edge source="pieces.Queen" target="resources.Vector2">
+      <point x="0.0" y="-48.0" />
+      <point x="557.2707185035251" y="9511.0" />
+      <point x="518.6913534241603" y="9511.0" />
+      <point x="518.6913534241603" y="2162.0" />
+      <point x="1104.0255188839405" y="2162.0" />
+      <point x="1104.0255188839405" y="1549.0" />
+      <point x="4818.276045717596" y="1549.0" />
+      <point x="-113.95348837209258" y="368.0" />
+    </edge>
+    <edge source="management.PieceManager" target="resources.Alliance">
+      <point x="0.0" y="-81.0" />
+      <point x="1441.8872416309905" y="1439.0" />
+      <point x="1430.137752593213" y="1439.0" />
+      <point x="1430.137752593213" y="413.0" />
+      <point x="4604.702030547171" y="413.0" />
+      <point x="-36.0" y="47.5" />
+    </edge>
+    <edge source="resources.MoveNode" target="resources.PieceNode">
+      <point x="-36.91666666666697" y="-92.5" />
+      <point x="1395.6859597315952" y="3025.0" />
+      <point x="2074.2216691026088" y="3025.0" />
+      <point x="2074.2216691026088" y="1479.0" />
+      <point x="1579.0877525932128" y="1479.0" />
+      <point x="31.949999999999818" y="70.5" />
+    </edge>
+    <edge source="main.Main" target="main.GameBoard">
+      <point x="87.5" y="-400.0" />
+      <point x="6146.070080489357" y="5397.0" />
+      <point x="6595.481568144761" y="5397.0" />
+      <point x="-233.35714285714312" y="664.5" />
+    </edge>
+    <edge source="StockfishTest" target="management.Stockfish">
+      <point x="-43.0" y="-70.0" />
+      <point x="7996.563711001903" y="6763.0" />
+      <point x="8008.188711001903" y="6763.0" />
+      <point x="-94.125" y="158.0" />
+    </edge>
+    <edge source="main.Tile" target="management.Board">
+      <point x="101.85000000000036" y="93.0" />
+      <point x="7417.913711001904" y="3828.0" />
+      <point x="8048.278988779681" y="3828.0" />
+      <point x="8048.278988779681" y="5417.0" />
+      <point x="8298.035933224126" y="5417.0" />
+      <point x="8298.035933224126" y="11503.0" />
+      <point x="6895.782580489356" y="11503.0" />
+      <point x="70.05555555555566" y="-224.5" />
+    </edge>
+    <edge source="management.AbstractBoard" target="pieces.Queen">
+      <point x="-184.27499999999964" y="-588.0" />
+      <point x="2395.384728288486" y="10073.0" />
+      <point x="557.2707185035251" y="10073.0" />
+      <point x="0.0" y="48.0" />
+    </edge>
+    <edge source="pieces.King" target="pieces.AbstractChessPiece.MoveType">
+      <point x="-35.77777777777783" y="-180.0" />
+      <point x="3152.5871993524065" y="3145.0" />
+      <point x="3150.278950913627" y="3145.0" />
+      <point x="3150.278950913627" y="1509.0" />
+      <point x="2853.594343521214" y="1509.0" />
+      <point x="26.0" y="36.5" />
+    </edge>
+    <edge source="management.ChessComputer" target="management.Board">
+      <point x="76.25" y="93.0" />
+      <point x="8777.234517908175" y="3135.0" />
+      <point x="8760.234517908175" y="3135.0" />
+      <point x="8760.234517908175" y="3848.0" />
+      <point x="8840.748406797064" y="3848.0" />
+      <point x="8840.748406797064" y="11563.0" />
+      <point x="6960.449247156023" y="11563.0" />
+      <point x="134.72222222222263" y="-224.5" />
+    </edge>
+    <edge source="main.Main" target="resources.MediaHelper">
+      <point x="0.0" y="400.0" />
+      <point x="6058.570080489357" y="6347.0" />
+      <point x="5974.5360421750775" y="6347.0" />
+      <point x="5974.5360421750775" y="8268.0" />
+      <point x="5515.411716190763" y="8268.0" />
+      <point x="-69.75" y="-81.0" />
+    </edge>
+    <edge source="pieces.Pawn" target="pieces.AbstractChessPiece">
+      <point x="31.333333333333485" y="159.0" />
+      <point x="4213.826088241295" y="3175.0" />
+      <point x="4259.303193337868" y="3175.0" />
+      <point x="4259.303193337868" y="5267.0" />
+      <point x="3623.7363900781525" y="5267.0" />
+      <point x="3623.7363900781525" y="8601.0" />
+      <point x="3770.4899771301843" y="8601.0" />
+      <point x="-34.875" y="-335.0" />
+    </edge>
+    <edge source="pieces.IChessPiece" target="resources.Vector2">
+      <point x="0.0" y="-136.0" />
+      <point x="5344.249021057833" y="1699.0" />
+      <point x="4955.020231764108" y="1699.0" />
+      <point x="22.79069767441888" y="368.0" />
+    </edge>
+    <edge source="main.Tile" target="resources.Alliance">
+      <point x="97.0" y="-93.0" />
+      <point x="7413.063711001903" y="3085.0" />
+      <point x="7686.001663198285" y="3085.0" />
+      <point x="7686.001663198285" y="273.0" />
+      <point x="4662.302030547171" y="273.0" />
+      <point x="21.59999999999991" y="47.5" />
+    </edge>
+    <edge source="main.GameBoard" target="resources.MediaHelper">
+      <point x="-63.64285714285688" y="664.5" />
+      <point x="6765.195853859047" y="5437.0" />
+      <point x="6290.070080489357" y="5437.0" />
+      <point x="6290.070080489357" y="8288.0" />
+      <point x="5608.411716190763" y="8288.0" />
+      <point x="23.25" y="-81.0" />
+    </edge>
+    <edge source="pieces.AbstractChessPiece.MoveEvaluator" target="resources.Console">
+      <point x="102.66666666666697" y="-81.5" />
+      <point x="4293.001173135849" y="8388.0" />
+      <point x="4467.197006469181" y="8388.0" />
+      <point x="-90.80000000000018" y="444.0" />
+    </edge>
+    <edge source="pieces.Rook" target="resources.Piece">
+      <point x="-135.41666666666652" y="-48.0" />
+      <point x="2358.197942816459" y="2212.0" />
+      <point x="2155.7943435212137" y="2212.0" />
+      <point x="2155.7943435212137" y="373.0" />
+      <point x="1529.0390683826868" y="373.0" />
+      <point x="8.526315789473756" y="91.5" />
+    </edge>
+    <edge source="pieces.Queen" target="resources.Piece">
+      <point x="-142.71428571428578" y="-48.0" />
+      <point x="414.55643278923935" y="9511.0" />
+      <point x="402.913575646382" y="9511.0" />
+      <point x="402.913575646382" y="5297.0" />
+      <point x="375.74690897971595" y="5297.0" />
+      <point x="375.74690897971595" y="333.0" />
+      <point x="1494.9338052247922" y="333.0" />
+      <point x="-25.578947368420813" y="91.5" />
+    </edge>
+    <edge source="main.GameBoard" target="management.ChessComputerHard">
+      <point x="275.7857142857147" y="664.5" />
+      <point x="7104.624425287619" y="5397.0" />
+      <point x="8540.984517908175" y="5397.0" />
+      <point x="8540.984517908175" y="6743.0" />
+      <point x="8592.223154271811" y="6743.0" />
+      <point x="-78.27272727272702" y="-203.0" />
+    </edge>
+    <edge source="management.ChessComputerEasy" target="resources.Vector2">
+      <point x="-54.75" y="-37.0" />
+      <point x="7676.313711001903" y="3095.0" />
+      <point x="7697.001663198285" y="3095.0" />
+      <point x="7697.001663198285" y="1389.0" />
+      <point x="4994.903952694341" y="1389.0" />
+      <point x="62.67441860465169" y="368.0" />
+    </edge>
+    <edge source="BoardTest" target="management.Board">
+      <point x="14.149999999999636" y="-92.0" />
+      <point x="6757.411747156022" y="12363.0" />
+      <point x="6799.1367471560225" y="12363.0" />
+      <point x="6799.1367471560225" y="12142.0" />
+      <point x="6782.615913822689" y="12142.0" />
+      <point x="-43.11111111111131" y="224.5" />
+    </edge>
+    <edge source="management.Board" target="pieces.IChessPiece">
+      <point x="-37.72222222222172" y="-224.5" />
+      <point x="6788.004802711579" y="11473.0" />
+      <point x="5404.249021057833" y="11473.0" />
+      <point x="60.0" y="136.0" />
+    </edge>
+    <edge source="management.Board" target="pieces.AbstractChessPiece">
+      <point x="-70.05555555555566" y="-224.5" />
+      <point x="6755.671469378245" y="11503.0" />
+      <point x="4721.347006469181" y="11503.0" />
+      <point x="4721.347006469181" y="9511.0" />
+      <point x="3921.6149771301843" y="9511.0" />
+      <point x="116.25" y="335.0" />
+    </edge>
+    <edge source="main.GameBoard" target="pieces.IChessPiece">
+      <point x="63.64285714285688" y="664.5" />
+      <point x="6892.481568144761" y="5457.0" />
+      <point x="6945.760922539968" y="5457.0" />
+      <point x="6945.760922539968" y="8328.0" />
+      <point x="6255.017946086742" y="8328.0" />
+      <point x="6255.017946086742" y="9481.0" />
+      <point x="5387.885384694197" y="9481.0" />
+      <point x="43.63636363636397" y="-136.0" />
+    </edge>
+    <edge source="pieces.Pawn" target="pieces.AbstractChessPiece.MoveType">
+      <point x="-56.40000000000009" y="-159.0" />
+      <point x="4126.0927549079615" y="2072.0" />
+      <point x="3894.643917698659" y="2072.0" />
+      <point x="3894.643917698659" y="1489.0" />
+      <point x="2874.394343521214" y="1489.0" />
+      <point x="46.80000000000018" y="36.5" />
+    </edge>
+    <edge source="main.GameBoard" target="resources.MoveNode">
+      <point x="-286.7586206896549" y="-664.5" />
+      <point x="6542.080090312249" y="3738.0" />
+      <point x="1571.0401263982621" y="3738.0" />
+      <point x="138.4375" y="92.5" />
+    </edge>
+    <edge source="pieces.ChessPiece" target="resources.Alliance">
+      <point x="-75.875" y="-48.0" />
+      <point x="2463.092550659596" y="1479.0" />
+      <point x="2400.415756469182" y="1479.0" />
+      <point x="2400.415756469182" y="453.0" />
+      <point x="4619.102030547171" y="453.0" />
+      <point x="-21.59999999999991" y="47.5" />
+    </edge>
+    <edge source="pieces.King" target="management.AbstractBoard">
+      <point x="-100.625" y="180.0" />
+      <point x="3087.7399771301843" y="3858.0" />
+      <point x="2549.7106692598795" y="3858.0" />
+      <point x="2549.7106692598795" y="5437.0" />
+      <point x="2333.2981692598796" y="5437.0" />
+      <point x="2333.2981692598796" y="9853.0" />
+      <point x="2603.2847282884854" y="9853.0" />
+      <point x="23.625" y="-588.0" />
+    </edge>
+    <edge source="main.GameUpdater" target="main.GameBoard">
+      <point x="0.0" y="81.5" />
+      <point x="6760.307580489356" y="3608.0" />
+      <point x="6808.355952381215" y="3608.0" />
+      <point x="-20.48275862068931" y="-664.5" />
+    </edge>
+    <edge source="management.ChessComputerHard" target="management.Stockfish">
+      <point x="-104.36363636363603" y="-203.0" />
+      <point x="8566.132245180901" y="6753.0" />
+      <point x="8196.438711001903" y="6753.0" />
+      <point x="94.125" y="158.0" />
+    </edge>
+    <edge source="CloneBoardTest" target="management.BoardLibrary">
+      <point x="-69.1428571428572" y="-48.0" />
+      <point x="9211.689875051032" y="12323.0" />
+      <point x="3299.9310425847634" y="12323.0" />
+      <point x="101.25" y="70.5" />
+    </edge>
+    <edge source="HardAITest" target="management.Board">
+      <point x="-24.0" y="-59.0" />
+      <point x="9127.547017908175" y="12112.0" />
+      <point x="6955.060358267134" y="12112.0" />
+      <point x="129.33333333333303" y="224.5" />
+    </edge>
+    <edge source="resources.MoveNode" target="management.PieceManager">
+      <point x="-110.75" y="-92.5" />
+      <point x="1321.8526263982621" y="3015.0" />
+      <point x="1537.1872416309907" y="3015.0" />
+      <point x="1537.1872416309907" y="2192.0" />
+      <point x="1441.8872416309905" y="2192.0" />
+      <point x="0.0" y="81.0" />
+    </edge>
+    <edge source="management.AbstractBoard" target="pieces.Knight">
+      <point x="-4.725000000000364" y="-588.0" />
+      <point x="2574.934728288485" y="9883.0" />
+      <point x="2052.59816925988" y="9883.0" />
+      <point x="-83.25" y="48.0" />
+    </edge>
+    <edge source="management.PieceManager" target="resources.BiMap">
+      <point x="-86.85714285714278" y="-81.0" />
+      <point x="1355.0300987738478" y="1429.0" />
+      <point x="1257.637752593213" y="1429.0" />
+      <point x="-54.0" y="125.5" />
+    </edge>
+    <edge source="pieces.AbstractChessPiece" target="resources.Alliance">
+      <point x="-11.625" y="-335.0" />
+      <point x="3793.7399771301843" y="8711.0" />
+      <point x="3822.334506469182" y="8711.0" />
+      <point x="3822.334506469182" y="5277.0" />
+      <point x="4391.992754907962" y="5277.0" />
+      <point x="4391.992754907962" y="493.0" />
+      <point x="4633.502030547172" y="493.0" />
+      <point x="-7.199999999999818" y="47.5" />
+    </edge>
+    <edge source="management.ChessComputer" target="resources.Move">
+      <point x="-81.33333333333303" y="-93.0" />
+      <point x="8619.651184574841" y="1992.0" />
+      <point x="8293.36718925129" y="1992.0" />
+      <point x="49.0" y="81.5" />
+    </edge>
+    <edge source="management.ChessComputerHard" target="pieces.AbstractChessPiece">
+      <point x="-119.58333333333303" y="203.0" />
+      <point x="8550.912548211203" y="7219.0" />
+      <point x="4025.834506469182" y="7219.0" />
+      <point x="4025.834506469182" y="8651.0" />
+      <point x="3956.4899771301843" y="8651.0" />
+      <point x="151.125" y="-335.0" />
+    </edge>
+    <edge source="management.Board" target="resources.MediaHelper">
+      <point x="-26.944444444444343" y="-224.5" />
+      <point x="6798.782580489356" y="11463.0" />
+      <point x="6649.223380777622" y="11463.0" />
+      <point x="6649.223380777622" y="8721.0" />
+      <point x="5620.036716190763" y="8721.0" />
+      <point x="34.875" y="81.0" />
+    </edge>
+    <edge source="management.ChessComputerMedium" target="management.Board">
+      <point x="-30.125" y="25.5" />
+      <point x="8550.954214877871" y="11543.0" />
+      <point x="6938.893691600468" y="11543.0" />
+      <point x="113.16666666666697" y="-224.5" />
+    </edge>
+    <edge source="management.Board" target="resources.MoveNode">
+      <point x="-134.72222222222172" y="-224.5" />
+      <point x="6691.004802711579" y="11563.0" />
+      <point x="358.7151629479704" y="11563.0" />
+      <point x="358.7151629479704" y="5317.0" />
+      <point x="397.52468675749424" y="5317.0" />
+      <point x="397.52468675749424" y="3798.0" />
+      <point x="1294.1651263982621" y="3798.0" />
+      <point x="-138.4375" y="92.5" />
+    </edge>
+    <edge source="MediumAI" target="management.Board">
+      <point x="-30.625" y="-59.0" />
+      <point x="8386.136416793386" y="12132.0" />
+      <point x="6868.838136044912" y="12132.0" />
+      <point x="43.11111111111131" y="224.5" />
+    </edge>
+    <edge source="MediumAI" target="management.ChessComputerMedium">
+      <point x="30.625" y="-59.0" />
+      <point x="8447.386416793386" y="12132.0" />
+      <point x="8949.859517908175" y="12132.0" />
+      <point x="8949.859517908175" y="7330.0" />
+      <point x="8611.204214877871" y="7330.0" />
+      <point x="30.125" y="25.5" />
+    </edge>
+    <edge source="pieces.AbstractChessPiece" target="resources.Vector2">
+      <point x="104.625" y="-335.0" />
+      <point x="3909.9899771301843" y="8631.0" />
+      <point x="4003.834506469182" y="8631.0" />
+      <point x="4003.834506469182" y="5327.0" />
+      <point x="4748.54856886145" y="5327.0" />
+      <point x="4748.54856886145" y="1709.0" />
+      <point x="4909.43883641527" y="1709.0" />
+      <point x="-22.79069767441888" y="368.0" />
+    </edge>
+    <edge source="RulesTest" target="resources.Move">
+      <point x="-54.20000000000073" y="-356.0" />
+      <point x="81.29999999999927" y="12403.0" />
+      <point x="124.5" y="12403.0" />
+      <point x="124.5" y="3185.0" />
+      <point x="4380.992754907962" y="3185.0" />
+      <point x="4380.992754907962" y="2302.0" />
+      <point x="8167.36718925129" y="2302.0" />
+      <point x="-77.0" y="81.5" />
+    </edge>
+    <edge source="main.Main" target="management.ChessPuzzles">
+      <point x="-192.5" y="-400.0" />
+      <point x="5866.070080489357" y="5457.0" />
+      <point x="5766.486747156023" y="5457.0" />
+      <point x="5766.486747156023" y="3758.0" />
+      <point x="5761.320080489356" y="3758.0" />
+      <point x="-16.16666666666697" y="93.0" />
+    </edge>
+    <edge source="main.Main" target="main.InviteChecker">
+      <point x="-122.5" y="-400.0" />
+      <point x="5936.070080489357" y="5437.0" />
+      <point x="5859.236747156023" y="5437.0" />
+      <point x="-73.33333333333303" y="81.5" />
+    </edge>
+    <edge source="management.AbstractBoard" target="resources.Vector2">
+      <point x="108.67500000000018" y="-588.0" />
+      <point x="2688.3347282884856" y="10003.0" />
+      <point x="4409.597006469182" y="10003.0" />
+      <point x="4409.597006469182" y="5377.0" />
+      <point x="4955.696243280056" y="5377.0" />
+      <point x="4955.696243280056" y="1729.0" />
+      <point x="4937.927208508294" y="1729.0" />
+      <point x="5.697674418604947" y="368.0" />
+    </edge>
+    <edge source="pieces.Knight" target="resources.Vector2">
+      <point x="62.4375" y="-48.0" />
+      <point x="2198.28566925988" y="9471.0" />
+      <point x="2187.345506311912" y="9471.0" />
+      <point x="2187.345506311912" y="5397.0" />
+      <point x="2476.2919192598797" y="5397.0" />
+      <point x="2476.2919192598797" y="3135.0" />
+      <point x="2748.815756469182" y="3135.0" />
+      <point x="2748.815756469182" y="2222.0" />
+      <point x="2903.617550659596" y="2222.0" />
+      <point x="2903.617550659596" y="1609.0" />
+      <point x="4852.462092229224" y="1609.0" />
+      <point x="-79.76744186046471" y="368.0" />
+    </edge>
+    <edge source="management.AbstractBoard" target="resources.Alliance">
+      <point x="146.47500000000036" y="-588.0" />
+      <point x="2726.134728288486" y="10043.0" />
+      <point x="4681.9970064691815" y="10043.0" />
+      <point x="4681.9970064691815" y="5437.0" />
+      <point x="5233.596243280055" y="5437.0" />
+      <point x="5233.596243280055" y="503.0" />
+      <point x="4644.302030547171" y="503.0" />
+      <point x="3.599999999999909" y="47.5" />
+    </edge>
+    <edge source="main.GameBoard" target="management.ChessPuzzles">
+      <point x="-184.34482758620652" y="-664.5" />
+      <point x="6644.493883415697" y="3688.0" />
+      <point x="5858.320080489356" y="3688.0" />
+      <point x="80.83333333333303" y="93.0" />
+    </edge>
+    <edge source="pieces.ChessPiece" target="resources.Vector2">
+      <point x="227.625" y="-48.0" />
+      <point x="2766.592550659596" y="1589.0" />
+      <point x="4841.066743392014" y="1589.0" />
+      <point x="-91.16279069767461" y="368.0" />
+    </edge>
+    <edge source="main.GameBoard" target="management.ChessClock">
+      <point x="-245.79310344827536" y="-664.5" />
+      <point x="6583.0456075536285" y="3718.0" />
+      <point x="2241.3419192598794" y="3718.0" />
+      <point x="89.19999999999982" y="191.5" />
+    </edge>
+    <edge source="pieces.IChessPiece" target="resources.Alliance">
+      <point x="109.09090909090901" y="-136.0" />
+      <point x="5453.339930148741" y="9511.0" />
+      <point x="6633.018835323077" y="9511.0" />
+      <point x="6633.018835323077" y="8358.0" />
+      <point x="7851.063711001903" y="8358.0" />
+      <point x="7851.063711001903" y="3135.0" />
+      <point x="8437.440325988982" y="3135.0" />
+      <point x="8437.440325988982" y="263.0" />
+      <point x="4665.902030547171" y="263.0" />
+      <point x="25.199999999999818" y="47.5" />
+    </edge>
+    <edge source="management.ChessComputer" target="resources.Alliance">
+      <point x="81.33333333333303" y="-93.0" />
+      <point x="8782.317851241507" y="2352.0" />
+      <point x="8711.984517908175" y="2352.0" />
+      <point x="8711.984517908175" y="243.0" />
+      <point x="4673.102030547171" y="243.0" />
+      <point x="32.40000000000009" y="47.5" />
+    </edge>
+    <edge source="pieces.Knight" target="resources.Alliance">
+      <point x="20.8125" y="-48.0" />
+      <point x="2156.66066925988" y="9431.0" />
+      <point x="2085.50005286885" y="9431.0" />
+      <point x="2085.50005286885" y="5387.0" />
+      <point x="2424.75630286885" y="5387.0" />
+      <point x="2424.75630286885" y="3125.0" />
+      <point x="2714.926947850729" y="3125.0" />
+      <point x="2714.926947850729" y="2212.0" />
+      <point x="2892.617550659596" y="2212.0" />
+      <point x="2892.617550659596" y="463.0" />
+      <point x="4622.702030547171" y="463.0" />
+      <point x="-18.0" y="47.5" />
+    </edge>
+    <edge source="resources.MediaHelper" target="main.Main">
+      <point x="-23.25" y="-81.0" />
+      <point x="5561.911716190763" y="8278.0" />
+      <point x="5985.5360421750775" y="8278.0" />
+      <point x="5985.5360421750775" y="6357.0" />
+      <point x="6105.236747156023" y="6357.0" />
+      <point x="46.66666666666697" y="400.0" />
+    </edge>
+    <edge source="CloneBoardTest" target="main.Main">
+      <point x="0.0" y="-48.0" />
+      <point x="9280.832732193889" y="12403.0" />
+      <point x="9269.047017908175" y="12403.0" />
+      <point x="9269.047017908175" y="6337.0" />
+      <point x="6245.236747156023" y="6337.0" />
+      <point x="186.66666666666606" y="400.0" />
+    </edge>
+    <edge source="pieces.AbstractChessPiece.MoveEvaluator" target="pieces.IChessPiece">
+      <point x="123.19999999999982" y="81.5" />
+      <point x="4313.534506469182" y="8691.0" />
+      <point x="4339.620791083673" y="8691.0" />
+      <point x="4339.620791083673" y="9461.0" />
+      <point x="5300.612657421469" y="9461.0" />
+      <point x="-43.63636363636397" y="-136.0" />
+    </edge>
+    <edge source="BoardTest" target="pieces.AbstractChessPiece">
+      <point x="-70.75" y="-92.0" />
+      <point x="6672.5117471560225" y="12363.0" />
+      <point x="229.95821850352513" y="12363.0" />
+      <point x="229.95821850352513" y="10083.0" />
+      <point x="2312.84816925988" y="10083.0" />
+      <point x="2312.84816925988" y="9511.0" />
+      <point x="3642.6149771301843" y="9511.0" />
+      <point x="-162.75" y="335.0" />
+    </edge>
+    <edge source="management.RandomBoard" target="management.AbstractBoard">
+      <point x="-103.60000000000036" y="-37.0" />
+      <point x="6733.760880777621" y="11319.0" />
+      <point x="2705.6597282884854" y="11319.0" />
+      <point x="126.0" y="588.0" />
+    </edge>
+    <edge source="pieces.Pawn" target="resources.Alliance">
+      <point x="18.799999999999727" y="-159.0" />
+      <point x="4201.292754907961" y="2242.0" />
+      <point x="4146.643917698659" y="2242.0" />
+      <point x="4146.643917698659" y="483.0" />
+      <point x="4629.902030547171" y="483.0" />
+      <point x="-10.800000000000182" y="47.5" />
+    </edge>
+    <edge source="resources.MoveNode" target="resources.Piece">
+      <point x="-184.58333333333303" y="-92.5" />
+      <point x="1248.0192930649291" y="3005.0" />
+      <point x="1412.3735198264794" y="3005.0" />
+      <point x="1412.3735198264794" y="2162.0" />
+      <point x="1169.399030788702" y="2162.0" />
+      <point x="1169.399030788702" y="363.0" />
+      <point x="1507.7232789090021" y="363.0" />
+      <point x="-12.789473684210861" y="91.5" />
+    </edge>
+    <edge source="pieces.AbstractChessPiece.MoveEvaluator" target="resources.Vector2">
+      <point x="0.0" y="-81.5" />
+      <point x="4190.334506469182" y="8398.0" />
+      <point x="4162.4630935212135" y="8398.0" />
+      <point x="4162.4630935212135" y="5357.0" />
+      <point x="4855.647406070753" y="5357.0" />
+      <point x="4855.647406070753" y="1739.0" />
+      <point x="4926.531859671084" y="1739.0" />
+      <point x="-5.697674418604947" y="368.0" />
+    </edge>
+    <edge source="pieces.Queen" target="pieces.AbstractChessPiece.MoveType">
+      <point x="-47.57142857142844" y="-48.0" />
+      <point x="509.6992899320967" y="9501.0" />
+      <point x="441.1913534241603" y="9501.0" />
+      <point x="441.1913534241603" y="1489.0" />
+      <point x="2780.7943435212137" y="1489.0" />
+      <point x="-46.80000000000018" y="36.5" />
+    </edge>
+    <edge source="pieces.AbstractChessPiece" target="pieces.AbstractChessPiece.MoveType">
+      <point x="-197.625" y="-335.0" />
+      <point x="3607.7399771301843" y="8671.0" />
+      <point x="2971.7149771301843" y="8671.0" />
+      <point x="2971.7149771301843" y="2132.0" />
+      <point x="2852.967550659596" y="2132.0" />
+      <point x="2852.967550659596" y="1529.0" />
+      <point x="2832.7943435212137" y="1529.0" />
+      <point x="5.199999999999818" y="36.5" />
+    </edge>
+    <edge source="CloneBoardTest" target="resources.Move">
+      <point x="34.57142857142844" y="-48.0" />
+      <point x="9315.404160765316" y="12393.0" />
+      <point x="9280.047017908175" y="12393.0" />
+      <point x="9280.047017908175" y="1962.0" />
+      <point x="8335.36718925129" y="1962.0" />
+      <point x="91.0" y="81.5" />
+    </edge>
+    <edge source="management.AbstractBoard" target="pieces.IChessPiece">
+      <point x="184.27499999999964" y="-588.0" />
+      <point x="2763.934728288485" y="10083.0" />
+      <point x="5284.249021057833" y="10083.0" />
+      <point x="-60.0" y="136.0" />
+    </edge>
+    <edge source="pieces.Knight" target="pieces.AbstractChessPiece.MoveType">
+      <point x="-104.0625" y="-48.0" />
+      <point x="2031.7856692598798" y="9461.0" />
+      <point x="1741.608876398262" y="9461.0" />
+      <point x="1741.608876398262" y="5357.0" />
+      <point x="1964.365126398262" y="5357.0" />
+      <point x="1964.365126398262" y="3075.0" />
+      <point x="2166.7943435212137" y="3075.0" />
+      <point x="2166.7943435212137" y="1509.0" />
+      <point x="2801.594343521214" y="1509.0" />
+      <point x="-26.0" y="36.5" />
+    </edge>
+    <edge source="pieces.ChessPiece" target="management.AbstractBoard">
+      <point x="-214.23529411764684" y="48.0" />
+      <point x="2324.732256541949" y="2252.0" />
+      <point x="1098.5255188839405" y="2252.0" />
+      <point x="1098.5255188839405" y="3175.0" />
+      <point x="914.207661741083" y="3175.0" />
+      <point x="914.207661741083" y="10003.0" />
+      <point x="2461.5347282884854" y="10003.0" />
+      <point x="-118.125" y="-588.0" />
+    </edge>
+    <edge source="main.GameBoard" target="main.Main">
+      <point x="-148.5" y="664.5" />
+      <point x="6680.338711001904" y="5417.0" />
+      <point x="6216.070080489357" y="5417.0" />
+      <point x="157.5" y="-400.0" />
+    </edge>
+    <edge source="pieces.AbstractChessPiece" target="resources.Tools">
+      <point x="81.375" y="-335.0" />
+      <point x="3886.7399771301843" y="8621.0" />
+      <point x="3937.876173135849" y="8621.0" />
+      <point x="3937.876173135849" y="5317.0" />
+      <point x="4611.04856886145" y="5317.0" />
+      <point x="4611.04856886145" y="2282.0" />
+      <point x="4627.631902194784" y="2282.0" />
+      <point x="22.083333333333485" y="91.5" />
+    </edge>
+    <edge source="pieces.AbstractChessPiece.MoveEvaluator" target="pieces.AbstractChessPiece">
+      <point x="61.600000000000364" y="81.5" />
+      <point x="4251.934506469182" y="8691.0" />
+      <point x="4049.4899771301843" y="8691.0" />
+      <point x="244.125" y="-335.0" />
+    </edge>
+    <edge source="main.GameBoard" target="management.Board">
+      <point x="106.07142857142844" y="664.5" />
+      <point x="6934.910139573332" y="5447.0" />
+      <point x="7862.063711001903" y="5447.0" />
+      <point x="7862.063711001903" y="8358.0" />
+      <point x="8095.653988779682" y="8358.0" />
+      <point x="8095.653988779682" y="11473.0" />
+      <point x="6863.449247156023" y="11473.0" />
+      <point x="37.722222222222626" y="-224.5" />
+    </edge>
+    <edge source="management.Board" target="resources.Piece">
+      <point x="-188.6111111111113" y="-224.5" />
+      <point x="6637.115913822689" y="11613.0" />
+      <point x="299.2151629479695" y="11613.0" />
+      <point x="299.2151629479695" y="303.0" />
+      <point x="1482.1443315405813" y="303.0" />
+      <point x="-38.368421052631675" y="91.5" />
+    </edge>
+    <edge source="management.ChessComputerHard" target="management.Board">
+      <point x="23.91666666666697" y="203.0" />
+      <point x="8694.412548211203" y="7219.0" />
+      <point x="8712.079214877871" y="7219.0" />
+      <point x="8712.079214877871" y="11553.0" />
+      <point x="6949.671469378245" y="11553.0" />
+      <point x="123.94444444444434" y="-224.5" />
+    </edge>
+    <edge source="pieces.ChessPiece" target="pieces.AbstractChessPiece">
+      <point x="71.41176470588243" y="48.0" />
+      <point x="2610.3793153654783" y="2142.0" />
+      <point x="2859.184506469182" y="2142.0" />
+      <point x="2859.184506469182" y="8681.0" />
+      <point x="3584.4899771301843" y="8681.0" />
+      <point x="-220.875" y="-335.0" />
+    </edge>
+    <edge source="main.GameBoard" target="resources.Vector2">
+      <point x="61.44827586206884" y="-664.5" />
+      <point x="6890.286986863973" y="3738.0" />
+      <point x="7012.6145730708695" y="3738.0" />
+      <point x="7012.6145730708695" y="3025.0" />
+      <point x="7625.303988779681" y="3025.0" />
+      <point x="7625.303988779681" y="1439.0" />
+      <point x="4966.415580601317" y="1439.0" />
+      <point x="34.186046511627865" y="368.0" />
+    </edge>
+    <edge source="management.PieceManager" target="resources.Piece">
+      <point x="-130.28571428571422" y="-81.0" />
+      <point x="1311.6015273452763" y="1439.0" />
+      <point x="1193.137752593213" y="1439.0" />
+      <point x="1193.137752593213" y="373.0" />
+      <point x="1511.9864368037393" y="373.0" />
+      <point x="-8.526315789473756" y="91.5" />
+    </edge>
+    <edge source="pieces.King" target="resources.Piece">
+      <point x="0.0" y="-180.0" />
+      <point x="3188.3649771301843" y="3105.0" />
+      <point x="3403.8649771301843" y="3105.0" />
+      <point x="3403.8649771301843" y="353.0" />
+      <point x="1537.5653841721605" y="353.0" />
+      <point x="17.052631578947512" y="91.5" />
+    </edge>
+    <edge source="main.GameBoard" target="management.ChessComputerMedium">
+      <point x="233.35714285714312" y="664.5" />
+      <point x="7062.195853859047" y="5407.0" />
+      <point x="8480.912548211203" y="5407.0" />
+      <point x="8480.912548211203" y="7209.0" />
+      <point x="8500.745881544539" y="7209.0" />
+      <point x="-80.33333333333303" y="-25.5" />
+    </edge>
+    <edge source="pieces.AbstractChessPiece.MoveType" target="pieces.AbstractChessPiece">
+      <point x="15.599999999999909" y="36.5" />
+      <point x="2843.194343521214" y="1519.0" />
+      <point x="3016.8649771301843" y="1519.0" />
+      <point x="3016.8649771301843" y="8661.0" />
+      <point x="3630.9899771301843" y="8661.0" />
+      <point x="-174.375" y="-335.0" />
+    </edge>
+    <edge source="management.Player" target="management.DatabaseController">
+      <point x="71.625" y="-81.5" />
+      <point x="6511.695080489357" y="3105.0" />
+      <point x="6618.914573070869" y="3105.0" />
+      <point x="-18.350000000000364" y="301.5" />
+    </edge>
+    <edge source="management.ChessComputerEasy" target="management.Board">
+      <point x="73.0" y="37.0" />
+      <point x="7804.063711001903" y="3788.0" />
+      <point x="8450.079214877871" y="3788.0" />
+      <point x="8450.079214877871" y="11533.0" />
+      <point x="6928.115913822689" y="11533.0" />
+      <point x="102.38888888888869" y="-224.5" />
+    </edge>
+    <edge source="pieces.Bishop" target="pieces.AbstractChessPiece">
+      <point x="143.1428571428571" y="-48.0" />
+      <point x="1244.3005188839397" y="9491.0" />
+      <point x="3549.6149771301843" y="9491.0" />
+      <point x="-255.75" y="335.0" />
+    </edge>
+    <edge source="pieces.Rook" target="management.AbstractBoard">
+      <point x="-121.875" y="48.0" />
+      <point x="2371.7396094831256" y="3095.0" />
+      <point x="1186.4374478268342" y="3095.0" />
+      <point x="1186.4374478268342" y="3778.0" />
+      <point x="923.6576617410828" y="3778.0" />
+      <point x="923.6576617410828" y="9993.0" />
+      <point x="2470.9847282884853" y="9993.0" />
+      <point x="-108.67500000000018" y="-588.0" />
+    </edge>
+    <edge source="management.ChessComputerHard" target="management.ChessComputer">
+      <point x="26.09090909090901" y="-203.0" />
+      <point x="8696.586790635447" y="6753.0" />
+      <point x="8727.234517908175" y="6753.0" />
+      <point x="8727.234517908175" y="3185.0" />
+      <point x="8746.734517908175" y="3185.0" />
+      <point x="45.75" y="93.0" />
+    </edge>
+    <edge source="resources.Tools" target="resources.Alliance">
+      <point x="0.0" y="-91.5" />
+      <point x="4605.54856886145" y="1529.0" />
+      <point x="4551.590871298991" y="1529.0" />
+      <point x="4551.590871298991" y="513.0" />
+      <point x="4640.702030547171" y="513.0" />
+      <point x="0.0" y="47.5" />
+    </edge>
+    <edge source="pieces.Rook" target="pieces.AbstractChessPiece">
+      <point x="40.625" y="48.0" />
+      <point x="2534.2396094831256" y="3105.0" />
+      <point x="2817.5189758741553" y="3105.0" />
+      <point x="2817.5189758741553" y="8701.0" />
+      <point x="3537.9899771301843" y="8701.0" />
+      <point x="-267.375" y="-335.0" />
+    </edge>
+    <edge source="resources.MoveNode" target="pieces.AbstractChessPiece">
+      <point x="83.0625" y="92.5" />
+      <point x="1515.6651263982621" y="3798.0" />
+      <point x="1901.4651263982623" y="3798.0" />
+      <point x="1901.4651263982623" y="5297.0" />
+      <point x="2378.21066925988" y="5297.0" />
+      <point x="2378.21066925988" y="8721.0" />
+      <point x="3491.4899771301843" y="8721.0" />
+      <point x="-313.875" y="-335.0" />
+    </edge>
+    <edge source="management.AbstractBoard" target="resources.Console">
+      <point x="137.02499999999964" y="-588.0" />
+      <point x="2716.684728288485" y="10033.0" />
+      <point x="4557.9970064691815" y="10033.0" />
+      <point x="0.0" y="444.0" />
+    </edge>
+    <edge source="pieces.King" target="resources.Vector2">
+      <point x="107.33333333333348" y="-180.0" />
+      <point x="3295.698310463518" y="3135.0" />
+      <point x="3661.1784181015787" y="3135.0" />
+      <point x="3661.1784181015787" y="2262.0" />
+      <point x="4157.643917698659" y="2262.0" />
+      <point x="4157.643917698659" y="1659.0" />
+      <point x="4880.950464322247" y="1659.0" />
+      <point x="-51.2790697674418" y="368.0" />
+    </edge>
+    <edge source="management.Board" target="management.PieceManager">
+      <point x="-156.27777777777737" y="-224.5" />
+      <point x="6669.449247156023" y="11583.0" />
+      <point x="331.5484962813034" y="11583.0" />
+      <point x="331.5484962813034" y="3175.0" />
+      <point x="386.74690897971595" y="3175.0" />
+      <point x="386.74690897971595" y="2182.0" />
+      <point x="1320.2872416309906" y="2182.0" />
+      <point x="-121.59999999999991" y="81.0" />
+    </edge>
+    <edge source="resources.Console" target="pieces.ChessPiece">
+      <point x="-64.85714285714312" y="-444.0" />
+      <point x="4493.139863612038" y="7320.0" />
+      <point x="4462.625593521214" y="7320.0" />
+      <point x="4462.625593521214" y="5417.0" />
+      <point x="4996.596243280055" y="5417.0" />
+      <point x="4996.596243280055" y="2052.0" />
+      <point x="2824.614609483125" y="2052.0" />
+      <point x="285.6470588235293" y="48.0" />
+    </edge>
+    <edge source="pieces.King" target="pieces.Rook">
+      <point x="-143.11111111111086" y="-180.0" />
+      <point x="3045.2538660190735" y="3095.0" />
+      <point x="2615.4896094831256" y="3095.0" />
+      <point x="121.875" y="48.0" />
+    </edge>
+    <edge source="HardAITest" target="management.ChessComputerHard">
+      <point x="24.0" y="-59.0" />
+      <point x="9175.547017908175" y="7219.0" />
+      <point x="8742.245881544537" y="7219.0" />
+      <point x="71.75" y="203.0" />
+    </edge>
+    <edge source="management.AbstractBoard" target="pieces.AbstractChessPiece">
+      <point x="80.32499999999982" y="-588.0" />
+      <point x="2659.9847282884853" y="9973.0" />
+      <point x="3781.3399771301843" y="9973.0" />
+      <point x="-23.25" y="335.0" />
+    </edge>
+    <edge source="pieces.Pawn" target="main.GameBoard">
+      <point x="94.0" y="159.0" />
+      <point x="4276.492754907962" y="3135.0" />
+      <point x="5916.070080489357" y="3135.0" />
+      <point x="5916.070080489357" y="3678.0" />
+      <point x="6664.976642036387" y="3678.0" />
+      <point x="-163.8620689655172" y="-664.5" />
+    </edge>
+    <edge source="management.RandomBoard" target="resources.Move">
+      <point x="103.60000000000036" y="-37.0" />
+      <point x="6940.960880777622" y="11309.0" />
+      <point x="6879.760880777621" y="11309.0" />
+      <point x="6879.760880777621" y="8721.0" />
+      <point x="7888.872022853993" y="8721.0" />
+      <point x="7888.872022853993" y="8398.0" />
+      <point x="8249.313711001903" y="8398.0" />
+      <point x="8249.313711001903" y="5467.0" />
+      <point x="8385.190325988982" y="5467.0" />
+      <point x="8385.190325988982" y="2022.0" />
+      <point x="8251.36718925129" y="2022.0" />
+      <point x="7.0" y="81.5" />
+    </edge>
+    <edge source="management.ChessComputerEasy" target="management.ChessComputer">
+      <point x="91.25" y="-37.0" />
+      <point x="7822.313711001903" y="3175.0" />
+      <point x="8685.734517908175" y="3175.0" />
+      <point x="-15.25" y="93.0" />
+    </edge>
+    <edge source="resources.MoveNode" target="resources.Vector2">
+      <point x="184.58333333333303" y="-92.5" />
+      <point x="1617.1859597315952" y="3055.0" />
+      <point x="2130.9455063119112" y="3055.0" />
+      <point x="2130.9455063119112" y="2222.0" />
+      <point x="2224.967550659596" y="2222.0" />
+      <point x="2224.967550659596" y="1579.0" />
+      <point x="4835.36906897341" y="1579.0" />
+      <point x="-96.86046511627865" y="368.0" />
+    </edge>
+    <edge source="resources.Animation" target="main.Tile">
+      <point x="0.0" y="-103.5" />
+      <point x="7270.338711001904" y="3838.0" />
+      <point x="7330.613711001904" y="3838.0" />
+      <point x="14.550000000000182" y="93.0" />
+    </edge>
+    <edge source="pieces.IChessPiece" target="pieces.AbstractChessPiece">
+      <point x="-109.09090909090901" y="-136.0" />
+      <point x="5235.158111966923" y="9491.0" />
+      <point x="4014.6149771301843" y="9491.0" />
+      <point x="209.25" y="335.0" />
+    </edge>
+    <edge source="resources.Console" target="pieces.AbstractChessPiece">
+      <point x="-45.399999999999636" y="444.0" />
+      <point x="4512.597006469182" y="8398.0" />
+      <point x="4354.834506469182" y="8398.0" />
+      <point x="4354.834506469182" y="8701.0" />
+      <point x="4072.7399771301843" y="8701.0" />
+      <point x="267.375" y="-335.0" />
+    </edge>
+    <edge source="management.BoardLibrary" target="main.Main">
+      <point x="-91.125" y="-70.5" />
+      <point x="3107.5560425847634" y="12142.0" />
+      <point x="255.89571850352513" y="12142.0" />
+      <point x="255.89571850352513" y="6317.0" />
+      <point x="5918.570080489357" y="6317.0" />
+      <point x="-140.0" y="400.0" />
+    </edge>
+    <edge source="main.InviteChecker" target="management.DatabaseController">
+      <point x="-55.0" y="-81.5" />
+      <point x="5877.570080489357" y="3758.0" />
+      <point x="5927.070080489357" y="3758.0" />
+      <point x="5927.070080489357" y="3065.0" />
+      <point x="6472.1145730708695" y="3065.0" />
+      <point x="-165.14999999999964" y="301.5" />
+    </edge>
+    <edge source="resources.PieceNode" target="resources.Alliance">
+      <point x="26.625" y="-70.5" />
+      <point x="1573.762752593213" y="423.0" />
+      <point x="4608.302030547171" y="423.0" />
+      <point x="-32.40000000000009" y="47.5" />
+    </edge>
+    <edge source="resources.Move" target="resources.Vector2">
+      <point x="-65.33333333333303" y="-81.5" />
+      <point x="8179.033855917958" y="1379.0" />
+      <point x="5000.601627112945" y="1379.0" />
+      <point x="68.37209302325573" y="368.0" />
+    </edge>
+    <edge source="pieces.ChessPiece" target="resources.Console">
+      <point x="249.9411764705883" y="48.0" />
+      <point x="2788.908727130184" y="2062.0" />
+      <point x="4985.596243280055" y="2062.0" />
+      <point x="4985.596243280055" y="5407.0" />
+      <point x="4451.625593521214" y="5407.0" />
+      <point x="4451.625593521214" y="7330.0" />
+      <point x="4460.711292183468" y="7330.0" />
+      <point x="-97.28571428571377" y="-444.0" />
+    </edge>
+    <edge source="pieces.Bishop" target="resources.Piece">
+      <point x="-143.14285714285688" y="-48.0" />
+      <point x="958.014804598226" y="9451.0" />
+      <point x="1032.4624478268338" y="9451.0" />
+      <point x="1032.4624478268338" y="2132.0" />
+      <point x="781.9308688794649" y="2132.0" />
+      <point x="781.9308688794649" y="353.0" />
+      <point x="1503.4601210142655" y="353.0" />
+      <point x="-17.052631578947512" y="91.5" />
+    </edge>
+    <edge source="management.ChessComputerEasy" target="pieces.Pawn">
+      <point x="-91.25" y="-37.0" />
+      <point x="7639.813711001903" y="3005.0" />
+      <point x="4339.159421574628" y="3005.0" />
+      <point x="156.66666666666652" y="159.0" />
+    </edge>
+    <edge source="pieces.AbstractChessPiece" target="management.Board">
+      <point x="162.75" y="335.0" />
+      <point x="3968.1149771301843" y="9501.0" />
+      <point x="4732.124784246959" y="9501.0" />
+      <point x="4732.124784246959" y="11493.0" />
+      <point x="6766.449247156023" y="11493.0" />
+      <point x="-59.277777777777374" y="-224.5" />
+    </edge>
+    <edge source="management.AbstractBoard" target="pieces.King">
+      <point x="33.07499999999982" y="-588.0" />
+      <point x="2612.7347282884853" y="9843.0" />
+      <point x="2342.7481692598794" y="9843.0" />
+      <point x="2342.7481692598794" y="5447.0" />
+      <point x="2559.1606692598793" y="5447.0" />
+      <point x="2559.1606692598793" y="3868.0" />
+      <point x="3127.9899771301843" y="3868.0" />
+      <point x="-60.375" y="180.0" />
+    </edge>
+    <edge source="management.AbstractBoard" target="pieces.Pawn">
+      <point x="14.175000000000182" y="-588.0" />
+      <point x="2593.8347282884856" y="9863.0" />
+      <point x="2323.84816925988" y="9863.0" />
+      <point x="2323.84816925988" y="5427.0" />
+      <point x="2540.2606692598797" y="5427.0" />
+      <point x="2540.2606692598797" y="3838.0" />
+      <point x="2776.6189758741552" y="3838.0" />
+      <point x="2776.6189758741552" y="3165.0" />
+      <point x="4088.4927549079616" y="3165.0" />
+      <point x="-94.0" y="159.0" />
+    </edge>
+    <edge source="management.ChessComputerHard" target="resources.Vector2">
+      <point x="78.27272727272702" y="-203.0" />
+      <point x="8748.768608817263" y="6743.0" />
+      <point x="8807.748406797064" y="6743.0" />
+      <point x="8807.748406797064" y="3858.0" />
+      <point x="8840.637295685952" y="3858.0" />
+      <point x="8840.637295685952" y="3165.0" />
+      <point x="8873.526184574843" y="3165.0" />
+      <point x="8873.526184574843" y="1339.0" />
+      <point x="5023.392324787364" y="1339.0" />
+      <point x="91.16279069767461" y="368.0" />
+    </edge>
+    <edge source="management.Player" target="resources.Alliance">
+      <point x="-71.625" y="-81.5" />
+      <point x="6368.445080489357" y="3055.0" />
+      <point x="6375.132580489357" y="3055.0" />
+      <point x="6375.132580489357" y="303.0" />
+      <point x="4651.502030547172" y="303.0" />
+      <point x="10.800000000000182" y="47.5" />
+    </edge>
+    <edge source="pieces.ChessPiece" target="resources.Piece">
+      <point x="-227.625" y="-48.0" />
+      <point x="2311.342550659596" y="1479.0" />
+      <point x="2389.415756469182" y="1479.0" />
+      <point x="2389.415756469182" y="363.0" />
+      <point x="1533.3022262774239" y="363.0" />
+      <point x="12.789473684210861" y="91.5" />
+    </edge>
+    <edge source="pieces.King" target="pieces.IChessPiece">
+      <point x="100.625" y="180.0" />
+      <point x="3288.9899771301843" y="3858.0" />
+      <point x="3967.5908712989913" y="3858.0" />
+      <point x="3967.5908712989913" y="5247.0" />
+      <point x="4802.743471115646" y="5247.0" />
+      <point x="4802.743471115646" y="9451.0" />
+      <point x="5322.430839239651" y="9451.0" />
+      <point x="-21.818181818181984" y="-136.0" />
+    </edge>
+    <edge source="BoardTest" target="resources.Alliance">
+      <point x="127.35000000000036" y="-92.0" />
+      <point x="6870.611747156023" y="12403.0" />
+      <point x="9045.047017908175" y="12403.0" />
+      <point x="9045.047017908175" y="203.0" />
+      <point x="4683.902030547171" y="203.0" />
+      <point x="43.20000000000027" y="47.5" />
+    </edge>
+    <edge source="resources.Console" target="management.ChessComputerMedium">
+      <point x="97.28571428571468" y="-444.0" />
+      <point x="4655.282720754896" y="7330.0" />
+      <point x="8490.704214877871" y="7330.0" />
+      <point x="-90.375" y="25.5" />
+    </edge>
+    <edge source="pieces.Pawn" target="resources.Tools">
+      <point x="169.19999999999982" y="-159.0" />
+      <point x="4351.692754907961" y="2282.0" />
+      <point x="4539.29856886145" y="2282.0" />
+      <point x="-66.25" y="91.5" />
+    </edge>
+    <edge source="pieces.AbstractChessPiece" target="pieces.King">
+      <point x="-151.125" y="-335.0" />
+      <point x="3654.2399771301843" y="8651.0" />
+      <point x="3370.8649771301843" y="8651.0" />
+      <point x="3370.8649771301843" y="3878.0" />
+      <point x="3208.4899771301843" y="3878.0" />
+      <point x="20.125" y="180.0" />
+    </edge>
+    <edge source="management.RandomBoard" target="resources.BoardMode">
+      <point x="-51.80000000000018" y="-37.0" />
+      <point x="6785.560880777622" y="11309.0" />
+      <point x="6698.823380777621" y="11309.0" />
+      <point x="6698.823380777621" y="8691.0" />
+      <point x="7512.622022853993" y="8691.0" />
+      <point x="7512.622022853993" y="8368.0" />
+      <point x="7873.063711001903" y="8368.0" />
+      <point x="7873.063711001903" y="5457.0" />
+      <point x="8059.278988779681" y="5457.0" />
+      <point x="8059.278988779681" y="3818.0" />
+      <point x="7565.563711001903" y="3818.0" />
+      <point x="24.0" y="58.5" />
+    </edge>
+    <edge source="pieces.AbstractChessPiece" target="pieces.AbstractChessPiece.MoveEvaluator">
+      <point x="174.375" y="-335.0" />
+      <point x="3979.7399771301843" y="8661.0" />
+      <point x="4067.1345064691823" y="8661.0" />
+      <point x="-123.19999999999982" y="81.5" />
+    </edge>
+    <edge source="pieces.King" target="resources.Tools">
+      <point x="143.1111111111113" y="-180.0" />
+      <point x="3331.4760882412957" y="3145.0" />
+      <point x="3672.1784181015787" y="3145.0" />
+      <point x="3672.1784181015787" y="2272.0" />
+      <point x="4495.131902194784" y="2272.0" />
+      <point x="-110.41666666666652" y="91.5" />
+    </edge>
+    <edge source="pieces.King" target="pieces.AbstractChessPiece">
+      <point x="60.375" y="180.0" />
+      <point x="3248.7399771301843" y="3868.0" />
+      <point x="3381.8649771301843" y="3868.0" />
+      <point x="3381.8649771301843" y="8641.0" />
+      <point x="3677.4899771301843" y="8641.0" />
+      <point x="-127.875" y="-335.0" />
+    </edge>
+    <edge source="main.Main" target="resources.Console">
+      <point x="-93.33333333333303" y="400.0" />
+      <point x="5965.236747156023" y="6327.0" />
+      <point x="4600.7707910836725" y="6327.0" />
+      <point x="4600.7707910836725" y="7330.0" />
+      <point x="4590.425577897753" y="7330.0" />
+      <point x="32.42857142857156" y="-444.0" />
+    </edge>
+    <edge source="management.AbstractBoard" target="pieces.Bishop">
+      <point x="-99.22499999999945" y="-588.0" />
+      <point x="2480.434728288486" y="9983.0" />
+      <point x="1017.6576617410828" y="9983.0" />
+      <point x="-83.5" y="48.0" />
+    </edge>
+    <edge source="pieces.IChessPiece" target="resources.Piece">
+      <point x="21.818181818181984" y="-136.0" />
+      <point x="5366.067202876015" y="9471.0" />
+      <point x="5735.161716190763" y="9471.0" />
+      <point x="5735.161716190763" y="8318.0" />
+      <point x="6323.070080489357" y="8318.0" />
+      <point x="6323.070080489357" y="313.0" />
+      <point x="1554.618015751108" y="313.0" />
+      <point x="34.105263157895024" y="91.5" />
+    </edge>
+    <edge source="management.Board" target="management.AbstractBoard">
+      <point x="-102.38888888888869" y="-224.5" />
+      <point x="6723.338136044912" y="11533.0" />
+      <point x="1916.4780038759704" y="11533.0" />
+      <point x="1916.4780038759704" y="11319.0" />
+      <point x="2453.6597282884854" y="11319.0" />
+      <point x="-126.0" y="588.0" />
+    </edge>
+    <edge source="resources.MoveScore" target="resources.Move">
+      <point x="53.5" y="-71.0" />
+      <point x="6050.0360421750775" y="2322.0" />
+      <point x="8195.36718925129" y="2322.0" />
+      <point x="-49.0" y="81.5" />
+    </edge>
+    <edge source="pieces.Rook" target="resources.Alliance">
+      <point x="-81.25" y="-48.0" />
+      <point x="2412.3646094831256" y="2202.0" />
+      <point x="2182.7943435212137" y="2202.0" />
+      <point x="2182.7943435212137" y="443.0" />
+      <point x="4615.502030547172" y="443.0" />
+      <point x="-25.199999999999818" y="47.5" />
+    </edge>
+    <edge source="main.Tile" target="resources.Console">
+      <point x="-130.94999999999982" y="93.0" />
+      <point x="7185.113711001904" y="3788.0" />
+      <point x="5777.486747156023" y="3788.0" />
+      <point x="5777.486747156023" y="5467.0" />
+      <point x="4544.2707910836725" y="5467.0" />
+      <point x="4544.2707910836725" y="7330.0" />
+      <point x="4557.9970064691815" y="7330.0" />
+      <point x="0.0" y="-444.0" />
+    </edge>
+    <edge source="management.AbstractBoard" target="resources.Piece">
+      <point x="-165.375" y="-588.0" />
+      <point x="2414.2847282884854" y="10053.0" />
+      <point x="734.2707185035251" y="10053.0" />
+      <point x="734.2707185035251" y="343.0" />
+      <point x="1499.1969631195288" y="343.0" />
+      <point x="-21.315789473684163" y="91.5" />
+    </edge>
+    <edge source="pieces.Queen" target="resources.Alliance">
+      <point x="-95.14285714285734" y="-48.0" />
+      <point x="462.1278613606678" y="9511.0" />
+      <point x="430.1913534241603" y="9511.0" />
+      <point x="430.1913534241603" y="393.0" />
+      <point x="4597.502030547172" y="393.0" />
+      <point x="-43.19999999999982" y="47.5" />
+    </edge>
+    <edge source="pieces.Knight" target="resources.Piece">
+      <point x="-145.6875" y="-48.0" />
+      <point x="1990.1606692598798" y="9471.0" />
+      <point x="1730.608876398262" y="9471.0" />
+      <point x="1730.608876398262" y="5347.0" />
+      <point x="1953.365126398262" y="5347.0" />
+      <point x="1953.365126398262" y="3065.0" />
+      <point x="2141.9455063119112" y="3065.0" />
+      <point x="2141.9455063119112" y="2192.0" />
+      <point x="2122.5966691026088" y="2192.0" />
+      <point x="2122.5966691026088" y="383.0" />
+      <point x="1524.7759104879497" y="383.0" />
+      <point x="4.263157894736651" y="91.5" />
+    </edge>
+    <edge source="main.GameBoard" target="management.ChessComputerEasy">
+      <point x="286.7586206896549" y="-664.5" />
+      <point x="7115.597331691559" y="3878.0" />
+      <point x="7658.063711001903" y="3878.0" />
+      <point x="-73.0" y="37.0" />
+    </edge>
+    <edge source="management.ChessComputer" target="resources.Console">
+      <point x="-106.75" y="93.0" />
+      <point x="8594.234517908175" y="3145.0" />
+      <point x="5007.596243280055" y="3145.0" />
+      <point x="5007.596243280055" y="5427.0" />
+      <point x="4473.625593521214" y="5427.0" />
+      <point x="4473.625593521214" y="7310.0" />
+      <point x="4525.56843504061" y="7310.0" />
+      <point x="-32.42857142857156" y="-444.0" />
+    </edge>
+    <edge source="pieces.Bishop" target="resources.Alliance">
+      <point x="-95.42857142857156" y="-48.0" />
+      <point x="1005.7290903125113" y="9461.0" />
+      <point x="1053.6874478268342" y="9461.0" />
+      <point x="1053.6874478268342" y="2122.0" />
+      <point x="813.3808688794657" y="2122.0" />
+      <point x="813.3808688794657" y="403.0" />
+      <point x="4601.102030547171" y="403.0" />
+      <point x="-39.59999999999991" y="47.5" />
+    </edge>
+    <edge source="pieces.Pawn" target="management.AbstractBoard">
+      <point x="-156.66666666666652" y="159.0" />
+      <point x="4025.826088241295" y="3155.0" />
+      <point x="2742.6734330125373" y="3155.0" />
+      <point x="2742.6734330125373" y="3828.0" />
+      <point x="2500.815126398262" y="3828.0" />
+      <point x="2500.815126398262" y="5417.0" />
+      <point x="1708.677626398262" y="5417.0" />
+      <point x="1708.677626398262" y="9893.0" />
+      <point x="2565.4847282884853" y="9893.0" />
+      <point x="-14.175000000000182" y="-588.0" />
+    </edge>
+    <edge source="management.BoardLibrary" target="management.Board">
+      <point x="30.375" y="-70.5" />
+      <point x="3229.0560425847634" y="12132.0" />
+      <point x="6696.393691600468" y="12132.0" />
+      <point x="-129.33333333333303" y="224.5" />
+    </edge>
+    <edge source="management.AbstractBoard" target="resources.PieceNode">
+      <point x="-155.92500000000018" y="-588.0" />
+      <point x="2423.7347282884853" y="10043.0" />
+      <point x="743.720718503525" y="10043.0" />
+      <point x="743.720718503525" y="2142.0" />
+      <point x="792.9308688794649" y="2142.0" />
+      <point x="792.9308688794649" y="1449.0" />
+      <point x="1451.287752593213" y="1449.0" />
+      <point x="-95.84999999999991" y="70.5" />
+    </edge>
+    <edge source="CloneBoardTest" target="resources.Vector2">
+      <point x="69.14285714285688" y="-48.0" />
+      <point x="9349.975589336746" y="12383.0" />
+      <point x="9291.047017908175" y="12383.0" />
+      <point x="9291.047017908175" y="1299.0" />
+      <point x="5046.1830224617825" y="1299.0" />
+      <point x="113.95348837209349" y="368.0" />
+    </edge>
+    <edge source="management.Board" target="resources.Vector2">
+      <point x="26.944444444444343" y="-224.5" />
+      <point x="6852.671469378245" y="11463.0" />
+      <point x="6988.138658555399" y="11463.0" />
+      <point x="6988.138658555399" y="8671.0" />
+      <point x="6794.612269666511" y="8671.0" />
+      <point x="6794.612269666511" y="8258.0" />
+      <point x="5669.986747156023" y="8258.0" />
+      <point x="5669.986747156023" y="1689.0" />
+      <point x="4960.717906182712" y="1689.0" />
+      <point x="28.488372093022917" y="368.0" />
+    </edge>
+    <edge source="pieces.Bishop" target="management.AbstractBoard">
+      <point x="83.5" y="48.0" />
+      <point x="1184.6576617410828" y="9973.0" />
+      <point x="2489.884728288486" y="9973.0" />
+      <point x="-89.77499999999964" y="-588.0" />
+    </edge>
+    <edge source="management.AbstractBoard" target="pieces.Rook">
+      <point x="-51.975000000000364" y="-588.0" />
+      <point x="2527.684728288485" y="9933.0" />
+      <point x="1664.6026263982621" y="9933.0" />
+      <point x="1664.6026263982621" y="3105.0" />
+      <point x="2452.9896094831256" y="3105.0" />
+      <point x="-40.625" y="48.0" />
+    </edge>
+    <edge source="main.GameUpdater" target="management.DatabaseController">
+      <point x="-75.75" y="-81.5" />
+      <point x="6684.557580489356" y="3135.0" />
+      <point x="6729.014573070869" y="3135.0" />
+      <point x="91.75" y="301.5" />
+    </edge>
+    <edge source="management.ChessComputerEasy" target="pieces.IChessPiece">
+      <point x="0.0" y="37.0" />
+      <point x="7731.063711001903" y="8348.0" />
+      <point x="6567.518835323077" y="8348.0" />
+      <point x="6567.518835323077" y="9501.0" />
+      <point x="5431.521748330559" y="9501.0" />
+      <point x="87.27272727272702" y="-136.0" />
+    </edge>
+    <edge source="pieces.Rook" target="pieces.ChessPiece">
+      <point x="81.25" y="-48.0" />
+      <point x="2574.8646094831256" y="2172.0" />
+      <point x="2503.2616683066544" y="2172.0" />
+      <point x="-35.705882352941444" y="48.0" />
+    </edge>
+    <edge source="main.Main" target="management.DatabaseController">
+      <point x="17.5" y="-400.0" />
+      <point x="6076.070080489357" y="5467.0" />
+      <point x="6064.070080489357" y="5467.0" />
+      <point x="6064.070080489357" y="3778.0" />
+      <point x="6587.307580489356" y="3778.0" />
+      <point x="6587.307580489356" y="3115.0" />
+      <point x="6655.6145730708695" y="3115.0" />
+      <point x="18.350000000000364" y="301.5" />
+    </edge>
+    <edge source="pieces.Pawn" target="pieces.ChessPiece">
+      <point x="-94.0" y="-159.0" />
+      <point x="4088.4927549079616" y="2082.0" />
+      <point x="2753.2028447772427" y="2082.0" />
+      <point x="214.23529411764684" y="48.0" />
+    </edge>
+    <edge source="RulesTest" target="management.BoardLibrary">
+      <point x="54.20000000000073" y="-356.0" />
+      <point x="189.70000000000073" y="12393.0" />
+      <point x="3097.4310425847634" y="12393.0" />
+      <point x="-101.25" y="70.5" />
+    </edge>
+    <edge source="management.ChessComputerHard" target="resources.Piece">
+      <point x="104.36363636363603" y="-203.0" />
+      <point x="8774.859517908173" y="6753.0" />
+      <point x="8818.748406797064" y="6753.0" />
+      <point x="8818.748406797064" y="3868.0" />
+      <point x="8851.637295685952" y="3868.0" />
+      <point x="8851.637295685952" y="3175.0" />
+      <point x="8884.526184574843" y="3175.0" />
+      <point x="8884.526184574843" y="233.0" />
+      <point x="1558.8811736458447" y="233.0" />
+      <point x="38.368421052631675" y="91.5" />
+    </edge>
+    <edge source="management.RandomBoard" target="management.Board">
+      <point x="86.33333333333303" y="37.0" />
+      <point x="6923.694214110955" y="11443.0" />
+      <point x="6831.115913822689" y="11443.0" />
+      <point x="5.388888888888687" y="-224.5" />
+    </edge>
+    <edge source="main.GameBoard" target="management.Player">
+      <point x="-102.41379310344837" y="-664.5" />
+      <point x="6726.4249178984555" y="3648.0" />
+      <point x="6463.945080489357" y="3648.0" />
+      <point x="23.875" y="81.5" />
+    </edge>
+    <edge source="pieces.Pawn" target="resources.Vector2">
+      <point x="94.0" y="-159.0" />
+      <point x="4276.492754907962" y="2252.0" />
+      <point x="4331.140871298991" y="2252.0" />
+      <point x="4331.140871298991" y="1679.0" />
+      <point x="4892.345813159456" y="1679.0" />
+      <point x="-39.88372093023281" y="368.0" />
+    </edge>
+    <edge source="BoardTest" target="pieces.Queen">
+      <point x="-99.05000000000018" y="-92.0" />
+      <point x="6644.211747156023" y="12373.0" />
+      <point x="218.95821850352513" y="12373.0" />
+      <point x="218.95821850352513" y="10073.0" />
+      <point x="446.27071850352513" y="10073.0" />
+      <point x="-111.0" y="48.0" />
+    </edge>
+    <edge source="pieces.Bishop" target="pieces.ChessPiece">
+      <point x="47.71428571428578" y="-48.0" />
+      <point x="1148.8719474553686" y="9471.0" />
+      <point x="1109.5255188839405" y="9471.0" />
+      <point x="1109.5255188839405" y="2262.0" />
+      <point x="2360.43813889489" y="2262.0" />
+      <point x="-178.52941176470586" y="48.0" />
+    </edge>
+    <edge source="pieces.AbstractChessPiece" target="resources.MediaHelper">
+      <point x="290.625" y="-335.0" />
+      <point x="4095.9899771301843" y="8711.0" />
+      <point x="5480.536716190763" y="8711.0" />
+      <point x="-104.625" y="81.0" />
+    </edge>
+    <edge source="management.PieceManager" target="pieces.AbstractChessPiece">
+      <point x="60.80000000000018" y="81.0" />
+      <point x="1502.6872416309907" y="2182.0" />
+      <point x="2017.8716691026088" y="2182.0" />
+      <point x="2017.8716691026088" y="3015.0" />
+      <point x="2525.9901263982615" y="3015.0" />
+      <point x="2525.9901263982615" y="3818.0" />
+      <point x="2589.8356692598795" y="3818.0" />
+      <point x="2589.8356692598795" y="8711.0" />
+      <point x="3514.7399771301843" y="8711.0" />
+      <point x="-290.625" y="-335.0" />
+    </edge>
+    <edge source="pieces.Bishop" target="resources.Vector2">
+      <point x="0.0" y="-48.0" />
+      <point x="1101.1576617410828" y="9471.0" />
+      <point x="1087.5255188839405" y="9471.0" />
+      <point x="1087.5255188839405" y="2202.0" />
+      <point x="2133.5966691026088" y="2202.0" />
+      <point x="2133.5966691026088" y="1559.0" />
+      <point x="4823.9737201362" y="1559.0" />
+      <point x="-108.25581395348854" y="368.0" />
+    </edge>
+    <edge source="management.Board" target="resources.Alliance">
+      <point x="188.6111111111113" y="-224.5" />
+      <point x="7014.338136044912" y="11613.0" />
+      <point x="8938.859517908175" y="11613.0" />
+      <point x="8938.859517908175" y="213.0" />
+      <point x="4680.302030547171" y="213.0" />
+      <point x="39.59999999999991" y="47.5" />
+    </edge>
+    <edge source="management.ChessComputerMedium" target="management.ChessComputerHard">
+      <point x="0.0" y="-25.5" />
+      <point x="8581.079214877871" y="7219.0" />
+      <point x="8598.745881544537" y="7219.0" />
+      <point x="-71.75" y="203.0" />
+    </edge>
+    <edge source="management.AbstractBoard" target="main.Main">
+      <point x="174.82499999999982" y="-588.0" />
+      <point x="2754.4847282884853" y="10073.0" />
+      <point x="4710.347006469181" y="10073.0" />
+      <point x="4710.347006469181" y="6337.0" />
+      <point x="6011.903413822689" y="6337.0" />
+      <point x="-46.66666666666697" y="400.0" />
+    </edge>
+    <edge source="main.GameBoard" target="main.GameUpdater">
+      <point x="-40.96551724137953" y="-664.5" />
+      <point x="6787.873193760524" y="3618.0" />
+      <point x="6659.307580489356" y="3618.0" />
+      <point x="-101.0" y="81.5" />
+    </edge>
+    <edge source="management.RandomBoard" target="resources.Tools">
+      <point x="0.0" y="-37.0" />
+      <point x="6837.360880777622" y="11299.0" />
+      <point x="6709.823380777621" y="11299.0" />
+      <point x="6709.823380777621" y="8701.0" />
+      <point x="7582.622022853993" y="8701.0" />
+      <point x="7582.622022853993" y="8378.0" />
+      <point x="7943.063711001903" y="8378.0" />
+      <point x="7943.063711001903" y="5467.0" />
+      <point x="8129.278988779681" y="5467.0" />
+      <point x="8129.278988779681" y="2995.0" />
+      <point x="7523.628988779681" y="2995.0" />
+      <point x="7523.628988779681" y="2042.0" />
+      <point x="4671.79856886145" y="2042.0" />
+      <point x="66.25" y="91.5" />
+    </edge>
+    <edge source="RulesTest" target="main.Main">
+      <point x="0.0" y="-356.0" />
+      <point x="135.5" y="6307.0" />
+      <point x="5871.903413822689" y="6307.0" />
+      <point x="-186.66666666666697" y="400.0" />
+    </edge>
+    <edge source="main.GameBoard" target="management.ChessComputer">
+      <point x="143.3793103448279" y="-664.5" />
+      <point x="6972.218021346732" y="3778.0" />
+      <point x="7144.187548211206" y="3778.0" />
+      <point x="7144.187548211206" y="3155.0" />
+      <point x="8624.734517908175" y="3155.0" />
+      <point x="-76.25" y="93.0" />
+    </edge>
+    <edge source="pieces.Rook" target="resources.Vector2">
+      <point x="135.41666666666674" y="-48.0" />
+      <point x="2629.0312761497926" y="2202.0" />
+      <point x="2881.617550659596" y="2202.0" />
+      <point x="2881.617550659596" y="1599.0" />
+      <point x="4846.764417810619" y="1599.0" />
+      <point x="-85.46511627906966" y="368.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.1" x="4730.804808911311" y="1497.0" />
+  <SelectedNodes>
+    <node>RulesTest</node>
+    <node>ChessPuzzlesTest</node>
+    <node>HardAITest</node>
+    <node>StockfishTest</node>
+    <node>BoardTest</node>
+    <node>MediumAI</node>
+    <node>Vector2Test</node>
+    <node>CloneBoardTest</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Inner Classes</Category>
+    <Category>Fields</Category>
+    <Category>Constructors</Category>
+    <Category>Methods</Category>
+    <Category>Properties</Category>
+  </Categories>
+  <SCOPE>Project Files</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
