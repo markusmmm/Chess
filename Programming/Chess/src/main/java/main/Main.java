@@ -240,6 +240,9 @@ public class Main extends Application {
         labelWelcome.setTextAlignment(TextAlignment.CENTER);
 
         // Buttons for right container
+        Button buttonCreateOnlineGame = new Button();
+        buttonCreateOnlineGame.setText("CREATE ONLINE GAME");
+
         Button buttonPlayVersus = new Button();
         buttonPlayVersus.setText("PLAY: VERSUS");
 
@@ -249,9 +252,6 @@ public class Main extends Application {
         Button buttonRandomBoardPlay = new Button();
         buttonRandomBoardPlay.setText("PLAY: RANDOM BOARD");
 
-        Button buttonPlayShadam = new Button();
-        buttonPlayShadam.setText("PLAY: SHADAM");
-
         Button buttonChessPuzzles = new Button();
         buttonChessPuzzles.setText("CHESS PUZZLES");
 
@@ -260,6 +260,24 @@ public class Main extends Application {
 
         Button buttonQuit = new Button();
         buttonQuit.setText("QUIT");
+
+        buttonCreateOnlineGame.setOnAction(e -> {
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.initStyle(StageStyle.UTILITY);
+            dialog.setTitle("Enter the second players username");
+            dialog.setHeaderText(null);
+            dialog.setGraphic(null);
+            dialog.setContentText("Enter the second players username:");
+            Optional<String> result = dialog.showAndWait();
+            result.ifPresent(player2 -> {
+                if (!username.toLowerCase().equals(player2.toLowerCase())) {
+                    if (!database.userExists(player2))
+                        System.out.println("User does not exist.");
+                    else
+                        database.createGameInvite(username, player2);
+                } else System.out.println("You can't play against yourself!");
+            });
+        });
 
         buttonPlayVersus.setOnAction(e -> {
             TextInputDialog dialog = new TextInputDialog();
@@ -308,8 +326,8 @@ public class Main extends Application {
         // Setups the right container of the buttons
         VBox rightContainer = new VBox(5);
         //rightContainer.setAlignment(Pos.BASELINE_CENTER);
-        rightContainer.getChildren().addAll(buttonPlayVersus, buttonPlayAi,
-                buttonRandomBoardPlay, buttonPlayShadam, buttonChessPuzzles, buttonHighScore, buttonQuit);
+        rightContainer.getChildren().addAll(buttonCreateOnlineGame, buttonPlayVersus, buttonPlayAi,
+                buttonRandomBoardPlay, buttonChessPuzzles, buttonHighScore, buttonQuit);
         rightContainer.setPrefWidth(275);
         rightContainer.setPadding(new Insets(25, 15, 0, 15));
 
@@ -367,28 +385,7 @@ public class Main extends Application {
         });
         */
 
-        Button buttonCreateOnlineGame = new Button();
-        buttonCreateOnlineGame.setText("Create");
-
-        buttonCreateOnlineGame.setOnAction(e -> {
-            TextInputDialog dialog = new TextInputDialog();
-            dialog.initStyle(StageStyle.UTILITY);
-            dialog.setTitle("Enter the second players username");
-            dialog.setHeaderText(null);
-            dialog.setGraphic(null);
-            dialog.setContentText("Enter the second players username:");
-            Optional<String> result = dialog.showAndWait();
-            result.ifPresent(player2 -> {
-                if (!username.toLowerCase().equals(player2.toLowerCase())) {
-                    if (!database.userExists(player2))
-                        System.out.println("User does not exist.");
-                    else
-                        database.createGameInvite(username, player2);
-                } else System.out.println("You can't play against yourself!");
-            });
-        });
-
-        HBox leftButtonContainer = new HBox(buttonPlay, buttonForfeit, buttonCreateOnlineGame);
+        HBox leftButtonContainer = new HBox(buttonPlay, buttonForfeit);
         leftButtonContainer.setSpacing(15);
         leftButtonContainer.setPrefWidth(450);
 
