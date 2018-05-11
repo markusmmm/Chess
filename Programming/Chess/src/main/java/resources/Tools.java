@@ -3,6 +3,19 @@ package resources;
 import java.util.*;
 
 public class Tools<E> {
+    public E randomElem(Set<E> set) {
+        if(set.size() == 0) return null;
+
+        Random rand = new Random();
+        int r = rand.nextInt(set.size());
+
+        int i = 0;
+        for(E e : set)
+            if(i++ == r) return e;
+        return null;
+    }
+
+
     public HashSet<E> cloneSet(HashSet<E> set) {
         HashSet<E> temp = new HashSet<>();
 
