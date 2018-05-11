@@ -18,19 +18,18 @@ public class Tools<E> {
 
     public HashSet<E> cloneSet(HashSet<E> set) {
         HashSet<E> temp = new HashSet<>();
-
-        for(E e : set)
-            temp.add(e);
-
+        temp.addAll(set);
         return temp;
+    }
+
+    public Set<E> merge(Set<E> set, Set<E> other) {
+        set.addAll(other);
+        return set;
     }
 
     public HashSet<E> addAll(HashSet<E> set, E... elems) {
         HashSet<E> temp = cloneSet(set);
-
-        for(E e : elems)
-            temp.add(e);
-
+        temp.addAll(Arrays.asList(elems));
         return temp;
     }
 

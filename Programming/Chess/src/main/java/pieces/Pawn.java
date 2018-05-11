@@ -12,6 +12,11 @@ import java.util.Set;
 
 public class Pawn extends ChessPiece {
 
+    private final HashSet<Vector2> attacks = new HashSet<>(Arrays.asList(
+            new Vector2(-1, Tools.allianceDir(alliance)),
+            new Vector2(1, Tools.allianceDir(alliance))
+    ));
+
 	private boolean hasDoubleStepped = false;
 
 	public Pawn(Vector2 position, Alliance alliance, AbstractBoard board, boolean hasMoved, boolean hasDoubleStepped) {
@@ -85,13 +90,15 @@ public class Pawn extends ChessPiece {
 	public Set<Vector2> getLegalAttacks() {
 		Vector2 position = position();
 
-		int dir = Tools.allianceDir(alliance);
-		int x = position.getX(), y = position.getY();
+		HashSet<Vector2> legalAttacks = new HashSet<>();
 
-		return new HashSet<>(Arrays.asList(
-				new Vector2(x-1, y + dir),
-				new Vector2(x+1, y + dir)
-		));
+		for(Vector2 attackDir : attacks) {
+		    Vector2 destination = position.add(attackDir);
+            if (isLegalMove(attackDir))
+                legalAttacks.add(destination);
+        }
+
+		return legalAttacks;
 	}
 
 	/**
