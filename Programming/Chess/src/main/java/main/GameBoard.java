@@ -466,24 +466,23 @@ public class GameBoard {
 
         }
 
-        boolean moveResult = board.movePiece(firstTile.getPos(), destination);
+        Move playerMove = new Move(firstTile.getPos(), destination);
+        boolean moveResult = board.movePiece(playerMove);
         if (moveResult) {
-            Console.println("Has computer: " + (computer != null));
+            Console.println("Performing move " + playerMove);
+
             if (computer != null) {
                 drawBoard();
 
                 Move move = computer.getMove();
-                Console.println("Computer attempting move " + move);
-                board.movePiece(move);
-                int row = move.start.getY();
-                int col = move.start.getX();
-
-                //tiles[row][col].setFill(Color.TRANSPARENT);
+                if(move != null) {
+                    Console.println("Computer attempting move " + move);
+                    board.movePiece(move);
+                    //tiles[move.start.getY()][move.start.getX()].setFill(Color.TRANSPARENT);
+                } else {
+                    gameOver();
+                }
             }
-
-            //firstTile.setFill(Color.TRANSPARENT);
-            /*resources.Console.println("Moving " + board.getPiece(firstTile.getPos()) +
-                    " from " + firstTile.getPos() + " to " + pos);*/
         } else {
             media.play("denied.mp3");
 
@@ -491,8 +490,6 @@ public class GameBoard {
 
         drawBoard();
         updateLogs();
-
-        //resources.Console.println("After:" + temp.position());
     }
 
     private void goToMenu(String username, Stage stage) {
