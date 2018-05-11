@@ -104,14 +104,7 @@ public class AbstractBoard {
     }
 
     private void loadBoard(File file) throws FileNotFoundException {
-        Scanner reader;
-        if (file.getName().equals("default" + Main.SAVE_EXTENSION)) {
-            InputStream is = Thread.currentThread().getContextClassLoader()
-                    .getResourceAsStream("default" + Main.SAVE_EXTENSION);
-            reader = new Scanner(is);
-        } else {
-            reader = new Scanner(file);
-        }
+        Scanner reader = new Scanner(file);
 
         // Load board data
         String firstData = reader.next();

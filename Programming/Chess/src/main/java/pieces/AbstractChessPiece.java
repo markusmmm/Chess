@@ -72,7 +72,7 @@ public abstract class AbstractChessPiece implements IChessPiece {
 
             for (Vector2 dir : specialMoves) {
                 Vector2 newDestination = pos.add(dir);
-                if(isShadam(newDestination)) {
+                if(isLegalMove(newDestination) && isShadam(pos, newDestination)) {
                     possibleDestinations.add(newDestination);
                     evaluateShadam(newDestination);
                 }
@@ -233,7 +233,6 @@ public abstract class AbstractChessPiece implements IChessPiece {
      */
     protected void performMove(Vector2 destination) {
         if(isShadam(destination) && board.getMode() == BoardMode.SHADAM) {
-            Console.printNotice("Performing shadam " + position + " -> " + destination);
             board.performAttack(position, destination, position.add(destination.sub(position).sign()));
         }
 
@@ -250,15 +249,15 @@ public abstract class AbstractChessPiece implements IChessPiece {
         hasMoved = values.get(0);
     }
 
-    public boolean isShadam(Vector2 destination) {
-        Vector2 delta = destination.sub(position);
+    public boolean isShadam(Vector2 pos, Vector2 destination) {
+        Vector2 delta = destination.sub(pos);
         if(!delta.abs().equals(new Vector2(2,2))) return false;
 
-        Vector2 victimPos = position.add(delta.sign());
-        AbstractChessPiece victim = board.getPiece(victimPos);
-        if(victim != null)
-            Console.printNotice("Attempting shadam " + position + "-" + victimPos + "-" + destination + ". Victim: " + victim);
+        AbstractChessPiece victim = board.getPiece(position.add(delta.sign()));
         return board.getPiece(destination) == null && victim != null && victim.alliance == otherAlliance();
+    }
+    public boolean isShadam(Vector2 destination) {
+        return isShadam(position, destination);
     }
 
     /**

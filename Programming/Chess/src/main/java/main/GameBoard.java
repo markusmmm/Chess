@@ -109,13 +109,13 @@ public class GameBoard {
         else if(boardMode == BoardMode.DEFAULT || boardMode == BoardMode.SHADAM) {
             //this.board = new Board(SIZE, false, boardMode); TEMP TEST
             try {
-                boardVal = new Board(new File("default" + Main.SAVE_EXTENSION), difficulty, boardMode);
+                boardVal = new Board(new File(Main.CORE_DIR, boardMode.toString().toLowerCase() + Main.SAVE_EXTENSION), difficulty, boardMode);
             } catch (FileNotFoundException e) {
                 //e.printCaller();
                 //System.err.println("Game setup failed! exiting...");
                 //System.exit(1);
 
-                Console.printWarning("Save file 'default' not found. Attempting legacy generation...");
+                Console.printWarning("Default save file not found. Attempting legacy generation...");
                 boardVal = new Board(SIZE, difficulty,false, boardMode);
             }
         } else if(boardMode == BoardMode.RANDOM) {
