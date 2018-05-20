@@ -1,0 +1,19 @@
+INF112 spring 2018 - Oblig 5 
+
+Group: GitGud
+
+Overall feedback
+Very good job!
+
+In this delivery you perform very well, there is just some minor things that should have been put a bit more effort into. 
+
+You should have updated the user manual to incorporate the new changes (The new features) and the retrospective is too short and really reflects too little.
+The retrospective from this iteration is one of the things that always comes on the exam so please before then - Think some more about what went good, what went bad, how would you fix the problems you faced etc. 
+There are also some problems from previous iterations that are not fixed yet. (Promoting for instance) 
+Also if you play a local vs game you are as white able to take the black king without the game ending.
+Again these are just minor things.You did a good job and we hope you had fun in this course. 
+
+Score: 84 (of 100)
+Evaluation: PASS
+
+Graded by Steffen and Øyvind, Bergen 20.05.2018
